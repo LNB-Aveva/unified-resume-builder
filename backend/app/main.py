@@ -15,6 +15,11 @@ the receptionist checks what they want and routes them to the right department.
 # WHY: FastAPI is the framework that handles all web requests
 from fastapi import FastAPI
 
+# Import our API routers
+# WHY IMPORT HERE: main.py is the app's entry point. All routes must be
+# registered on the `app` object so FastAPI knows about them.
+from app.api.routes import analyze
+
 # Import CORS middleware
 # CORS = Cross-Origin Resource Sharing
 # WHY: Your React frontend (localhost:3000) and Python backend (localhost:8000)
@@ -66,6 +71,18 @@ app.add_middleware(
 
 # The @app.get("/") is a "decorator" — it tells FastAPI:
 # "When someone visits the root URL (/), run this function."
+# ============================================================
+# Register API Routers
+# ============================================================
+# WHY include_router?
+# Each router is a mini-app with its own routes. include_router() "mounts" it
+# onto the main app at a given prefix. All routes in analyze.py become
+# available under /api/v1/ automatically.
+#
+# tags=["Analysis"] groups these endpoints together in the /docs UI.
+app.include_router(analyze.router, prefix="/api/v1", tags=["Analysis"])
+
+
 @app.get("/")
 async def root():
     """
