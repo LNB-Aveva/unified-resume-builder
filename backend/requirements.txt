@@ -14,20 +14,20 @@ python-multipart==0.0.12
 # ============================
 # spaCy = Industrial-strength NLP library for understanding English text
 #         We use it to extract keywords from job descriptions
-spacy==3.8.4
+spacy==3.8.14
 # NLTK = Natural Language Toolkit - simpler text processing tools
 #        Good for word frequency counting, stopword removal, stemming
 nltk==3.9.1
 # scikit-learn = Machine learning toolkit
 #               We use TF-IDF (Term Frequency - Inverse Document Frequency)
 #               to score how well a resume matches a job description
-scikit-learn==1.6.0
+scikit-learn==1.6.1
 
 # ============================
 # Data Handling
 # ============================
 # Pydantic = Validates data shapes (ensures a resume has the right fields)
-pydantic==2.10.0
+pydantic>=2.13.0
 # python-dotenv = Loads your .env file so you can use API keys without hardcoding them
 python-dotenv==1.0.1
 
