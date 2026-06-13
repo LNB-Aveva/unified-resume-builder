@@ -156,3 +156,94 @@ AI Resume Generator/
 ### Git Log:
 - Commit 1: `22f0fab` — Initial commit: Project foundation and architecture setup (44 files)
 - Commit 2: `5935933` — Add Next.js frontend and fix Python dependency versions (21 files)
+
+---
+
+## Session 2 — 2026-06-13
+
+### What Was Done This Session:
+
+**gh auth login completed** (done by user before session 2 started)
+
+**Feature branch: feature/keyword-extractor** (committed & pushed, PR #1 created)
+
+**Keyword Extractor (first real AI module):**
+- `backend/app/services/nlp/keyword_extractor.py` — spaCy NLP pipeline
+  - 80+ hard skills database (Python, React, TypeScript, Docker, AWS...)
+  - 10+ soft skills (communication, leadership, attention to detail...)
+  - Word-boundary regex matching (prevents "sql" matching inside "nosql")
+  - Experience requirement regex ("3+ years of professional development experience")
+  - Section-aware bullet parser (skips "What We Offer" benefits section)
+  - Module-level spaCy loading (loaded once at startup, not per request)
+- `backend/app/api/routes/analyze.py` — POST /api/v1/analyze endpoint
+- `backend/app/main.py` — registered analyze router under /api/v1
+
+**Verified result on sample_jd_01.txt:**
+- 24 hard skills, 2 soft skills, experience string, 13 responsibilities
+
+**Feature branch: feature/ats-scorer** (committed & pushed, contains 3 feature commits)
+
+**ATS Match Scoring Engine:**
+- `backend/app/schemas/score.py` — ATSScore model (overall_score, grade, grade_label,
+  hard_skills_score, soft_skills_score, matched/missing skill lists, counts)
+  + ScoreRequest model (combines JobDescription + ResumeData in one body)
+- `backend/app/services/scoring/ats_scorer.py` — scoring engine
+  - Flattens full resume (skills + bullets + summary + projects + certifications)
+  - Weighted formula: hard skills 70%, soft skills 30%
+  - Letter grades: A(90+), B(80+), C(70+), D(60+), F(<60)
+  - ATS-realistic: "API" ≠ "APIs" (strict word boundary — mirrors real ATS behavior)
+- `backend/app/api/routes/score.py` — POST /api/v1/score endpoint (chains extractor→scorer)
+
+**Verified result: Jane Developer vs Full Stack SE role → 20.4/100 (F), 7/26 matched**
+
+**Frontend Landing Page:**
+- `frontend/src/app/page.tsx` — real landing page (Server Component)
+  - Sticky nav with logo
+  - Hero: "Stop losing jobs to ATS filters" + CTA
+  - How it works: 3-step section
+  - Live demo section (embeds AnalyzerDemo)
+  - Footer
+- `frontend/src/app/components/AnalyzerDemo.tsx` — interactive demo (Client Component)
+  - Textarea for job description input
+  - Calls POST /api/v1/analyze on click
+  - Shows job title, hard skills chips, soft skills chips, keyword counts
+  - Loading spinner, error handling for offline backend
+- `frontend/src/app/layout.tsx` — updated SEO metadata/title
+
+**Pattern learned: Server Shell + Client Island** (page=Server Component, interactive form=Client Component)
+
+### Concepts Taught This Session:
+1. **Module-level loading** — eager initialization pattern (pay startup cost once, not per request)
+2. **Word-boundary matching** — why `sql` shouldn't match inside `nosql`
+3. **Input vs output schemas** — JobDescription (raw text in) vs JobAnalysis (structured out)
+4. **API versioning** — why `/api/v1/` prefix exists (backwards compatibility)
+5. **Router pattern** — splitting routes into separate files (not one giant main.py)
+6. **Feature branches** — created feature/keyword-extractor and feature/ats-scorer
+7. **PR workflow** — created PR #1 via `gh pr create` in terminal
+8. **Server Component vs Client Component** — when to use each in Next.js 16
+9. **"use client" boundary** — marks interactive islands in an otherwise server-rendered page
+10. **Weighted scoring** — why hard skills 70% / soft skills 30% mirrors real ATS behavior
+
+### Open Items for Session 3:
+- Merge PR #1 (feature/keyword-extractor → main) on GitHub: https://github.com/LNB-Aveva/unified-resume-builder/pull/1
+- Create PR #2 for feature/ats-scorer branch: run `gh pr create` in terminal
+- **NEXT TASK**: Gap Analysis — side-by-side view of resume vs job keywords
+- After that: Add the ATS score to the frontend (connect /api/v1/score to UI)
+
+### Git State at End of Session 2:
+- Branch: feature/ats-scorer (ahead of main by 3 commits)
+- Commits this session:
+  - `1b67de5` — feat: add Job Description Keyword Extractor
+  - `bf2f37b` — feat: add ATS Match Scoring Engine (POST /api/v1/score)
+  - `f497240` — feat: build landing page with live ATS keyword extractor demo
+- PR #1 open: https://github.com/LNB-Aveva/unified-resume-builder/pull/1
+
+### Model Used:
+- Claude Sonnet 4.6 (switched from Opus — appropriate for implementation tasks)
+
+### API Endpoints Live (start backend with `uvicorn app.main:app --reload`):
+- GET  /               → health check
+- GET  /health         → health check
+- POST /api/v1/analyze → job keyword extraction
+- POST /api/v1/score   → resume vs job ATS score
+- GET  /docs           → interactive Swagger UI (all endpoints documented)
