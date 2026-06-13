@@ -1,0 +1,56 @@
+# ============================
+# Web Framework
+# ============================
+# FastAPI = The framework that handles incoming web requests (like when a user
+#           clicks "Analyze My Resume" on the website, FastAPI receives that request)
+fastapi==0.115.0
+# Uvicorn = The server that actually RUNS FastAPI (FastAPI is the app, Uvicorn is the engine)
+uvicorn==0.32.0
+# python-multipart = Lets users upload files (like their resume PDF)
+python-multipart==0.0.12
+
+# ============================
+# NLP / AI Libraries (ALL FREE - run locally on your computer)
+# ============================
+# spaCy = Industrial-strength NLP library for understanding English text
+#         We use it to extract keywords from job descriptions
+spacy==3.8.4
+# NLTK = Natural Language Toolkit - simpler text processing tools
+#        Good for word frequency counting, stopword removal, stemming
+nltk==3.9.1
+# scikit-learn = Machine learning toolkit
+#               We use TF-IDF (Term Frequency - Inverse Document Frequency)
+#               to score how well a resume matches a job description
+scikit-learn==1.6.0
+
+# ============================
+# Data Handling
+# ============================
+# Pydantic = Validates data shapes (ensures a resume has the right fields)
+pydantic==2.10.0
+# python-dotenv = Loads your .env file so you can use API keys without hardcoding them
+python-dotenv==1.0.1
+
+# ============================
+# PDF Generation
+# ============================
+# Jinja2 = Template engine - fills in resume data into HTML templates
+Jinja2==3.1.4
+# WeasyPrint = Converts HTML+CSS into beautiful PDF files (replaces LaTeX)
+weasyprint==63.0
+
+# ============================
+# Testing
+# ============================
+# pytest = The testing framework - lets you write and run automated tests
+pytest==8.3.4
+# httpx = Makes HTTP requests in tests (simulates a user calling your API)
+httpx==0.28.0
+
+# ============================
+# Development Tools
+# ============================
+# black = Automatically formats your Python code to look clean and consistent
+black==24.10.0
+# ruff = Fast linter that catches bugs and style issues before they become problems
+ruff==0.8.0
