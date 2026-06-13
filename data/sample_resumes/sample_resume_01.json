@@ -1,0 +1,63 @@
+{
+  "personal_info": {
+    "full_name": "Jane Developer",
+    "email": "jane.dev@email.com",
+    "phone": "+1-555-123-4567",
+    "location": "San Francisco, CA",
+    "linkedin_url": "https://linkedin.com/in/janedev",
+    "portfolio_url": "https://janedev.com"
+  },
+  "summary": "Software engineer with 4 years of experience building web applications. Passionate about clean code and user-centric design.",
+  "work_experience": [
+    {
+      "job_title": "Software Engineer",
+      "company": "StartupXYZ",
+      "start_date": "Mar 2022",
+      "end_date": "Present",
+      "bullet_points": [
+        "Developed and maintained 3 customer-facing web applications using React and Node.js",
+        "Implemented RESTful APIs serving 50,000+ daily requests",
+        "Reduced page load time by 40% through code optimization and caching strategies",
+        "Collaborated with cross-functional teams to deliver features on schedule"
+      ]
+    },
+    {
+      "job_title": "Junior Developer",
+      "company": "WebAgency Co",
+      "start_date": "Jun 2020",
+      "end_date": "Feb 2022",
+      "bullet_points": [
+        "Built responsive websites for 15+ clients using HTML, CSS, and JavaScript",
+        "Maintained MySQL databases and wrote complex SQL queries for reporting",
+        "Participated in code reviews and adopted best practices for version control"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science in Computer Science",
+      "institution": "University of California, Berkeley",
+      "graduation_date": "May 2020",
+      "gpa": "3.7"
+    }
+  ],
+  "skills": [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "HTML",
+    "CSS",
+    "SQL",
+    "MySQL",
+    "Git",
+    "REST APIs",
+    "Agile"
+  ],
+  "certifications": [
+    "AWS Certified Cloud Practitioner"
+  ],
+  "projects": [
+    "Personal portfolio website with blog (React + Next.js)",
+    "Task management app with real-time updates (Socket.io)"
+  ]
+}

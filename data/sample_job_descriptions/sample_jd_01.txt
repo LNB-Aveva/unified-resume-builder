@@ -1,0 +1,32 @@
+Software Engineer - Full Stack
+
+Company: TechCorp Solutions
+Location: Remote (US)
+Experience: 3+ years
+
+About the Role:
+We are looking for a Full Stack Software Engineer to join our growing engineering team. You will be responsible for building and maintaining web applications that serve millions of users. You'll work closely with product managers, designers, and fellow engineers to deliver high-quality software.
+
+Requirements:
+- 3+ years of professional software development experience
+- Strong proficiency in Python and JavaScript/TypeScript
+- Experience with React or similar frontend frameworks (Vue, Angular)
+- Backend experience with FastAPI, Django, or Flask
+- Proficiency with SQL databases (PostgreSQL preferred)
+- Experience with RESTful API design and implementation
+- Familiarity with Git version control and CI/CD pipelines
+- Strong problem-solving skills and attention to detail
+
+Nice to Have:
+- Experience with cloud platforms (AWS, GCP, or Azure)
+- Knowledge of Docker and containerization
+- Experience with machine learning or NLP
+- Familiarity with Agile/Scrum methodologies
+- Open source contributions
+
+What We Offer:
+- Competitive salary ($120k-$160k)
+- Full benefits package (health, dental, vision)
+- Flexible remote work policy
+- Professional development budget
+- Stock options
