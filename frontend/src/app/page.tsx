@@ -16,6 +16,7 @@
 import AnalyzerDemo from "./components/AnalyzerDemo";
 import GapAnalysis from "./components/GapAnalysis";
 import ComplianceChecker from "./components/ComplianceChecker";
+import SummaryGenerator from "./components/SummaryGenerator";
 
 export default function Home() {
   return (
@@ -82,22 +83,27 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">
             How it works
           </h2>
-          <div className="grid sm:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 step: "1",
-                title: "Paste a job description",
-                body: "Copy the full text of any job posting — title, requirements, responsibilities.",
+                title: "Extract ATS keywords",
+                body: "Paste any job posting — our NLP engine instantly identifies every keyword ATS filters scan for.",
               },
               {
                 step: "2",
-                title: "See every ATS keyword",
-                body: "Our NLP engine identifies every hard skill, soft skill, and keyword ATS filters look for.",
+                title: "Score your resume",
+                body: "Paste your resume to see matched vs missing keywords and your ATS score.",
               },
               {
                 step: "3",
-                title: "Fix keywords + format",
-                body: "See matched vs missing keywords and run 15 ATS format checks. Fix both to maximize your chances.",
+                title: "Check formatting",
+                body: "Run 15 ATS format checks to catch issues that prevent parsers from reading your resume.",
+              },
+              {
+                step: "4",
+                title: "Generate AI summary",
+                body: "Paste your experience bullets — AI rewrites them into a tailored professional summary.",
               },
             ].map(({ step, title, body }) => (
               <div
@@ -166,6 +172,25 @@ export default function Home() {
           </p>
         </div>
         <ComplianceChecker />
+      </section>
+
+      {/* ── AI Summary Generator ── */}
+      <section className="bg-gray-50 border-t border-gray-100 py-16">
+        <div className="mx-auto max-w-3xl px-4">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+              Step 4
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Generate a tailored professional summary
+            </h2>
+            <p className="text-gray-500 text-sm max-w-xl mx-auto">
+              Paste your experience bullets and the job description — AI rewrites them into a
+              concise, ATS-friendly &quot;About Me&quot; paragraph in seconds.
+            </p>
+          </div>
+          <SummaryGenerator />
+        </div>
       </section>
 
       {/* ── Footer ── */}
