@@ -4,10 +4,12 @@
  * ResumeExporter.tsx — Build and download an ATS-friendly PDF resume.
  *
  * UX FLOW:
- *   1. User fills in four collapsible sections: Personal, Experience,
+ *   1. User picks a template (Classic / Modern / Minimal) via visual cards.
+ *   2. User fills in four collapsible sections: Personal, Experience,
  *      Education, Skills. Summary can be pasted from Step 4 above.
- *   2. "Download PDF" → POST /api/v1/export/pdf with all resume data
- *   3. Browser receives a binary PDF blob and triggers a file download.
+ *   3. "Download PDF" → POST /api/v1/export/pdf with all resume data
+ *      + the chosen template name.
+ *   4. Browser receives a binary PDF blob and triggers a file download.
  *
  * WHY DOWNLOADING A BLOB IS DIFFERENT FROM A NORMAL FETCH:
  *   Most API calls fetch JSON. This one returns raw bytes (application/pdf).
@@ -27,7 +29,7 @@
  *   This keeps the form compact — users open only the section they're editing.
  */
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface PersonalInfo {
   full_name: string;
@@ -54,6 +56,94 @@ interface EducationEntry {
   field: string;
   year: string;
 }
+
+type TemplateId = "classic" | "modern" | "minimal";
+
+const TEMPLATES: {
+  id: TemplateId;
+  label: string;
+  tagline: string;
+  preview: React.ReactNode;
+}[] = [
+  {
+    id: "classic",
+    label: "Classic",
+    tagline: "Indigo accents · ruled sections",
+    preview: (
+      <div className="w-full h-full flex flex-col gap-1 p-1.5">
+        {/* name bar */}
+        <div className="h-2 w-3/4 rounded bg-indigo-500" />
+        {/* contact */}
+        <div className="h-1 w-1/2 rounded bg-gray-300" />
+        {/* thick rule */}
+        <div className="mt-0.5 h-0.5 w-full rounded bg-indigo-400" />
+        {/* section */}
+        <div className="mt-1 h-1 w-1/3 rounded bg-indigo-400" />
+        <div className="h-px w-full rounded bg-indigo-200" />
+        <div className="mt-0.5 h-1 w-full rounded bg-gray-200" />
+        <div className="h-1 w-5/6 rounded bg-gray-200" />
+        {/* section */}
+        <div className="mt-1 h-1 w-1/3 rounded bg-indigo-400" />
+        <div className="h-px w-full rounded bg-indigo-200" />
+        <div className="mt-0.5 h-1 w-full rounded bg-gray-200" />
+        <div className="h-1 w-4/5 rounded bg-gray-200" />
+        <div className="h-1 w-3/4 rounded bg-gray-200" />
+      </div>
+    ),
+  },
+  {
+    id: "modern",
+    label: "Modern",
+    tagline: "Dark navy header band · teal accents",
+    preview: (
+      <div className="w-full h-full flex flex-col gap-1">
+        {/* header band */}
+        <div className="w-full rounded-t bg-slate-900 px-1.5 py-1.5 flex flex-col gap-0.5">
+          <div className="h-2 w-3/4 rounded bg-white/80" />
+          <div className="h-1 w-1/2 rounded bg-slate-400" />
+        </div>
+        <div className="flex flex-col gap-1 px-1.5 pt-0.5">
+          {/* section title + teal underline */}
+          <div className="h-1 w-1/3 rounded bg-slate-800" />
+          <div className="h-0.5 w-8 rounded bg-teal-400" />
+          <div className="h-1 w-full rounded bg-gray-200" />
+          <div className="h-1 w-5/6 rounded bg-gray-200" />
+          {/* section */}
+          <div className="mt-1 h-1 w-1/3 rounded bg-slate-800" />
+          <div className="h-0.5 w-8 rounded bg-teal-400" />
+          <div className="h-1 w-full rounded bg-gray-200" />
+          <div className="h-1 w-3/4 rounded bg-gray-200" />
+          <div className="h-1 w-4/5 rounded bg-gray-200" />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: "minimal",
+    label: "Minimal",
+    tagline: "No colour · whitespace-first typography",
+    preview: (
+      <div className="w-full h-full flex flex-col gap-1 p-1.5">
+        {/* large name */}
+        <div className="h-3 w-3/4 rounded bg-black" />
+        {/* contact */}
+        <div className="h-1 w-1/2 rounded bg-gray-400" />
+        {/* thin separator */}
+        <div className="mt-0.5 h-px w-full rounded bg-gray-300" />
+        {/* section label (gray caps) */}
+        <div className="mt-1.5 h-1 w-1/4 rounded bg-gray-400" />
+        <div className="h-px w-full rounded bg-gray-200" />
+        <div className="mt-0.5 h-1 w-full rounded bg-gray-200" />
+        <div className="h-1 w-5/6 rounded bg-gray-200" />
+        {/* section */}
+        <div className="mt-2 h-1 w-1/4 rounded bg-gray-400" />
+        <div className="h-px w-full rounded bg-gray-200" />
+        <div className="mt-0.5 h-1 w-full rounded bg-gray-200" />
+        <div className="h-1 w-2/3 rounded bg-gray-200" />
+      </div>
+    ),
+  },
+];
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -90,6 +180,7 @@ export default function ResumeExporter() {
     personal: true, summary: false, experience: false, education: false, skills: false,
   });
 
+  const [template, setTemplate] = useState<TemplateId>("classic");
   const [personal, setPersonal] = useState<PersonalInfo>({
     full_name: "", email: "", phone: "", location: "", linkedin: "", website: "",
   });
@@ -138,6 +229,7 @@ export default function ResumeExporter() {
         .map(({ id: _id, ...rest }) => rest),
       skills: skills.trim(),
       filename: personal.full_name.trim() || "resume",
+      template,
     };
 
     try {
@@ -176,6 +268,58 @@ export default function ResumeExporter() {
 
   return (
     <div className="space-y-3">
+
+      {/* ── 0. Template Picker ───────────────────────────────────────── */}
+      <div>
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          Choose a template
+        </p>
+        <div className="grid grid-cols-3 gap-3">
+          {TEMPLATES.map((t) => {
+            const selected = template === t.id;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setTemplate(t.id)}
+                className={`
+                  relative flex flex-col items-stretch rounded-xl border-2 transition
+                  ${selected
+                    ? "border-indigo-500 shadow-md shadow-indigo-100"
+                    : "border-gray-200 hover:border-indigo-300 hover:shadow-sm"}
+                `}
+              >
+                {/* Mini PDF preview */}
+                <div className="relative overflow-hidden rounded-t-xl bg-white"
+                     style={{ aspectRatio: "0.707 / 1", maxHeight: 120 }}>
+                  {t.preview}
+                </div>
+                {/* Label row */}
+                <div className={`
+                  rounded-b-xl px-2 py-1.5 text-left
+                  ${selected ? "bg-indigo-50" : "bg-gray-50"}
+                `}>
+                  <p className={`text-xs font-bold ${selected ? "text-indigo-700" : "text-gray-700"}`}>
+                    {t.label}
+                  </p>
+                  <p className="text-[10px] text-gray-400 leading-tight mt-0.5 hidden sm:block">
+                    {t.tagline}
+                  </p>
+                </div>
+                {/* Selected tick */}
+                {selected && (
+                  <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600">
+                    <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* ── 1. Personal Info ──────────────────────────────────────────── */}
       <div className="space-y-2">
@@ -411,7 +555,7 @@ export default function ResumeExporter() {
       </button>
 
       <p className="text-center text-xs text-gray-400">
-        ATS-friendly single-column layout · Generated with fpdf2 · No watermarks
+        3 ATS-safe single-column templates · fpdf2 · No watermarks
       </p>
     </div>
   );
