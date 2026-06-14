@@ -18,6 +18,7 @@ import GapAnalysis from "./components/GapAnalysis";
 import ComplianceChecker from "./components/ComplianceChecker";
 import SummaryGenerator from "./components/SummaryGenerator";
 import BulletRewriter from "./components/BulletRewriter";
+import JobTracker from "./components/JobTracker";
 
 export default function Home() {
   return (
@@ -84,7 +85,7 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">
             How it works
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
                 step: "1",
@@ -110,6 +111,11 @@ export default function Home() {
                 step: "5",
                 title: "Rewrite weak bullets",
                 body: "Paste your bullet points — AI rewrites each one to naturally include your missing keywords.",
+              },
+              {
+                step: "6",
+                title: "Track applications",
+                body: "Save jobs, update status from Saved → Applied → Interview → Offer, and add notes per role.",
               },
             ].map(({ step, title, body }) => (
               <div
@@ -214,6 +220,25 @@ export default function Home() {
           </p>
         </div>
         <BulletRewriter />
+      </section>
+
+      {/* ── Job Application Tracker ── */}
+      <section className="bg-gray-50 border-t border-gray-100 py-16">
+        <div className="mx-auto max-w-3xl px-4">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+              Step 6
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Track every application in one place
+            </h2>
+            <p className="text-gray-500 text-sm max-w-xl mx-auto">
+              Save the jobs you&apos;re applying to, track their status, and add notes — all stored
+              privately in your browser. No sign-up required.
+            </p>
+          </div>
+          <JobTracker />
+        </div>
       </section>
 
       {/* ── Footer ── */}

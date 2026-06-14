@@ -1,0 +1,406 @@
+"use client";
+
+/*
+ * JobTracker.tsx — Job application tracker backed by localStorage.
+ *
+ * WHY localStorage (not a database):
+ *   We're on a $0 budget with no auth system yet. localStorage lets us
+ *   persist data in the user's browser with zero backend cost. The trade-off:
+ *   data is device-specific and clears if the user clears browser storage.
+ *   For a v1 tracker this is fine — we can migrate to Supabase in a future
+ *   session when we add user accounts.
+ *
+ * DATA MODEL:
+ *   Each saved job is a `TrackedJob` object stored as JSON in localStorage
+ *   under the key "resumeai_jobs". We use crypto.randomUUID() for IDs so
+ *   two jobs saved at the same second don't collide.
+ *
+ * STATUS PIPELINE:
+ *   Saved → Applied → Interview → Offer
+ *                  ↘ Rejected (can happen at any stage)
+ *
+ * WHY useMemo FOR COUNTS:
+ *   The counts badge (e.g. "3 Applied") recalculates every time jobs change.
+ *   useMemo caches the result so we don't recount on every keystroke in the
+ *   "Add Job" form — minor optimisation but a good habit.
+ *
+ * HYDRATION GUARD (isHydrated):
+ *   Next.js renders components on the server first, then "hydrates" them in
+ *   the browser. localStorage doesn't exist on the server. If we read it
+ *   immediately, the server renders empty state but the browser renders saved
+ *   jobs — React throws a "hydration mismatch" error. The isHydrated flag
+ *   delays reading localStorage until we're confirmed in the browser.
+ */
+
+import { useState, useEffect, useMemo } from "react";
+
+type Status = "Saved" | "Applied" | "Interview" | "Offer" | "Rejected";
+
+interface TrackedJob {
+  id: string;
+  company: string;
+  title: string;
+  url: string;
+  status: Status;
+  notes: string;
+  dateAdded: string;   // ISO string
+}
+
+const STORAGE_KEY = "resumeai_jobs";
+
+const STATUS_CONFIG: Record<Status, { label: string; color: string; dot: string }> = {
+  Saved:     { label: "Saved",     color: "bg-gray-100 text-gray-600",       dot: "bg-gray-400" },
+  Applied:   { label: "Applied",   color: "bg-blue-50 text-blue-700",        dot: "bg-blue-500" },
+  Interview: { label: "Interview", color: "bg-amber-50 text-amber-700",      dot: "bg-amber-500" },
+  Offer:     { label: "Offer",     color: "bg-emerald-50 text-emerald-700",  dot: "bg-emerald-500" },
+  Rejected:  { label: "Rejected",  color: "bg-red-50 text-red-600",          dot: "bg-red-400" },
+};
+
+const STATUS_ORDER: Status[] = ["Saved", "Applied", "Interview", "Offer", "Rejected"];
+
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-GB", {
+    day: "numeric", month: "short", year: "numeric",
+  });
+}
+
+function loadJobs(): TrackedJob[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as TrackedJob[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveJobs(jobs: TrackedJob[]): void {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+}
+
+export default function JobTracker() {
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [jobs, setJobs] = useState<TrackedJob[]>([]);
+
+  // Form state
+  const [company, setCompany] = useState("");
+  const [title, setTitle] = useState("");
+  const [url, setUrl] = useState("");
+  const [notes, setNotes] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [formError, setFormError] = useState("");
+
+  // Filter state
+  const [filterStatus, setFilterStatus] = useState<Status | "All">("All");
+
+  // Expand/collapse notes per card
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  // Hydration guard — only read localStorage after mount
+  useEffect(() => {
+    setJobs(loadJobs());
+    setIsHydrated(true);
+  }, []);
+
+  // Persist whenever jobs array changes (skip first render before hydration)
+  useEffect(() => {
+    if (isHydrated) saveJobs(jobs);
+  }, [jobs, isHydrated]);
+
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { All: jobs.length };
+    STATUS_ORDER.forEach((s) => { c[s] = jobs.filter((j) => j.status === s).length; });
+    return c;
+  }, [jobs]);
+
+  const filtered = useMemo(
+    () => filterStatus === "All" ? jobs : jobs.filter((j) => j.status === filterStatus),
+    [jobs, filterStatus]
+  );
+
+  function handleAdd() {
+    if (!company.trim() || !title.trim()) {
+      setFormError("Company and Job Title are required.");
+      return;
+    }
+    const newJob: TrackedJob = {
+      id: crypto.randomUUID(),
+      company: company.trim(),
+      title: title.trim(),
+      url: url.trim(),
+      notes: notes.trim(),
+      status: "Saved",
+      dateAdded: new Date().toISOString(),
+    };
+    setJobs((prev) => [newJob, ...prev]);
+    setCompany(""); setTitle(""); setUrl(""); setNotes("");
+    setFormError("");
+    setShowForm(false);
+  }
+
+  function handleStatusChange(id: string, status: Status) {
+    setJobs((prev) => prev.map((j) => j.id === id ? { ...j, status } : j));
+  }
+
+  function handleNotesChange(id: string, notes: string) {
+    setJobs((prev) => prev.map((j) => j.id === id ? { ...j, notes } : j));
+  }
+
+  function handleDelete(id: string) {
+    setJobs((prev) => prev.filter((j) => j.id !== id));
+    if (expandedId === id) setExpandedId(null);
+  }
+
+  if (!isHydrated) {
+    return (
+      <div className="h-40 flex items-center justify-center text-sm text-gray-400">
+        Loading tracker...
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+
+      {/* ── Header row: status filter pills + Add button ── */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+
+        {/* Filter pills */}
+        <div className="flex flex-wrap gap-2">
+          {(["All", ...STATUS_ORDER] as const).map((s) => (
+            <button
+              key={s}
+              onClick={() => setFilterStatus(s)}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition
+                ${filterStatus === s
+                  ? "bg-indigo-600 text-white shadow-sm"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+            >
+              {s !== "All" && (
+                <span className={`h-1.5 w-1.5 rounded-full ${STATUS_CONFIG[s].dot}`} />
+              )}
+              {s}
+              <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold
+                ${filterStatus === s ? "bg-indigo-500 text-white" : "bg-gray-200 text-gray-500"}`}>
+                {counts[s] ?? 0}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Add Job button */}
+        <button
+          onClick={() => { setShowForm((p) => !p); setFormError(""); }}
+          className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          Save a Job
+        </button>
+      </div>
+
+      {/* ── Add Job form ── */}
+      {showForm && (
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-5 space-y-4">
+          <p className="text-sm font-semibold text-gray-800">Save a new job</p>
+
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="block text-xs font-semibold text-gray-600">
+                Company <span className="text-red-400">*</span>
+              </label>
+              <input
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder="e.g. Accenture"
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="block text-xs font-semibold text-gray-600">
+                Job Title <span className="text-red-400">*</span>
+              </label>
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Senior Software Engineer"
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              />
+            </div>
+            <div className="sm:col-span-2 space-y-1">
+              <label className="block text-xs font-semibold text-gray-600">Job URL</label>
+              <input
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://..."
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              />
+            </div>
+            <div className="sm:col-span-2 space-y-1">
+              <label className="block text-xs font-semibold text-gray-600">Notes</label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="e.g. Referral from John, £65k range, hybrid 2 days..."
+                rows={2}
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-none"
+              />
+            </div>
+          </div>
+
+          {formError && (
+            <p className="text-xs text-red-600">{formError}</p>
+          )}
+
+          <div className="flex gap-2 justify-end">
+            <button
+              onClick={() => { setShowForm(false); setFormError(""); }}
+              className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAdd}
+              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 transition"
+            >
+              Save Job
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Empty state ── */}
+      {filtered.length === 0 && (
+        <div className="rounded-2xl border border-dashed border-gray-200 py-14 text-center">
+          <div className="mx-auto mb-3 h-10 w-10 rounded-xl bg-gray-100 flex items-center justify-center">
+            <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+            </svg>
+          </div>
+          <p className="text-sm font-medium text-gray-500">
+            {filterStatus === "All" ? "No jobs saved yet." : `No jobs with status "${filterStatus}".`}
+          </p>
+          {filterStatus === "All" && (
+            <p className="mt-1 text-xs text-gray-400">
+              Click &ldquo;Save a Job&rdquo; to start tracking your applications.
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* ── Job cards ── */}
+      <div className="space-y-3">
+        {filtered.map((job) => {
+          const cfg = STATUS_CONFIG[job.status];
+          const isExpanded = expandedId === job.id;
+
+          return (
+            <div key={job.id} className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+              {/* Card header */}
+              <div className="flex items-start gap-3 px-5 py-4">
+                {/* Company initial */}
+                <div className="h-9 w-9 rounded-xl bg-indigo-100 flex items-center justify-center shrink-0">
+                  <span className="text-sm font-bold text-indigo-700">
+                    {job.company.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+
+                {/* Title + company */}
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-900 text-sm truncate">{job.title}</p>
+                  <p className="text-xs text-gray-500 truncate">
+                    {job.company}
+                    {job.url && (
+                      <>
+                        {" · "}
+                        <a
+                          href={job.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-indigo-500 hover:underline"
+                        >
+                          View posting
+                        </a>
+                      </>
+                    )}
+                  </p>
+                </div>
+
+                {/* Status selector */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${cfg.color}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
+                    {cfg.label}
+                  </span>
+                  <select
+                    value={job.status}
+                    onChange={(e) => handleStatusChange(job.id, e.target.value as Status)}
+                    className="rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs font-medium text-gray-600 outline-none focus:border-indigo-400 cursor-pointer"
+                  >
+                    {STATUS_ORDER.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Footer: date + expand notes + delete */}
+              <div className="flex items-center justify-between px-5 pb-3 -mt-1">
+                <p className="text-xs text-gray-400">Saved {formatDate(job.dateAdded)}</p>
+
+                <div className="flex items-center gap-1">
+                  {/* Toggle notes */}
+                  <button
+                    onClick={() => setExpandedId(isExpanded ? null : job.id)}
+                    className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-100 transition"
+                  >
+                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Notes
+                    {job.notes && (
+                      <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                    )}
+                  </button>
+
+                  {/* Delete */}
+                  <button
+                    onClick={() => handleDelete(job.id)}
+                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+                    title="Remove"
+                  >
+                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Expandable notes editor */}
+              {isExpanded && (
+                <div className="border-t border-gray-100 px-5 py-4">
+                  <textarea
+                    value={job.notes}
+                    onChange={(e) => handleNotesChange(job.id, e.target.value)}
+                    placeholder="Add notes — salary range, referral, interview round, next steps..."
+                    rows={3}
+                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-none"
+                  />
+                  <p className="mt-1 text-xs text-gray-400">Notes auto-save as you type.</p>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Storage notice */}
+      {jobs.length > 0 && (
+        <p className="text-center text-xs text-gray-400">
+          {jobs.length} job{jobs.length !== 1 ? "s" : ""} tracked · Saved in your browser · Clears if you clear browser data
+        </p>
+      )}
+    </div>
+  );
+}
