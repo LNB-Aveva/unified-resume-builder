@@ -164,7 +164,7 @@ export default async function Image() {
             fontSize: 18,
           }}
         >
-          resumeai.vercel.app · 100% free · No account required
+          unified-resume-builder.vercel.app · 100% free · No account required
         </div>
       </div>
     ),

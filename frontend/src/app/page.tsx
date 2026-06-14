@@ -30,7 +30,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "ResumeAI",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.vercel.app",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://unified-resume-builder.vercel.app",
   description:
     "Free AI-powered resume builder with ATS keyword extraction, gap analysis, " +
     "compliance checker, AI cover letter generator, bullet rewriter, and PDF export.",

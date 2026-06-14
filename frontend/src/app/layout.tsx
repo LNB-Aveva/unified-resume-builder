@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 // Example value: https://resumeai.vercel.app
 // It is used here for absolute URLs in OG tags, canonical links, and the sitemap.
 // In local dev, the fallback keeps things functional without needing the var set.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://unified-resume-builder.vercel.app";
 
 export const metadata: Metadata = {
   // metadataBase makes all relative URLs in openGraph/twitter absolute without
@@ -104,6 +104,14 @@ export const metadata: Metadata = {
   // ever accessible via multiple paths (www vs non-www, trailing slash, etc.).
   alternates: {
     canonical: "/",
+  },
+
+  // Google Search Console ownership verification.
+  // Next.js renders this as <meta name="google-site-verification" content="...">
+  // in the <head> automatically — keep this tag permanently, Google checks it
+  // on every re-crawl to confirm continued ownership.
+  verification: {
+    google: "tAaXD7CA414Jo9wI_ccQ4e4CaKj-_MalVkUkws6sAFA",
   },
 };
 
