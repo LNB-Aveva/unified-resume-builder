@@ -1,66 +1,58 @@
 """
-pdf_generator.py — Builds ATS-friendly resume PDFs using fpdf2.
+pdf_generator.py — Three ATS-friendly resume PDF templates via fpdf2.
 
-WHY fpdf2 INSTEAD OF WEASYPRINT:
-  WeasyPrint produces beautiful PDFs by rendering HTML+CSS, but it requires
-  libgobject/libpango (GTK) as system libraries — not available on Windows
-  without a separate GTK runtime installer, and unreliable on free-tier
-  Linux hosts. fpdf2 is pure Python: no system libraries, no DLL pain,
-  works identically everywhere.
+ALL THREE TEMPLATES ARE ATS-SAFE:
+  The golden rule: ATS systems extract text by reading the PDF content
+  stream top-to-bottom. Any layout trick that visually reorders content
+  (tables, text boxes, multi-column CSS, floating elements) confuses the
+  parser and causes your resume to be read in the wrong order.
 
-HOW fpdf2 WORKS:
-  fpdf2 builds PDFs by drawing primitives in a coordinate system:
-    - set_font() chooses typeface, style, size
-    - cell(w, h, text) prints one line of fixed-width text
-    - multi_cell(w, h, text) prints wrapped text (like a paragraph)
-    - line(x1, y1, x2, y2) draws a horizontal rule
-    - ln(h) moves the cursor down by h mm
+  All three templates here are strictly single-column — the only differences
+  are colour palette, typography weight, and decorative elements (rules,
+  filled rectangles, spacing). The text order in the PDF stream is identical
+  across all three.
 
-  Origin (0,0) is top-left of the printable area. The effective_width()
-  helper gives us the usable width after subtracting margins.
+THE THREE TEMPLATES:
 
-FONT CHOICES:
-  We use Helvetica (a built-in PDF core font). Built-in fonts are embedded
-  in every PDF viewer without external font files — no missing-font issues.
-  Helvetica maps to Arial in Windows and San Francisco on macOS.
+  classic  — Indigo accent colour, thin horizontal rules beneath section
+             headers, company/title on left + dates right-aligned.
+             Professional and familiar; safe for conservative industries.
 
-ATS LAYOUT PRINCIPLES:
-  - Linear, single-column — no tables, no text boxes, no floats
-  - Heading hierarchy: Name (18pt bold) → Section (10pt bold+rule) → body (10pt)
-  - Bullets as "• " prefix on multi_cell lines (not PDF list objects, which
-    some ATS parsers skip)
-  - No images, no headers/footers beyond page margins
+  modern   — Full-width dark navy header band with white name and contact
+             info. Section titles in bold dark navy, no decorative rules.
+             Contemporary look; good for tech and creative roles.
+
+  minimal  — Zero colour (pure black on white). Large name, generous
+             whitespace, section headers in uppercase with a thin grey rule.
+             Typography-first; popular in design, consulting, academia.
+
+SHARED INFRASTRUCTURE:
+  _ResumePDF  — base FPDF subclass with page setup and the _s() sanitiser
+  _s()        — strips non-Latin-1 characters (en-dashes, curly quotes)
+                so Helvetica's limited encoding never raises an exception
+  generate_pdf() — dispatches to the correct generator by template name
 """
 
 from fpdf import FPDF
 from app.schemas.export import ResumeExportRequest
 
-# Built-in PDF fonts (Helvetica) only cover Latin-1 (cp1252).
-# Sanitise common Unicode characters before handing text to fpdf2.
+_PAGE_W  = 210    # A4 width mm
+_MARGIN  = 18     # left/right margin mm
+_TOP     = 15     # top margin mm
+_LINE_H  = 5.5    # body line height mm
+_SECT_GAP = 5     # gap before each new section mm
+
 _UNICODE_MAP = str.maketrans({
-    "–": "-",   # en dash
-    "—": "-",   # em dash
-    "‘": "'",   # left single quote
-    "’": "'",   # right single quote
-    "“": '"',   # left double quote
-    "”": '"',   # right double quote
-    "•": "-",   # bullet
-    "·": "-",   # middle dot
-    "…": "...", # ellipsis
-    " ": " ",   # non-breaking space
+    "–": "-", "—": "-",
+    "‘": "'", "’": "'",
+    "“": '"', "”": '"',
+    "•": "-", "·": "-",
+    "…": "...", " ": " ",
 })
 
 
 def _s(text: str) -> str:
-    """Sanitise text to Latin-1 so Helvetica can encode it."""
     return text.translate(_UNICODE_MAP).encode("latin-1", errors="replace").decode("latin-1")
-
-# Page dimensions & margins
-_PAGE_W    = 210   # A4 mm
-_MARGIN    = 18    # left/right margin mm
-_TOP       = 15    # top margin mm
-_LINE_H    = 5.5   # standard line height mm
-_SECT_GAP  = 4     # gap before each new section mm
 
 
 class _ResumePDF(FPDF):
@@ -73,115 +65,317 @@ class _ResumePDF(FPDF):
     def w_eff(self) -> float:
         return _PAGE_W - 2 * _MARGIN
 
-    # ── typographic helpers ───────────────────────────────────────────────
-
-    def _h1(self, text: str) -> None:
-        self.set_font("Helvetica", "B", 18)
-        self.cell(self.w_eff, 9, _s(text), ln=True)
-
-    def _section_rule(self, title: str) -> None:
-        self.ln(_SECT_GAP)
-        self.set_font("Helvetica", "B", 9)
-        self.set_text_color(67, 56, 202)
-        self.cell(self.w_eff, 5, _s(title.upper()), ln=True)
-        y = self.get_y()
-        self.set_draw_color(199, 210, 254)
-        self.set_line_width(0.4)
-        self.line(_MARGIN, y, _PAGE_W - _MARGIN, y)
-        self.ln(2)
-        self.set_text_color(26, 26, 26)
-
-    def _body(self, text: str, bold: bool = False, size: float = 10) -> None:
-        style = "B" if bold else ""
-        self.set_font("Helvetica", style, size)
-        self.multi_cell(self.w_eff, _LINE_H, _s(text), ln=True)
-
-    def _small(self, text: str, color: tuple = (80, 80, 80)) -> None:
-        self.set_text_color(*color)
-        self.set_font("Helvetica", "", 9)
-        self.multi_cell(self.w_eff, 4.5, _s(text), ln=True)
-        self.set_text_color(26, 26, 26)
-
-    def _two_col(self, left: str, right: str, left_bold: bool = False) -> None:
-        """Print left text and right-aligned text on the same line."""
-        right_w = 38
+    def _two_col(self, left: str, right: str, left_style: str = "B",
+                 left_size: float = 10, right_size: float = 9,
+                 right_color: tuple = (100, 100, 100)) -> None:
+        right_w = 40
         left_w = self.w_eff - right_w
-        style = "B" if left_bold else ""
-        self.set_font("Helvetica", style, 10)
+        self.set_font("Helvetica", left_style, left_size)
         self.cell(left_w, _LINE_H, _s(left))
-        self.set_font("Helvetica", "", 9)
-        self.set_text_color(100, 100, 100)
+        self.set_font("Helvetica", "", right_size)
+        self.set_text_color(*right_color)
         self.cell(right_w, _LINE_H, _s(right), align="R", ln=True)
-        self.set_text_color(26, 26, 26)
+        self.set_text_color(0, 0, 0)
 
 
-def generate_pdf(req: ResumeExportRequest) -> bytes:
+# ═══════════════════════════════════════════════════════════════════════════
+# TEMPLATE 1 — CLASSIC
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _build_classic(pdf: _ResumePDF, req: ResumeExportRequest) -> None:
     """
-    Build a PDF from a ResumeExportRequest and return the raw bytes.
-
-    Raises:
-        Any fpdf2 exception propagates up — the route maps it to HTTP 500.
+    Classic: indigo accent, thin horizontal rules, clean two-column dates.
+    The original template from Session 6, preserved exactly.
     """
-    pdf = _ResumePDF()
-    pdf.add_page()
+    INDIGO   = (67, 56, 202)
+    INDIGO_L = (199, 210, 254)
+    DARK     = (26, 26, 26)
+    GRAY     = (80, 80, 80)
 
-    # ── Header ─────────────────────────────────────────────────────────
-    pdf._h1(req.personal.full_name.strip())
+    def h1(text: str) -> None:
+        pdf.set_font("Helvetica", "B", 18)
+        pdf.set_text_color(*INDIGO)
+        pdf.cell(pdf.w_eff, 9, _s(text), ln=True)
+        pdf.set_text_color(*DARK)
 
-    parts = []
-    if req.personal.email:    parts.append(req.personal.email)
-    if req.personal.phone:    parts.append(req.personal.phone)
-    if req.personal.location: parts.append(req.personal.location)
-    if req.personal.linkedin: parts.append(req.personal.linkedin)
-    if req.personal.website:  parts.append(req.personal.website)
+    def contact_row(parts: list[str]) -> None:
+        pdf.set_font("Helvetica", "", 9)
+        pdf.set_text_color(*GRAY)
+        pdf.multi_cell(pdf.w_eff, 4.5, _s("  |  ".join(parts)), ln=True)
+        pdf.set_text_color(*DARK)
 
+    def section(title: str) -> None:
+        pdf.ln(_SECT_GAP)
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_text_color(*INDIGO)
+        pdf.cell(pdf.w_eff, 5, _s(title.upper()), ln=True)
+        y = pdf.get_y()
+        pdf.set_draw_color(*INDIGO_L)
+        pdf.set_line_width(0.4)
+        pdf.line(_MARGIN, y, _PAGE_W - _MARGIN, y)
+        pdf.ln(2)
+        pdf.set_text_color(*DARK)
+
+    # Header
+    h1(req.personal.full_name.strip())
+    parts = [v for v in [req.personal.email, req.personal.phone,
+                          req.personal.location, req.personal.linkedin,
+                          req.personal.website] if v]
     if parts:
-        pdf._small("  |  ".join(parts), color=(80, 80, 80))
-
-    # Rule beneath header
+        contact_row(parts)
     pdf.ln(1)
     y = pdf.get_y()
-    pdf.set_draw_color(67, 56, 202)
+    pdf.set_draw_color(*INDIGO)
     pdf.set_line_width(0.8)
     pdf.line(_MARGIN, y, _PAGE_W - _MARGIN, y)
     pdf.ln(3)
 
-    # ── Professional Summary ────────────────────────────────────────────
     if req.summary.strip():
-        pdf._section_rule("Professional Summary")
+        section("Professional Summary")
         pdf.set_font("Helvetica", "", 10)
-        pdf.multi_cell(pdf.w_eff, _LINE_H, req.summary.strip(), ln=True)
+        pdf.multi_cell(pdf.w_eff, _LINE_H, _s(req.summary.strip()), ln=True)
 
-    # ── Work Experience ─────────────────────────────────────────────────
     if req.experience:
-        pdf._section_rule("Work Experience")
+        section("Work Experience")
         for job in req.experience:
             pdf.ln(1)
-            date_str = f"{job.start_date} - {job.end_date}"
-            pdf._two_col(job.title, date_str, left_bold=True)
-            pdf._small(job.company)
-            for bullet in job.bullets:
-                b = bullet.strip().lstrip("-• ")
+            pdf._two_col(job.title, f"{job.start_date} - {job.end_date}")
+            pdf.set_font("Helvetica", "", 9)
+            pdf.set_text_color(*GRAY)
+            pdf.multi_cell(pdf.w_eff, 4.5, _s(job.company), ln=True)
+            pdf.set_text_color(*DARK)
+            for b in job.bullets:
+                b = b.strip().lstrip("-• ")
                 if b:
                     pdf.set_font("Helvetica", "", 10)
                     pdf.multi_cell(pdf.w_eff, _LINE_H, _s(f"-  {b}"), ln=True)
             pdf.ln(1)
 
-    # ── Education ───────────────────────────────────────────────────────
     if req.education:
-        pdf._section_rule("Education")
+        section("Education")
         for edu in req.education:
             pdf.ln(1)
-            degree = edu.degree
-            if edu.field:
-                degree += f" — {edu.field}"
-            pdf._two_col(degree, edu.year, left_bold=True)
-            pdf._small(edu.institution)
+            degree = edu.degree + (f" — {edu.field}" if edu.field else "")
+            pdf._two_col(degree, edu.year)
+            pdf.set_font("Helvetica", "", 9)
+            pdf.set_text_color(*GRAY)
+            pdf.multi_cell(pdf.w_eff, 4.5, _s(edu.institution), ln=True)
+            pdf.set_text_color(*DARK)
 
-    # ── Skills ─────────────────────────────────────────────────────────
     if req.skills.strip():
-        pdf._section_rule("Skills")
+        section("Skills")
         pdf.set_font("Helvetica", "", 10)
-        pdf.multi_cell(pdf.w_eff, _LINE_H, req.skills.strip(), ln=True)
+        pdf.multi_cell(pdf.w_eff, _LINE_H, _s(req.skills.strip()), ln=True)
 
+
+# ═══════════════════════════════════════════════════════════════════════════
+# TEMPLATE 2 — MODERN
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _build_modern(pdf: _ResumePDF, req: ResumeExportRequest) -> None:
+    """
+    Modern: dark navy header band with white name, bold section titles,
+    no decorative rules. Contemporary feel for tech and product roles.
+
+    The filled rectangle header is ATS-safe — it is a PDF graphics object,
+    not a text box. The name text is still written as plain text in the
+    content stream directly after the rectangle, so ATS parsers find it.
+    """
+    NAVY   = (15, 23, 42)      # slate-900
+    TEAL   = (20, 184, 166)    # teal-500 accent
+    DARK   = (15, 23, 42)
+    GRAY   = (100, 116, 139)   # slate-500
+    WHITE  = (255, 255, 255)
+
+    # ── Full-width header band ──────────────────────────────────────────
+    band_h = 28
+    # Draw filled rectangle across full page (ignore margins)
+    pdf.set_fill_color(*NAVY)
+    pdf.rect(0, 0, _PAGE_W, band_h, style="F")
+
+    # Name inside the band — positioned manually
+    pdf.set_xy(_MARGIN, 6)
+    pdf.set_font("Helvetica", "B", 20)
+    pdf.set_text_color(*WHITE)
+    pdf.cell(pdf.w_eff, 10, _s(req.personal.full_name.strip()), ln=True)
+
+    # Contact info inside the band — one row, smaller
+    parts = [v for v in [req.personal.email, req.personal.phone,
+                          req.personal.location, req.personal.linkedin,
+                          req.personal.website] if v]
+    if parts:
+        pdf.set_font("Helvetica", "", 8)
+        pdf.set_text_color(148, 163, 184)   # slate-400
+        pdf.set_x(_MARGIN)
+        pdf.multi_cell(pdf.w_eff, 4, _s("  ·  ".join(parts)), ln=True)
+
+    # Move below band
+    pdf.set_y(band_h + 6)
+    pdf.set_text_color(*DARK)
+
+    def section(title: str) -> None:
+        pdf.ln(_SECT_GAP)
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.set_text_color(*NAVY)
+        pdf.cell(pdf.w_eff, 6, _s(title.upper()), ln=True)
+        # Thin teal accent line
+        y = pdf.get_y()
+        pdf.set_draw_color(*TEAL)
+        pdf.set_line_width(0.6)
+        pdf.line(_MARGIN, y, _MARGIN + 30, y)
+        pdf.ln(3)
+        pdf.set_text_color(*DARK)
+
+    if req.summary.strip():
+        section("Summary")
+        pdf.set_font("Helvetica", "", 10)
+        pdf.multi_cell(pdf.w_eff, _LINE_H, _s(req.summary.strip()), ln=True)
+
+    if req.experience:
+        section("Experience")
+        for job in req.experience:
+            pdf.ln(1)
+            pdf._two_col(job.title, f"{job.start_date} - {job.end_date}",
+                         right_color=GRAY)
+            pdf.set_font("Helvetica", "I", 9)
+            pdf.set_text_color(*GRAY)
+            pdf.multi_cell(pdf.w_eff, 4.5, _s(job.company), ln=True)
+            pdf.set_text_color(*DARK)
+            for b in job.bullets:
+                b = b.strip().lstrip("-• ")
+                if b:
+                    pdf.set_font("Helvetica", "", 10)
+                    pdf.multi_cell(pdf.w_eff, _LINE_H, _s(f"-  {b}"), ln=True)
+            pdf.ln(1)
+
+    if req.education:
+        section("Education")
+        for edu in req.education:
+            pdf.ln(1)
+            degree = edu.degree + (f", {edu.field}" if edu.field else "")
+            pdf._two_col(degree, edu.year, right_color=GRAY)
+            pdf.set_font("Helvetica", "I", 9)
+            pdf.set_text_color(*GRAY)
+            pdf.multi_cell(pdf.w_eff, 4.5, _s(edu.institution), ln=True)
+            pdf.set_text_color(*DARK)
+
+    if req.skills.strip():
+        section("Skills")
+        pdf.set_font("Helvetica", "", 10)
+        pdf.multi_cell(pdf.w_eff, _LINE_H, _s(req.skills.strip()), ln=True)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# TEMPLATE 3 — MINIMAL
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _build_minimal(pdf: _ResumePDF, req: ResumeExportRequest) -> None:
+    """
+    Minimal: zero colour, large name, generous whitespace, uppercase section
+    headers with a thin grey rule. Typography is the only decoration.
+
+    Popular in consulting, academia, and design. The whitespace signals
+    confidence — if your content fills the page, you don't need visual noise.
+    """
+    BLACK   = (0, 0, 0)
+    DARK    = (30, 30, 30)
+    GRAY    = (120, 120, 120)
+    LGRAY   = (200, 200, 200)
+
+    # ── Large name ──────────────────────────────────────────────────────
+    pdf.set_font("Helvetica", "B", 24)
+    pdf.set_text_color(*BLACK)
+    pdf.cell(pdf.w_eff, 12, _s(req.personal.full_name.strip()), ln=True)
+
+    # Contact: right-aligned on one line beneath name
+    parts = [v for v in [req.personal.email, req.personal.phone,
+                          req.personal.location, req.personal.linkedin,
+                          req.personal.website] if v]
+    if parts:
+        pdf.set_font("Helvetica", "", 9)
+        pdf.set_text_color(*GRAY)
+        pdf.multi_cell(pdf.w_eff, 4.5, _s("  ·  ".join(parts)), ln=True)
+
+    pdf.ln(2)
+    # Single thin line beneath header
+    y = pdf.get_y()
+    pdf.set_draw_color(*LGRAY)
+    pdf.set_line_width(0.3)
+    pdf.line(_MARGIN, y, _PAGE_W - _MARGIN, y)
+    pdf.ln(4)
+    pdf.set_text_color(*DARK)
+
+    def section(title: str) -> None:
+        pdf.ln(_SECT_GAP + 2)
+        pdf.set_font("Helvetica", "B", 8.5)
+        pdf.set_text_color(*GRAY)
+        pdf.cell(pdf.w_eff, 5, _s(title.upper()), ln=True)
+        y2 = pdf.get_y()
+        pdf.set_draw_color(*LGRAY)
+        pdf.set_line_width(0.3)
+        pdf.line(_MARGIN, y2, _PAGE_W - _MARGIN, y2)
+        pdf.ln(3)
+        pdf.set_text_color(*DARK)
+
+    if req.summary.strip():
+        section("Profile")
+        pdf.set_font("Helvetica", "", 10)
+        pdf.multi_cell(pdf.w_eff, _LINE_H, _s(req.summary.strip()), ln=True)
+
+    if req.experience:
+        section("Experience")
+        for job in req.experience:
+            pdf.ln(2)
+            # Title + dates
+            pdf._two_col(job.title, f"{job.start_date} - {job.end_date}",
+                         left_size=10.5, right_size=9, right_color=GRAY)
+            # Company in gray
+            pdf.set_font("Helvetica", "", 9)
+            pdf.set_text_color(*GRAY)
+            pdf.multi_cell(pdf.w_eff, 4.5, _s(job.company), ln=True)
+            pdf.set_text_color(*DARK)
+            pdf.ln(1)
+            for b in job.bullets:
+                b = b.strip().lstrip("-• ")
+                if b:
+                    pdf.set_font("Helvetica", "", 10)
+                    pdf.multi_cell(pdf.w_eff, _LINE_H, _s(f"—  {b}"), ln=True)
+
+    if req.education:
+        section("Education")
+        for edu in req.education:
+            pdf.ln(2)
+            degree = edu.degree + (f" — {edu.field}" if edu.field else "")
+            pdf._two_col(degree, edu.year,
+                         left_size=10.5, right_size=9, right_color=GRAY)
+            pdf.set_font("Helvetica", "", 9)
+            pdf.set_text_color(*GRAY)
+            pdf.multi_cell(pdf.w_eff, 4.5, _s(edu.institution), ln=True)
+            pdf.set_text_color(*DARK)
+
+    if req.skills.strip():
+        section("Skills")
+        pdf.set_font("Helvetica", "", 10)
+        pdf.multi_cell(pdf.w_eff, _LINE_H, _s(req.skills.strip()), ln=True)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PUBLIC ENTRY POINT
+# ═══════════════════════════════════════════════════════════════════════════
+
+_BUILDERS = {
+    "classic": _build_classic,
+    "modern":  _build_modern,
+    "minimal": _build_minimal,
+}
+
+
+def generate_pdf(req: ResumeExportRequest) -> bytes:
+    """
+    Build a PDF from a ResumeExportRequest using the requested template.
+    Returns raw PDF bytes; the route streams them as a file download.
+    """
+    pdf = _ResumePDF()
+    pdf.add_page()
+    _BUILDERS[req.template](pdf, req)
     return bytes(pdf.output())

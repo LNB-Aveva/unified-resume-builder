@@ -21,6 +21,7 @@ ATS COMPATIBILITY NOTE:
   wrong order. A linear layout guarantees correct extraction.
 """
 
+from typing import Literal
 from pydantic import BaseModel
 
 
@@ -55,3 +56,5 @@ class ResumeExportRequest(BaseModel):
     skills: str = ""
     education: list[Education] = []
     filename: str = "resume"
+    # Three ATS-safe single-column layouts — differ in colour and typography only
+    template: Literal["classic", "modern", "minimal"] = "classic"
