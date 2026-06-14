@@ -14,11 +14,17 @@ the receptionist checks what they want and routes them to the right department.
 # Import the FastAPI class from the fastapi library
 # WHY: FastAPI is the framework that handles all web requests
 from fastapi import FastAPI
+from dotenv import load_dotenv
+
+# Load .env file so HUGGINGFACE_API_KEY (and future keys) are available
+# WHY HERE: load_dotenv() must run before any route imports that read env vars.
+# .env lives in the backend/ directory alongside main.py.
+load_dotenv()
 
 # Import our API routers
 # WHY IMPORT HERE: main.py is the app's entry point. All routes must be
 # registered on the `app` object so FastAPI knows about them.
-from app.api.routes import analyze, score, gap, compliance
+from app.api.routes import analyze, score, gap, compliance, summary
 
 # Import CORS middleware
 # CORS = Cross-Origin Resource Sharing
@@ -84,6 +90,7 @@ app.include_router(analyze.router, prefix="/api/v1", tags=["Analysis"])
 app.include_router(score.router, prefix="/api/v1", tags=["Scoring"])
 app.include_router(gap.router, prefix="/api/v1", tags=["Gap Analysis"])
 app.include_router(compliance.router, prefix="/api/v1", tags=["Compliance"])
+app.include_router(summary.router, prefix="/api/v1", tags=["AI Summary"])
 
 
 @app.get("/")
