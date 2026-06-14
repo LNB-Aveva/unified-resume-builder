@@ -17,6 +17,7 @@ import AnalyzerDemo from "./components/AnalyzerDemo";
 import GapAnalysis from "./components/GapAnalysis";
 import ComplianceChecker from "./components/ComplianceChecker";
 import SummaryGenerator from "./components/SummaryGenerator";
+import BulletRewriter from "./components/BulletRewriter";
 
 export default function Home() {
   return (
@@ -83,7 +84,7 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">
             How it works
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {[
               {
                 step: "1",
@@ -104,6 +105,11 @@ export default function Home() {
                 step: "4",
                 title: "Generate AI summary",
                 body: "Paste your experience bullets — AI rewrites them into a tailored professional summary.",
+              },
+              {
+                step: "5",
+                title: "Rewrite weak bullets",
+                body: "Paste your bullet points — AI rewrites each one to naturally include your missing keywords.",
               },
             ].map(({ step, title, body }) => (
               <div
@@ -191,6 +197,23 @@ export default function Home() {
           </div>
           <SummaryGenerator />
         </div>
+      </section>
+
+      {/* ── AI Bullet Rewriter ── */}
+      <section className="mx-auto max-w-3xl px-4 py-16">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+            Step 5
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Rewrite weak bullets with your missing keywords
+          </h2>
+          <p className="text-gray-500 text-sm max-w-xl mx-auto">
+            Paste up to 5 bullets from your resume and the missing keywords from Step 2.
+            AI rewrites each one to naturally include the keywords — without inventing facts.
+          </p>
+        </div>
+        <BulletRewriter />
       </section>
 
       {/* ── Footer ── */}
