@@ -138,3 +138,52 @@ def score_resume(job_analysis: JobAnalysis, resume: ResumeData) -> ATSScore:
         total_matched=len(matched_keywords),
         total_missing=len(missing_keywords),
     )
+
+
+def score_from_text(job_analysis: JobAnalysis, resume_text: str) -> ATSScore:
+    """
+    Like score_resume() but accepts raw resume text instead of a ResumeData object.
+
+    WHY THIS VARIANT EXISTS:
+    score_resume() requires structured data (work_experience, education objects).
+    For the quick-demo "paste your resume" use case, users don't have their resume
+    in structured JSON. This function skips the structuring step and scans raw text
+    directly — same word-boundary matching logic, just no data conversion.
+
+    Both functions produce identical ATSScore output. The difference is only in
+    how the resume input is provided.
+    """
+    text_lower = resume_text.lower()
+
+    matched_hard = [s for s in job_analysis.hard_skills if _skill_present(s, text_lower)]
+    missing_hard = [s for s in job_analysis.hard_skills if not _skill_present(s, text_lower)]
+    matched_soft = [s for s in job_analysis.soft_skills if _skill_present(s, text_lower)]
+    missing_soft = [s for s in job_analysis.soft_skills if not _skill_present(s, text_lower)]
+
+    hard_score = (len(matched_hard) / len(job_analysis.hard_skills) * 100
+                  if job_analysis.hard_skills else 100.0)
+    soft_score = (len(matched_soft) / len(job_analysis.soft_skills) * 100
+                  if job_analysis.soft_skills else 100.0)
+
+    overall_score = round(hard_score * 0.70 + soft_score * 0.30, 1)
+    grade, grade_label = _compute_grade(overall_score)
+
+    matched_keywords = sorted(set(matched_hard + matched_soft))
+    missing_keywords = sorted(set(missing_hard + missing_soft))
+
+    return ATSScore(
+        overall_score=overall_score,
+        grade=grade,
+        grade_label=grade_label,
+        hard_skills_score=round(hard_score, 1),
+        soft_skills_score=round(soft_score, 1),
+        matched_hard_skills=matched_hard,
+        matched_soft_skills=matched_soft,
+        matched_keywords=matched_keywords,
+        missing_hard_skills=missing_hard,
+        missing_soft_skills=missing_soft,
+        missing_keywords=missing_keywords,
+        total_job_keywords=len(job_analysis.keywords),
+        total_matched=len(matched_keywords),
+        total_missing=len(missing_keywords),
+    )
