@@ -13,6 +13,7 @@ the receptionist checks what they want and routes them to the right department.
 
 # Import the FastAPI class from the fastapi library
 # WHY: FastAPI is the framework that handles all web requests
+import os
 from fastapi import FastAPI
 from dotenv import load_dotenv
 
@@ -53,13 +54,26 @@ app = FastAPI(
 # WHY: Without this, when your React app tries to call your API,
 #      the browser will block it with a CORS error. This is the #1
 #      beginner mistake when building frontend + backend separately.
+#
+# PRODUCTION PATTERN — environment-based origins:
+#   In development we allow localhost. In production (Render), we also
+#   allow the Vercel frontend URL, which is set via the FRONTEND_URL
+#   environment variable. This way we never hardcode the production URL
+#   in code — it lives in the deployment platform's env var settings.
+#
+#   FRONTEND_URL example: https://unified-resume-builder.vercel.app
+_cors_origins = [
+    "http://localhost:3000",   # Next.js dev server
+    "http://localhost:5173",   # Vite dev server (alternative)
+    "http://127.0.0.1:3000",
+]
+_frontend_url = os.environ.get("FRONTEND_URL", "").strip().rstrip("/")
+if _frontend_url:
+    _cors_origins.append(_frontend_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",   # React dev server (default port)
-        "http://localhost:5173",   # Vite dev server (alternative)
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],   # Allow GET, POST, PUT, DELETE, etc.
     allow_headers=["*"],   # Allow any headers
