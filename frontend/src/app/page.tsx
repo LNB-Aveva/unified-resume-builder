@@ -22,9 +22,47 @@ import JobTracker from "./components/JobTracker";
 import ResumeExporter from "./components/ResumeExporter";
 import CoverLetterGenerator from "./components/CoverLetterGenerator";
 
+// JSON-LD structured data — tells Google this is a free web application.
+// Google uses this to show rich results and understand the page without
+// needing to execute JavaScript. "WebApplication" schema is the right type
+// for an interactive online tool.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "ResumeAI",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.vercel.app",
+  description:
+    "Free AI-powered resume builder with ATS keyword extraction, gap analysis, " +
+    "compliance checker, AI cover letter generator, bullet rewriter, and PDF export.",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  browserRequirements: "Requires JavaScript",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+    availability: "https://schema.org/InStock",
+  },
+  featureList: [
+    "ATS Keyword Extraction",
+    "Resume Gap Analysis",
+    "ATS Compliance Checker (15 rules)",
+    "AI Professional Summary Generator",
+    "AI Cover Letter Generator",
+    "AI Bullet Rewriter",
+    "PDF Resume Export (3 templates)",
+    "Job Application Tracker",
+  ],
+};
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
+      {/* JSON-LD injected into <head> by Next.js — invisible to users, read by crawlers */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* ── Navigation ── */}
       <nav className="border-b border-gray-100 bg-white/80 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
@@ -76,6 +114,22 @@ export default function Home() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
         </a>
+
+        {/* Stat strip — trust signals at a glance */}
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 mt-12">
+          {[
+            { n: "9", label: "AI tools" },
+            { n: "15", label: "ATS rules checked" },
+            { n: "3", label: "PDF templates" },
+            { n: "0", label: "sign-ups needed" },
+            { n: "100%", label: "free forever" },
+          ].map(({ n, label }) => (
+            <div key={label} className="flex flex-col items-center gap-0.5">
+              <span className="text-3xl font-bold text-gray-900">{n}</span>
+              <span className="text-xs text-gray-400">{label}</span>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* ── How It Works ── */}
@@ -122,7 +176,7 @@ export default function Home() {
               {
                 step: "7",
                 title: "Download PDF",
-                body: "Fill in your details and download a clean, ATS-friendly single-column PDF resume.",
+                body: "Choose from 3 ATS-safe templates (Classic, Modern, Minimal), fill in your details, and download a clean single-column PDF.",
               },
               {
                 step: "8",
@@ -290,11 +344,37 @@ export default function Home() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-gray-100 py-8 text-center text-xs text-gray-400">
-        <p>
-          Built with Next.js + FastAPI + spaCy &mdash; 100% free and open
-          source.
-        </p>
+      <footer className="border-t border-gray-100 py-10">
+        <div className="mx-auto max-w-5xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Wordmark */}
+          <div className="flex items-center gap-2">
+            <div className="h-6 w-6 rounded-md bg-indigo-600 flex items-center justify-center">
+              <span className="text-white text-[10px] font-bold">R</span>
+            </div>
+            <span className="text-sm font-semibold text-gray-700">ResumeAI</span>
+          </div>
+
+          {/* Tech stack note */}
+          <p className="text-xs text-gray-400 text-center">
+            Built with Next.js · FastAPI · spaCy · HuggingFace · fpdf2 &mdash; open source, 100% free.
+          </p>
+
+          {/* Links */}
+          <div className="flex items-center gap-4 text-xs text-gray-400">
+            <a
+              href="https://github.com/LNB-Aveva/unified-resume-builder"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-700 transition"
+            >
+              GitHub
+            </a>
+            <span aria-hidden>·</span>
+            <a href="#demo" className="hover:text-gray-700 transition">
+              Get started free
+            </a>
+          </div>
+        </div>
       </footer>
     </div>
   );
