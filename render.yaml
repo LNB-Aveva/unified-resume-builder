@@ -1,0 +1,59 @@
+# render.yaml — Render Infrastructure as Code (Blueprint)
+#
+# WHAT THIS FILE DOES:
+#   Render.com reads this file to automatically configure your web service.
+#   Instead of clicking through the Render dashboard every time, this file
+#   describes exactly how to build and run the backend. This is called
+#   "Infrastructure as Code" — your deployment config lives in git, not
+#   hidden in a UI that's hard to reproduce.
+#
+# HOW TO USE:
+#   1. Push this repo to GitHub
+#   2. Go to render.com → New → Blueprint
+#   3. Connect your GitHub repo — Render finds this file automatically
+#   4. Set the secret environment variables when prompted (HUGGINGFACE_API_KEY, FRONTEND_URL)
+#   5. Deploy — Render runs buildCommand, then startCommand
+#
+# FREE TIER NOTES:
+#   - 750 hours/month free (enough for one always-on service)
+#   - Spins down after 15 min inactivity → first request takes ~30-60s to wake up
+#   - The frontend already shows loading spinners so this is handled gracefully
+#   - 512 MB RAM — sufficient for FastAPI + spaCy en_core_web_sm
+
+services:
+  - type: web
+    name: unified-resume-builder-api
+    runtime: python
+    rootDir: backend
+
+    # BUILD COMMAND — runs once on every deploy
+    # Why download spaCy model here and not in requirements.txt?
+    # pip can install the spaCy library, but the language model (en_core_web_sm)
+    # is a separate download (~12 MB). It must be fetched explicitly.
+    buildCommand: "pip install -r requirements.txt && python -m spacy download en_core_web_sm"
+
+    # START COMMAND — runs the live server
+    # $PORT is injected by Render — never hardcode a port in production.
+    # Render's load balancer routes external traffic to whatever port this process listens on.
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+
+    plan: free
+
+    # Health check — Render pings this every 30s.
+    # If it returns non-200, Render restarts the service automatically.
+    healthCheckPath: /health
+
+    envVars:
+      # sync: false = "user must provide this value in the Render dashboard"
+      # Never commit real API keys to git — this forces you to set them securely.
+      - key: HUGGINGFACE_API_KEY
+        sync: false
+
+      # Your Vercel frontend URL — needed so the backend's CORS policy
+      # allows requests from the production frontend.
+      # Example: https://unified-resume-builder.vercel.app
+      - key: FRONTEND_URL
+        sync: false
+
+      - key: PYTHON_VERSION
+        value: "3.11.0"
