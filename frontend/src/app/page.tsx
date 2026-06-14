@@ -20,6 +20,7 @@ import SummaryGenerator from "./components/SummaryGenerator";
 import BulletRewriter from "./components/BulletRewriter";
 import JobTracker from "./components/JobTracker";
 import ResumeExporter from "./components/ResumeExporter";
+import CoverLetterGenerator from "./components/CoverLetterGenerator";
 
 export default function Home() {
   return (
@@ -86,7 +87,7 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">
             How it works
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 step: "1",
@@ -110,18 +111,23 @@ export default function Home() {
               },
               {
                 step: "5",
-                title: "Rewrite weak bullets",
-                body: "Paste your bullet points — AI rewrites each one to naturally include your missing keywords.",
+                title: "Write cover letter",
+                body: "AI generates a 250-320 word cover letter tailored to the company. Formal or conversational tone.",
               },
               {
                 step: "6",
-                title: "Track applications",
-                body: "Save jobs, update status from Saved → Applied → Interview → Offer, and add notes per role.",
+                title: "Rewrite weak bullets",
+                body: "AI rewrites each bullet to naturally include your missing keywords — without inventing facts.",
               },
               {
                 step: "7",
                 title: "Download PDF",
-                body: "Fill in your details, paste your AI-optimised content from above, and download a clean ATS-friendly PDF.",
+                body: "Fill in your details and download a clean, ATS-friendly single-column PDF resume.",
+              },
+              {
+                step: "8",
+                title: "Track applications",
+                body: "Save jobs, update status from Saved → Applied → Interview → Offer, add notes per role.",
               },
             ].map(({ step, title, body }) => (
               <div
@@ -211,40 +217,57 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── AI Bullet Rewriter ── */}
+      {/* ── Cover Letter Generator ── */}
       <section className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
             Step 5
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Rewrite weak bullets with your missing keywords
+            Generate a tailored cover letter
           </h2>
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
-            Paste up to 5 bullets from your resume and the missing keywords from Step 2.
-            AI rewrites each one to naturally include the keywords — without inventing facts.
+            Paste your key achievements and the job description — AI writes a personalised
+            250–320 word cover letter. Choose formal or conversational tone.
           </p>
         </div>
-        <BulletRewriter />
+        <CoverLetterGenerator />
       </section>
 
-      {/* ── PDF Export ── */}
+      {/* ── AI Bullet Rewriter ── */}
       <section className="bg-gray-50 border-t border-gray-100 py-16">
         <div className="mx-auto max-w-3xl px-4">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
-              Step 7
+              Step 6
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Download your optimised resume as PDF
+              Rewrite weak bullets with your missing keywords
             </h2>
             <p className="text-gray-500 text-sm max-w-xl mx-auto">
-              Fill in your details below — paste the AI summary from Step 4 and rewritten
-              bullets from Step 5. Downloads as a clean, ATS-friendly single-column PDF.
+              Paste up to 5 bullets from your resume and the missing keywords from Step 2.
+              AI rewrites each one to naturally include the keywords — without inventing facts.
             </p>
           </div>
-          <ResumeExporter />
+          <BulletRewriter />
         </div>
+      </section>
+
+      {/* ── PDF Export ── */}
+      <section className="mx-auto max-w-3xl px-4 py-16">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+            Step 7
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Download your optimised resume as PDF
+          </h2>
+          <p className="text-gray-500 text-sm max-w-xl mx-auto">
+            Fill in your details — paste the AI summary from Step 4 and rewritten
+            bullets from Step 6. Downloads as a clean, ATS-friendly PDF.
+          </p>
+        </div>
+        <ResumeExporter />
       </section>
 
       {/* ── Job Application Tracker ── */}
@@ -252,7 +275,7 @@ export default function Home() {
         <div className="mx-auto max-w-3xl px-4">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
-              Step 6
+              Step 8
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               Track every application in one place
