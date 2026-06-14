@@ -22,6 +22,49 @@ import JobTracker from "./components/JobTracker";
 import ResumeExporter from "./components/ResumeExporter";
 import CoverLetterGenerator from "./components/CoverLetterGenerator";
 
+const faqItems = [
+  {
+    q: "What is ATS and why do 75% of resumes get rejected before a human reads them?",
+    a: "ATS (Applicant Tracking System) is software that companies use to automatically filter resumes before a recruiter ever sees them. It scans for specific keywords from the job description, checks formatting compatibility, and scores candidates. If your resume doesn't include the right keywords or uses incompatible formatting (tables, columns, graphics), it gets filtered out automatically — no matter how qualified you are.",
+  },
+  {
+    q: "How do I know if my resume is ATS-compatible?",
+    a: "Use our free ATS Compliance Checker (Step 3 above). It runs 15 formatting checks covering file format, column layout, tables, images, special characters, font readability, section headings, and more. You'll get a scored report showing exactly which rules your resume violates and how to fix them.",
+  },
+  {
+    q: "What keywords should I include in my resume?",
+    a: "Paste the job description into our Keyword Extractor (Step 1). Our NLP engine identifies every skill, tool, qualification, and role-specific term that ATS systems are likely scanning for — hard skills, soft skills, certifications, and job title variants. Then use the Gap Analysis (Step 2) to see exactly which of those keywords are missing from your resume.",
+  },
+  {
+    q: "Is ResumeAI really free? Are there any hidden fees or premium tiers?",
+    a: "Yes, 100% free. All 9 tools — keyword extractor, gap analysis, ATS compliance checker, AI summary generator, AI cover letter generator, AI bullet rewriter, PDF export, job application tracker, and visual templates — are available with no sign-up, no credit card, and no usage limits. We keep costs at zero by using free-tier infrastructure and open-source AI models.",
+  },
+  {
+    q: "Do I need to create an account or sign up?",
+    a: "No account required at all. Everything works immediately. Your resume data and job applications are stored locally in your browser (localStorage) — nothing is sent to a server or saved on our end. Your data stays private on your own device.",
+  },
+  {
+    q: "What are the 15 ATS compliance rules you check?",
+    a: "We check: single-column layout (no tables or columns), no images or graphics, standard section headings (Experience, Education, Skills), no headers/footers, no text boxes, no special characters in headings, consistent date formatting, standard bullet characters, no colour-coded text, readable font size (10pt+), contact information at the top, no hyperlink-only text, file type compatibility, page margin adequacy, and section order logic. Each rule comes with a pass/fail result and a fix suggestion.",
+  },
+  {
+    q: "How accurate is the ATS match score?",
+    a: "Our scoring engine matches the keyword logic used by common ATS platforms: it weights exact keyword matches (hard skills, tools, certifications) most heavily, followed by soft skills and job title alignment. The score is a directional guide — a score above 70% typically means strong keyword alignment. Real ATS systems vary by vendor, so treat the score as a minimum bar, not a guarantee.",
+  },
+  {
+    q: "What PDF resume templates are available?",
+    a: "Three ATS-safe single-column templates: Classic (indigo accent with horizontal rules — traditional and widely accepted), Modern (navy header band with teal section accents — clean and contemporary), and Minimal (zero colour, pure black-and-white — maximally conservative, best for strict ATS environments). All three are single-column with no graphics, tables, or special characters that could confuse parsers.",
+  },
+  {
+    q: "Can I use ResumeAI for any industry or job type?",
+    a: "Yes. The keyword extractor and gap analysis work for any job description — tech, finance, healthcare, marketing, engineering, sales, legal, and more. The AI models are general-purpose. The only limitation is that the skills database has broader coverage for tech and knowledge-work roles; if you're in a highly specialised trade, manually review the extracted keywords to ensure completeness.",
+  },
+  {
+    q: "Is my resume data private and secure?",
+    a: "Your data never leaves your browser unless you explicitly use an AI feature (Summary Generator, Cover Letter, or Bullet Rewriter). For those features, your text is sent to our FastAPI backend and forwarded to HuggingFace's inference API — it is not stored or logged. Job tracker data and resume content you enter into forms are stored only in your browser's localStorage and are never transmitted to our servers.",
+  },
+];
+
 // JSON-LD structured data — tells Google this is a free web application.
 // Google uses this to show rich results and understand the page without
 // needing to execute JavaScript. "WebApplication" schema is the right type
@@ -55,13 +98,27 @@ const jsonLd = {
   ],
 };
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqItems.map(({ q, a }) => ({
+    "@type": "Question",
+    name: q,
+    acceptedAnswer: { "@type": "Answer", text: a },
+  })),
+};
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
-      {/* JSON-LD injected into <head> by Next.js — invisible to users, read by crawlers */}
+      {/* JSON-LD — WebApplication + FAQPage schemas for Google rich results */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       {/* ── Navigation ── */}
       <nav className="border-b border-gray-100 bg-white/80 backdrop-blur sticky top-0 z-10">
@@ -75,6 +132,9 @@ export default function Home() {
           <div className="flex items-center gap-4 text-sm text-gray-500">
             <a href="#how-it-works" className="hover:text-gray-900 transition">
               How it works
+            </a>
+            <a href="#faq" className="hover:text-gray-900 transition">
+              FAQ
             </a>
             <a
               href="#demo"
@@ -341,6 +401,33 @@ export default function Home() {
           </div>
           <JobTracker />
         </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section id="faq" className="mx-auto max-w-3xl px-4 py-16">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Frequently asked questions
+          </h2>
+          <p className="text-gray-500 text-sm">
+            Everything you need to know about ATS filters and how ResumeAI works.
+          </p>
+        </div>
+        <dl className="divide-y divide-gray-100">
+          {faqItems.map(({ q, a }) => (
+            <details key={q} className="group py-5 cursor-pointer list-none">
+              <summary className="flex items-center justify-between gap-4 font-medium text-gray-900 text-sm select-none list-none marker:hidden">
+                {q}
+                <span className="shrink-0 h-5 w-5 text-indigo-600 transition-transform group-open:rotate-45">
+                  <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                    <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                  </svg>
+                </span>
+              </summary>
+              <p className="mt-3 text-sm text-gray-500 leading-relaxed">{a}</p>
+            </details>
+          ))}
+        </dl>
       </section>
 
       {/* ── Footer ── */}
