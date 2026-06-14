@@ -36,8 +36,11 @@ python-dotenv==1.0.1
 # ============================
 # Jinja2 = Template engine - fills in resume data into HTML templates
 Jinja2==3.1.4
-# WeasyPrint = Converts HTML+CSS into beautiful PDF files (replaces LaTeX)
-weasyprint==63.0
+# WeasyPrint was originally planned but requires libgobject/libpango (GTK)
+# which is not available on Windows dev or free-tier Linux hosts without
+# extra system packages. Replaced with fpdf2 (pure Python, no system deps).
+# weasyprint==63.0
+fpdf2==2.8.7
 
 # ============================
 # Testing

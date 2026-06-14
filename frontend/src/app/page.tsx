@@ -19,6 +19,7 @@ import ComplianceChecker from "./components/ComplianceChecker";
 import SummaryGenerator from "./components/SummaryGenerator";
 import BulletRewriter from "./components/BulletRewriter";
 import JobTracker from "./components/JobTracker";
+import ResumeExporter from "./components/ResumeExporter";
 
 export default function Home() {
   return (
@@ -116,6 +117,11 @@ export default function Home() {
                 step: "6",
                 title: "Track applications",
                 body: "Save jobs, update status from Saved → Applied → Interview → Offer, and add notes per role.",
+              },
+              {
+                step: "7",
+                title: "Download PDF",
+                body: "Fill in your details, paste your AI-optimised content from above, and download a clean ATS-friendly PDF.",
               },
             ].map(({ step, title, body }) => (
               <div
@@ -220,6 +226,25 @@ export default function Home() {
           </p>
         </div>
         <BulletRewriter />
+      </section>
+
+      {/* ── PDF Export ── */}
+      <section className="bg-gray-50 border-t border-gray-100 py-16">
+        <div className="mx-auto max-w-3xl px-4">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+              Step 7
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Download your optimised resume as PDF
+            </h2>
+            <p className="text-gray-500 text-sm max-w-xl mx-auto">
+              Fill in your details below — paste the AI summary from Step 4 and rewritten
+              bullets from Step 5. Downloads as a clean, ATS-friendly single-column PDF.
+            </p>
+          </div>
+          <ResumeExporter />
+        </div>
       </section>
 
       {/* ── Job Application Tracker ── */}
