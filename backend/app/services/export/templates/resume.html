@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  /*
+   * ATS-FRIENDLY RESUME TEMPLATE
+   *
+   * Design principles:
+   *   1. Single column — no tables, no floats, no multi-column CSS.
+   *      ATS parsers read the PDF content stream top-to-bottom; tables
+   *      cause them to interleave column text.
+   *   2. Semantic HTML — h1 for name, h2 for sections, ul/li for bullets.
+   *      Screen readers and ATS text-extractors both benefit from this.
+   *   3. System fonts — WeasyPrint uses the host OS fonts. Arial/Helvetica
+   *      are universally available and render crisply in PDF.
+   *   4. Minimal colour — one accent colour on the name and section rules.
+   *      Conservative enough to survive a greyscale ATS scan.
+   */
+
+  @page {
+    size: A4;
+    margin: 18mm 20mm 18mm 20mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.45;
+    color: #1a1a1a;
+  }
+
+  /* ── Header ─────────────────────────────────────── */
+  .header {
+    margin-bottom: 14pt;
+    border-bottom: 2pt solid #4338ca;
+    padding-bottom: 10pt;
+  }
+
+  .header h1 {
+    font-size: 22pt;
+    font-weight: 700;
+    color: #4338ca;
+    letter-spacing: -0.3pt;
+    margin-bottom: 5pt;
+  }
+
+  .contact-row {
+    font-size: 9pt;
+    color: #555;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 12pt;
+  }
+
+  .contact-row span { white-space: nowrap; }
+
+  /* ── Section ─────────────────────────────────────── */
+  .section {
+    margin-bottom: 13pt;
+    page-break-inside: avoid;
+  }
+
+  .section-title {
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8pt;
+    color: #4338ca;
+    border-bottom: 0.75pt solid #c7d2fe;
+    padding-bottom: 2pt;
+    margin-bottom: 7pt;
+  }
+
+  /* ── Summary ─────────────────────────────────────── */
+  .summary-text {
+    font-size: 10.5pt;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  /* ── Experience ──────────────────────────────────── */
+  .exp-entry {
+    margin-bottom: 9pt;
+    page-break-inside: avoid;
+  }
+
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .exp-title {
+    font-weight: 700;
+    font-size: 10.5pt;
+  }
+
+  .exp-dates {
+    font-size: 9.5pt;
+    color: #666;
+    white-space: nowrap;
+  }
+
+  .exp-company {
+    font-size: 9.5pt;
+    color: #555;
+    margin-bottom: 4pt;
+  }
+
+  .exp-bullets {
+    margin-left: 14pt;
+    margin-top: 3pt;
+  }
+
+  .exp-bullets li {
+    font-size: 10pt;
+    line-height: 1.45;
+    margin-bottom: 2pt;
+    color: #222;
+  }
+
+  /* ── Education ───────────────────────────────────── */
+  .edu-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5pt;
+  }
+
+  .edu-degree {
+    font-weight: 600;
+    font-size: 10.5pt;
+  }
+
+  .edu-institution {
+    font-size: 9.5pt;
+    color: #555;
+  }
+
+  .edu-year {
+    font-size: 9.5pt;
+    color: #666;
+    white-space: nowrap;
+  }
+
+  /* ── Skills ──────────────────────────────────────── */
+  .skills-text {
+    font-size: 10pt;
+    color: #222;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>{{ personal.full_name }}</h1>
+    <div class="contact-row">
+      {% if personal.email %}<span>{{ personal.email }}</span>{% endif %}
+      {% if personal.phone %}<span>{{ personal.phone }}</span>{% endif %}
+      {% if personal.location %}<span>{{ personal.location }}</span>{% endif %}
+      {% if personal.linkedin %}<span>{{ personal.linkedin }}</span>{% endif %}
+      {% if personal.website %}<span>{{ personal.website }}</span>{% endif %}
+    </div>
+  </div>
+
+  <!-- PROFESSIONAL SUMMARY -->
+  {% if summary %}
+  <div class="section">
+    <div class="section-title">Professional Summary</div>
+    <p class="summary-text">{{ summary }}</p>
+  </div>
+  {% endif %}
+
+  <!-- WORK EXPERIENCE -->
+  {% if experience %}
+  <div class="section">
+    <div class="section-title">Work Experience</div>
+    {% for job in experience %}
+    <div class="exp-entry">
+      <div class="exp-header">
+        <span class="exp-title">{{ job.title }}</span>
+        <span class="exp-dates">{{ job.start_date }} – {{ job.end_date }}</span>
+      </div>
+      <div class="exp-company">{{ job.company }}</div>
+      {% if job.bullets %}
+      <ul class="exp-bullets">
+        {% for bullet in job.bullets %}
+        {% if bullet.strip() %}
+        <li>{{ bullet.strip().lstrip('- •') }}</li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- EDUCATION -->
+  {% if education %}
+  <div class="section">
+    <div class="section-title">Education</div>
+    {% for edu in education %}
+    <div class="edu-entry">
+      <div>
+        <div class="edu-degree">
+          {{ edu.degree }}{% if edu.field %} — {{ edu.field }}{% endif %}
+        </div>
+        <div class="edu-institution">{{ edu.institution }}</div>
+      </div>
+      <div class="edu-year">{{ edu.year }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- SKILLS -->
+  {% if skills %}
+  <div class="section">
+    <div class="section-title">Skills</div>
+    <p class="skills-text">{{ skills }}</p>
+  </div>
+  {% endif %}
+
+</body>
+</html>
