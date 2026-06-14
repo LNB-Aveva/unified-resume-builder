@@ -14,6 +14,7 @@
  */
 
 import AnalyzerDemo from "./components/AnalyzerDemo";
+import GapAnalysis from "./components/GapAnalysis";
 
 export default function Home() {
   return (
@@ -89,13 +90,13 @@ export default function Home() {
               },
               {
                 step: "2",
-                title: "We extract ATS keywords",
+                title: "See every ATS keyword",
                 body: "Our NLP engine identifies every hard skill, soft skill, and keyword ATS filters look for.",
               },
               {
                 step: "3",
-                title: "Fix your resume",
-                body: "See exactly which keywords are missing from your resume and add them naturally.",
+                title: "Compare your resume",
+                body: "Paste your resume and instantly see matched (green) vs missing (red) keywords with your ATS score.",
               },
             ].map(({ step, title, body }) => (
               <div
@@ -126,6 +127,27 @@ export default function Home() {
 
         {/* AnalyzerDemo is a Client Component — interactive form + results */}
         <AnalyzerDemo />
+      </section>
+
+      {/* ── Gap Analysis ── */}
+      <section className="bg-gray-50 border-t border-gray-100 py-16">
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+              Step 2
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Now check your resume against the job
+            </h2>
+            <p className="text-gray-500 text-sm max-w-xl mx-auto">
+              Paste both documents. We&apos;ll show you exactly which keywords
+              your resume is missing — and what to add to pass ATS filters.
+            </p>
+          </div>
+
+          {/* GapAnalysis is a Client Component */}
+          <GapAnalysis />
+        </div>
       </section>
 
       {/* ── Footer ── */}
