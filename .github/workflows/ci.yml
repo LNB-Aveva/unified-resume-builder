@@ -1,0 +1,128 @@
+# ci.yml — Continuous Integration pipeline
+#
+# WHAT CI MEANS:
+#   "Continuous Integration" — every push to the repo automatically runs a
+#   suite of checks. If anything fails, GitHub shows a red X on the PR and
+#   blocks merging. This catches broken code before it reaches main.
+#
+# WHEN THIS RUNS:
+#   - Every push to any branch
+#   - Every pull request opened against main
+#
+# TWO PARALLEL JOBS:
+#   backend  — verifies Python imports and that the FastAPI app starts
+#   frontend — verifies TypeScript types and that Next.js builds cleanly
+#
+# WHY PARALLEL JOBS?
+#   The backend job takes ~60s (pip install + spaCy download).
+#   The frontend job takes ~30s (npm install + build).
+#   Running them in parallel means total CI time = max(60s, 30s) = 60s,
+#   not 90s. GitHub Actions bills by compute-minutes, so parallelism
+#   saves money too (important once you're on a paid plan).
+#
+# GITHUB ACTIONS FREE TIER:
+#   2,000 minutes/month for private repos — plenty for this project.
+
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  # ── Backend: Python / FastAPI ──────────────────────────────────────────
+  backend:
+    name: Backend (Python)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          # Cache pip downloads — avoids re-downloading packages on every run
+          cache: "pip"
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install Python dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Download spaCy language model
+        # This runs as a separate step so if it fails the error is clearly attributed
+        run: python -m spacy download en_core_web_sm
+
+      - name: Verify all imports load cleanly
+        # If any module has a syntax error or missing dependency,
+        # this step fails and CI blocks the PR.
+        working-directory: backend
+        run: |
+          python -c "
+          from app.main import app
+          from app.api.routes import analyze, score, gap, compliance, summary, rewrite, export, cover_letter
+          from app.services.ai.summarizer import generate_summary
+          from app.services.ai.rewriter import rewrite_bullets
+          from app.services.ai.cover_letter import generate_cover_letter
+          from app.services.export.pdf_generator import generate_pdf
+          print('All backend imports OK')
+          "
+
+      - name: Verify FastAPI app starts (no startup errors)
+        working-directory: backend
+        # HUGGINGFACE_API_KEY intentionally not set — we're only checking startup,
+        # not making real API calls. Routes guard against missing keys at request time.
+        run: |
+          python -c "
+          from app.main import app
+          routes = [r.path for r in app.routes]
+          expected = ['/api/v1/analyze', '/api/v1/score', '/api/v1/gap',
+                      '/api/v1/compliance', '/api/v1/summary', '/api/v1/rewrite',
+                      '/api/v1/export/pdf', '/api/v1/cover-letter', '/health']
+          for path in expected:
+              assert path in routes, f'Missing route: {path}'
+          print(f'All {len(expected)} expected routes registered')
+          "
+
+  # ── Frontend: Next.js / TypeScript ────────────────────────────────────
+  frontend:
+    name: Frontend (Next.js)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          # Cache node_modules — avoids re-downloading packages on every run
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install npm dependencies
+        working-directory: frontend
+        # npm ci is stricter than npm install:
+        # - uses package-lock.json exactly (no version drift)
+        # - fails if lock file is out of sync with package.json
+        # - faster because it skips the dependency resolution step
+        run: npm ci
+
+      - name: Build Next.js app
+        working-directory: frontend
+        # 'npm run build' does THREE things at once:
+        # 1. TypeScript type checking — catches type errors
+        # 2. ESLint — catches code style issues
+        # 3. Next.js page compilation — catches broken imports and JSX errors
+        # If any of these fail, the build fails and CI blocks the PR.
+        env:
+          # Set a dummy API URL so NEXT_PUBLIC_API_URL is defined during build.
+          # The real URL is set in Vercel's environment variable settings.
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+        run: npm run build
