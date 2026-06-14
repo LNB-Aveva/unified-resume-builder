@@ -15,6 +15,7 @@
 
 import AnalyzerDemo from "./components/AnalyzerDemo";
 import GapAnalysis from "./components/GapAnalysis";
+import ComplianceChecker from "./components/ComplianceChecker";
 
 export default function Home() {
   return (
@@ -95,8 +96,8 @@ export default function Home() {
               },
               {
                 step: "3",
-                title: "Compare your resume",
-                body: "Paste your resume and instantly see matched (green) vs missing (red) keywords with your ATS score.",
+                title: "Fix keywords + format",
+                body: "See matched vs missing keywords and run 15 ATS format checks. Fix both to maximize your chances.",
               },
             ].map(({ step, title, body }) => (
               <div
@@ -148,6 +149,23 @@ export default function Home() {
           {/* GapAnalysis is a Client Component */}
           <GapAnalysis />
         </div>
+      </section>
+
+      {/* ── Compliance Checker ── */}
+      <section className="mx-auto max-w-3xl px-4 py-16">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+            Step 3
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Check if ATS can even read your resume
+          </h2>
+          <p className="text-gray-500 text-sm max-w-xl mx-auto">
+            Keywords don&apos;t matter if ATS can&apos;t parse the file. Run 15 formatting
+            checks to catch issues before you apply.
+          </p>
+        </div>
+        <ComplianceChecker />
       </section>
 
       {/* ── Footer ── */}
