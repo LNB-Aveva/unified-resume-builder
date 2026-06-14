@@ -1,0 +1,10 @@
+{
+  "comment": "Vercel deployment config for the Next.js frontend.",
+  "comment2": "rootDirectory tells Vercel where the Next.js app lives inside this monorepo.",
+  "comment3": "Set NEXT_PUBLIC_API_URL in the Vercel dashboard → Project Settings → Environment Variables.",
+  "comment4": "Value should be your Render backend URL, e.g. https://unified-resume-builder-api.onrender.com",
+  "framework": "nextjs",
+  "rootDirectory": "frontend",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build"
+}
