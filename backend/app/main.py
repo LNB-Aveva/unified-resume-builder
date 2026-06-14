@@ -18,7 +18,7 @@ from fastapi import FastAPI
 # Import our API routers
 # WHY IMPORT HERE: main.py is the app's entry point. All routes must be
 # registered on the `app` object so FastAPI knows about them.
-from app.api.routes import analyze, score, gap
+from app.api.routes import analyze, score, gap, compliance
 
 # Import CORS middleware
 # CORS = Cross-Origin Resource Sharing
@@ -83,6 +83,7 @@ app.add_middleware(
 app.include_router(analyze.router, prefix="/api/v1", tags=["Analysis"])
 app.include_router(score.router, prefix="/api/v1", tags=["Scoring"])
 app.include_router(gap.router, prefix="/api/v1", tags=["Gap Analysis"])
+app.include_router(compliance.router, prefix="/api/v1", tags=["Compliance"])
 
 
 @app.get("/")
