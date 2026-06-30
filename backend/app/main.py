@@ -14,8 +14,12 @@ the receptionist checks what they want and routes them to the right department.
 # Import the FastAPI class from the fastapi library
 # WHY: FastAPI is the framework that handles all web requests
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 # Load .env file so HUGGINGFACE_API_KEY (and future keys) are available
 # WHY HERE: load_dotenv() must run before any route imports that read env vars.
@@ -42,11 +46,16 @@ from fastapi.middleware.cors import CORSMiddleware
 # - title: Shows up in the auto-generated API docs
 # - description: Explains what your API does (visible at /docs)
 # - version: Helps track which version of the API is running
+limiter = Limiter(key_func=get_remote_address)
+
 app = FastAPI(
     title="Unified Resume Builder API",
     description="ATS scoring, keyword analysis, and AI-powered resume optimization",
     version="0.1.0",
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # ============================================================
 # Configure CORS (Allow Frontend to Connect)

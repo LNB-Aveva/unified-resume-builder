@@ -247,3 +247,34 @@ AI Resume Generator/
 - POST /api/v1/analyze → job keyword extraction
 - POST /api/v1/score   → resume vs job ATS score
 - GET  /docs           → interactive Swagger UI (all endpoints documented)
+
+---
+
+## Code Review Session — 2026-06-29
+
+### What Was Done:
+
+**High-effort code review (8 parallel angles, 44 raw candidates, 10 confirmed)**
+
+All 10 findings fixed:
+
+| # | Severity | File | Fix |
+|---|----------|------|-----|
+| 1 | Security | page.tsx:117,121 | Added XSS sanitization to JSON-LD blocks |
+| 2 | Breaking | .env.example + config.py | Fixed env var name: HUGGINGFACE_API_TOKEN → HUGGINGFACE_API_KEY |
+| 3 | Security | config.py:33 | Changed DEBUG default from True → False |
+| 4 | Security | summary/rewrite/cover_letter routes | Added slowapi rate limiting (10/min per IP) |
+| 5 | Correctness | ats_scorer.py:111 | Empty skills default 100.0 → 0.0 |
+| 6 | Correctness | rewriter.py:124 | Fallback returns empty on no model content (triggers error) |
+| 7 | Correctness | keyword_extractor.py:43 | Replaced "r" with "r language"/"r programming" |
+| 8 | Correctness | checker.py:34 | Phone regex min length 5 → 7 (no more date false positives) |
+| 9 | Correctness | checker.py:36 | Pronoun regex now catches all "I + verb" patterns |
+| 10 | Data loss | ResumeExporter.tsx | Added Field of Study input for education section |
+
+### What's Next:
+1. Install slowapi: `pip install slowapi` in backend venv
+2. Test all 8 endpoints locally
+3. Test frontend build: `npm run build` in frontend/
+4. Deploy to Render (backend) + Vercel (frontend)
+5. Set up HuggingFace API key in production
+6. Set NEXT_PUBLIC_API_URL and FRONTEND_URL env vars

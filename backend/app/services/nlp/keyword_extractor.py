@@ -43,7 +43,7 @@ nlp = spacy.load("en_core_web_sm")
 HARD_SKILLS: set[str] = {
     # Programming Languages
     "python", "javascript", "typescript", "java", "c++", "c#", "go", "golang",
-    "rust", "ruby", "scala", "kotlin", "swift", "r", "matlab", "bash", "html", "css",
+    "rust", "ruby", "scala", "kotlin", "swift", "r language", "r programming", "matlab", "bash", "html", "css",
     # Frontend Frameworks
     "react", "vue", "angular", "next.js", "nuxt", "svelte", "tailwind", "bootstrap",
     # Backend Frameworks

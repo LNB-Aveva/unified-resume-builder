@@ -31,9 +31,9 @@ from app.schemas.compliance import ComplianceCheck, ComplianceReport
 # ── Regex patterns ──────────────────────────────────────────────────────────
 
 _EMAIL = re.compile(r'\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b')
-_PHONE = re.compile(r'[\+\(]?\d[\d\s\-\(\)\.]{5,}\d')
+_PHONE = re.compile(r'[\+\(]?\d[\d\s\-\(\)\.]{7,}\d')
 _LINKEDIN = re.compile(r'linkedin\.com/in/', re.I)
-_PRONOUN = re.compile(r'\b(I am|I\'ve|I\'m|I have|I led|I built|my |myself\b)\b', re.I)
+_PRONOUN = re.compile(r'(?<![a-zA-Z])(I\s+[a-z]+\b|I\'ve|I\'m|my\s|myself\b)', re.I)
 _DATE_MONTH_YEAR = re.compile(
     r'\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|'
     r'January|February|March|April|June|July|August|September|October|November|December)'
