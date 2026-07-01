@@ -43,8 +43,8 @@ import httpx
 
 from app.schemas.summary import SummaryRequest, SummaryResponse
 
-_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
-_HF_API_URL = f"https://router.huggingface.co/hf-inference/models/{_MODEL}/v1/chat/completions"
+_MODEL = "Qwen/Qwen2.5-7B-Instruct"
+_HF_API_URL = "https://router.huggingface.co/novita-ai/v1/chat/completions"
 _MAX_TOKENS = 200
 
 _TIPS = [
