@@ -44,8 +44,8 @@ import httpx
 
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse, RewrittenBullet
 
-_MODEL = "Qwen/Qwen2.5-7B-Instruct"
-_HF_API_URL = "https://router.huggingface.co/novita-ai/v1/chat/completions"
+_MODEL = "Qwen/Qwen2.5-7B-Instruct:novita"
+_HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
 _MAX_TOKENS = 700
 
 _TIPS = [
