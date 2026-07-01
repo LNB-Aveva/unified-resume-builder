@@ -19,13 +19,16 @@ ERROR HANDLING STRATEGY:
     Anything else → 500 Internal Server Error
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 import httpx
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.schemas.summary import SummaryRequest, SummaryResponse
 from app.services.ai.summarizer import generate_summary
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post(
@@ -38,7 +41,8 @@ router = APIRouter()
         "Requires HUGGINGFACE_API_KEY environment variable."
     ),
 )
-async def create_summary(request: SummaryRequest) -> SummaryResponse:
+@limiter.limit("10/minute")
+async def create_summary(request: Request, request_body: SummaryRequest) -> SummaryResponse:
     """
     POST /api/v1/summary
 
@@ -53,15 +57,15 @@ async def create_summary(request: SummaryRequest) -> SummaryResponse:
 
     Returns SummaryResponse with generated summary text + word count + tip.
     """
-    if not request.job_title.strip():
+    if not request_body.job_title.strip():
         raise HTTPException(status_code=422, detail="job_title cannot be empty.")
-    if not request.job_description.strip():
+    if not request_body.job_description.strip():
         raise HTTPException(status_code=422, detail="job_description cannot be empty.")
-    if not request.experience_bullets.strip():
+    if not request_body.experience_bullets.strip():
         raise HTTPException(status_code=422, detail="experience_bullets cannot be empty.")
 
     try:
-        return await generate_summary(request)
+        return await generate_summary(request_body)
 
     except ValueError as e:
         # Missing API key — tell the user what to do

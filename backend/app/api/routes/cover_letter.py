@@ -10,13 +10,16 @@ Same error-mapping pattern as /summary and /rewrite:
   RuntimeError    → 500  empty/bad model output
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 import httpx
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.schemas.cover_letter import CoverLetterRequest, CoverLetterResponse
 from app.services.ai.cover_letter import generate_cover_letter
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post(
@@ -29,18 +32,19 @@ router = APIRouter()
         "Requires HUGGINGFACE_API_KEY environment variable."
     ),
 )
-async def create_cover_letter(request: CoverLetterRequest) -> CoverLetterResponse:
-    if not request.job_title.strip():
+@limiter.limit("10/minute")
+async def create_cover_letter(request: Request, request_body: CoverLetterRequest) -> CoverLetterResponse:
+    if not request_body.job_title.strip():
         raise HTTPException(status_code=422, detail="job_title cannot be empty.")
-    if not request.company_name.strip():
+    if not request_body.company_name.strip():
         raise HTTPException(status_code=422, detail="company_name cannot be empty.")
-    if not request.job_description.strip():
+    if not request_body.job_description.strip():
         raise HTTPException(status_code=422, detail="job_description cannot be empty.")
-    if not request.experience_summary.strip():
+    if not request_body.experience_summary.strip():
         raise HTTPException(status_code=422, detail="experience_summary cannot be empty.")
 
     try:
-        return await generate_cover_letter(request)
+        return await generate_cover_letter(request_body)
 
     except ValueError as e:
         raise HTTPException(status_code=503, detail=str(e))

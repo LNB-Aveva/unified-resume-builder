@@ -480,7 +480,13 @@ export default function ResumeExporter() {
                     <label className={labelCls}>Degree</label>
                     <input className={inputCls} value={edu.degree}
                       onChange={(e) => updateEdu(edu.id, "degree", e.target.value)}
-                      placeholder="BSc Computer Science" />
+                      placeholder="BSc" />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Field of Study</label>
+                    <input className={inputCls} value={edu.field}
+                      onChange={(e) => updateEdu(edu.id, "field", e.target.value)}
+                      placeholder="Computer Science" />
                   </div>
                   <div>
                     <label className={labelCls}>Year</label>
