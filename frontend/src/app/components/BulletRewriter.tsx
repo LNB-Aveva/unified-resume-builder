@@ -138,7 +138,16 @@ export default function BulletRewriter() {
 
       setResult(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to rewrite bullets.");
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      if (msg === "Failed to fetch") {
+        setError(
+          "Could not reach the API server. " +
+          "The backend may be waking up (free tier sleeps after 15 min of inactivity). " +
+          "Please wait 30-60 seconds and try again."
+        );
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
       stopLoadingCycle();
