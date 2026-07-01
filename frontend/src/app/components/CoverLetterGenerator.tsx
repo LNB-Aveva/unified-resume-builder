@@ -100,6 +100,10 @@ export default function CoverLetterGenerator() {
       setError("Please fill in Job Title, Company, Job Description, and Your Key Experience.");
       return;
     }
+    if (jobDescription.length > 900) {
+      setError(`Job Description is too long (${jobDescription.length}/900 chars). Please trim it to the most relevant paragraphs.`);
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -126,7 +130,16 @@ export default function CoverLetterGenerator() {
       }
       setResult(data as CoverLetterResponse);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to generate cover letter.");
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      if (msg === "Failed to fetch") {
+        setError(
+          "Could not reach the API server. " +
+          "The backend may be waking up (free tier sleeps after 15 min of inactivity). " +
+          "Please wait 30-60 seconds and try again."
+        );
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
       stopLoadingCycle();
@@ -223,7 +236,7 @@ export default function CoverLetterGenerator() {
             <label className="block text-sm font-semibold text-gray-700">
               Job Description <span className="text-red-400">*</span>
             </label>
-            <span className={`text-xs font-medium ${jobDescription.length > 800 ? "text-amber-600" : "text-gray-400"}`}>
+            <span className={`text-xs font-medium ${jobDescription.length > 900 ? "text-red-500" : jobDescription.length > 800 ? "text-amber-600" : "text-gray-400"}`}>
               {jobDescription.length}/900 chars
             </span>
           </div>

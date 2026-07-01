@@ -89,3 +89,9 @@ async def rewrite_bullets_route(request: Request, request_body: BulletRewriteReq
 
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unexpected error: {type(e).__name__}: {str(e)[:200]}",
+        )
