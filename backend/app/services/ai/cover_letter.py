@@ -48,7 +48,7 @@ import httpx
 
 from app.schemas.cover_letter import CoverLetterRequest, CoverLetterResponse
 
-_MODEL = "Qwen/Qwen2.5-7B-Instruct:novita"
+_MODEL = "Qwen/Qwen2.5-7B-Instruct:fastest"
 _HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
 _MAX_TOKENS = 650
 

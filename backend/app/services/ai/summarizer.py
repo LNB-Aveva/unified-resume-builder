@@ -43,7 +43,7 @@ import httpx
 
 from app.schemas.summary import SummaryRequest, SummaryResponse
 
-_MODEL = "Qwen/Qwen2.5-7B-Instruct:novita"
+_MODEL = "Qwen/Qwen2.5-7B-Instruct:fastest"
 _HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
 _MAX_TOKENS = 200
 
