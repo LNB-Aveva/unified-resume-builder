@@ -51,6 +51,11 @@ pytest==8.3.4
 httpx==0.28.0
 
 # ============================
+# Rate Limiting
+# ============================
+slowapi==0.1.9
+
+# ============================
 # Development Tools
 # ============================
 # black = Automatically formats your Python code to look clean and consistent

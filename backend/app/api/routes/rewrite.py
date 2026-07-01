@@ -24,13 +24,16 @@ ERROR MAPPING (same pattern as summary.py):
   RuntimeError → 500  (empty/unparseable model output)
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 import httpx
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse
 from app.services.ai.rewriter import rewrite_bullets
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post(
@@ -44,7 +47,8 @@ router = APIRouter()
         "Requires HUGGINGFACE_API_KEY environment variable."
     ),
 )
-async def rewrite_bullets_route(request: BulletRewriteRequest) -> BulletRewriteResponse:
+@limiter.limit("10/minute")
+async def rewrite_bullets_route(request: Request, request_body: BulletRewriteRequest) -> BulletRewriteResponse:
     """
     POST /api/v1/rewrite
 
@@ -57,13 +61,13 @@ async def rewrite_bullets_route(request: BulletRewriteRequest) -> BulletRewriteR
 
     Returns BulletRewriteResponse with original/rewritten pairs + keywords added.
     """
-    if not request.job_title.strip():
+    if not request_body.job_title.strip():
         raise HTTPException(status_code=422, detail="job_title cannot be empty.")
-    if not request.bullets.strip():
+    if not request_body.bullets.strip():
         raise HTTPException(status_code=422, detail="bullets cannot be empty.")
 
     try:
-        return await rewrite_bullets(request)
+        return await rewrite_bullets(request_body)
 
     except ValueError as e:
         raise HTTPException(status_code=503, detail=str(e))

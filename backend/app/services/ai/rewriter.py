@@ -120,9 +120,13 @@ def _parse_rewrites(raw: str, originals: list[str]) -> list[RewrittenBullet]:
             keywords_woven=keywords,
         ))
 
-    # Fallback: model drifted from format — pair output lines with originals
+    # Fallback: model drifted from format — pair output lines with originals.
+    # If the model returned no usable lines at all, return empty so the caller
+    # raises RuntimeError instead of silently echoing originals back as "rewrites".
     if not results and originals:
         lines = [l.strip() for l in raw.splitlines() if l.strip() and not l.startswith("---")]
+        if not lines:
+            return results
         for i, orig in enumerate(originals):
             rewritten = lines[i] if i < len(lines) else orig
             results.append(RewrittenBullet(

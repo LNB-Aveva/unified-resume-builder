@@ -114,11 +114,11 @@ export default function Home() {
       {/* JSON-LD — WebApplication + FAQPage schemas for Google rich results */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
       />
       {/* ── Navigation ── */}
       <nav className="border-b border-gray-100 bg-white/80 backdrop-blur sticky top-0 z-10">

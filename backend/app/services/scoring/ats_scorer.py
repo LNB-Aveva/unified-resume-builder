@@ -107,11 +107,10 @@ def score_resume(job_analysis: JobAnalysis, resume: ResumeData) -> ATSScore:
     matched_soft = [s for s in job_analysis.soft_skills if _skill_present(s, resume_text)]
     missing_soft = [s for s in job_analysis.soft_skills if not _skill_present(s, resume_text)]
 
-    # Sub-scores (avoid division by zero if a category has no skills)
     hard_score = (len(matched_hard) / len(job_analysis.hard_skills) * 100
-                  if job_analysis.hard_skills else 100.0)
+                  if job_analysis.hard_skills else 0.0)
     soft_score = (len(matched_soft) / len(job_analysis.soft_skills) * 100
-                  if job_analysis.soft_skills else 100.0)
+                  if job_analysis.soft_skills else 0.0)
 
     overall_score = round(hard_score * 0.70 + soft_score * 0.30, 1)
     hard_score = round(hard_score, 1)
@@ -161,9 +160,9 @@ def score_from_text(job_analysis: JobAnalysis, resume_text: str) -> ATSScore:
     missing_soft = [s for s in job_analysis.soft_skills if not _skill_present(s, text_lower)]
 
     hard_score = (len(matched_hard) / len(job_analysis.hard_skills) * 100
-                  if job_analysis.hard_skills else 100.0)
+                  if job_analysis.hard_skills else 0.0)
     soft_score = (len(matched_soft) / len(job_analysis.soft_skills) * 100
-                  if job_analysis.soft_skills else 100.0)
+                  if job_analysis.soft_skills else 0.0)
 
     overall_score = round(hard_score * 0.70 + soft_score * 0.30, 1)
     grade, grade_label = _compute_grade(overall_score)

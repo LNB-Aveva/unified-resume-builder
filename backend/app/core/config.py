@@ -30,13 +30,13 @@ load_dotenv()
 #   print(settings.APP_NAME)
 class Settings:
     APP_NAME: str = os.getenv("APP_NAME", "UnifiedResumeBuilder")
-    DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
+    DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
     API_VERSION: str = os.getenv("API_VERSION", "v1")
     HOST: str = os.getenv("HOST", "0.0.0.0")
     PORT: int = int(os.getenv("PORT", "8000"))
 
     # AI/NLP
-    HUGGINGFACE_API_TOKEN: str = os.getenv("HUGGINGFACE_API_TOKEN", "")
+    HUGGINGFACE_API_KEY: str = os.getenv("HUGGINGFACE_API_KEY", "")
 
     # Database
     SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
