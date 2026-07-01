@@ -45,7 +45,7 @@ import httpx
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse, RewrittenBullet
 
 _MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
-_HF_API_URL = f"https://api-inference.huggingface.co/models/{_MODEL}/v1/chat/completions"
+_HF_API_URL = f"https://router.huggingface.co/hf-inference/models/{_MODEL}/v1/chat/completions"
 _MAX_TOKENS = 700
 
 _TIPS = [

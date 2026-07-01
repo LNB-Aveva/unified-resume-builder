@@ -44,10 +44,7 @@ import httpx
 from app.schemas.summary import SummaryRequest, SummaryResponse
 
 _MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
-# api-inference.huggingface.co is the provider-agnostic serverless endpoint.
-# It supports the same OpenAI-compatible chat completions format but is not
-# locked to the hf-inference provider — works with far more free-tier models.
-_HF_API_URL = f"https://api-inference.huggingface.co/models/{_MODEL}/v1/chat/completions"
+_HF_API_URL = f"https://router.huggingface.co/hf-inference/models/{_MODEL}/v1/chat/completions"
 _MAX_TOKENS = 200
 
 _TIPS = [
