@@ -31,7 +31,8 @@ from app.schemas.compliance import ComplianceCheck, ComplianceReport
 # ── Regex patterns ──────────────────────────────────────────────────────────
 
 _EMAIL = re.compile(r'\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b')
-_PHONE = re.compile(r'[\+\(]?\d[\d\s\-\(\)\.]{7,}\d')
+_PHONE = re.compile(r'(?<!\d)[\+\(]?\d[\d\s\-\(\)\.]{7,}\d(?!\d)')
+_DATE_RANGE = re.compile(r'^\d{4}\s*[-–]\s*\d{4}$')
 _LINKEDIN = re.compile(r'linkedin\.com/in/', re.I)
 _PRONOUN = re.compile(r'(?<![a-zA-Z])(I\s+[a-z]+\b|I\'ve|I\'m|my\s|myself\b)', re.I)
 _DATE_MONTH_YEAR = re.compile(
@@ -118,8 +119,10 @@ def check_resume(resume_text: str) -> ComplianceReport:
         "Email address found",
         "No email detected — ATS and recruiters can't contact you")
 
+    phone_matches = [m.group() for m in _PHONE.finditer(text)]
+    has_phone = any(not _DATE_RANGE.match(m.strip()) for m in phone_matches)
     add("Phone number present",
-        bool(_PHONE.search(text)), "critical",
+        has_phone, "critical",
         "Phone number found",
         "No phone number detected — add it to your contact section")
 
