@@ -1,38 +1,7 @@
 "use client";
 
-/*
- * JobTracker.tsx — Job application tracker backed by localStorage.
- *
- * WHY localStorage (not a database):
- *   We're on a $0 budget with no auth system yet. localStorage lets us
- *   persist data in the user's browser with zero backend cost. The trade-off:
- *   data is device-specific and clears if the user clears browser storage.
- *   For a v1 tracker this is fine — we can migrate to Supabase in a future
- *   session when we add user accounts.
- *
- * DATA MODEL:
- *   Each saved job is a `TrackedJob` object stored as JSON in localStorage
- *   under the key "resumeai_jobs". We use crypto.randomUUID() for IDs so
- *   two jobs saved at the same second don't collide.
- *
- * STATUS PIPELINE:
- *   Saved → Applied → Interview → Offer
- *                  ↘ Rejected (can happen at any stage)
- *
- * WHY useMemo FOR COUNTS:
- *   The counts badge (e.g. "3 Applied") recalculates every time jobs change.
- *   useMemo caches the result so we don't recount on every keystroke in the
- *   "Add Job" form — minor optimisation but a good habit.
- *
- * HYDRATION GUARD (isHydrated):
- *   Next.js renders components on the server first, then "hydrates" them in
- *   the browser. localStorage doesn't exist on the server. If we read it
- *   immediately, the server renders empty state but the browser renders saved
- *   jobs — React throws a "hydration mismatch" error. The isHydrated flag
- *   delays reading localStorage until we're confirmed in the browser.
- */
-
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { getSupabase, supabaseEnabled } from "../lib/supabase";
 
 type Status = "Saved" | "Applied" | "Interview" | "Offer" | "Rejected";
 
@@ -43,7 +12,7 @@ interface TrackedJob {
   url: string;
   status: Status;
   notes: string;
-  dateAdded: string;   // ISO string
+  dateAdded: string;
 }
 
 const STORAGE_KEY = "resumeai_jobs";
@@ -64,7 +33,9 @@ function formatDate(iso: string): string {
   });
 }
 
-function loadJobs(): TrackedJob[] {
+// ── localStorage helpers (fallback when Supabase is not configured) ──
+
+function loadJobsLocal(): TrackedJob[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? (JSON.parse(raw) as TrackedJob[]) : [];
@@ -73,15 +44,94 @@ function loadJobs(): TrackedJob[] {
   }
 }
 
-function saveJobs(jobs: TrackedJob[]): void {
+function saveJobsLocal(jobs: TrackedJob[]): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
 }
+
+// ── Supabase helpers ──
+
+async function ensureAnonSession(): Promise<string | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user?.id) return session.user.id;
+
+  const { data, error } = await sb.auth.signInAnonymously();
+  if (error || !data.user) return null;
+  return data.user.id;
+}
+
+async function loadJobsSupabase(): Promise<TrackedJob[]> {
+  const sb = getSupabase();
+  if (!sb) return [];
+
+  const userId = await ensureAnonSession();
+  if (!userId) return [];
+
+  const { data, error } = await sb
+    .from("jobs")
+    .select("*")
+    .eq("user_id", userId)
+    .order("date_added", { ascending: false });
+
+  if (error || !data) return [];
+
+  return data.map((row) => ({
+    id: row.id,
+    company: row.company,
+    title: row.title,
+    url: row.url ?? "",
+    status: row.status as Status,
+    notes: row.notes ?? "",
+    dateAdded: row.date_added,
+  }));
+}
+
+async function insertJobSupabase(job: TrackedJob): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+
+  const userId = await ensureAnonSession();
+  if (!userId) return false;
+
+  const { error } = await sb.from("jobs").insert({
+    id: job.id,
+    user_id: userId,
+    company: job.company,
+    title: job.title,
+    url: job.url || null,
+    status: job.status,
+    notes: job.notes || null,
+    date_added: job.dateAdded,
+  });
+
+  return !error;
+}
+
+async function updateJobSupabase(id: string, fields: Partial<{ status: string; notes: string }>): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+
+  const { error } = await sb.from("jobs").update(fields).eq("id", id);
+  return !error;
+}
+
+async function deleteJobSupabase(id: string): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+
+  const { error } = await sb.from("jobs").delete().eq("id", id);
+  return !error;
+}
+
+// ── Component ──
 
 export default function JobTracker() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [jobs, setJobs] = useState<TrackedJob[]>([]);
+  const [useSupabase, setUseSupabase] = useState(false);
 
-  // Form state
   const [company, setCompany] = useState("");
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
@@ -89,22 +139,41 @@ export default function JobTracker() {
   const [showForm, setShowForm] = useState(false);
   const [formError, setFormError] = useState("");
 
-  // Filter state
   const [filterStatus, setFilterStatus] = useState<Status | "All">("All");
-
-  // Expand/collapse notes per card
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  // Hydration guard — only read localStorage after mount
   useEffect(() => {
-    setJobs(loadJobs());
-    setIsHydrated(true);
+    async function init() {
+      if (supabaseEnabled) {
+        const sbJobs = await loadJobsSupabase();
+        if (sbJobs.length > 0 || (await ensureAnonSession())) {
+          // Migrate any localStorage jobs to Supabase on first connect
+          const localJobs = loadJobsLocal();
+          if (localJobs.length > 0 && sbJobs.length === 0) {
+            for (const job of localJobs) {
+              await insertJobSupabase(job);
+            }
+            const migrated = await loadJobsSupabase();
+            setJobs(migrated);
+            localStorage.removeItem(STORAGE_KEY);
+          } else {
+            setJobs(sbJobs);
+          }
+          setUseSupabase(true);
+        } else {
+          setJobs(loadJobsLocal());
+        }
+      } else {
+        setJobs(loadJobsLocal());
+      }
+      setIsHydrated(true);
+    }
+    init();
   }, []);
 
-  // Persist whenever jobs array changes (skip first render before hydration)
-  useEffect(() => {
-    if (isHydrated) saveJobs(jobs);
-  }, [jobs, isHydrated]);
+  const persistLocal = useCallback((updated: TrackedJob[]) => {
+    if (!useSupabase) saveJobsLocal(updated);
+  }, [useSupabase]);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { All: jobs.length };
@@ -117,7 +186,7 @@ export default function JobTracker() {
     [jobs, filterStatus]
   );
 
-  function handleAdd() {
+  async function handleAdd() {
     if (!company.trim() || !title.trim()) {
       setFormError("Company and Job Title are required.");
       return;
@@ -131,23 +200,41 @@ export default function JobTracker() {
       status: "Saved",
       dateAdded: new Date().toISOString(),
     };
-    setJobs((prev) => [newJob, ...prev]);
+
+    const updated = [newJob, ...jobs];
+    setJobs(updated);
+    persistLocal(updated);
+
+    if (useSupabase) await insertJobSupabase(newJob);
+
     setCompany(""); setTitle(""); setUrl(""); setNotes("");
     setFormError("");
     setShowForm(false);
   }
 
-  function handleStatusChange(id: string, status: Status) {
-    setJobs((prev) => prev.map((j) => j.id === id ? { ...j, status } : j));
+  async function handleStatusChange(id: string, status: Status) {
+    const updated = jobs.map((j) => j.id === id ? { ...j, status } : j);
+    setJobs(updated);
+    persistLocal(updated);
+
+    if (useSupabase) await updateJobSupabase(id, { status });
   }
 
-  function handleNotesChange(id: string, notes: string) {
-    setJobs((prev) => prev.map((j) => j.id === id ? { ...j, notes } : j));
+  async function handleNotesChange(id: string, newNotes: string) {
+    const updated = jobs.map((j) => j.id === id ? { ...j, notes: newNotes } : j);
+    setJobs(updated);
+    persistLocal(updated);
+
+    if (useSupabase) await updateJobSupabase(id, { notes: newNotes });
   }
 
-  function handleDelete(id: string) {
-    setJobs((prev) => prev.filter((j) => j.id !== id));
+  async function handleDelete(id: string) {
+    const updated = jobs.filter((j) => j.id !== id);
+    setJobs(updated);
+    persistLocal(updated);
     if (expandedId === id) setExpandedId(null);
+
+    if (useSupabase) await deleteJobSupabase(id);
   }
 
   if (!isHydrated) {
@@ -242,7 +329,7 @@ export default function JobTracker() {
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="e.g. Referral from John, £65k range, hybrid 2 days..."
+                placeholder="e.g. Referral from John, $65k range, hybrid 2 days..."
                 rows={2}
                 className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-none"
               />
@@ -299,14 +386,12 @@ export default function JobTracker() {
             <div key={job.id} className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
               {/* Card header */}
               <div className="flex items-start gap-3 px-5 py-4">
-                {/* Company initial */}
                 <div className="h-9 w-9 rounded-xl bg-indigo-100 flex items-center justify-center shrink-0">
                   <span className="text-sm font-bold text-indigo-700">
                     {job.company.charAt(0).toUpperCase()}
                   </span>
                 </div>
 
-                {/* Title + company */}
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-900 text-sm truncate">{job.title}</p>
                   <p className="text-xs text-gray-500 truncate">
@@ -327,7 +412,6 @@ export default function JobTracker() {
                   </p>
                 </div>
 
-                {/* Status selector */}
                 <div className="flex items-center gap-2 shrink-0">
                   <span className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${cfg.color}`}>
                     <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
@@ -345,12 +429,11 @@ export default function JobTracker() {
                 </div>
               </div>
 
-              {/* Footer: date + expand notes + delete */}
+              {/* Footer */}
               <div className="flex items-center justify-between px-5 pb-3 -mt-1">
                 <p className="text-xs text-gray-400">Saved {formatDate(job.dateAdded)}</p>
 
                 <div className="flex items-center gap-1">
-                  {/* Toggle notes */}
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : job.id)}
                     className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-100 transition"
@@ -364,7 +447,6 @@ export default function JobTracker() {
                     )}
                   </button>
 
-                  {/* Delete */}
                   <button
                     onClick={() => handleDelete(job.id)}
                     className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
@@ -398,7 +480,8 @@ export default function JobTracker() {
       {/* Storage notice */}
       {jobs.length > 0 && (
         <p className="text-center text-xs text-gray-400">
-          {jobs.length} job{jobs.length !== 1 ? "s" : ""} tracked · Saved in your browser · Clears if you clear browser data
+          {jobs.length} job{jobs.length !== 1 ? "s" : ""} tracked
+          {useSupabase ? " · Synced to cloud" : " · Saved in your browser · Clears if you clear browser data"}
         </p>
       )}
     </div>
