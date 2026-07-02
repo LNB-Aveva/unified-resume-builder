@@ -59,6 +59,7 @@ _TIPS = [
 
 def _build_messages(req: BulletRewriteRequest, bullets: list[str]) -> list[dict]:
     bullet_list = "\n".join(f"- {b.lstrip('- ').lstrip('• ')}" for b in bullets)
+    count = len(bullets)
 
     system = (
         "You are an expert resume writer specialising in ATS optimisation. "
@@ -68,18 +69,20 @@ def _build_messages(req: BulletRewriteRequest, bullets: list[str]) -> list[dict]
         "only where they fit the meaning of the original bullet, "
         "(3) preserve all factual content — NEVER invent metrics or achievements, "
         "(4) stay under 20 words. "
-        "For EVERY bullet, output EXACTLY this block (nothing else between blocks):\n"
+        f"You will receive {count} bullets. You MUST output EXACTLY {count} blocks — one per bullet, in order. "
+        "For EACH bullet, output this exact format:\n"
         "ORIGINAL: <copy the original bullet verbatim>\n"
         "REWRITTEN: <your rewritten version>\n"
         "KEYWORDS: <comma-separated keywords you wove in, or NONE if none fit>\n"
         "---\n"
-        "Do not add commentary, numbering, or any text outside these blocks."
+        f"You MUST produce {count} ORIGINAL/REWRITTEN/KEYWORDS blocks separated by ---. "
+        "Do not skip any bullet. Do not add commentary or text outside these blocks."
     )
 
     user = (
         f"Job title: {req.job_title}\n"
         f"Missing keywords to weave in: {req.missing_keywords}\n\n"
-        f"Bullets to rewrite:\n{bullet_list}"
+        f"Rewrite ALL {count} bullets below:\n{bullet_list}"
     )
 
     return [
@@ -89,7 +92,7 @@ def _build_messages(req: BulletRewriteRequest, bullets: list[str]) -> list[dict]
 
 
 def _parse_rewrites(raw: str, originals: list[str]) -> list[RewrittenBullet]:
-    blocks = re.split(r"-{3,}", raw)
+    blocks = re.split(r"-{2,}", raw)
     results: list[RewrittenBullet] = []
 
     for block in blocks:
@@ -120,11 +123,31 @@ def _parse_rewrites(raw: str, originals: list[str]) -> list[RewrittenBullet]:
             keywords_woven=keywords,
         ))
 
-    # Fallback: model drifted from format — pair output lines with originals.
-    # If the model returned no usable lines at all, return empty so the caller
-    # raises RuntimeError instead of silently echoing originals back as "rewrites".
+    # Fallback: block splitting missed some — scan for all REWRITTEN: lines globally
+    if len(results) < len(originals):
+        all_orig = re.findall(r"ORIGINAL:\s*(.+)", raw, re.IGNORECASE)
+        all_rew = re.findall(r"REWRITTEN:\s*(.+)", raw, re.IGNORECASE)
+        all_kw = re.findall(r"KEYWORDS:\s*(.+)", raw, re.IGNORECASE)
+
+        if len(all_rew) > len(results):
+            results = []
+            for i, rew in enumerate(all_rew):
+                orig = all_orig[i].strip() if i < len(all_orig) else ""
+                kw_raw = all_kw[i].strip() if i < len(all_kw) else "NONE"
+                keywords = (
+                    []
+                    if kw_raw.upper() == "NONE"
+                    else [k.strip() for k in kw_raw.split(",") if k.strip()]
+                )
+                results.append(RewrittenBullet(
+                    original=orig,
+                    rewritten=rew.strip(),
+                    keywords_woven=keywords,
+                ))
+
+    # Last resort: pair output lines with originals
     if not results and originals:
-        lines = [l.strip() for l in raw.splitlines() if l.strip() and not l.startswith("---")]
+        lines = [l.strip() for l in raw.splitlines() if l.strip() and not l.startswith("-")]
         if not lines:
             return results
         for i, orig in enumerate(originals):
