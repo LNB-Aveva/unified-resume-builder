@@ -48,10 +48,15 @@ from fastapi.middleware.cors import CORSMiddleware
 # - version: Helps track which version of the API is running
 limiter = Limiter(key_func=get_remote_address)
 
+_is_production = os.environ.get("RENDER", "") != "" or os.environ.get("ENV", "").lower() == "production"
+
 app = FastAPI(
     title="Unified Resume Builder API",
     description="ATS scoring, keyword analysis, and AI-powered resume optimization",
     version="0.1.0",
+    docs_url=None if _is_production else "/docs",
+    redoc_url=None if _is_production else "/redoc",
+    openapi_url=None if _is_production else "/openapi.json",
 )
 
 app.state.limiter = limiter
@@ -84,8 +89,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],   # Allow GET, POST, PUT, DELETE, etc.
-    allow_headers=["*"],   # Allow any headers
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 

@@ -16,18 +16,21 @@ Both checks are needed. A perfectly formatted resume with wrong keywords fails.
 A keyword-perfect resume in the wrong format also fails. You need both.
 """
 
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, Request
+from pydantic import BaseModel, Field
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.schemas.compliance import ComplianceReport
 from app.services.compliance.checker import check_resume
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 class ComplianceRequest(BaseModel):
     """Input: just the raw resume text."""
-    resume_text: str
+    resume_text: str = Field(..., max_length=50_000)
 
 
 @router.post(
@@ -39,7 +42,8 @@ class ComplianceRequest(BaseModel):
         "Returns critical issues, warnings, and suggestions with specific fix instructions."
     ),
 )
-async def check_compliance(request: ComplianceRequest) -> ComplianceReport:
+@limiter.limit("30/minute")
+async def check_compliance(request: Request, comp_req: ComplianceRequest) -> ComplianceReport:
     """
     POST /api/v1/compliance
 
@@ -48,7 +52,7 @@ async def check_compliance(request: ComplianceRequest) -> ComplianceReport:
 
     Returns ComplianceReport with overall_score and per-rule checks.
     """
-    if not request.resume_text.strip():
+    if not comp_req.resume_text.strip():
         raise HTTPException(status_code=422, detail="resume_text cannot be empty.")
 
-    return check_resume(request.resume_text)
+    return check_resume(comp_req.resume_text)

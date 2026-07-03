@@ -1,37 +1,23 @@
 """
 keyword_extractor.py — Extracts structured information from raw job descriptions.
 
-HOW IT WORKS (the learning explanation):
-  1. spaCy "reads" the text — it understands grammar, not just characters
-  2. We scan for hard skills (Python, React, SQL...) using our own skills database
-  3. We scan for soft skills (communication, leadership...) the same way
-  4. We use regex to find experience requirements like "3+ years"
-  5. We parse bullet points to extract responsibilities vs. benefits
-  6. We return a clean JobAnalysis object that every other module can use
+HOW IT WORKS:
+  1. We scan for hard skills (Python, React, SQL...) using our curated skills database
+  2. We scan for soft skills (communication, leadership...) the same way
+  3. We use regex to find experience requirements like "3+ years"
+  4. We parse bullet points to extract responsibilities vs. benefits
+  5. We return a clean JobAnalysis object that every other module can use
 
 WHY A HARDCODED SKILLS LIST instead of pure AI?
   Pure NLP can't reliably distinguish "Java" (language) from "Java" (island).
-  A curated list + NLP is the industry standard for ATS systems like Jobscan.
+  A curated list + regex is the industry standard for ATS systems like Jobscan.
   We start with ~80 skills and grow the list over time.
-
-WHY LOAD spaCy AT MODULE LEVEL (outside any function)?
-  Loading the NLP model takes ~200ms. If we loaded it inside extract_keywords(),
-  every single request would be 200ms slower. Module-level loading pays the cost
-  once when the server starts, then every request reuses the same loaded model.
-  This is called "eager initialization" and is a common backend performance pattern.
 """
 
 import re
 from typing import Optional
 
-import spacy
-
 from app.schemas.job import JobAnalysis, JobDescription
-
-# Load the English NLP model once at startup
-# en_core_web_sm = "English core model, small size"
-# It knows grammar, parts of speech, named entities (company names, places, etc.)
-nlp = spacy.load("en_core_web_sm")
 
 
 # ============================================================
@@ -42,7 +28,7 @@ nlp = spacy.load("en_core_web_sm")
 
 HARD_SKILLS: set[str] = {
     # Programming Languages
-    "python", "javascript", "typescript", "java", "c++", "c#", "go", "golang",
+    "python", "javascript", "typescript", "java", "c++", "c#", "golang",
     "rust", "ruby", "scala", "kotlin", "swift", "r language", "r programming", "matlab", "bash", "html", "css",
     # Frontend Frameworks
     "react", "vue", "angular", "next.js", "nuxt", "svelte", "tailwind", "bootstrap",
@@ -154,7 +140,7 @@ def _extract_responsibilities(text: str) -> list[str]:
             continue
 
         # Collect bullet points only when NOT in benefits section
-        if not in_benefits and stripped.startswith("-") and len(stripped) > 5:
+        if not in_benefits and any(stripped.startswith(c) for c in ("-", "•", "*", "·", "–")) and len(stripped) > 5:
             content = stripped[1:].strip()
             if content:
                 responsibilities.append(content)

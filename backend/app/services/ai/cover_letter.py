@@ -47,6 +47,7 @@ import re
 import httpx
 
 from app.schemas.cover_letter import CoverLetterRequest, CoverLetterResponse
+from app.services.ai.sanitizer import sanitize_for_prompt
 
 _MODEL = "Qwen/Qwen2.5-7B-Instruct:fastest"
 _HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
@@ -110,10 +111,10 @@ def _build_messages(req: CoverLetterRequest) -> list[dict]:
     )
 
     user = (
-        f"Job title: {req.job_title}\n"
-        f"Company: {req.company_name}\n"
-        f"Job description excerpt:\n{req.job_description[:900].strip()}\n\n"
-        f"Candidate's key experience:\n{req.experience_summary[:600].strip()}\n"
+        f"Job title: {sanitize_for_prompt(req.job_title)}\n"
+        f"Company: {sanitize_for_prompt(req.company_name)}\n"
+        f"Job description excerpt:\n{sanitize_for_prompt(req.job_description[:900])}\n\n"
+        f"Candidate's key experience:\n{sanitize_for_prompt(req.experience_summary[:600])}\n"
         f"{skills_line}"
     )
 

@@ -10,10 +10,14 @@ Same error-mapping pattern as /summary and /rewrite:
   RuntimeError    → 500  empty/bad model output
 """
 
+import logging
+
 from fastapi import APIRouter, HTTPException, Request
 import httpx
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+
+logger = logging.getLogger(__name__)
 
 from app.schemas.cover_letter import CoverLetterRequest, CoverLetterResponse
 from app.services.ai.cover_letter import generate_cover_letter
@@ -46,8 +50,8 @@ async def create_cover_letter(request: Request, request_body: CoverLetterRequest
     try:
         return await generate_cover_letter(request_body)
 
-    except ValueError as e:
-        raise HTTPException(status_code=503, detail=str(e))
+    except ValueError:
+        raise HTTPException(status_code=503, detail="AI service is not configured. Please contact support.")
 
     except httpx.TimeoutException:
         raise HTTPException(
@@ -59,16 +63,13 @@ async def create_cover_letter(request: Request, request_body: CoverLetterRequest
         )
 
     except httpx.HTTPStatusError as e:
-        raise HTTPException(
-            status_code=502,
-            detail=f"HuggingFace API error {e.response.status_code}: {e.response.text[:200]}",
-        )
+        logger.error("HF API error %s: %s", e.response.status_code, e.response.text[:200])
+        raise HTTPException(status_code=502, detail="AI service temporarily unavailable.")
 
     except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error("Runtime error in cover letter: %s", e)
+        raise HTTPException(status_code=500, detail="Failed to generate cover letter. Please try again.")
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Unexpected error: {type(e).__name__}: {str(e)[:200]}",
-        )
+        logger.error("Unexpected error in cover letter: %s: %s", type(e).__name__, e)
+        raise HTTPException(status_code=500, detail="An internal error occurred.")

@@ -14,10 +14,10 @@ This is called "progressive disclosure": start simple (raw text), add structure
 later (full ResumeData) as users get more invested in the product.
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class GapRequest(BaseModel):
     """Raw text input for the gap analysis endpoint."""
-    job_text: str     # Full job description pasted by the user
-    resume_text: str  # Full resume text pasted by the user (plain text, not JSON)
+    job_text: str = Field(..., max_length=50_000)
+    resume_text: str = Field(..., max_length=50_000)

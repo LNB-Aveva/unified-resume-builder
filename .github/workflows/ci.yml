@@ -14,7 +14,7 @@
 #   frontend — verifies TypeScript types and that Next.js builds cleanly
 #
 # WHY PARALLEL JOBS?
-#   The backend job takes ~60s (pip install + spaCy download).
+#   The backend job takes ~30s (pip install).
 #   The frontend job takes ~30s (npm install + build).
 #   Running them in parallel means total CI time = max(60s, 30s) = 60s,
 #   not 90s. GitHub Actions bills by compute-minutes, so parallelism
@@ -53,10 +53,6 @@ jobs:
       - name: Install Python dependencies
         working-directory: backend
         run: pip install -r requirements.txt
-
-      - name: Download spaCy language model
-        # This runs as a separate step so if it fails the error is clearly attributed
-        run: python -m spacy download en_core_web_sm
 
       - name: Verify all imports load cleanly
         # If any module has a syntax error or missing dependency,

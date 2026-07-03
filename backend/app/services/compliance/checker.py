@@ -209,11 +209,15 @@ def check_resume(resume_text: str) -> ComplianceReport:
 
     # ── Totals ───────────────────────────────────────────────────────────────
 
+    _SEVERITY_WEIGHT = {"critical": 3, "warning": 2, "suggestion": 1}
+    total_weight = sum(_SEVERITY_WEIGHT[c.severity] for c in checks)
+    earned_weight = sum(_SEVERITY_WEIGHT[c.severity] for c in checks if c.passed)
+    overall_score = round(earned_weight / total_weight * 100)
+
     passed_count = sum(1 for c in checks if c.passed)
     critical_issues = sum(1 for c in checks if not c.passed and c.severity == "critical")
     warnings_count = sum(1 for c in checks if not c.passed and c.severity == "warning")
     suggestions_failed = sum(1 for c in checks if not c.passed and c.severity == "suggestion")
-    overall_score = round(passed_count / len(checks) * 100)
 
     return ComplianceReport(
         overall_score=overall_score,

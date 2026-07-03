@@ -10,15 +10,15 @@ it and produce a structured JobAnalysis object that all other modules can use.
 """
 
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class JobDescription(BaseModel):
     """Raw job description input from the user."""
-    title: Optional[str] = None
-    company: Optional[str] = None
-    raw_text: str              # The full job posting text pasted by the user
-    url: Optional[str] = None  # Optional: the job posting URL
+    title: Optional[str] = Field(None, max_length=200)
+    company: Optional[str] = Field(None, max_length=200)
+    raw_text: str = Field(..., max_length=50_000)
+    url: Optional[str] = Field(None, max_length=2000)
 
 
 class JobAnalysis(BaseModel):

@@ -33,6 +33,8 @@ SHARED INFRASTRUCTURE:
   generate_pdf() — dispatches to the correct generator by template name
 """
 
+import unicodedata
+
 from fpdf import FPDF
 from app.schemas.export import ResumeExportRequest
 
@@ -52,6 +54,7 @@ _UNICODE_MAP = str.maketrans({
 
 
 def _s(text: str) -> str:
+    text = unicodedata.normalize("NFC", text)
     return text.translate(_UNICODE_MAP).encode("latin-1", errors="replace").decode("latin-1")
 
 
@@ -71,7 +74,10 @@ class _ResumePDF(FPDF):
         right_w = 40
         left_w = self.w_eff - right_w
         self.set_font("Helvetica", left_style, left_size)
-        self.cell(left_w, _LINE_H, _s(left))
+        left_text = _s(left)
+        while self.get_string_width(left_text) > left_w and len(left_text) > 4:
+            left_text = left_text[:-4] + "..."
+        self.cell(left_w, _LINE_H, left_text)
         self.set_font("Helvetica", "", right_size)
         self.set_text_color(*right_color)
         self.cell(right_w, _LINE_H, _s(right), align="R", ln=True)

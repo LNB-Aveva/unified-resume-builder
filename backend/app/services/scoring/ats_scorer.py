@@ -99,20 +99,29 @@ def score_resume(job_analysis: JobAnalysis, resume: ResumeData) -> ATSScore:
     """
     resume_text = _build_resume_text(resume)
 
-    # Classify hard skills
-    matched_hard = [s for s in job_analysis.hard_skills if _skill_present(s, resume_text)]
-    missing_hard = [s for s in job_analysis.hard_skills if not _skill_present(s, resume_text)]
+    matched_hard, missing_hard = [], []
+    for s in job_analysis.hard_skills:
+        (matched_hard if _skill_present(s, resume_text) else missing_hard).append(s)
 
-    # Classify soft skills
-    matched_soft = [s for s in job_analysis.soft_skills if _skill_present(s, resume_text)]
-    missing_soft = [s for s in job_analysis.soft_skills if not _skill_present(s, resume_text)]
+    matched_soft, missing_soft = [], []
+    for s in job_analysis.soft_skills:
+        (matched_soft if _skill_present(s, resume_text) else missing_soft).append(s)
 
     hard_score = (len(matched_hard) / len(job_analysis.hard_skills) * 100
                   if job_analysis.hard_skills else 0.0)
     soft_score = (len(matched_soft) / len(job_analysis.soft_skills) * 100
                   if job_analysis.soft_skills else 0.0)
 
-    overall_score = round(hard_score * 0.70 + soft_score * 0.30, 1)
+    has_hard = bool(job_analysis.hard_skills)
+    has_soft = bool(job_analysis.soft_skills)
+    if has_hard and has_soft:
+        overall_score = round(hard_score * 0.70 + soft_score * 0.30, 1)
+    elif has_hard:
+        overall_score = round(hard_score, 1)
+    elif has_soft:
+        overall_score = round(soft_score, 1)
+    else:
+        overall_score = 0.0
     hard_score = round(hard_score, 1)
     soft_score = round(soft_score, 1)
 
@@ -154,17 +163,29 @@ def score_from_text(job_analysis: JobAnalysis, resume_text: str) -> ATSScore:
     """
     text_lower = resume_text.lower()
 
-    matched_hard = [s for s in job_analysis.hard_skills if _skill_present(s, text_lower)]
-    missing_hard = [s for s in job_analysis.hard_skills if not _skill_present(s, text_lower)]
-    matched_soft = [s for s in job_analysis.soft_skills if _skill_present(s, text_lower)]
-    missing_soft = [s for s in job_analysis.soft_skills if not _skill_present(s, text_lower)]
+    matched_hard, missing_hard = [], []
+    for s in job_analysis.hard_skills:
+        (matched_hard if _skill_present(s, text_lower) else missing_hard).append(s)
+
+    matched_soft, missing_soft = [], []
+    for s in job_analysis.soft_skills:
+        (matched_soft if _skill_present(s, text_lower) else missing_soft).append(s)
 
     hard_score = (len(matched_hard) / len(job_analysis.hard_skills) * 100
                   if job_analysis.hard_skills else 0.0)
     soft_score = (len(matched_soft) / len(job_analysis.soft_skills) * 100
                   if job_analysis.soft_skills else 0.0)
 
-    overall_score = round(hard_score * 0.70 + soft_score * 0.30, 1)
+    has_hard = bool(job_analysis.hard_skills)
+    has_soft = bool(job_analysis.soft_skills)
+    if has_hard and has_soft:
+        overall_score = round(hard_score * 0.70 + soft_score * 0.30, 1)
+    elif has_hard:
+        overall_score = round(hard_score, 1)
+    elif has_soft:
+        overall_score = round(soft_score, 1)
+    else:
+        overall_score = 0.0
     grade, grade_label = _compute_grade(overall_score)
 
     matched_keywords = sorted(set(matched_hard + matched_soft))
