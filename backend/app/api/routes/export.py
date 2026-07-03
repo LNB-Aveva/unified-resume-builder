@@ -24,15 +24,22 @@ CONTENT-DISPOSITION HEADER:
   to keep it simple.
 """
 
+import logging
 import re
-from fastapi import APIRouter, HTTPException
+
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 import io
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+logger = logging.getLogger(__name__)
 
 from app.schemas.export import ResumeExportRequest
 from app.services.export.pdf_generator import generate_pdf
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 def _safe_filename(name: str) -> str:
@@ -58,24 +65,26 @@ def _safe_filename(name: str) -> str:
         }
     },
 )
-async def export_pdf(request: ResumeExportRequest) -> StreamingResponse:
+@limiter.limit("15/minute")
+async def export_pdf(request: Request, export_req: ResumeExportRequest) -> StreamingResponse:
     """
     POST /api/v1/export/pdf
 
     Body (JSON): ResumeExportRequest
     Returns: application/pdf binary stream
     """
-    if not request.personal.full_name.strip():
+    if not export_req.personal.full_name.strip():
         raise HTTPException(status_code=422, detail="personal.full_name cannot be empty.")
-    if not request.personal.email.strip():
+    if not export_req.personal.email.strip():
         raise HTTPException(status_code=422, detail="personal.email cannot be empty.")
 
     try:
-        pdf_bytes = generate_pdf(request)
+        pdf_bytes = generate_pdf(export_req)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"PDF generation failed: {e}")
+        logger.error("PDF generation failed: %s: %s", type(e).__name__, e)
+        raise HTTPException(status_code=500, detail="PDF generation failed. Please check your input and try again.")
 
-    filename = _safe_filename(request.filename or request.personal.full_name or "resume")
+    filename = _safe_filename(export_req.filename or export_req.personal.full_name or "resume")
 
     return StreamingResponse(
         content=io.BytesIO(pdf_bytes),

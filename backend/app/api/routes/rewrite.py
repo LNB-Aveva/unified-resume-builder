@@ -24,10 +24,14 @@ ERROR MAPPING (same pattern as summary.py):
   RuntimeError → 500  (empty/unparseable model output)
 """
 
+import logging
+
 from fastapi import APIRouter, HTTPException, Request
 import httpx
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+
+logger = logging.getLogger(__name__)
 
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse
 from app.services.ai.rewriter import rewrite_bullets
@@ -69,8 +73,8 @@ async def rewrite_bullets_route(request: Request, request_body: BulletRewriteReq
     try:
         return await rewrite_bullets(request_body)
 
-    except ValueError as e:
-        raise HTTPException(status_code=503, detail=str(e))
+    except ValueError:
+        raise HTTPException(status_code=503, detail="AI service is not configured. Please contact support.")
 
     except httpx.TimeoutException:
         raise HTTPException(
@@ -82,16 +86,13 @@ async def rewrite_bullets_route(request: Request, request_body: BulletRewriteReq
         )
 
     except httpx.HTTPStatusError as e:
-        raise HTTPException(
-            status_code=502,
-            detail=f"HuggingFace API error {e.response.status_code}: {e.response.text[:200]}",
-        )
+        logger.error("HF API error %s: %s", e.response.status_code, e.response.text[:200])
+        raise HTTPException(status_code=502, detail="AI service temporarily unavailable.")
 
     except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error("Runtime error in rewrite: %s", e)
+        raise HTTPException(status_code=500, detail="Failed to rewrite bullets. Please try again.")
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Unexpected error: {type(e).__name__}: {str(e)[:200]}",
-        )
+        logger.error("Unexpected error in rewrite: %s: %s", type(e).__name__, e)
+        raise HTTPException(status_code=500, detail="An internal error occurred.")

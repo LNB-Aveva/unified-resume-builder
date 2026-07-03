@@ -43,6 +43,7 @@ import re
 import httpx
 
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse, RewrittenBullet
+from app.services.ai.sanitizer import sanitize_for_prompt
 
 _MODEL = "Qwen/Qwen2.5-7B-Instruct:fastest"
 _HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
@@ -80,9 +81,9 @@ def _build_messages(req: BulletRewriteRequest, bullets: list[str]) -> list[dict]
     )
 
     user = (
-        f"Job title: {req.job_title}\n"
-        f"Missing keywords to weave in: {req.missing_keywords}\n\n"
-        f"Rewrite ALL {count} bullets below:\n{bullet_list}"
+        f"Job title: {sanitize_for_prompt(req.job_title)}\n"
+        f"Missing keywords to weave in: {sanitize_for_prompt(req.missing_keywords)}\n\n"
+        f"Rewrite ALL {count} bullets below:\n{sanitize_for_prompt(bullet_list)}"
     )
 
     return [

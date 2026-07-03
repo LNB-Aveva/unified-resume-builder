@@ -20,13 +20,13 @@ WHY KEEP ORIGINAL:
   and lets them decide whether to accept the rewrite or keep their own version.
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BulletRewriteRequest(BaseModel):
-    job_title: str
-    missing_keywords: str   # comma-separated, from gap analysis
-    bullets: str            # newline-separated, max 5 bullets enforced in service
+    job_title: str = Field(..., max_length=200)
+    missing_keywords: str = Field(..., max_length=2_000)
+    bullets: str = Field(..., max_length=5_000)
 
 
 class RewrittenBullet(BaseModel):

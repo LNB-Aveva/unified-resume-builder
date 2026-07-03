@@ -22,15 +22,15 @@ OUTPUT:
 """
 
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class CoverLetterRequest(BaseModel):
-    job_title: str
-    company_name: str
-    job_description: str
-    experience_summary: str   # 3-5 key achievements / bullets from resume
-    skills: str = ""          # comma-separated
+    job_title: str = Field(..., max_length=200)
+    company_name: str = Field(..., max_length=200)
+    job_description: str = Field(..., max_length=50_000)
+    experience_summary: str = Field(..., max_length=10_000)
+    skills: str = Field("", max_length=2_000)
     tone: Literal["formal", "conversational"] = "formal"
 
 

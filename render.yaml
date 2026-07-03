@@ -18,7 +18,7 @@
 #   - 750 hours/month free (enough for one always-on service)
 #   - Spins down after 15 min inactivity → first request takes ~30-60s to wake up
 #   - The frontend already shows loading spinners so this is handled gracefully
-#   - 512 MB RAM — sufficient for FastAPI + spaCy en_core_web_sm
+#   - 512 MB RAM — sufficient for FastAPI + NLP libraries
 
 services:
   - type: web
@@ -27,10 +27,7 @@ services:
     rootDir: backend
 
     # BUILD COMMAND — runs once on every deploy
-    # Why download spaCy model here and not in requirements.txt?
-    # pip can install the spaCy library, but the language model (en_core_web_sm)
-    # is a separate download (~12 MB). It must be fetched explicitly.
-    buildCommand: "pip install -r requirements.txt && python -m spacy download en_core_web_sm"
+    buildCommand: "pip install -r requirements.txt"
 
     # START COMMAND — runs the live server
     # $PORT is injected by Render — never hardcode a port in production.

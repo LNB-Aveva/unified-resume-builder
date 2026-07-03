@@ -16,7 +16,9 @@ The ATSScore result has everything needed for the Gap Analysis UI:
   matched_keywords (green chips), missing_keywords (red chips), overall score
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.schemas.gap import GapRequest
 from app.schemas.job import JobDescription
@@ -25,6 +27,7 @@ from app.services.nlp.keyword_extractor import extract_keywords
 from app.services.scoring.ats_scorer import score_from_text
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post(
@@ -37,7 +40,8 @@ router = APIRouter()
         "No structured JSON required — just paste and go."
     ),
 )
-async def analyze_gap(request: GapRequest) -> ATSScore:
+@limiter.limit("30/minute")
+async def analyze_gap(request: Request, gap_req: GapRequest) -> ATSScore:
     """
     POST /api/v1/gap
 
@@ -49,10 +53,10 @@ async def analyze_gap(request: GapRequest) -> ATSScore:
 
     Returns ATSScore with overall score, grade, matched/missing skill lists.
     """
-    if not request.job_text.strip():
+    if not gap_req.job_text.strip():
         raise HTTPException(status_code=422, detail="job_text cannot be empty.")
-    if not request.resume_text.strip():
+    if not gap_req.resume_text.strip():
         raise HTTPException(status_code=422, detail="resume_text cannot be empty.")
 
-    job_analysis = extract_keywords(JobDescription(raw_text=request.job_text))
-    return score_from_text(job_analysis, request.resume_text)
+    job_analysis = extract_keywords(JobDescription(raw_text=gap_req.job_text))
+    return score_from_text(job_analysis, gap_req.resume_text)

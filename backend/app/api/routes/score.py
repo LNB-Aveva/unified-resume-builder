@@ -11,13 +11,16 @@ Together these two endpoints power the core value proposition of the product:
   2. POST /api/v1/score    → "Here's how your resume stacks up against it"
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.schemas.score import ATSScore, ScoreRequest
 from app.services.nlp.keyword_extractor import extract_keywords
 from app.services.scoring.ats_scorer import score_resume
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post(
@@ -29,7 +32,8 @@ router = APIRouter()
         "(0-100), letter grade, matched skills, and missing skills."
     ),
 )
-async def score_resume_endpoint(request: ScoreRequest) -> ATSScore:
+@limiter.limit("30/minute")
+async def score_resume_endpoint(request: Request, score_req: ScoreRequest) -> ATSScore:
     """
     POST /api/v1/score
 
@@ -50,14 +54,11 @@ async def score_resume_endpoint(request: ScoreRequest) -> ATSScore:
 
     Returns an ATSScore with overall score, grade, matched/missing skills.
     """
-    if not request.job.raw_text or not request.job.raw_text.strip():
+    if not score_req.job.raw_text or not score_req.job.raw_text.strip():
         raise HTTPException(
             status_code=422,
             detail="job.raw_text cannot be empty.",
         )
 
-    # Step 1: Extract keywords from the job description
-    job_analysis = extract_keywords(request.job)
-
-    # Step 2: Score the resume against those keywords
-    return score_resume(job_analysis, request.resume)
+    job_analysis = extract_keywords(score_req.job)
+    return score_resume(job_analysis, score_req.resume)

@@ -20,12 +20,15 @@ way (different response shape), we bump to /v2/ — old clients keep working on
 /v1/ while new clients use /v2/. Industry standard.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.schemas.job import JobAnalysis, JobDescription
 from app.services.nlp.keyword_extractor import extract_keywords
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post(
@@ -37,7 +40,8 @@ router = APIRouter()
         "hard skills, soft skills, experience requirements, and all ATS keywords."
     ),
 )
-async def analyze_job_description(job: JobDescription) -> JobAnalysis:
+@limiter.limit("30/minute")
+async def analyze_job_description(request: Request, job: JobDescription) -> JobAnalysis:
     """
     POST /api/v1/analyze
 

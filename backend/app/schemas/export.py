@@ -22,39 +22,38 @@ ATS COMPATIBILITY NOTE:
 """
 
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PersonalInfo(BaseModel):
-    full_name: str
-    email: str
-    phone: str = ""
-    location: str = ""
-    linkedin: str = ""
-    website: str = ""
+    full_name: str = Field(..., max_length=200)
+    email: str = Field(..., max_length=320)
+    phone: str = Field("", max_length=30)
+    location: str = Field("", max_length=200)
+    linkedin: str = Field("", max_length=500)
+    website: str = Field("", max_length=500)
 
 
 class WorkExperience(BaseModel):
-    company: str
-    title: str
-    start_date: str   # e.g. "Jan 2020"
-    end_date: str     # e.g. "Present" or "Dec 2023"
+    company: str = Field(..., max_length=200)
+    title: str = Field(..., max_length=200)
+    start_date: str = Field(..., max_length=20)
+    end_date: str = Field(..., max_length=20)
     bullets: list[str]
 
 
 class Education(BaseModel):
-    institution: str
-    degree: str
-    field: str = ""
-    year: str          # e.g. "2019" or "2017–2019"
+    institution: str = Field(..., max_length=300)
+    degree: str = Field(..., max_length=200)
+    field: str = Field("", max_length=200)
+    year: str = Field(..., max_length=20)
 
 
 class ResumeExportRequest(BaseModel):
     personal: PersonalInfo
-    summary: str = ""
+    summary: str = Field("", max_length=5_000)
     experience: list[WorkExperience] = []
-    skills: str = ""
+    skills: str = Field("", max_length=5_000)
     education: list[Education] = []
-    filename: str = "resume"
-    # Three ATS-safe single-column layouts — differ in colour and typography only
+    filename: str = Field("resume", max_length=100)
     template: Literal["classic", "modern", "minimal"] = "classic"

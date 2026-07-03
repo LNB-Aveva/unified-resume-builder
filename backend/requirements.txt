@@ -12,9 +12,6 @@ python-multipart==0.0.12
 # ============================
 # NLP / AI Libraries (ALL FREE - run locally on your computer)
 # ============================
-# spaCy = Industrial-strength NLP library for understanding English text
-#         We use it to extract keywords from job descriptions
-spacy==3.8.14
 # NLTK = Natural Language Toolkit - simpler text processing tools
 #        Good for word frequency counting, stopword removal, stemming
 nltk==3.9.1

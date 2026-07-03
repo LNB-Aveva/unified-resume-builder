@@ -19,15 +19,15 @@ OUTPUT DESIGN:
   tip: one actionable tip to personalize the output further
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class SummaryRequest(BaseModel):
-    job_title: str
-    job_description: str
-    experience_bullets: str
-    years_experience: int = 0
-    skills: str = ""  # comma-separated, optional
+    job_title: str = Field(..., max_length=200)
+    job_description: str = Field(..., max_length=50_000)
+    experience_bullets: str = Field(..., max_length=10_000)
+    years_experience: int = Field(0, ge=0, le=60)
+    skills: str = Field("", max_length=2_000)
 
 
 class SummaryResponse(BaseModel):

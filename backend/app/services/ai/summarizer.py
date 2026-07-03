@@ -42,6 +42,7 @@ import re
 import httpx
 
 from app.schemas.summary import SummaryRequest, SummaryResponse
+from app.services.ai.sanitizer import sanitize_for_prompt
 
 _MODEL = "Qwen/Qwen2.5-7B-Instruct:fastest"
 _HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
@@ -70,10 +71,10 @@ def _build_messages(req: SummaryRequest) -> list[dict]:
     )
 
     user = (
-        f"Job title applying for: {req.job_title}\n"
+        f"Job title applying for: {sanitize_for_prompt(req.job_title)}\n"
         f"{years_line}\n"
-        f"Job description excerpt:\n{req.job_description[:800].strip()}\n\n"
-        f"Candidate's experience:\n{req.experience_bullets[:600].strip()}\n"
+        f"Job description excerpt:\n{sanitize_for_prompt(req.job_description[:800])}\n\n"
+        f"Candidate's experience:\n{sanitize_for_prompt(req.experience_bullets[:600])}\n"
         f"{skills_line}"
     )
 

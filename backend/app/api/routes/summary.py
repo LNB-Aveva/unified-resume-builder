@@ -19,10 +19,14 @@ ERROR HANDLING STRATEGY:
     Anything else → 500 Internal Server Error
 """
 
+import logging
+
 from fastapi import APIRouter, HTTPException, Request
 import httpx
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+
+logger = logging.getLogger(__name__)
 
 from app.schemas.summary import SummaryRequest, SummaryResponse
 from app.services.ai.summarizer import generate_summary
@@ -67,9 +71,8 @@ async def create_summary(request: Request, request_body: SummaryRequest) -> Summ
     try:
         return await generate_summary(request_body)
 
-    except ValueError as e:
-        # Missing API key — tell the user what to do
-        raise HTTPException(status_code=503, detail=str(e))
+    except ValueError:
+        raise HTTPException(status_code=503, detail="AI service is not configured. Please contact support.")
 
     except httpx.TimeoutException:
         raise HTTPException(
@@ -81,16 +84,13 @@ async def create_summary(request: Request, request_body: SummaryRequest) -> Summ
         )
 
     except httpx.HTTPStatusError as e:
-        raise HTTPException(
-            status_code=502,
-            detail=f"HuggingFace API error {e.response.status_code}: {e.response.text[:200]}",
-        )
+        logger.error("HF API error %s: %s", e.response.status_code, e.response.text[:200])
+        raise HTTPException(status_code=502, detail="AI service temporarily unavailable.")
 
     except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error("Runtime error in summary: %s", e)
+        raise HTTPException(status_code=500, detail="Failed to generate summary. Please try again.")
 
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Unexpected error: {type(e).__name__}: {str(e)[:200]}",
-        )
+        logger.error("Unexpected error in summary: %s: %s", type(e).__name__, e)
+        raise HTTPException(status_code=500, detail="An internal error occurred.")
