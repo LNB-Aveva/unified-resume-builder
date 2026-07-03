@@ -1,40 +1,14 @@
-"""
-checker.py — ATS compliance checker: 15 text-detectable formatting rules.
-
-HOW ATS FORMAT SCANNING WORKS IN THE REAL WORLD:
-  When you upload a resume to an ATS (Workday, Greenhouse, iCIMS), it runs
-  an HTML/PDF parser to extract plain text. Anything the parser can't read
-  becomes invisible — your experience, your skills, your name.
-
-  This checker replicates the text-quality tests those parsers do. We can't
-  detect tables or images from pasted text (that requires the actual file),
-  but we can catch the 15 most common text-detectable failures.
-
-SEVERITY LEVELS (and what they mean for your job search):
-  critical   — Resume may be auto-rejected before a human ever reads it.
-               Fix these before sending the resume anywhere.
-  warning    — Reduces ATS score or parse quality. Fix these for better results.
-  suggestion — Best practices. Nice to fix but not urgent.
-
-WHY PLAIN TEXT INPUT?
-  File parsing (PDF/DOCX → text) requires additional libraries (PyMuPDF,
-  python-docx) and adds server complexity. For the MVP, we ask users to
-  paste their resume text — which they already did for the gap analysis.
-  File upload is planned for a future session.
-"""
+"""ATS compliance checker: 15 text-detectable formatting rules."""
 
 import re
 
 from app.schemas.compliance import ComplianceCheck, ComplianceReport
 
-
-# ── Regex patterns ──────────────────────────────────────────────────────────
-
 _EMAIL = re.compile(r'\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b')
 _PHONE = re.compile(r'(?<!\d)[\+\(]?\d[\d\s\-\(\)\.]{7,}\d(?!\d)')
 _DATE_RANGE = re.compile(r'^\d{4}\s*[-–]\s*\d{4}$')
 _LINKEDIN = re.compile(r'linkedin\.com/in/', re.I)
-_PRONOUN = re.compile(r'(?<![a-zA-Z])(I\s+[a-z]+\b|I\'ve|I\'m|my\s|myself\b)', re.I)
+_PRONOUN = re.compile(r"(?<![a-zA-Z])(I\s+[a-z]+\b|I\'ve|I\'m|my\s|myself\b)", re.I)
 _DATE_MONTH_YEAR = re.compile(
     r'\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|'
     r'January|February|March|April|June|July|August|September|October|November|December)'
@@ -46,17 +20,15 @@ _NUMBERS_IN_CONTEXT = re.compile(
     r'percent|%|million|k\b|thousand|\$|revenue|leads?|reduction|faster|improvement)',
     re.I,
 )
-_FANCY_BULLETS = re.compile(r'[►❖★◆▪◼◻○●➤➢➣➔⬢⬡]')
+_FANCY_BULLETS = re.compile(r'[►❖★◆▪◼◻○●➤➢➣⟔⬢⬡]')
 _REFERENCES = re.compile(r'references\s+(available|upon\s+request)', re.I)
-_ALL_CAPS_LINE = re.compile(r'^[A-Z][A-Z\s\d]{19,}$')  # 20+ chars, all caps
+_ALL_CAPS_LINE = re.compile(r'^[A-Z][A-Z\s\d]{19,}$')
 
-# Standard section headers ATS systems look for
 _EXPERIENCE_HEADERS = {'experience', 'work history', 'employment', 'professional experience', 'career history', 'work experience'}
 _EDUCATION_HEADERS  = {'education', 'academic background', 'qualifications', 'academic history', 'schooling'}
 _SKILLS_HEADERS     = {'skills', 'technical skills', 'competencies', 'core competencies', 'technologies', 'technical proficiencies'}
 _SUMMARY_HEADERS    = {'summary', 'professional summary', 'profile', 'objective', 'about me', 'career objective'}
 
-# Action verbs common in strong resume bullets
 _ACTION_VERBS = {
     'developed', 'built', 'created', 'designed', 'implemented', 'managed',
     'led', 'improved', 'increased', 'reduced', 'launched', 'optimized',
@@ -65,7 +37,6 @@ _ACTION_VERBS = {
     'achieved', 'established', 'streamlined', 'migrated', 'integrated',
 }
 
-# Phrases that weaken a resume with no substance behind them
 _BUZZWORDS = {
     'team player', 'hard worker', 'go-getter', 'dynamic professional',
     'synergy', 'passionate about', 'detail-oriented', 'self-starter',
@@ -73,10 +44,7 @@ _BUZZWORDS = {
 }
 
 
-# ── Individual check helpers ─────────────────────────────────────────────────
-
 def _has_section(text_lower: str, headers: set[str]) -> bool:
-    """Return True if any section header appears as a standalone line or heading."""
     for line in text_lower.split('\n'):
         line = line.strip()
         if line in headers or any(line.startswith(h) for h in headers):
@@ -85,19 +53,10 @@ def _has_section(text_lower: str, headers: set[str]) -> bool:
 
 
 def _bullet_lines(lines: list[str]) -> list[str]:
-    """Return lines that look like bullet points."""
     return [l for l in lines if l.startswith(('-', '•', '*', '·', '–'))]
 
 
-# ── Main public function ─────────────────────────────────────────────────────
-
 def check_resume(resume_text: str) -> ComplianceReport:
-    """
-    Run all 15 compliance checks and return a ComplianceReport.
-
-    All checks are text-based — no file required.
-    Each check returns a ComplianceCheck with pass/fail + explanation.
-    """
     text = resume_text.strip()
     text_lower = text.lower()
     lines = [l.strip() for l in text.split('\n') if l.strip()]
@@ -112,46 +71,44 @@ def check_resume(resume_text: str) -> ComplianceReport:
             message=ok if passed else fail,
         ))
 
-    # ── CRITICAL ────────────────────────────────────────────────────────────
-
+    # Critical
     add("Email address present",
         bool(_EMAIL.search(text)), "critical",
         "Email address found",
-        "No email detected — ATS and recruiters can't contact you")
+        "No email detected -- ATS and recruiters can't contact you")
 
     phone_matches = [m.group() for m in _PHONE.finditer(text)]
     has_phone = any(not _DATE_RANGE.match(m.strip()) for m in phone_matches)
     add("Phone number present",
         has_phone, "critical",
         "Phone number found",
-        "No phone number detected — add it to your contact section")
+        "No phone number detected -- add it to your contact section")
 
-    has_exp = _has_section(text_lower, _EXPERIENCE_HEADERS)
-    add("Experience section present", has_exp, "critical",
+    add("Experience section present",
+        _has_section(text_lower, _EXPERIENCE_HEADERS), "critical",
         "Experience section found",
-        "No experience section — use a standard header like 'Work Experience'")
+        "No experience section -- use a standard header like 'Work Experience'")
 
-    has_edu = _has_section(text_lower, _EDUCATION_HEADERS)
-    add("Education section present", has_edu, "critical",
+    add("Education section present",
+        _has_section(text_lower, _EDUCATION_HEADERS), "critical",
         "Education section found",
-        "No education section detected — ATS may mark this field empty")
+        "No education section detected -- ATS may mark this field empty")
 
-    # ── WARNINGS ────────────────────────────────────────────────────────────
-
-    has_skills = _has_section(text_lower, _SKILLS_HEADERS)
-    add("Skills section present", has_skills, "warning",
+    # Warnings
+    add("Skills section present",
+        _has_section(text_lower, _SKILLS_HEADERS), "warning",
         "Skills/Competencies section found",
-        "No skills section — ATS keyword matching relies on this section")
+        "No skills section -- ATS keyword matching relies on this section")
 
     length_ok = 200 <= word_count <= 1200
-    add("Resume length appropriate (200–1200 words)", length_ok, "warning",
+    add("Resume length appropriate (200-1200 words)", length_ok, "warning",
         f"Good length ({word_count} words)",
         f"Resume {'too short' if word_count < 200 else 'very long'} "
-        f"({word_count} words) — aim for 400–800 words for a 1-page resume")
+        f"({word_count} words) -- aim for 400-800 words for a 1-page resume")
 
     pronoun_match = _PRONOUN.search(text)
     pronoun_fail_msg = (
-        f"Found '{pronoun_match.group(0).strip()}' — remove 'I', 'my' from bullets; start with action verbs instead"
+        f"Found '{pronoun_match.group(0).strip()}' -- remove 'I', 'my' from bullets; start with action verbs instead"
         if pronoun_match else ""
     )
     add("No first-person pronouns (I, my, myself)",
@@ -163,35 +120,33 @@ def check_resume(resume_text: str) -> ComplianceReport:
                  any(v in text_lower for v in _ACTION_VERBS)
     add("Uses action verbs in bullet points", has_action, "warning",
         "Action verbs found",
-        "No action verbs detected — start bullets with 'Developed', 'Led', 'Built', 'Reduced', etc.")
+        "No action verbs detected -- start bullets with 'Developed', 'Led', 'Built', 'Reduced', etc.")
 
     dates_found = _DATE_MONTH_YEAR.findall(text)
     add("Date format detected (Month Year)",
         len(dates_found) >= 1, "warning",
         f"Found {len(dates_found)} dates in Month Year format",
-        "No standard dates found — use 'Jan 2023 – Present' format for each role")
+        "No standard dates found -- use 'Jan 2023 - Present' format for each role")
 
     fancy_found = _FANCY_BULLETS.search(text)
-    add("Uses standard bullet characters (- • *)",
+    add("Uses standard bullet characters (- * *)",
         fancy_found is None, "warning",
         "Standard bullet characters used",
-        "Fancy bullet symbols detected (►❖★) — replace with - or • for ATS compatibility")
+        "Fancy bullet symbols detected -- replace with - or * for ATS compatibility")
 
-    # ── SUGGESTIONS ─────────────────────────────────────────────────────────
-
+    # Suggestions
     add("LinkedIn URL present",
         bool(_LINKEDIN.search(text)), "suggestion",
         "LinkedIn URL found",
-        "No LinkedIn URL — add linkedin.com/in/yourname to contact section")
+        "No LinkedIn URL -- add linkedin.com/in/yourname to contact section")
 
     add("No 'References available upon request'",
         not bool(_REFERENCES.search(text)), "suggestion",
-        "Good — no references line",
-        "Remove 'References available upon request' — it wastes space and is assumed")
+        "Good -- no references line",
+        "Remove 'References available upon request' -- it wastes space and is assumed")
 
-    quant_found = _NUMBERS_IN_CONTEXT.search(text)
     add("Quantified achievements present",
-        quant_found is not None, "suggestion",
+        _NUMBERS_IN_CONTEXT.search(text) is not None, "suggestion",
         "Found quantified achievement (numbers + impact context)",
         "Add numbers to bullets: '40% faster', '10,000 users', '$2M revenue', 'team of 5'")
 
@@ -205,10 +160,9 @@ def check_resume(resume_text: str) -> ComplianceReport:
     add("No excessive ALL-CAPS body text",
         caps_lines <= 1, "suggestion",
         "No excessive all-caps body text",
-        f"{caps_lines} lines in ALL-CAPS — this can indicate copy-paste formatting issues")
+        f"{caps_lines} lines in ALL-CAPS -- this can indicate copy-paste formatting issues")
 
-    # ── Totals ───────────────────────────────────────────────────────────────
-
+    # Severity-weighted score (critical=3x, warning=2x, suggestion=1x)
     _SEVERITY_WEIGHT = {"critical": 3, "warning": 2, "suggestion": 1}
     total_weight = sum(_SEVERITY_WEIGHT[c.severity] for c in checks)
     earned_weight = sum(_SEVERITY_WEIGHT[c.severity] for c in checks if c.passed)

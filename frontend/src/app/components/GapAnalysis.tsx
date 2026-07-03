@@ -1,47 +1,8 @@
 "use client";
 
-/*
- * GapAnalysis.tsx — Side-by-side resume vs. job gap analysis.
- *
- * WHAT THIS COMPONENT DOES:
- * User pastes both a job description AND their resume text.
- * We call POST /api/v1/gap and display:
- *   - An ATS score (0-100) with a letter grade
- *   - Two columns: skills you HAVE (green) vs skills you're MISSING (red)
- *   - A priority action list: "Add these X keywords to your resume"
- *
- * WHY TWO TEXTAREAS INSTEAD OF FILE UPLOAD?
- * File parsing (PDF, DOCX) requires extra libraries and server infrastructure.
- * Plain text paste works everywhere, needs no dependencies, and works 100%
- * of the time — even if the user copies from LinkedIn or a Google Doc.
- * We'll add file upload in a later session once the core UX is validated.
- *
- * WHAT IS "GAP ANALYSIS" (the concept)?
- * The "gap" is the difference between what the job WANTS and what your
- * resume SHOWS. Green = you have it. Red = you don't (but should add it).
- * This is exactly how Jobscan and Teal show their keyword comparison.
- */
-
 import { useState } from "react";
-
-interface ATSScore {
-  overall_score: number;
-  grade: string;
-  grade_label: string;
-  hard_skills_score: number;
-  soft_skills_score: number;
-  matched_keywords: string[];
-  missing_keywords: string[];
-  matched_hard_skills: string[];
-  missing_hard_skills: string[];
-  matched_soft_skills: string[];
-  missing_soft_skills: string[];
-  total_job_keywords: number;
-  total_matched: number;
-  total_missing: number;
-}
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+import { ATSScore, API_URL } from "../types";
+import Spinner from "./Spinner";
 
 const GRADE_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
   A: { bg: "bg-emerald-50", text: "text-emerald-700", ring: "ring-emerald-200" },
@@ -137,13 +98,7 @@ export default function GapAnalysis() {
         className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {loading ? (
-          <span className="flex items-center justify-center gap-2">
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-            </svg>
-            Analyzing your gap...
-          </span>
+          <Spinner>Analyzing your gap...</Spinner>
         ) : (
           "Analyze My Gap"
         )}

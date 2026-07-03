@@ -1,43 +1,11 @@
 "use client";
 
-/*
- * CoverLetterGenerator.tsx — AI-powered cover letter generator.
- *
- * UX FLOW:
- *   1. User fills in: job title, company, job description, their key experience,
- *      optional skills, and picks a tone (Formal / Conversational)
- *   2. "Generate Cover Letter" → POST /api/v1/cover-letter
- *   3. Result: the full letter text with word count badge, copy button, regenerate
- *
- * TONE SWITCHER:
- *   Two distinct modes controlled by a pill toggle (not a dropdown).
- *   Pill toggles feel more intentional than dropdowns for a binary choice —
- *   the user can see both options at once and understand the trade-off.
- *   The selected tone is reflected in the placeholder text to set expectations.
- *
- * WORD COUNT TRAFFIC LIGHT:
- *   250-350 words = green (ideal cover letter length)
- *   200-249 or 351-400 = amber (borderline)
- *   <200 or >400 = red (too short / too long)
- *   Recruiters spend ~30 seconds on a cover letter — length matters.
- *
- * CHARACTER COUNTER ON INPUTS:
- *   Job description is capped at 900 chars on the backend (to control tokens).
- *   We show a live counter so the user knows to trim if needed.
- */
-
-import { useState, useEffect, useRef } from "react";
-
-interface CoverLetterResponse {
-  cover_letter: string;
-  word_count: number;
-  model_used: string;
-  tip: string;
-}
+import { useState } from "react";
+import { CoverLetterResponse, API_URL } from "../types";
+import { useLoadingMessages } from "../hooks/useLoadingMessages";
+import Spinner from "./Spinner";
 
 type Tone = "formal" | "conversational";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 const LOADING_MESSAGES = [
   "Sending to AI model...",
@@ -70,30 +38,10 @@ export default function CoverLetterGenerator() {
 
   const [result, setResult] = useState<CoverLetterResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const loadingInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-  const msgIndex = useRef(0);
-
-  function startLoadingCycle() {
-    msgIndex.current = 0;
-    setLoadingMsg(LOADING_MESSAGES[0]);
-    loadingInterval.current = setInterval(() => {
-      msgIndex.current = Math.min(msgIndex.current + 1, LOADING_MESSAGES.length - 1);
-      setLoadingMsg(LOADING_MESSAGES[msgIndex.current]);
-    }, 4500);
-  }
-
-  function stopLoadingCycle() {
-    if (loadingInterval.current) {
-      clearInterval(loadingInterval.current);
-      loadingInterval.current = null;
-    }
-  }
-
-  useEffect(() => () => stopLoadingCycle(), []);
+  const { loadingMsg, start: startLoading, stop: stopLoading } = useLoadingMessages(LOADING_MESSAGES, 4500);
 
   async function handleGenerate() {
     if (!jobTitle.trim() || !companyName.trim() || !jobDescription.trim() || !experienceSummary.trim()) {
@@ -108,7 +56,7 @@ export default function CoverLetterGenerator() {
     setLoading(true);
     setError(null);
     setResult(null);
-    startLoadingCycle();
+    startLoading();
 
     try {
       const res = await fetch(`${API_URL}/api/v1/cover-letter`, {
@@ -142,7 +90,7 @@ export default function CoverLetterGenerator() {
       }
     } finally {
       setLoading(false);
-      stopLoadingCycle();
+      stopLoading();
     }
   }
 
@@ -296,13 +244,7 @@ export default function CoverLetterGenerator() {
         className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {loading ? (
-          <span className="flex items-center justify-center gap-2">
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-            </svg>
-            {loadingMsg}
-          </span>
+          <Spinner>{loadingMsg}</Spinner>
         ) : (
           "Generate Cover Letter"
         )}

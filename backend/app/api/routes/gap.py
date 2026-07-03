@@ -1,20 +1,4 @@
-"""
-gap.py — API route for gap analysis (paste job + resume text, get score).
-
-ENDPOINT: POST /api/v1/gap
-
-This is the most user-friendly endpoint:
-  - No JSON schema to learn
-  - No structured resume format required
-  - Just paste two blocks of text and get your score
-
-The pipeline:
-  raw job text → keyword_extractor → JobAnalysis
-  raw resume text → score_from_text() → ATSScore
-
-The ATSScore result has everything needed for the Gap Analysis UI:
-  matched_keywords (green chips), missing_keywords (red chips), overall score
-"""
+"""POST /api/v1/gap -- gap analysis from raw job + resume text."""
 
 from fastapi import APIRouter, HTTPException, Request
 from slowapi import Limiter
@@ -36,23 +20,11 @@ limiter = Limiter(key_func=get_remote_address)
     summary="Gap analysis from raw text",
     description=(
         "Accepts raw job description text + raw resume text. "
-        "Returns ATS score, matched skills, and missing skills. "
-        "No structured JSON required — just paste and go."
+        "Returns ATS score, matched skills, and missing skills."
     ),
 )
 @limiter.limit("30/minute")
 async def analyze_gap(request: Request, gap_req: GapRequest) -> ATSScore:
-    """
-    POST /api/v1/gap
-
-    Body (JSON):
-        {
-            "job_text": "Software Engineer — Requirements: Python, React...",
-            "resume_text": "Jane Developer — Skills: JavaScript, React, SQL..."
-        }
-
-    Returns ATSScore with overall score, grade, matched/missing skill lists.
-    """
     if not gap_req.job_text.strip():
         raise HTTPException(status_code=422, detail="job_text cannot be empty.")
     if not gap_req.resume_text.strip():

@@ -1,38 +1,8 @@
 "use client";
 
-/*
- * AnalyzerDemo.tsx — Interactive job description keyword extractor.
- *
- * WHY "use client"?
- * This component needs:
- *   - useState (to hold the job text the user types)
- *   - Event handlers (onClick, onChange — user interactions)
- * Server Components can't do either. So we mark this file as a Client
- * Component. Only this file and what it imports runs in the browser.
- * The rest of the page (hero, how-it-works, footer) stays as a Server
- * Component — no JS sent to the browser for those sections.
- *
- * WHY FETCH DIRECTLY INSTEAD OF A SERVER ACTION?
- * We're calling an external API server (FastAPI at :8000), not Next.js's
- * own server. Server Actions are for mutations within Next.js itself.
- * For calling external APIs, client-side fetch is the right tool.
- */
-
 import { useState } from "react";
-
-// Type matches the JobAnalysis schema from our Python backend
-interface JobAnalysis {
-  job_title: string;
-  company: string | null;
-  hard_skills: string[];
-  soft_skills: string[];
-  required_experience: string | null;
-  keywords: string[];
-  responsibilities: string[];
-}
-
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+import { JobAnalysis, API_URL } from "../types";
+import Spinner from "./Spinner";
 
 export default function AnalyzerDemo() {
   const [jobText, setJobText] = useState("");
@@ -95,13 +65,7 @@ export default function AnalyzerDemo() {
           className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? (
-            <span className="flex items-center justify-center gap-2">
-              <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-              </svg>
-              Analyzing...
-            </span>
+            <Spinner>Analyzing...</Spinner>
           ) : (
             "Extract ATS Keywords"
           )}

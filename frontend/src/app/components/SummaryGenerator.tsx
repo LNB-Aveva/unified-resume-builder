@@ -1,34 +1,9 @@
 "use client";
 
-/*
- * SummaryGenerator.tsx — AI-powered professional summary generator.
- *
- * UX FLOW:
- *   1. User fills in: job title, job description snippet, their experience bullets, years, skills
- *   2. Clicks "Generate Summary" → calls POST /api/v1/summary
- *   3. Result appears: the generated paragraph + word count + one actionable tip
- *   4. User can click "Copy" to grab the text, or "Regenerate" to try again
- *
- * WHY "REGENERATE"?
- *   Language models are non-deterministic (temperature > 0). Each call produces
- *   a slightly different output. Giving users a quick retry lets them pick the
- *   best version without re-filling the form.
- *
- * LOADING STATE UX:
- *   HuggingFace free tier cold-starts can take 10-20 seconds. We show a
- *   progress message that updates every 3s so the user knows it's working.
- */
-
-import { useState, useEffect, useRef } from "react";
-
-interface SummaryResponse {
-  summary: string;
-  word_count: number;
-  model_used: string;
-  tip: string;
-}
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+import { useState } from "react";
+import { SummaryResponse, API_URL } from "../types";
+import { useLoadingMessages } from "../hooks/useLoadingMessages";
+import Spinner from "./Spinner";
 
 const LOADING_MESSAGES = [
   "Sending to AI model...",
@@ -46,30 +21,10 @@ export default function SummaryGenerator() {
 
   const [result, setResult] = useState<SummaryResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const loadingInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-  const msgIndex = useRef(0);
-
-  function startLoadingCycle() {
-    msgIndex.current = 0;
-    setLoadingMsg(LOADING_MESSAGES[0]);
-    loadingInterval.current = setInterval(() => {
-      msgIndex.current = Math.min(msgIndex.current + 1, LOADING_MESSAGES.length - 1);
-      setLoadingMsg(LOADING_MESSAGES[msgIndex.current]);
-    }, 4000);
-  }
-
-  function stopLoadingCycle() {
-    if (loadingInterval.current) {
-      clearInterval(loadingInterval.current);
-      loadingInterval.current = null;
-    }
-  }
-
-  useEffect(() => () => stopLoadingCycle(), []);
+  const { loadingMsg, start: startLoading, stop: stopLoading } = useLoadingMessages(LOADING_MESSAGES);
 
   async function handleGenerate() {
     if (!jobTitle.trim() || !jobDescription.trim() || !experienceBullets.trim()) {
@@ -80,7 +35,7 @@ export default function SummaryGenerator() {
     setLoading(true);
     setError(null);
     setResult(null);
-    startLoadingCycle();
+    startLoading();
 
     try {
       const res = await fetch(`${API_URL}/api/v1/summary`, {
@@ -115,7 +70,7 @@ export default function SummaryGenerator() {
       }
     } finally {
       setLoading(false);
-      stopLoadingCycle();
+      stopLoading();
     }
   }
 
@@ -245,13 +200,7 @@ export default function SummaryGenerator() {
         className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {loading ? (
-          <span className="flex items-center justify-center gap-2">
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-            </svg>
-            {loadingMsg}
-          </span>
+          <Spinner>{loadingMsg}</Spinner>
         ) : (
           "Generate Professional Summary"
         )}
