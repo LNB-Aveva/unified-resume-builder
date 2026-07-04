@@ -1,35 +1,8 @@
 "use client";
 
-/*
- * ResumeExporter.tsx — Build and download an ATS-friendly PDF resume.
- *
- * UX FLOW:
- *   1. User picks a template (Classic / Modern / Minimal) via visual cards.
- *   2. User fills in four collapsible sections: Personal, Experience,
- *      Education, Skills. Summary can be pasted from Step 4 above.
- *   3. "Download PDF" → POST /api/v1/export/pdf with all resume data
- *      + the chosen template name.
- *   4. Browser receives a binary PDF blob and triggers a file download.
- *
- * WHY DOWNLOADING A BLOB IS DIFFERENT FROM A NORMAL FETCH:
- *   Most API calls fetch JSON. This one returns raw bytes (application/pdf).
- *   We get a Blob from the response, create a temporary object URL for it,
- *   attach it to a hidden <a> element and programmatically click it —
- *   that's how browsers trigger "Save File" without a page navigation.
- *   After the click we revoke the URL to free memory.
- *
- * MULTI-ENTRY FORM STATE:
- *   Experience and Education are dynamic arrays. Each entry has a local id
- *   (crypto.randomUUID()) for React's `key` prop. When the user clicks
- *   "Add Role" / "Add Education" we append a blank entry; "Remove" filters it out.
- *   This is the standard React pattern for variable-length form sections.
- *
- * COLLAPSIBLE SECTIONS:
- *   We hide/show each section with a boolean toggle per section name.
- *   This keeps the form compact — users open only the section they're editing.
- */
-
 import React, { useState } from "react";
+import { API_URL } from "../types";
+import Spinner from "./Spinner";
 
 interface PersonalInfo {
   full_name: string;
@@ -145,7 +118,6 @@ const TEMPLATES: {
   },
 ];
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 function blankExp(): ExperienceEntry {
   return { id: crypto.randomUUID(), company: "", title: "", start_date: "", end_date: "Present", bulletsText: "" };
@@ -536,13 +508,7 @@ export default function ResumeExporter() {
         className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {loading ? (
-          <span className="flex items-center justify-center gap-2">
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-            </svg>
-            Generating PDF...
-          </span>
+          <Spinner>Generating PDF...</Spinner>
         ) : success ? (
           <span className="flex items-center justify-center gap-2">
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

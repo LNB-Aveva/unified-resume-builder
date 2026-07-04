@@ -1,47 +1,8 @@
 "use client";
 
-/*
- * ComplianceChecker.tsx — ATS format compliance check UI.
- *
- * WHY A THIRD SECTION?
- * Keyword matching (gap analysis) checks: "Does your resume say the right things?"
- * Compliance checking asks: "Can ATS systems even READ your resume?"
- *
- * Both matter. A recruiter never sees a resume that ATS can't parse, regardless
- * of how good the content is.
- *
- * UX DESIGN DECISION — one textarea, not two:
- * The user already pasted their resume in Step 2 (Gap Analysis). This component
- * only needs the resume text (no job description). We keep it simple so the user
- * can re-paste or use a different resume to test.
- *
- * SEVERITY COLOR CODING:
- * Red card  = critical  (likely causes auto-rejection)
- * Amber card = warning  (reduces ATS score)
- * Blue card  = suggestion (best practice, worth knowing)
- * Green row  = passed  (no action needed)
- */
-
 import { useState } from "react";
-
-interface ComplianceCheck {
-  rule: string;
-  passed: boolean;
-  severity: string;
-  message: string;
-}
-
-interface ComplianceReport {
-  overall_score: number;
-  critical_issues: number;
-  warnings: number;
-  suggestions_failed: number;
-  passed_count: number;
-  total_checks: number;
-  checks: ComplianceCheck[];
-}
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+import { ComplianceCheck, ComplianceReport, API_URL } from "../types";
+import Spinner from "./Spinner";
 
 const SEVERITY_STYLES: Record<string, { badge: string; row: string; dot: string }> = {
   critical:   { badge: "bg-red-100 text-red-700",    row: "border-red-100 bg-red-50",    dot: "bg-red-500"   },
@@ -110,13 +71,7 @@ export default function ComplianceChecker() {
         className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {loading ? (
-          <span className="flex items-center justify-center gap-2">
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-            </svg>
-            Checking compliance...
-          </span>
+          <Spinner>Checking compliance...</Spinner>
         ) : (
           "Run ATS Compliance Check"
         )}
