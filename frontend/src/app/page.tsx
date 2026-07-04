@@ -75,8 +75,8 @@ const jsonLd = {
   name: "ResumeAI",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://unified-resume-builder.vercel.app",
   description:
-    "Free AI-powered resume builder with ATS keyword extraction, gap analysis, " +
-    "compliance checker, AI cover letter generator, bullet rewriter, and PDF export.",
+    "Free ATS resume checker and keyword analyzer. Extract ATS keywords, score your resume, " +
+    "run 15 compliance checks, generate AI cover letters, rewrite bullets, and export ATS-safe PDFs.",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   browserRequirements: "Requires JavaScript",
@@ -154,15 +154,15 @@ export default function Home() {
         </div>
 
         <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-5">
-          Stop losing jobs to ATS filters.
+          Free ATS Resume Checker
           <br />
-          <span className="text-indigo-600">Find out why in 10 seconds.</span>
+          <span className="text-indigo-600">& Keyword Analyzer</span>
         </h1>
 
         <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-8">
           75% of resumes are rejected by ATS software before a human ever reads
-          them. Paste any job description below and instantly see every keyword
-          ATS systems scan for — then fix your resume to match.
+          them. Scan any job description and get your ATS match score in
+          10 seconds — no sign-up, no paywall, 9 AI tools, 100% free.
         </p>
 
         <a
@@ -199,38 +199,38 @@ export default function Home() {
       >
         <div className="mx-auto max-w-5xl px-4">
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">
-            How it works
+            How It Works — 8 Free ATS Resume Tools
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 step: "1",
-                title: "Extract ATS keywords",
-                body: "Paste any job posting — our NLP engine instantly identifies every keyword ATS filters scan for.",
+                title: "Extract ATS keywords from any job posting",
+                body: "Paste any job description — our NLP engine instantly identifies every keyword ATS filters scan for.",
               },
               {
                 step: "2",
-                title: "Score your resume",
-                body: "Paste your resume to see matched vs missing keywords and your ATS score.",
+                title: "Resume gap analysis — find missing keywords",
+                body: "Paste your resume to see matched vs missing keywords and your ATS match score.",
               },
               {
                 step: "3",
-                title: "Check formatting",
+                title: "ATS compliance checker — 15 format rules",
                 body: "Run 15 ATS format checks to catch issues that prevent parsers from reading your resume.",
               },
               {
                 step: "4",
-                title: "Generate AI summary",
+                title: "AI professional summary generator",
                 body: "Paste your experience bullets — AI rewrites them into a tailored professional summary.",
               },
               {
                 step: "5",
-                title: "Write cover letter",
+                title: "Free AI cover letter generator",
                 body: "AI generates a 250-320 word cover letter tailored to the company. Formal or conversational tone.",
               },
               {
                 step: "6",
-                title: "Rewrite weak bullets",
+                title: "AI bullet rewriter — add missing keywords",
                 body: "AI rewrites each bullet to naturally include your missing keywords — without inventing facts.",
               },
               {
@@ -263,7 +263,7 @@ export default function Home() {
       <section id="demo" className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Try it now — free
+            ATS Keyword Extractor — Try it free
           </h2>
           <p className="text-gray-500 text-sm">
             Paste any job description. Results appear in under 2 seconds.
@@ -282,7 +282,7 @@ export default function Home() {
               Step 2
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Now check your resume against the job
+              Resume Gap Analysis — Find Missing Keywords
             </h2>
             <p className="text-gray-500 text-sm max-w-xl mx-auto">
               Paste both documents. We&apos;ll show you exactly which keywords
@@ -302,7 +302,7 @@ export default function Home() {
             Step 3
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Check if ATS can even read your resume
+            ATS Compliance Checker — 15 Format Rules
           </h2>
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
             Keywords don&apos;t matter if ATS can&apos;t parse the file. Run 15 formatting
@@ -320,7 +320,7 @@ export default function Home() {
               Step 4
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Generate a tailored professional summary
+              AI Professional Summary Generator
             </h2>
             <p className="text-gray-500 text-sm max-w-xl mx-auto">
               Paste your experience bullets and the job description — AI rewrites them into a
@@ -338,7 +338,7 @@ export default function Home() {
             Step 5
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Generate a tailored cover letter
+            Free AI Cover Letter Generator
           </h2>
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
             Paste your key achievements and the job description — AI writes a personalised
@@ -356,7 +356,7 @@ export default function Home() {
               Step 6
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Rewrite weak bullets with your missing keywords
+              AI Bullet Rewriter — Add Missing Keywords
             </h2>
             <p className="text-gray-500 text-sm max-w-xl mx-auto">
               Paste up to 5 bullets from your resume and the missing keywords from Step 2.
@@ -374,7 +374,7 @@ export default function Home() {
             Step 7
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Download your optimised resume as PDF
+            Download ATS-Friendly Resume as PDF
           </h2>
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
             Fill in your details — paste the AI summary from Step 4 and rewritten
@@ -392,7 +392,7 @@ export default function Home() {
               Step 8
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Track every application in one place
+              Job Application Tracker
             </h2>
             <p className="text-gray-500 text-sm max-w-xl mx-auto">
               Save the jobs you&apos;re applying to, track their status, and add notes — all stored
