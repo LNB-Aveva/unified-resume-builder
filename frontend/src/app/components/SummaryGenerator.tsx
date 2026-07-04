@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SummaryResponse, API_URL } from "../types";
+import { SummaryResponse, API_URL, connectionError } from "../types";
 import { useLoadingMessages } from "../hooks/useLoadingMessages";
 import Spinner from "./Spinner";
 
@@ -58,16 +58,7 @@ export default function SummaryGenerator() {
 
       setResult(data);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Unknown error";
-      if (msg === "Failed to fetch") {
-        setError(
-          "Could not reach the API server. " +
-          "The backend may be waking up (free tier sleeps after 15 min of inactivity). " +
-          "Please wait 30-60 seconds and try again."
-        );
-      } else {
-        setError(msg);
-      }
+      setError(connectionError(err));
     } finally {
       setLoading(false);
       stopLoading();

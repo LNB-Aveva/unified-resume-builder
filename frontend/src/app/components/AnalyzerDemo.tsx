@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { JobAnalysis, API_URL } from "../types";
+import { JobAnalysis, API_URL, connectionError } from "../types";
 import Spinner from "./Spinner";
 
 export default function AnalyzerDemo() {
@@ -32,10 +32,8 @@ export default function AnalyzerDemo() {
 
       const data: JobAnalysis = await res.json();
       setResult(data);
-    } catch {
-      setError(
-        "Could not connect to the backend. Make sure the FastAPI server is running on port 8000."
-      );
+    } catch (err) {
+      setError(connectionError(err));
     } finally {
       setLoading(false);
     }
