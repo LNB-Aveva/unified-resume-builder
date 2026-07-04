@@ -1,72 +1,25 @@
-"""
-cover_letter.py — Generates tailored cover letters via HuggingFace Inference API.
-
-PROMPT ENGINEERING — COVER LETTER vs SUMMARY:
-
-  The professional summary (Session 3) is 40-60 words, third person, no fluff.
-  A cover letter is the opposite: 250-350 words, first person, narrative arc,
-  and it MUST feel personal to the specific company and role.
-
-  Key prompt differences:
-    1. LONGER OUTPUT — we set max_tokens=600 (vs 200 for summary).
-       Cover letters need 3-4 full paragraphs.
-
-    2. STRUCTURE GUIDANCE — we tell the model the four-paragraph formula:
-         Para 1: Hook — why THIS company, why THIS role excites you
-         Para 2: What you bring — your strongest 1-2 achievements, role-specific
-         Para 3: Bridge — connect your experience to their specific needs
-         Para 4: Close — confident call to action, no "I hope to hear from you"
-
-    3. TONE FORK — two distinct system prompts:
-         formal:         "Dear Hiring Team, ... Yours sincerely"
-         conversational: warmer opener, contractions allowed, energy-forward
-
-    4. ANTI-CLICHE RULES — small models love filler phrases:
-         Banned: "I am writing to express my interest in..."
-                 "I am a passionate and motivated..."
-                 "I would be a great fit because..."
-         These phrases appear in most training data cover letters and models
-         default to them without explicit instructions to avoid them.
-
-    5. NO INVENTED FACTS — same rule as bullet rewriter. The model must
-       only use achievements from experience_summary, not invent metrics.
-
-TEMPERATURE 0.75:
-  Slightly higher than both the summary (0.7) and rewriter (0.6).
-  Cover letters benefit from more natural, varied sentence rhythm —
-  a temperature that's too low produces wooden, repetitive prose.
-
-POST-PROCESSING:
-  We strip any "Dear [Name]," or "Yours sincerely," boilerplate the model
-  sometimes prepends/appends unprompted, leaving just the letter body.
-  The user can add salutation/sign-off when they paste it into their email.
-"""
-
-import os
 import re
-import httpx
 
 from app.schemas.cover_letter import CoverLetterRequest, CoverLetterResponse
+from app.services.ai.hf_client import call_hf
 from app.services.ai.sanitizer import sanitize_for_prompt
 
-_MODEL = "Qwen/Qwen2.5-7B-Instruct:fastest"
-_HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
 _MAX_TOKENS = 650
 
 _TIPS_FORMAL = [
-    "Replace 'Dear Hiring Team' with the hiring manager's actual name — it triples open rates.",
+    "Replace 'Dear Hiring Team' with the hiring manager's actual name -- it triples open rates.",
     "Add one specific fact about the company (a recent product launch, award, or mission statement) to the opening.",
-    "Quantify your biggest achievement in the second paragraph — numbers make claims credible.",
+    "Quantify your biggest achievement in the second paragraph -- numbers make claims credible.",
     "Cut the last sentence of your closing and replace it with a specific date: 'I would welcome a call the week of [date].'",
-    "Read it aloud — if you wouldn't say a sentence out loud, rewrite it.",
+    "Read it aloud -- if you wouldn't say a sentence out loud, rewrite it.",
 ]
 
 _TIPS_CONVERSATIONAL = [
-    "Drop the 'Dear Hiring Team' entirely — start straight with your hook sentence.",
+    "Drop the 'Dear Hiring Team' entirely -- start straight with your hook sentence.",
     "Mention something specific from their careers page or LinkedIn about the team culture.",
-    "Use the word 'because' at least once — it signals you have reasons, not just enthusiasm.",
+    "Use the word 'because' at least once -- it signals you have reasons, not just enthusiasm.",
     "End with energy, not apology: 'I'd love to chat' beats 'I hope to hear from you.'",
-    "Keep paragraphs to 3-4 sentences max — conversational means scannable.",
+    "Keep paragraphs to 3-4 sentences max -- conversational means scannable.",
 ]
 
 
@@ -77,8 +30,8 @@ def _build_messages(req: CoverLetterRequest) -> list[dict]:
         tone_instructions = (
             "Tone: warm, energetic, and direct. Contractions are fine. "
             "Short punchy sentences mixed with longer ones. "
-            "Show personality — this should sound like a real person, not a template. "
-            "Opening: do NOT start with 'Dear' — start with a compelling hook sentence "
+            "Show personality -- this should sound like a real person, not a template. "
+            "Opening: do NOT start with 'Dear' -- start with a compelling hook sentence "
             "about why this specific company or role excites you. "
             "Closing: confident and forward-looking, e.g. 'I'd love to discuss...' "
             "or 'Looking forward to exploring this with you.' No sign-off needed."
@@ -88,7 +41,7 @@ def _build_messages(req: CoverLetterRequest) -> list[dict]:
             "Tone: professional and confident. No contractions. "
             "Open with 'Dear Hiring Team,' on the first line. "
             "Close with 'Yours sincerely,' followed by a blank line for the candidate's name. "
-            "Language should be polished but not stiff — avoid passive voice where possible."
+            "Language should be polished but not stiff -- avoid passive voice where possible."
         )
 
     system = (
@@ -107,7 +60,7 @@ def _build_messages(req: CoverLetterRequest) -> list[dict]:
         "Target length: 250-320 words. "
         "BANNED phrases: 'I am passionate', 'I am a motivated', 'I would be a great fit', "
         "'I am writing to express my interest', 'hard-working', 'team player', 'go-getter'. "
-        "Output the letter text only — no preamble, no labels, no 'Here is your cover letter:'."
+        "Output the letter text only -- no preamble, no labels, no 'Here is your cover letter:'."
     )
 
     user = (
@@ -126,54 +79,19 @@ def _build_messages(req: CoverLetterRequest) -> list[dict]:
 
 def _clean_output(raw: str) -> str:
     text = raw.strip()
-    # Strip markdown fences if the model wraps in ```
     text = re.sub(r"^```[^\n]*\n?", "", text)
     text = re.sub(r"\n?```$", "", text)
-    # Strip "Here is your cover letter:" style preambles
     text = re.sub(r"^(Here is|Below is|This is)[^\n]*\n+", "", text, flags=re.IGNORECASE)
     return text.strip()
 
 
 async def generate_cover_letter(req: CoverLetterRequest) -> CoverLetterResponse:
-    """
-    Call HuggingFace serverless endpoint and return a CoverLetterResponse.
-
-    Raises:
-        ValueError — if HUGGINGFACE_API_KEY is not set
-        httpx.TimeoutException — if HF model cold-start exceeds 45s
-        httpx.HTTPStatusError — if HF API returns an error
-        RuntimeError — if the model returns empty output
-    """
-    api_key = os.environ.get("HUGGINGFACE_API_KEY", "").strip()
-    if not api_key or api_key == "hf_your_key_here":
-        raise ValueError(
-            "HUGGINGFACE_API_KEY is not set. "
-            "Get a free key at https://huggingface.co/settings/tokens "
-            "and add it to backend/.env, then restart the server."
-        )
-
-    payload = {
-        "model": _MODEL,
-        "messages": _build_messages(req),
-        "max_tokens": _MAX_TOKENS,
-        "temperature": 0.75,
-    }
-
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
-
-    async with httpx.AsyncClient(timeout=45.0) as client:
-        response = await client.post(_HF_API_URL, json=payload, headers=headers)
-        response.raise_for_status()
-
-    data = response.json()
-
-    try:
-        raw_text = data["choices"][0]["message"]["content"]
-    except (KeyError, IndexError, TypeError):
-        raise RuntimeError(f"Unexpected response shape from HuggingFace: {data}")
+    raw_text = await call_hf(
+        messages=_build_messages(req),
+        max_tokens=_MAX_TOKENS,
+        temperature=0.75,
+        timeout=45.0,
+    )
 
     letter = _clean_output(raw_text)
     if not letter:
@@ -186,6 +104,6 @@ async def generate_cover_letter(req: CoverLetterRequest) -> CoverLetterResponse:
     return CoverLetterResponse(
         cover_letter=letter,
         word_count=word_count,
-        model_used=_MODEL,
+        model_used="Qwen/Qwen2.5-7B-Instruct:fastest",
         tip=tip,
     )

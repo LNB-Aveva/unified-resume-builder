@@ -1,46 +1,9 @@
 "use client";
 
-/*
- * BulletRewriter.tsx — AI-powered resume bullet point rewriter.
- *
- * UX FLOW:
- *   1. User pastes up to 5 bullets from their resume
- *   2. User enters missing keywords (ideally copied from the Gap Analysis above)
- *   3. User enters the job title
- *   4. Click "Rewrite Bullets" → POST /api/v1/rewrite
- *   5. Results show each bullet as BEFORE / AFTER with keywords highlighted
- *   6. Copy individual bullets or copy all at once
- *
- * BEFORE/AFTER DESIGN:
- *   Showing both versions side-by-side builds trust — the user can verify
- *   the AI didn't invent facts or change the meaning. They can choose to
- *   accept, reject, or manually edit before pasting into their resume.
- *
- * KEYWORD HIGHLIGHTING:
- *   The backend returns `keywords_woven` per bullet. We highlight those words
- *   in the rewritten version so the user immediately sees what changed.
- *   This is pure string matching on the frontend — no extra API call needed.
- *
- * 5-BULLET LIMIT:
- *   Enforced by the backend, but we warn early in the UI so the user
- *   isn't surprised when their 8th bullet silently disappears.
- */
-
-import { useState, useEffect, useRef } from "react";
-
-interface RewrittenBullet {
-  original: string;
-  rewritten: string;
-  keywords_woven: string[];
-}
-
-interface RewriteResponse {
-  rewrites: RewrittenBullet[];
-  model_used: string;
-  tip: string;
-}
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+import { useState } from "react";
+import { RewrittenBullet, RewriteResponse, API_URL } from "../types";
+import { useLoadingMessages } from "../hooks/useLoadingMessages";
+import Spinner from "./Spinner";
 
 const LOADING_MESSAGES = [
   "Sending to AI model...",
@@ -75,34 +38,14 @@ export default function BulletRewriter() {
 
   const [result, setResult] = useState<RewriteResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [loadingMsg, setLoadingMsg] = useState(LOADING_MESSAGES[0]);
   const [error, setError] = useState<string | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [copiedAll, setCopiedAll] = useState(false);
 
-  const loadingInterval = useRef<ReturnType<typeof setInterval> | null>(null);
-  const msgIndex = useRef(0);
+  const { loadingMsg, start: startLoading, stop: stopLoading } = useLoadingMessages(LOADING_MESSAGES);
 
   const bulletLines = bullets.trim().split("\n").filter((l) => l.trim()).length;
   const overLimit = bulletLines > 5;
-
-  function startLoadingCycle() {
-    msgIndex.current = 0;
-    setLoadingMsg(LOADING_MESSAGES[0]);
-    loadingInterval.current = setInterval(() => {
-      msgIndex.current = Math.min(msgIndex.current + 1, LOADING_MESSAGES.length - 1);
-      setLoadingMsg(LOADING_MESSAGES[msgIndex.current]);
-    }, 4000);
-  }
-
-  function stopLoadingCycle() {
-    if (loadingInterval.current) {
-      clearInterval(loadingInterval.current);
-      loadingInterval.current = null;
-    }
-  }
-
-  useEffect(() => () => stopLoadingCycle(), []);
 
   async function handleRewrite() {
     if (!jobTitle.trim()) {
@@ -117,7 +60,7 @@ export default function BulletRewriter() {
     setLoading(true);
     setError(null);
     setResult(null);
-    startLoadingCycle();
+    startLoading();
 
     try {
       const res = await fetch(`${API_URL}/api/v1/rewrite`, {
@@ -150,7 +93,7 @@ export default function BulletRewriter() {
       }
     } finally {
       setLoading(false);
-      stopLoadingCycle();
+      stopLoading();
     }
   }
 
@@ -258,13 +201,7 @@ export default function BulletRewriter() {
         className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {loading ? (
-          <span className="flex items-center justify-center gap-2">
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-            </svg>
-            {loadingMsg}
-          </span>
+          <Spinner>{loadingMsg}</Spinner>
         ) : (
           "Rewrite Bullets with AI"
         )}

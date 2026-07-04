@@ -1,15 +1,4 @@
-"""
-score.py — API route for ATS resume scoring.
-
-ENDPOINT: POST /api/v1/score
-
-This is the second core endpoint. The analyze endpoint tells you what a job
-WANTS. This endpoint tells you how well your resume MATCHES what the job wants.
-
-Together these two endpoints power the core value proposition of the product:
-  1. POST /api/v1/analyze  → "Here's what this job requires"
-  2. POST /api/v1/score    → "Here's how your resume stacks up against it"
-"""
+"""POST /api/v1/score -- score a resume against a job description."""
 
 from fastapi import APIRouter, HTTPException, Request
 from slowapi import Limiter
@@ -34,26 +23,6 @@ limiter = Limiter(key_func=get_remote_address)
 )
 @limiter.limit("30/minute")
 async def score_resume_endpoint(request: Request, score_req: ScoreRequest) -> ATSScore:
-    """
-    POST /api/v1/score
-
-    Body (JSON):
-        {
-            "job": {
-                "raw_text": "...full job description...",
-                "title": "Software Engineer",    ← optional
-                "company": "TechCorp"            ← optional
-            },
-            "resume": {
-                "personal_info": { "full_name": "...", "email": "..." },
-                "work_experience": [...],
-                "education": [...],
-                "skills": ["Python", "React", ...]
-            }
-        }
-
-    Returns an ATSScore with overall score, grade, matched/missing skills.
-    """
     if not score_req.job.raw_text or not score_req.job.raw_text.strip():
         raise HTTPException(
             status_code=422,

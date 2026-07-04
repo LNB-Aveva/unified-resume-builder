@@ -1,38 +1,8 @@
-"""
-rewrite.py — API route for AI-powered resume bullet rewriting.
-
-ENDPOINT: POST /api/v1/rewrite
-
-WHY A SEPARATE ROUTE FROM /summary:
-  The summary generator creates *new* prose from scratch.
-  The rewriter *transforms existing content* — the constraint
-  "preserve factual content, don't invent metrics" means the
-  prompt and output parsing are fundamentally different.
-  Keeping them in separate routes and services makes each
-  easier to tune and test independently.
-
-REQUEST VALIDATION:
-  We validate the three required fields before hitting the AI.
-  Missing keywords is optional in practice (user may not have
-  run Gap Analysis yet), but we require job_title and bullets
-  because the prompt collapses without them.
-
-ERROR MAPPING (same pattern as summary.py):
-  ValueError  → 503  (missing API key)
-  Timeout     → 504  (HF cold-start)
-  HTTPStatus  → 502  (upstream API error)
-  RuntimeError → 500  (empty/unparseable model output)
-"""
-
-import logging
-
 from fastapi import APIRouter, HTTPException, Request
-import httpx
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
-logger = logging.getLogger(__name__)
-
+from app.api.routes._ai_errors import call_ai_service
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse
 from app.services.ai.rewriter import rewrite_bullets
 
@@ -53,46 +23,9 @@ limiter = Limiter(key_func=get_remote_address)
 )
 @limiter.limit("10/minute")
 async def rewrite_bullets_route(request: Request, request_body: BulletRewriteRequest) -> BulletRewriteResponse:
-    """
-    POST /api/v1/rewrite
-
-    Body (JSON):
-        {
-          "job_title": "Senior Software Engineer",
-          "missing_keywords": "Docker, Kubernetes, CI/CD, microservices",
-          "bullets": "- Worked on backend services\\n- Helped with deployments"
-        }
-
-    Returns BulletRewriteResponse with original/rewritten pairs + keywords added.
-    """
     if not request_body.job_title.strip():
         raise HTTPException(status_code=422, detail="job_title cannot be empty.")
     if not request_body.bullets.strip():
         raise HTTPException(status_code=422, detail="bullets cannot be empty.")
 
-    try:
-        return await rewrite_bullets(request_body)
-
-    except ValueError:
-        raise HTTPException(status_code=503, detail="AI service is not configured. Please contact support.")
-
-    except httpx.TimeoutException:
-        raise HTTPException(
-            status_code=504,
-            detail=(
-                "HuggingFace model timed out — try reducing to 3 bullets "
-                "or wait 30s for the model to warm up."
-            ),
-        )
-
-    except httpx.HTTPStatusError as e:
-        logger.error("HF API error %s: %s", e.response.status_code, e.response.text[:200])
-        raise HTTPException(status_code=502, detail="AI service temporarily unavailable.")
-
-    except RuntimeError as e:
-        logger.error("Runtime error in rewrite: %s", e)
-        raise HTTPException(status_code=500, detail="Failed to rewrite bullets. Please try again.")
-
-    except Exception as e:
-        logger.error("Unexpected error in rewrite: %s: %s", type(e).__name__, e)
-        raise HTTPException(status_code=500, detail="An internal error occurred.")
+    return await call_ai_service(rewrite_bullets(request_body))
