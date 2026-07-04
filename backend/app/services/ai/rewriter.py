@@ -4,7 +4,8 @@ from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse, Re
 from app.services.ai.hf_client import call_hf
 from app.services.ai.sanitizer import sanitize_for_prompt
 
-_MAX_TOKENS = 700
+_MAX_TOKENS = 1200
+_SINGLE_MAX_TOKENS = 250
 
 _TIPS = [
     "Use numbers wherever possible -- '40% faster' beats 'significantly faster' every time.",
@@ -41,6 +42,32 @@ def _build_messages(req: BulletRewriteRequest, bullets: list[str]) -> list[dict]
         f"Job title: {sanitize_for_prompt(req.job_title)}\n"
         f"Missing keywords to weave in: {sanitize_for_prompt(req.missing_keywords)}\n\n"
         f"Rewrite ALL {count} bullets below:\n{sanitize_for_prompt(bullet_list)}"
+    )
+
+    return [
+        {"role": "system", "content": system},
+        {"role": "user", "content": user},
+    ]
+
+
+def _build_single_message(req: BulletRewriteRequest, bullet: str) -> list[dict]:
+    system = (
+        "You are an expert resume writer specialising in ATS optimisation. "
+        "Rewrite ONE bullet point to: "
+        "(1) open with a stronger past-tense action verb, "
+        "(2) naturally incorporate one or two of the provided missing keywords, "
+        "(3) preserve all factual content -- NEVER invent metrics, "
+        "(4) stay under 20 words. "
+        "Output this exact format:\n"
+        "ORIGINAL: <copy the original bullet verbatim>\n"
+        "REWRITTEN: <your rewritten version>\n"
+        "KEYWORDS: <comma-separated keywords you wove in, or NONE>"
+    )
+
+    user = (
+        f"Job title: {sanitize_for_prompt(req.job_title)}\n"
+        f"Missing keywords: {sanitize_for_prompt(req.missing_keywords)}\n\n"
+        f"Rewrite this bullet:\n- {sanitize_for_prompt(bullet.lstrip('- ').lstrip('* '))}"
     )
 
     return [
@@ -117,6 +144,23 @@ def _parse_rewrites(raw: str, originals: list[str]) -> list[RewrittenBullet]:
     return results
 
 
+async def _rewrite_single(req: BulletRewriteRequest, bullet: str) -> RewrittenBullet:
+    raw = await call_hf(
+        messages=_build_single_message(req, bullet),
+        max_tokens=_SINGLE_MAX_TOKENS,
+        temperature=0.6,
+        timeout=30.0,
+    )
+    parsed = _parse_rewrites(raw, [bullet])
+    if parsed:
+        return parsed[0]
+    return RewrittenBullet(
+        original=bullet,
+        rewritten=bullet,
+        keywords_woven=[],
+    )
+
+
 async def rewrite_bullets(req: BulletRewriteRequest) -> BulletRewriteResponse:
     bullets = [b.strip() for b in req.bullets.strip().splitlines() if b.strip()]
     bullets = bullets[:5]
@@ -129,6 +173,15 @@ async def rewrite_bullets(req: BulletRewriteRequest) -> BulletRewriteResponse:
     )
 
     rewrites = _parse_rewrites(raw_text, bullets)
+
+    if len(rewrites) < len(bullets):
+        rewritten_originals = {r.original.lower().strip() for r in rewrites}
+        for bullet in bullets:
+            clean = bullet.lstrip("- ").lstrip("* ").lower().strip()
+            if clean not in rewritten_originals:
+                single = await _rewrite_single(req, bullet)
+                rewrites.append(single)
+
     if not rewrites:
         raise RuntimeError("Model returned no rewritten bullets. Try again or simplify the input.")
 
