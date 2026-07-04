@@ -7,8 +7,22 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi.middleware.cors import CORSMiddleware
 
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+
 from app.core.config import settings  # noqa: F401
 from app.api.routes import analyze, score, gap, compliance, summary, rewrite, export, cover_letter
+
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        if _is_production:
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        return response
 
 limiter = Limiter(key_func=get_remote_address)
 
@@ -42,6 +56,8 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
 )
+
+app.add_middleware(SecurityHeadersMiddleware)
 
 app.include_router(analyze.router, prefix="/api/v1", tags=["Analysis"])
 app.include_router(score.router, prefix="/api/v1", tags=["Scoring"])
