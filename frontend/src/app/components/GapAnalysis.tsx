@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ATSScore, API_URL } from "../types";
+import { ATSScore, API_URL, connectionError } from "../types";
 import Spinner from "./Spinner";
 
 const GRADE_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
@@ -37,8 +37,8 @@ export default function GapAnalysis() {
 
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
       setResult(await res.json());
-    } catch {
-      setError("Could not connect to the backend. Make sure the FastAPI server is running on port 8000.");
+    } catch (err) {
+      setError(connectionError(err));
     } finally {
       setLoading(false);
     }
