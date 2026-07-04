@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ComplianceCheck, ComplianceReport, API_URL } from "../types";
+import { ComplianceCheck, ComplianceReport, API_URL, connectionError } from "../types";
 import Spinner from "./Spinner";
 
 const SEVERITY_STYLES: Record<string, { badge: string; row: string; dot: string }> = {
@@ -33,8 +33,8 @@ export default function ComplianceChecker() {
       });
       if (!res.ok) throw new Error(`Server error: ${res.status}`);
       setResult(await res.json());
-    } catch {
-      setError("Could not connect to the backend. Make sure the FastAPI server is running on port 8000.");
+    } catch (err) {
+      setError(connectionError(err));
     } finally {
       setLoading(false);
     }

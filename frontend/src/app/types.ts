@@ -69,3 +69,15 @@ export interface CoverLetterResponse {
 }
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+export function connectionError(err: unknown): string {
+  const msg = err instanceof Error ? err.message : "";
+  if (msg === "Failed to fetch" || msg === "Load failed") {
+    return (
+      "Could not reach the API server. " +
+      "The backend may be waking up (free tier sleeps after 15 min of inactivity). " +
+      "Please wait 30–60 seconds and try again."
+    );
+  }
+  return msg || "Something went wrong. Please try again.";
+}
