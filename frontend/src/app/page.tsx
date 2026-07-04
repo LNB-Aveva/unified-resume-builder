@@ -133,6 +133,9 @@ export default function Home() {
             <a href="#how-it-works" className="hover:text-gray-900 transition">
               How it works
             </a>
+            <a href="/blog" className="hover:text-gray-900 transition">
+              Blog
+            </a>
             <a href="#faq" className="hover:text-gray-900 transition">
               FAQ
             </a>
