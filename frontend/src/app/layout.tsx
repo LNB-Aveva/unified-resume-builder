@@ -30,31 +30,30 @@ export const metadata: Metadata = {
     // The default is used when a page exports no metadata.title of its own.
     // The template applies to any child page that sets a title — %s is replaced
     // by that page's title. Keeps every page branded consistently.
-    default: "ResumeAI — Free ATS Resume Builder & Keyword Analyzer",
+    default: "Free ATS Resume Checker & Keyword Analyzer | ResumeAI",
     template: "%s | ResumeAI",
   },
 
   description:
-    "75% of resumes are rejected by ATS filters before a human reads them. " +
-    "ResumeAI extracts ATS keywords, scores your resume, runs 15 format checks, " +
-    "rewrites bullets with AI, generates cover letters, and exports ATS-safe PDFs — " +
-    "9 tools, 100% free, no sign-up.",
+    "Free ATS resume checker with no sign-up. Scan your resume for ATS keywords, " +
+    "get an instant match score, run 15 formatting checks, rewrite bullets with AI, " +
+    "and download ATS-safe PDFs. 9 tools, 100% free.",
 
   // Keywords matter less to Google than they used to, but still help Bing and
   // give crawlers vocabulary to understand the page's topic.
   keywords: [
-    "ATS resume checker",
+    "free ATS resume checker",
+    "ATS keyword scanner",
+    "ATS score checker free",
     "resume keyword analyzer",
     "ATS friendly resume builder",
-    "free resume builder",
-    "AI cover letter generator",
-    "resume gap analysis",
+    "free resume builder no sign up",
+    "AI cover letter generator free",
+    "resume gap analysis tool",
     "ATS compliance checker",
     "AI bullet rewriter",
-    "PDF resume download",
-    "job application tracker",
-    "resume optimizer",
-    "ATS score checker",
+    "how to beat ATS",
+    "ATS resume keywords by industry",
   ],
 
   // Open Graph — controls how the page looks when shared on LinkedIn, Slack,
@@ -63,18 +62,18 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "ResumeAI",
-    title: "ResumeAI — Free ATS Resume Builder & Keyword Analyzer",
+    title: "Free ATS Resume Checker & Keyword Analyzer | ResumeAI",
     description:
-      "Stop losing jobs to ATS filters. Extract keywords, score your resume, " +
-      "rewrite bullets with AI, generate cover letters, and download ATS-safe PDFs. " +
-      "9 tools. No sign-up. 100% free.",
+      "Free ATS resume checker with no sign-up. Scan for keywords, get your match " +
+      "score, run 15 formatting checks, rewrite bullets with AI, and export ATS-safe PDFs. " +
+      "9 tools. 100% free.",
     url: "/",
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "ResumeAI — Free ATS Resume Optimizer",
+        alt: "ResumeAI — Free ATS Resume Checker & Keyword Analyzer",
       },
     ],
   },
@@ -83,10 +82,10 @@ export const metadata: Metadata = {
   // summary_large_image shows a full-width image card (most impactful).
   twitter: {
     card: "summary_large_image",
-    title: "ResumeAI — Free ATS Resume Builder",
+    title: "Free ATS Resume Checker & Keyword Analyzer | ResumeAI",
     description:
       "9 free AI tools to pass ATS filters. Keyword extractor, gap analysis, " +
-      "AI bullets, cover letter, PDF export. No sign-up.",
+      "compliance checker, AI cover letter, bullet rewriter, PDF export. No sign-up.",
     images: ["/opengraph-image"],
   },
 
