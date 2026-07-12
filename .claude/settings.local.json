@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout *)",
+      "Bash(mkdir -p \"C:/Users/laxminarayana.bingi/my-workspace/.claude/commands\")",
+      "Bash(mv \"C:/Users/laxminarayana.bingi/my-workspace/bingis-projects/AI Resume Generator/.claude/commands/scaffold.md\" \"C:/Users/laxminarayana.bingi/my-workspace/bingis-projects/AI Resume Generator/.claude/commands/db-migration.md\" \"C:/Users/laxminarayana.bingi/my-workspace/bingis-projects/AI Resume Generator/.claude/commands/ui-sync.md\" \"C:/Users/laxminarayana.bingi/my-workspace/bingis-projects/AI Resume Generator/.claude/commands/security-audit.md\" \"C:/Users/laxminarayana.bingi/my-workspace/.claude/commands/\")",
+      "Bash(python -c ' *)",
+      "Bash(python -m py_compile backend/app/main.py)",
+      "Bash(python -m pytest tests/unit/ -q)"
+    ]
+  }
+}
