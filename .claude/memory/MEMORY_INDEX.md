@@ -26,6 +26,7 @@ On a new laptop, after cloning, copy these files to your Claude Code memory dire
 - [project_resume_session14_07032026.md](project_resume_session14_07032026.md) — SEO session: PR #22+#23 merged, PR #24 created
 - [project_resume_session15_07112026.md](project_resume_session15_07112026.md) — GitHub sync verified, laptop migration prep complete
 - [project_resume_session17_07122026.md](project_resume_session17_07122026.md) — New laptop confirmed set up, CORS multi-origin update, session 17 memory
+- [project_resume_session18_07132026.md](project_resume_session18_07132026.md) — Domain resumeai.cv purchased, OG image + CSP fixes committed (ed9ad5b), Steps 2-7 pending
 
 ## Code Reviews
 - [project_resume_code_review.md](project_resume_code_review.md) — 2026-06-29: 10 findings (XSS, env mismatch, DEBUG, rate limit, ATS score)
