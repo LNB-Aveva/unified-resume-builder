@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+const _backendUrl =
+  process.env.NEXT_PUBLIC_API_URL ??
+  "https://unified-resume-builder-api.onrender.com";
+
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["10.0.0.183"],
   async headers() {
@@ -15,7 +19,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob:",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.supabase.co https://unified-resume-builder-api.onrender.com",
+              `connect-src 'self' https://*.supabase.co ${_backendUrl}`,
               "frame-ancestors 'none'",
             ].join("; "),
           },
