@@ -1,9 +1,8 @@
 """POST /api/v1/gap -- gap analysis from raw job + resume text."""
 
 from fastapi import APIRouter, HTTPException, Request
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
+from app.core.rate_limit import limiter
 from app.schemas.gap import GapRequest
 from app.schemas.job import JobDescription
 from app.schemas.score import ATSScore
@@ -11,7 +10,6 @@ from app.services.nlp.keyword_extractor import extract_keywords
 from app.services.scoring.ats_scorer import score_from_text
 
 router = APIRouter()
-limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post(

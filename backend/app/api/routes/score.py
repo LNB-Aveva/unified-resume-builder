@@ -1,15 +1,13 @@
 """POST /api/v1/score -- score a resume against a job description."""
 
 from fastapi import APIRouter, HTTPException, Request
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
+from app.core.rate_limit import limiter
 from app.schemas.score import ATSScore, ScoreRequest
 from app.services.nlp.keyword_extractor import extract_keywords
 from app.services.scoring.ats_scorer import score_resume
 
 router = APIRouter()
-limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post(

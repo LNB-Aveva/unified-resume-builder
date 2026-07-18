@@ -1,14 +1,12 @@
 """POST /api/v1/compliance -- ATS compliance formatting checks."""
 
 from fastapi import APIRouter, HTTPException, Request
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
+from app.core.rate_limit import limiter
 from app.schemas.compliance import ComplianceReport, ComplianceRequest
 from app.services.compliance.checker import check_resume
 
 router = APIRouter()
-limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post(

@@ -2,9 +2,10 @@
 
 import os
 from fastapi import FastAPI
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+
+from app.core.rate_limit import limiter
 from fastapi.middleware.cors import CORSMiddleware
 
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -23,8 +24,6 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         if _is_production:
             response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
         return response
-
-limiter = Limiter(key_func=get_remote_address)
 
 _is_production = os.environ.get("RENDER", "") != "" or os.environ.get("ENV", "").lower() == "production"
 

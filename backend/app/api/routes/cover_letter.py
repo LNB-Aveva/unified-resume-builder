@@ -1,13 +1,11 @@
 from fastapi import APIRouter, HTTPException, Request
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
+from app.core.rate_limit import limiter
 from app.api.routes._ai_errors import call_ai_service
 from app.schemas.cover_letter import CoverLetterRequest, CoverLetterResponse
 from app.services.ai.cover_letter import generate_cover_letter
 
 router = APIRouter()
-limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post(
