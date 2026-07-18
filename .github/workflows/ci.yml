@@ -54,25 +54,20 @@ jobs:
         working-directory: backend
         run: pip install -r requirements.txt
 
-      - name: Verify all imports load cleanly
-        # If any module has a syntax error or missing dependency,
-        # this step fails and CI blocks the PR.
+      - name: Lint with ruff
         working-directory: backend
-        run: |
-          python -c "
-          from app.main import app
-          from app.api.routes import analyze, score, gap, compliance, summary, rewrite, export, cover_letter
-          from app.services.ai.summarizer import generate_summary
-          from app.services.ai.rewriter import rewrite_bullets
-          from app.services.ai.cover_letter import generate_cover_letter
-          from app.services.export.pdf_generator import generate_pdf
-          print('All backend imports OK')
-          "
+        run: python -m ruff check app/ --config ruff.toml
 
-      - name: Verify FastAPI app starts (no startup errors)
+      - name: Run tests
         working-directory: backend
-        # HUGGINGFACE_API_KEY intentionally not set — we're only checking startup,
-        # not making real API calls. Routes guard against missing keys at request time.
+        run: python -m pytest -x -q
+
+      - name: Security scan with bandit
+        working-directory: backend
+        run: python -m bandit -c bandit.yaml -r app/
+
+      - name: Verify FastAPI app starts
+        working-directory: backend
         run: |
           python -c "
           from app.main import app
