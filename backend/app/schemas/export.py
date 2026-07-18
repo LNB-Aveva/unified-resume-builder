@@ -1,6 +1,6 @@
 """Schemas for PDF resume export."""
 
-from typing import Literal
+from typing import Annotated, Literal
 from pydantic import BaseModel, Field
 
 
@@ -18,7 +18,7 @@ class WorkExperience(BaseModel):
     title: str = Field(..., max_length=200)
     start_date: str = Field(..., max_length=20)
     end_date: str = Field(..., max_length=20)
-    bullets: list[str]
+    bullets: list[Annotated[str, Field(max_length=2000)]] = Field(default_factory=list, max_length=30)
 
 
 class Education(BaseModel):
@@ -31,8 +31,8 @@ class Education(BaseModel):
 class ResumeExportRequest(BaseModel):
     personal: PersonalInfo
     summary: str = Field("", max_length=5_000)
-    experience: list[WorkExperience] = []
+    experience: list[WorkExperience] = Field(default_factory=list, max_length=20)
     skills: str = Field("", max_length=5_000)
-    education: list[Education] = []
+    education: list[Education] = Field(default_factory=list, max_length=15)
     filename: str = Field("resume", max_length=100)
     template: Literal["classic", "modern", "minimal"] = "classic"

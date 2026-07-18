@@ -1,6 +1,6 @@
 """Schemas for structured resume data."""
 
-from typing import Optional
+from typing import Annotated, Optional
 from pydantic import BaseModel, Field
 
 
@@ -18,7 +18,7 @@ class WorkExperience(BaseModel):
     company: str = Field(..., max_length=200)
     start_date: str = Field(..., max_length=20)
     end_date: Optional[str] = Field("Present", max_length=20)
-    bullet_points: list[str]
+    bullet_points: list[Annotated[str, Field(max_length=2000)]] = Field(default_factory=list, max_length=30)
 
 
 class Education(BaseModel):
@@ -31,8 +31,8 @@ class Education(BaseModel):
 class ResumeData(BaseModel):
     personal_info: PersonalInfo
     summary: Optional[str] = Field(None, max_length=5_000)
-    work_experience: list[WorkExperience]
-    education: list[Education]
-    skills: list[str]
-    certifications: Optional[list[str]] = None
-    projects: Optional[list[str]] = None
+    work_experience: list[WorkExperience] = Field(default_factory=list, max_length=20)
+    education: list[Education] = Field(default_factory=list, max_length=15)
+    skills: list[Annotated[str, Field(max_length=200)]] = Field(default_factory=list, max_length=50)
+    certifications: Optional[list[Annotated[str, Field(max_length=500)]]] = Field(None, max_length=30)
+    projects: Optional[list[Annotated[str, Field(max_length=2000)]]] = Field(None, max_length=20)
