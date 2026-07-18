@@ -4,6 +4,8 @@ const _backendUrl =
   process.env.NEXT_PUBLIC_API_URL ??
   "https://unified-resume-builder-api.onrender.com";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["10.0.0.183"],
   async headers() {
@@ -15,7 +17,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob:",
               "font-src 'self' data:",

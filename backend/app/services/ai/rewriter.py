@@ -130,7 +130,7 @@ def _parse_rewrites(raw: str, originals: list[str]) -> list[RewrittenBullet]:
                 ))
 
     if not results and originals:
-        lines = [l.strip() for l in raw.splitlines() if l.strip() and not l.startswith("-")]
+        lines = [line.strip() for line in raw.splitlines() if line.strip() and not line.startswith("-")]
         if not lines:
             return results
         for i, orig in enumerate(originals):

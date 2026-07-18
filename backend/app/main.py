@@ -1,18 +1,17 @@
 """FastAPI entry point for the Unified Resume Builder API."""
 
 import os
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-
-from app.core.rate_limit import limiter
-from fastapi.middleware.cors import CORSMiddleware
-
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
+from app.api.routes import analyze, compliance, cover_letter, export, gap, rewrite, score, summary
 from app.core.config import settings  # noqa: F401
-from app.api.routes import analyze, score, gap, compliance, summary, rewrite, export, cover_letter
+from app.core.rate_limit import limiter
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):

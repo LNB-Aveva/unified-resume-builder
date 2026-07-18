@@ -1,0 +1,15 @@
+target-version = "py311"
+line-length = 120
+
+[lint]
+select = ["E", "F", "W", "I", "S", "B", "UP"]
+ignore = [
+    "S101",   # assert — used in tests and validators
+    "S104",   # bind 0.0.0.0 — required for container deployment
+    "S603",   # subprocess call — not used, but avoid false positives
+    "S607",   # partial path — not used
+    "E501",   # line length — handled by formatter
+]
+
+[lint.per-file-ignores]
+"tests/**" = ["S"]

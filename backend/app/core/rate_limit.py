@@ -1,7 +1,7 @@
 """Shared rate limiter with real client IP extraction for Render + Cloudflare."""
 
-from starlette.requests import Request
 from slowapi import Limiter
+from starlette.requests import Request
 
 
 def get_client_ip(request: Request) -> str:

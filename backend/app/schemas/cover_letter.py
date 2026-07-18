@@ -1,6 +1,7 @@
 """Schemas for the AI cover letter generator."""
 
 from typing import Literal
+
 from pydantic import BaseModel, Field
 
 

@@ -1,8 +1,8 @@
 """POST /api/v1/export/pdf -- generate ATS-friendly resume PDF."""
 
+import io
 import logging
 import re
-import io
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
@@ -48,7 +48,7 @@ async def export_pdf(request: Request, export_req: ResumeExportRequest) -> Strea
         pdf_bytes = generate_pdf(export_req)
     except Exception as e:
         logger.error("PDF generation failed: %s: %s", type(e).__name__, e)
-        raise HTTPException(status_code=500, detail="PDF generation failed. Please check your input and try again.")
+        raise HTTPException(status_code=500, detail="PDF generation failed. Please check your input and try again.") from None
 
     filename = _safe_filename(export_req.filename or export_req.personal.full_name or "resume")
 

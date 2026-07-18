@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Request
 
-from app.core.rate_limit import limiter
 from app.api.routes._ai_errors import call_ai_service
+from app.core.rate_limit import limiter
 from app.schemas.summary import SummaryRequest, SummaryResponse
 from app.services.ai.summarizer import generate_summary
 

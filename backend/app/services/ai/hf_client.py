@@ -46,4 +46,4 @@ async def call_hf(
     try:
         return data["choices"][0]["message"]["content"]
     except (KeyError, IndexError, TypeError):
-        raise RuntimeError(f"Unexpected response shape from HuggingFace: {data}")
+        raise RuntimeError(f"Unexpected response shape from HuggingFace: {data}") from None

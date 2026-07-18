@@ -1,7 +1,6 @@
 """Extracts hard skills, soft skills, and requirements from raw job descriptions."""
 
 import re
-from typing import Optional
 
 from app.schemas.job import JobAnalysis, JobDescription
 
@@ -54,12 +53,12 @@ def _match_skills(text_lower: str, skill_set: set[str]) -> list[str]:
     return sorted(found)
 
 
-def _extract_experience(text: str) -> Optional[str]:
+def _extract_experience(text: str) -> str | None:
     match = _EXPERIENCE_RE.search(text)
     return match.group(0).strip() if match else None
 
 
-def _extract_education(text: str) -> Optional[list[str]]:
+def _extract_education(text: str) -> list[str] | None:
     matches = _EDUCATION_RE.findall(text)
     cleaned = [m.strip() for m in matches if len(m.strip()) > 4]
     return cleaned if cleaned else None

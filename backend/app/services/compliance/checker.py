@@ -53,13 +53,13 @@ def _has_section(text_lower: str, headers: set[str]) -> bool:
 
 
 def _bullet_lines(lines: list[str]) -> list[str]:
-    return [l for l in lines if l.startswith(('-', '•', '*', '·', '–'))]
+    return [line for line in lines if line.startswith(('-', '•', '*', '·', '–'))]
 
 
 def check_resume(resume_text: str) -> ComplianceReport:
     text = resume_text.strip()
     text_lower = text.lower()
-    lines = [l.strip() for l in text.split('\n') if l.strip()]
+    lines = [line.strip() for line in text.split('\n') if line.strip()]
     word_count = len(text.split())
     bullets = _bullet_lines(lines)
     bullet_text = ' '.join(bullets).lower()

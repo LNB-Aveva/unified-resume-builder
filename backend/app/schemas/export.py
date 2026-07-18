@@ -1,6 +1,7 @@
 """Schemas for PDF resume export."""
 
 from typing import Annotated, Literal
+
 from pydantic import BaseModel, Field
 
 

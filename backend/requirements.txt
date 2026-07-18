@@ -56,3 +56,5 @@ slowapi==0.1.9
 black==26.3.1
 # ruff = Fast linter that catches bugs and style issues before they become problems
 ruff==0.12.2
+# bandit = Security linter that finds common vulnerabilities in Python code
+bandit==1.8.3

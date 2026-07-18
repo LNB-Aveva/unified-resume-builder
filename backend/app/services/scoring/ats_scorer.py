@@ -2,8 +2,8 @@
 
 import re
 
-from app.schemas.resume import ResumeData
 from app.schemas.job import JobAnalysis
+from app.schemas.resume import ResumeData
 from app.schemas.score import ATSScore
 
 _GRADE_MAP = [
