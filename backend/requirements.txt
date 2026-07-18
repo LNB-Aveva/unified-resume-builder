@@ -31,12 +31,9 @@ python-dotenv==1.2.2
 # ============================
 # PDF Generation
 # ============================
-# Jinja2 = Template engine - fills in resume data into HTML templates
-Jinja2==3.1.6
 # WeasyPrint was originally planned but requires libgobject/libpango (GTK)
 # which is not available on Windows dev or free-tier Linux hosts without
 # extra system packages. Replaced with fpdf2 (pure Python, no system deps).
-# weasyprint==63.0
 fpdf2==2.8.7
 
 # ============================
