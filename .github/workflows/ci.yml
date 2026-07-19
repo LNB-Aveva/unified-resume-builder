@@ -115,6 +115,10 @@ jobs:
         # - faster because it skips the dependency resolution step
         run: npm ci
 
+      - name: Audit npm dependencies for CVEs
+        working-directory: frontend
+        run: npm audit --audit-level=high
+
       - name: Build Next.js app
         working-directory: frontend
         # 'npm run build' does THREE things at once:
