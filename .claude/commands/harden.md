@@ -1,4 +1,4 @@
-Run a comprehensive security hardening check on the backend:
+Run a comprehensive security hardening check on the full stack:
 
 1. Run ruff lint with security rules:
    cd backend && python -m ruff check app/ --config ruff.toml
@@ -18,10 +18,17 @@ Run a comprehensive security hardening check on the backend:
 6. Run all tests including property-based (with coverage):
    cd backend && python -m pytest --cov=app --cov-report=term-missing -x -q
 
-7. Check for known CVEs in dependencies:
+7. Check for known CVEs in backend dependencies:
    cd backend && pip-audit
 
-8. Verify CSP headers do not include unsafe-eval in production:
+8. Check for known CVEs in frontend dependencies:
+   cd frontend && npm audit --audit-level=high
+
+9. Verify CSP headers do not include unsafe-eval in production:
    grep -n "unsafe-eval" frontend/next.config.ts
+
+10. Generate SBOM (backend + frontend):
+    cd backend && cyclonedx-py environment --output-format JSON > ../.audit/sbom-backend.json
+    cd frontend && npm sbom --sbom-format cyclonedx > ../.audit/sbom-frontend.json
 
 Report a summary: PASS/FAIL for each step, total test count, coverage %, and any new findings.
