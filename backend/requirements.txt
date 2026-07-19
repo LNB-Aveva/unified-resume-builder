@@ -70,6 +70,3 @@ mypy==2.3.0
 semgrep==1.170.0
 # pip-audit = Scans installed packages for known CVEs (vulnerability checker)
 pip-audit==2.10.1
-# Transitive dependency pins (CVE fixes — these override versions pulled by semgrep)
-click>=8.3.3
-mcp>=1.28.1

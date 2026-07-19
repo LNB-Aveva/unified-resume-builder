@@ -192,22 +192,25 @@ Utility endpoints (no rate limit):
 - `ruff` with security rules (S prefix) enforced
 - CI runs `bandit -r app/` on every push
 
-**Remaining CVEs (unfixable)**:
-| Package    | CVE              | Status                    |
-|-----------|------------------|---------------------------|
-| nltk 3.9.4 | PYSEC-2026-597  | No upstream patch exists; corpus download feature not used |
+**Remaining CVEs (ignored in CI, documented here)**:
+| Package | CVE | Why Ignored |
+|---------|-----|-------------|
+| nltk 3.9.4 | PYSEC-2026-597 | No upstream patch; corpus download feature not used (we use stopwords only) |
+| click 8.1.8 | PYSEC-2026-2132 | Pinned by semgrep~=8.1.8; semgrep is dev-only, never deployed to prod |
+| mcp 1.23.3 | CVE-2026-52870, CVE-2026-52869, CVE-2026-59950 | Transitive via semgrep; dev-only, never deployed to prod |
 
 **Fixed in Session 26**:
-| Package    | CVE              | Fixed Version |
-|-----------|------------------|---------------|
-| click 8.1.8 | PYSEC-2026-2132 | 8.3.3 (transitive, upgraded) |
-| mcp 1.23.3 | CVE-2026-52870, CVE-2026-52869, CVE-2026-59950 | 1.28.1 (transitive via semgrep) |
-| pytest 8.4.1 | PYSEC-2026-1845 | 9.0.3 (upgraded) |
+| Package | CVE | Fixed Version |
+|---------|-----|---------------|
+| pytest 8.4.1 | PYSEC-2026-1845 | 9.0.3 (upgraded in requirements.txt) |
+| postcss 8.4.31 | GHSA-qx2v-qp2m-jg93 | 8.5.15 (npm override in frontend/package.json) |
 
 **Residual risk**:
-- nltk CVE: applies to corpus download features — ResumeAI uses pre-downloaded stopwords only, not affected in practice
+- nltk CVE: corpus download vulnerability, feature not used in ResumeAI
+- click/mcp CVEs: only reachable via semgrep CLI tool, never in production runtime
+- All ignored CVEs are re-evaluated when semgrep releases a new version
 
-**Severity**: Very Low (sole remaining CVE is non-exploitable in this context)
+**Severity**: Very Low (all remaining CVEs are non-exploitable in production context)
 
 ---
 
