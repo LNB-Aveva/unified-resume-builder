@@ -124,12 +124,12 @@ export default function Home() {
       {/* ── Navigation ── */}
       <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-indigo-600 flex items-center justify-center">
-              <span className="text-white text-xs font-bold">R</span>
+          <a href="/" className="flex items-center gap-2.5 group">
+            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
+              <span className="text-white text-sm font-bold tracking-tight">R</span>
             </div>
-            <span className="font-semibold text-gray-900 dark:text-white">ResumeAI</span>
-          </div>
+            <span className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white tracking-tight">ResumeAI</span>
+          </a>
           <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
             <a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">
               How it works
@@ -455,12 +455,12 @@ export default function Home() {
       <footer className="border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 py-10">
         <div className="mx-auto max-w-5xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Wordmark */}
-          <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-md bg-indigo-600 flex items-center justify-center">
+          <a href="/" className="flex items-center gap-2 group">
+            <div className="h-6 w-6 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center group-hover:shadow-sm transition-all duration-200">
               <span className="text-white text-[10px] font-bold">R</span>
             </div>
             <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">ResumeAI</span>
-          </div>
+          </a>
 
           {/* Tech stack note */}
           <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
