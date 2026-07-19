@@ -150,13 +150,19 @@ export default function Home() {
       </nav>
 
       {/* ── Hero ── */}
-      <section className="mx-auto max-w-5xl px-4 pt-20 pb-16 text-center">
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-indigo-100/40 blur-3xl" />
+          <div className="absolute top-[100px] left-[-100px] w-[400px] h-[400px] rounded-full bg-violet-100/30 blur-3xl" />
+          <div className="absolute top-[50px] right-[-100px] w-[350px] h-[350px] rounded-full bg-blue-100/30 blur-3xl" />
+        </div>
+      <div className="mx-auto max-w-5xl px-4 pt-20 pb-16 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-6">
           <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
           Free • No sign-up required • Works instantly
         </div>
 
-        <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-5">
+        <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-5">
           Free ATS Resume Checker
           <br />
           <span className="text-indigo-600">& Keyword Analyzer</span>
@@ -193,6 +199,7 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </div>
       </section>
 
       {/* ── How It Works ── */}
@@ -201,7 +208,7 @@ export default function Home() {
         className="bg-gray-50 border-y border-gray-100 py-16"
       >
         <div className="mx-auto max-w-5xl px-4">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 text-center mb-10">
             How It Works — 8 Free ATS Resume Tools
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -210,50 +217,59 @@ export default function Home() {
                 step: "1",
                 title: "Extract ATS keywords from any job posting",
                 body: "Paste any job description — our NLP engine instantly identifies every keyword ATS filters scan for.",
+                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>,
               },
               {
                 step: "2",
                 title: "Resume gap analysis — find missing keywords",
                 body: "Paste your resume to see matched vs missing keywords and your ATS match score.",
+                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" /></svg>,
               },
               {
                 step: "3",
                 title: "ATS compliance checker — 15 format rules",
                 body: "Run 15 ATS format checks to catch issues that prevent parsers from reading your resume.",
+                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>,
               },
               {
                 step: "4",
                 title: "AI professional summary generator",
                 body: "Paste your experience bullets — AI rewrites them into a tailored professional summary.",
+                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" /></svg>,
               },
               {
                 step: "5",
                 title: "Free AI cover letter generator",
                 body: "AI generates a 250-320 word cover letter tailored to the company. Formal or conversational tone.",
+                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" /></svg>,
               },
               {
                 step: "6",
                 title: "AI bullet rewriter — add missing keywords",
                 body: "AI rewrites each bullet to naturally include your missing keywords — without inventing facts.",
+                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>,
               },
               {
                 step: "7",
                 title: "Download PDF",
                 body: "Choose from 3 ATS-safe templates (Classic, Modern, Minimal), fill in your details, and download a clean single-column PDF.",
+                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>,
               },
               {
                 step: "8",
                 title: "Track applications",
                 body: "Save jobs, update status from Saved → Applied → Interview → Offer, add notes per role.",
+                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" /></svg>,
               },
-            ].map(({ step, title, body }) => (
+            ].map(({ step, title, body, icon }) => (
               <div
                 key={step}
                 className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200"
               >
-                <div className="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm mb-4">
-                  {step}
+                <div className="h-10 w-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-4">
+                  {icon}
                 </div>
+                <div className="text-xs font-semibold text-indigo-600 mb-1">Step {step}</div>
                 <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
               </div>
@@ -265,7 +281,7 @@ export default function Home() {
       {/* ── Live Demo ── */}
       <section id="demo" className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
             ATS Keyword Extractor — Try it free
           </h2>
           <p className="text-gray-500 text-sm">
@@ -284,7 +300,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
               Step 2
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
               Resume Gap Analysis — Find Missing Keywords
             </h2>
             <p className="text-gray-500 text-sm max-w-xl mx-auto">
@@ -304,7 +320,7 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
             Step 3
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
             ATS Compliance Checker — 15 Format Rules
           </h2>
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
@@ -322,7 +338,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
               Step 4
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
               AI Professional Summary Generator
             </h2>
             <p className="text-gray-500 text-sm max-w-xl mx-auto">
@@ -340,7 +356,7 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
             Step 5
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
             Free AI Cover Letter Generator
           </h2>
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
@@ -358,7 +374,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
               Step 6
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
               AI Bullet Rewriter — Add Missing Keywords
             </h2>
             <p className="text-gray-500 text-sm max-w-xl mx-auto">
@@ -376,7 +392,7 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
             Step 7
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
             Download ATS-Friendly Resume as PDF
           </h2>
           <p className="text-gray-500 text-sm max-w-xl mx-auto">
@@ -394,7 +410,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
               Step 8
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
               Job Application Tracker
             </h2>
             <p className="text-gray-500 text-sm max-w-xl mx-auto">
@@ -409,7 +425,7 @@ export default function Home() {
       {/* ── FAQ ── */}
       <section id="faq" className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
             Frequently asked questions
           </h2>
           <p className="text-gray-500 text-sm">
@@ -427,14 +443,14 @@ export default function Home() {
                   </svg>
                 </span>
               </summary>
-              <p className="mt-3 text-sm text-gray-500 leading-relaxed">{a}</p>
+              <p className="mt-3 text-sm text-gray-500 leading-7">{a}</p>
             </details>
           ))}
         </dl>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-gray-100 py-10">
+      <footer className="border-t border-gray-100 bg-gray-50/50 py-10">
         <div className="mx-auto max-w-5xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Wordmark */}
           <div className="flex items-center gap-2">
