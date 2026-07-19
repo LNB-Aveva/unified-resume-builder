@@ -1,7 +1,5 @@
-import pytest
 
 from app.services.compliance.checker import check_resume
-
 
 GOOD_RESUME = """Jane Developer
 jane@email.com | 555-123-4567

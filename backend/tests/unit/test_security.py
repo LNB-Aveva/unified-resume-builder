@@ -3,16 +3,19 @@
 import pytest
 from pydantic import ValidationError
 
-from app.schemas.export import ResumeExportRequest, PersonalInfo as ExportPersonal, WorkExperience as ExportWork, Education as ExportEdu
-from app.schemas.resume import ResumeData, PersonalInfo, WorkExperience, Education
-from app.schemas.job import JobDescription
-from app.schemas.gap import GapRequest
-from app.schemas.compliance import ComplianceRequest
-from app.schemas.summary import SummaryRequest
-from app.schemas.rewriter import BulletRewriteRequest
-from app.schemas.cover_letter import CoverLetterRequest
-from app.services.ai.sanitizer import sanitize_for_prompt
 from app.api.routes.export import _safe_filename
+from app.schemas.compliance import ComplianceRequest
+from app.schemas.cover_letter import CoverLetterRequest
+from app.schemas.export import Education as ExportEdu
+from app.schemas.export import PersonalInfo as ExportPersonal
+from app.schemas.export import ResumeExportRequest
+from app.schemas.export import WorkExperience as ExportWork
+from app.schemas.gap import GapRequest
+from app.schemas.job import JobDescription
+from app.schemas.resume import PersonalInfo, ResumeData, WorkExperience
+from app.schemas.rewriter import BulletRewriteRequest
+from app.schemas.summary import SummaryRequest
+from app.services.ai.sanitizer import sanitize_for_prompt
 
 
 class TestExportSchemaLimits:

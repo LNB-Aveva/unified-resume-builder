@@ -1,0 +1,48 @@
+# Product Hunt Listing Draft
+
+## Tagline (60 chars max)
+Free AI-powered ATS resume checker and optimizer
+
+## Description (260 chars max)
+ResumeAI scans your resume against any job description, scores your ATS match (0-100), identifies missing keywords, rewrites bullets with missing skills, generates cover letters, and exports polished PDFs. 100% free, no signup required.
+
+## Topics
+- Artificial Intelligence
+- Productivity
+- Career
+- Resume
+- Job Search
+
+## First Comment (post immediately after launch)
+
+Hey Product Hunt! I built ResumeAI because I got frustrated watching my applications disappear into the ATS black hole.
+
+Here's what it does:
+- Paste a job description, get your ATS match score instantly
+- See exactly which keywords you're missing
+- AI rewrites your bullets to naturally include those keywords
+- Generates tailored cover letters in seconds
+- Exports clean, ATS-friendly PDFs
+
+Tech stack: Next.js + FastAPI + HuggingFace (Qwen2.5-7B). Fully open source.
+
+No signup, no paywall, no "premium tier" bait-and-switch. Just paste and go.
+
+Would love feedback on what features to add next!
+
+## Maker Profile
+- Name: [Your name]
+- One-liner: Full-stack developer building free tools for job seekers
+- Website: https://resumeai.cv
+
+## Screenshots Needed
+1. Hero shot: Score page showing 85% match with green grade
+2. Gap analysis: Missing keywords highlighted
+3. Bullet rewriter: Before/after comparison
+4. PDF export: Clean template preview
+5. Cover letter: Generated letter with word count
+
+## Launch Timing
+- Best days: Tuesday, Wednesday, Thursday
+- Best time: 12:01 AM PT (all day to accumulate votes)
+- Target: Early August 2026

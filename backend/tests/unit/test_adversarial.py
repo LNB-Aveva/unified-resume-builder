@@ -5,23 +5,24 @@ import time
 import pytest
 from pydantic import ValidationError
 
-from app.schemas.job import JobDescription
-from app.schemas.gap import GapRequest
+from app.api.routes.export import _safe_filename
 from app.schemas.compliance import ComplianceRequest
-from app.schemas.summary import SummaryRequest
-from app.schemas.rewriter import BulletRewriteRequest
 from app.schemas.cover_letter import CoverLetterRequest
 from app.schemas.export import (
-    ResumeExportRequest,
     PersonalInfo as ExportPersonal,
 )
-from app.schemas.resume import ResumeData, PersonalInfo, WorkExperience, Education
+from app.schemas.export import (
+    ResumeExportRequest,
+)
+from app.schemas.gap import GapRequest
+from app.schemas.job import JobDescription
+from app.schemas.resume import Education, PersonalInfo, ResumeData, WorkExperience
+from app.schemas.rewriter import BulletRewriteRequest
 from app.schemas.score import ScoreRequest
+from app.schemas.summary import SummaryRequest
+from app.services.ai.sanitizer import sanitize_for_prompt
 from app.services.compliance.checker import check_resume
 from app.services.nlp.keyword_extractor import extract_keywords
-from app.services.ai.sanitizer import sanitize_for_prompt
-from app.api.routes.export import _safe_filename
-
 
 MAX_SECONDS = 2.0
 

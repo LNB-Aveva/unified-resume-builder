@@ -58,3 +58,13 @@ black==26.3.1
 ruff==0.12.2
 # bandit = Security linter that finds common vulnerabilities in Python code
 bandit==1.8.3
+# detect-secrets = Scans for accidentally committed credentials/API keys
+detect-secrets==1.5.0
+# pytest-cov = Test coverage reporting (shows which lines are tested)
+pytest-cov==7.1.0
+# hypothesis = Property-based testing (generates random inputs to find edge cases)
+hypothesis==6.156.9
+# mypy = Static type checker for Python
+mypy==2.3.0
+# semgrep = Advanced pattern-based security scanner
+semgrep==1.170.0

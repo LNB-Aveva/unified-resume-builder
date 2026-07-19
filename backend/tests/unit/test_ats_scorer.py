@@ -1,8 +1,8 @@
 import pytest
 
 from app.schemas.job import JobAnalysis
-from app.schemas.resume import ResumeData, PersonalInfo, WorkExperience, Education
-from app.services.scoring.ats_scorer import score_resume, score_from_text, _skill_present, _compute_grade
+from app.schemas.resume import Education, PersonalInfo, ResumeData, WorkExperience
+from app.services.scoring.ats_scorer import _compute_grade, _skill_present, score_from_text, score_resume
 
 
 def _job(hard=None, soft=None):

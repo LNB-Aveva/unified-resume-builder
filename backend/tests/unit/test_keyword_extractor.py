@@ -1,11 +1,14 @@
-import pytest
 
 from app.schemas.job import JobDescription
 from app.services.nlp.keyword_extractor import (
-    extract_keywords, _match_skills, _extract_experience,
-    _extract_education, _extract_responsibilities, HARD_SKILLS, SOFT_SKILLS,
+    HARD_SKILLS,
+    SOFT_SKILLS,
+    _extract_education,
+    _extract_experience,
+    _extract_responsibilities,
+    _match_skills,
+    extract_keywords,
 )
-
 
 JOB_TEXT = """Senior Software Engineer
 TechCorp Inc.

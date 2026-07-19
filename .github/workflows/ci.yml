@@ -42,11 +42,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
+      - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-          # Cache pip downloads — avoids re-downloading packages on every run
+          python-version: "3.13"
           cache: "pip"
           cache-dependency-path: backend/requirements.txt
 
@@ -58,6 +57,10 @@ jobs:
         working-directory: backend
         run: python -m ruff check app/ --config ruff.toml
 
+      - name: Type check with mypy
+        working-directory: backend
+        run: python -m mypy app/ --config-file mypy.ini
+
       - name: Run tests
         working-directory: backend
         run: python -m pytest -x -q
@@ -66,12 +69,15 @@ jobs:
         working-directory: backend
         run: python -m bandit -c bandit.yaml -r app/
 
+      - name: Scan for secrets
+        run: python -m detect_secrets scan --exclude-files '\.env$|venv/|node_modules/|\.next/|tsconfig\.tsbuildinfo$|package-lock\.json$' --list-all-plugins > /dev/null
+
       - name: Verify FastAPI app starts
         working-directory: backend
         run: |
           python -c "
           from app.main import app
-          routes = [r.path for r in app.routes]
+          routes = list(app.openapi()['paths'].keys())
           expected = ['/api/v1/analyze', '/api/v1/score', '/api/v1/gap',
                       '/api/v1/compliance', '/api/v1/summary', '/api/v1/rewrite',
                       '/api/v1/export/pdf', '/api/v1/cover-letter', '/health']

@@ -45,11 +45,13 @@ def _compute_grade(score: float) -> tuple[str, str]:
 
 
 def _score_skills(job_analysis: JobAnalysis, resume_text: str) -> ATSScore:
-    matched_hard, missing_hard = [], []
+    matched_hard: list[str] = []
+    missing_hard: list[str] = []
     for s in job_analysis.hard_skills:
         (matched_hard if _skill_present(s, resume_text) else missing_hard).append(s)
 
-    matched_soft, missing_soft = [], []
+    matched_soft: list[str] = []
+    missing_soft: list[str] = []
     for s in job_analysis.soft_skills:
         (matched_soft if _skill_present(s, resume_text) else missing_soft).append(s)
 
