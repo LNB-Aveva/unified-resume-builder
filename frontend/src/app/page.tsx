@@ -159,48 +159,114 @@ export default function Home() {
           <div className="absolute top-[100px] left-[-100px] w-[400px] h-[400px] rounded-full bg-violet-100/30 dark:bg-violet-900/15 blur-3xl" />
           <div className="absolute top-[50px] right-[-100px] w-[350px] h-[350px] rounded-full bg-blue-100/30 dark:bg-blue-900/15 blur-3xl" />
         </div>
-      <div className="mx-auto max-w-5xl px-4 pt-20 pb-16 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
-          <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
-          Free • No sign-up required • Works instantly
-        </div>
-
-        <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
-          Free ATS Resume Checker
-          <br />
-          <span className="text-indigo-600 dark:text-indigo-400">& Keyword Analyzer</span>
-        </h1>
-
-        <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-8">
-          75% of resumes are rejected by ATS software before a human ever reads
-          them. Scan any job description and get your ATS match score in
-          10 seconds — no sign-up, no paywall, 9 AI tools, 100% free.
-        </p>
-
-        <a
-          href="#demo"
-          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-300 dark:hover:shadow-indigo-800/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
-        >
-          Analyze a Job Description
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </a>
-
-        {/* Stat strip — trust signals at a glance */}
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 mt-12">
-          {[
-            { n: "9", label: "AI tools" },
-            { n: "15", label: "ATS rules checked" },
-            { n: "3", label: "PDF templates" },
-            { n: "0", label: "sign-ups needed" },
-            { n: "100%", label: "free forever" },
-          ].map(({ n, label }) => (
-            <div key={label} className="flex flex-col items-center gap-0.5 group">
-              <span className="text-3xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">{n}</span>
-              <span className="text-xs text-gray-400 dark:text-gray-500">{label}</span>
+      <div className="mx-auto max-w-6xl px-4 pt-20 pb-16">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          {/* Left — Copy + CTA */}
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
+              <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
+              Free • No sign-up required • Works instantly
             </div>
-          ))}
+
+            <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
+              Free ATS Resume Checker
+              <br />
+              <span className="text-indigo-600 dark:text-indigo-400">& Keyword Analyzer</span>
+            </h1>
+
+            <p className="text-lg text-gray-500 dark:text-gray-400 mb-8 max-w-lg">
+              75% of resumes are rejected by ATS software before a human ever reads
+              them. Scan any job description and get your ATS match score in
+              10 seconds — no sign-up, no paywall, 9 AI tools, 100% free.
+            </p>
+
+            <a
+              href="#demo"
+              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-300 dark:hover:shadow-indigo-800/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+            >
+              Analyze a Job Description
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </a>
+
+            {/* Stat strip */}
+            <div className="flex flex-wrap gap-x-6 gap-y-3 mt-10">
+              {[
+                { n: "9", label: "AI tools" },
+                { n: "15", label: "ATS rules" },
+                { n: "3", label: "PDF templates" },
+                { n: "100%", label: "free forever" },
+              ].map(({ n, label }) => (
+                <div key={label} className="flex items-center gap-2 group">
+                  <span className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">{n}</span>
+                  <span className="text-xs text-gray-400 dark:text-gray-500">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right — Visual ATS score preview mock */}
+          <div className="relative">
+            <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-xl dark:shadow-2xl p-6 space-y-5">
+              {/* Mock header */}
+              <div className="flex items-center gap-2">
+                <div className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                <div className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">ATS Analysis Result</span>
+              </div>
+
+              {/* Score circle */}
+              <div className="flex items-center gap-6">
+                <div className="relative h-24 w-24 shrink-0">
+                  <svg className="h-24 w-24 -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="8" className="text-gray-100 dark:text-gray-700" />
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="8" strokeDasharray="264" strokeDashoffset="40" strokeLinecap="round" className="text-emerald-500" />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-2xl font-bold text-gray-900 dark:text-white">85%</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">Strong ATS Match</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">23 of 27 keywords found</p>
+                </div>
+              </div>
+
+              {/* Mock keyword badges */}
+              <div>
+                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Matched Keywords</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Python", "React", "AWS", "Docker", "CI/CD", "PostgreSQL", "REST API", "Agile"].map((kw) => (
+                    <span key={kw} className="rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">{kw}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Mock missing keywords */}
+              <div>
+                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Missing — Add These</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Kubernetes", "Terraform", "GraphQL", "TypeScript"].map((kw) => (
+                    <span key={kw} className="rounded-full bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">{kw}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* ATS compliance bar */}
+              <div className="flex items-center justify-between rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <svg className="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
+                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">ATS Compliance</span>
+                </div>
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">15/15 passed</span>
+              </div>
+            </div>
+
+            {/* Decorative glow behind the card */}
+            <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-indigo-100 via-violet-50 to-blue-100 dark:from-indigo-950 dark:via-violet-950 dark:to-blue-950 opacity-60 blur-xl" />
+          </div>
         </div>
       </div>
       </section>

@@ -357,21 +357,45 @@ export default function JobTracker() {
         </div>
       )}
 
-      {/* ── Empty state ── */}
+      {/* ── Empty state — skeleton preview ── */}
       {filtered.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 py-14 text-center">
-          <div className="mx-auto mb-3 h-10 w-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-            <svg className="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-            </svg>
-          </div>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            {filterStatus === "All" ? "No jobs saved yet." : `No jobs with status "${filterStatus}".`}
-          </p>
-          {filterStatus === "All" && (
-            <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
-              Click &ldquo;Save a Job&rdquo; to start tracking your applications.
+        <div className="rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 p-6 space-y-4">
+          <div className="text-center mb-2">
+            <div className="mx-auto mb-3 h-10 w-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+              <svg className="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+            </div>
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              {filterStatus === "All" ? "No jobs saved yet" : `No jobs with status "${filterStatus}"`}
             </p>
+            {filterStatus === "All" && (
+              <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                Click &ldquo;Save a Job&rdquo; above — your dashboard will look like this:
+              </p>
+            )}
+          </div>
+
+          {/* Skeleton job cards */}
+          {filterStatus === "All" && (
+            <div className="space-y-3 opacity-40 pointer-events-none select-none" aria-hidden="true">
+              {[
+                { title: "Senior Software Engineer", company: "Acme Corp", status: "Applied", color: "bg-blue-500" },
+                { title: "Full Stack Developer", company: "TechStart Inc", status: "Interview", color: "bg-amber-500" },
+                { title: "Backend Engineer", company: "CloudScale", status: "Saved", color: "bg-gray-400" },
+              ].map((mock) => (
+                <div key={mock.title} className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-lg bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center shrink-0">
+                    <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{mock.company[0]}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{mock.title}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{mock.company}</p>
+                  </div>
+                  <span className={`${mock.color} rounded-full px-2.5 py-0.5 text-xs font-semibold text-white`}>{mock.status}</span>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       )}
