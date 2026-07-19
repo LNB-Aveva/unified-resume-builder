@@ -72,6 +72,10 @@ jobs:
       - name: Scan for secrets
         run: python -m detect_secrets scan --exclude-files '\.env$|venv/|node_modules/|\.next/|tsconfig\.tsbuildinfo$|package-lock\.json$' --list-all-plugins > /dev/null
 
+      - name: Audit dependencies for CVEs
+        working-directory: backend
+        run: pip-audit --ignore-vuln PYSEC-2026-597
+
       - name: Verify FastAPI app starts
         working-directory: backend
         run: |

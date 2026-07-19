@@ -40,7 +40,7 @@ fpdf2==2.8.7
 # Testing
 # ============================
 # pytest = The testing framework - lets you write and run automated tests
-pytest==8.4.1
+pytest==9.0.3
 # httpx = Makes HTTP requests in tests (simulates a user calling your API)
 httpx==0.28.0
 
@@ -68,3 +68,5 @@ hypothesis==6.156.9
 mypy==2.3.0
 # semgrep = Advanced pattern-based security scanner
 semgrep==1.170.0
+# pip-audit = Scans installed packages for known CVEs (vulnerability checker)
+pip-audit==2.10.1

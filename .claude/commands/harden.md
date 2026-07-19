@@ -19,7 +19,7 @@ Run a comprehensive security hardening check on the backend:
    cd backend && python -m pytest --cov=app --cov-report=term-missing -x -q
 
 7. Check for known CVEs in dependencies:
-   cd backend && pip audit 2>/dev/null || echo "pip-audit not installed (optional)"
+   cd backend && pip-audit
 
 8. Verify CSP headers do not include unsafe-eval in production:
    grep -n "unsafe-eval" frontend/next.config.ts

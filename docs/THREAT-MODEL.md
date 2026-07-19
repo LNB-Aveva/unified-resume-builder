@@ -1,6 +1,6 @@
 # Threat Model — ResumeAI (resumeai.cv)
 
-Last updated: 2026-07-18 (Session 25)
+Last updated: 2026-07-19 (Session 26)
 
 ## System Overview
 
@@ -186,7 +186,8 @@ Utility endpoints (no rate limit):
 **Threat**: Known CVEs in third-party packages exploited in production.
 
 **Mitigations in place**:
-- 29/31 CVEs fixed in Session 21 (pip audit clean except 2)
+- 29/31 CVEs fixed in Session 21; 3 more fixed in Session 26 (click, mcp, pytest)
+- `pip-audit` now runs in CI (auto-fails on new CVEs, ignores PYSEC-2026-597)
 - `bandit` security linting in pre-commit hooks and CI
 - `ruff` with security rules (S prefix) enforced
 - CI runs `bandit -r app/` on every push
@@ -194,14 +195,19 @@ Utility endpoints (no rate limit):
 **Remaining CVEs (unfixable)**:
 | Package    | CVE              | Status                    |
 |-----------|------------------|---------------------------|
-| nltk 3.9.4 | PYSEC-2026-597  | No upstream patch exists  |
-| pytest 8.4.1 | PYSEC-2026-1845 | Dev-only, needs pytest 9.x |
+| nltk 3.9.4 | PYSEC-2026-597  | No upstream patch exists; corpus download feature not used |
+
+**Fixed in Session 26**:
+| Package    | CVE              | Fixed Version |
+|-----------|------------------|---------------|
+| click 8.1.8 | PYSEC-2026-2132 | 8.3.3 (transitive, upgraded) |
+| mcp 1.23.3 | CVE-2026-52870, CVE-2026-52869, CVE-2026-59950 | 1.28.1 (transitive via semgrep) |
+| pytest 8.4.1 | PYSEC-2026-1845 | 9.0.3 (upgraded) |
 
 **Residual risk**:
 - nltk CVE: applies to corpus download features — ResumeAI uses pre-downloaded stopwords only, not affected in practice
-- pytest CVE: dev dependency, never deployed to production
 
-**Severity**: Very Low (both are non-exploitable in this context)
+**Severity**: Very Low (sole remaining CVE is non-exploitable in this context)
 
 ---
 
@@ -210,8 +216,8 @@ Utility endpoints (no rate limit):
 **Threat**: Compromised dependencies or CI pipeline.
 
 **Mitigations in place**:
-- Pre-commit hooks run ruff + bandit + pytest before every commit
-- CI workflow validates lint, tests, and security scan
+- Pre-commit hooks run ruff + bandit + detect-secrets + mypy + pytest before every commit
+- CI workflow validates lint, types, tests, security scan, secret scan, and dependency CVEs (pip-audit)
 - SSH-based git push (no token scope vulnerabilities)
 - Pinned dependency versions in `requirements.txt`
 - Vercel builds from main branch only

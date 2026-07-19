@@ -23,6 +23,13 @@ repos:
 
   - repo: local
     hooks:
+      - id: mypy
+        name: mypy
+        entry: bash -c "cd backend && python -m mypy app/ --config-file mypy.ini"
+        language: system
+        pass_filenames: false
+        files: ^backend/app/
+
       - id: pytest
         name: pytest
         entry: bash -c "cd backend && python -m pytest -x -q"
