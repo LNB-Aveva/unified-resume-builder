@@ -141,7 +141,7 @@ export default function Home() {
             </a>
             <a
               href="#demo"
-              className="rounded-lg bg-indigo-600 px-4 py-1.5 text-white font-medium hover:bg-indigo-700 transition"
+              className="rounded-lg bg-indigo-600 px-4 py-1.5 text-white font-medium hover:bg-indigo-700 hover:shadow-md transition-all duration-200"
             >
               Try Free
             </a>
@@ -170,7 +170,7 @@ export default function Home() {
 
         <a
           href="#demo"
-          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-indigo-700 transition"
+          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-300 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
         >
           Analyze a Job Description
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -187,8 +187,8 @@ export default function Home() {
             { n: "0", label: "sign-ups needed" },
             { n: "100%", label: "free forever" },
           ].map(({ n, label }) => (
-            <div key={label} className="flex flex-col items-center gap-0.5">
-              <span className="text-3xl font-bold text-gray-900">{n}</span>
+            <div key={label} className="flex flex-col items-center gap-0.5 group">
+              <span className="text-3xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors duration-200">{n}</span>
               <span className="text-xs text-gray-400">{label}</span>
             </div>
           ))}
@@ -249,7 +249,7 @@ export default function Home() {
             ].map(({ step, title, body }) => (
               <div
                 key={step}
-                className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm"
+                className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200"
               >
                 <div className="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm mb-4">
                   {step}
@@ -416,12 +416,12 @@ export default function Home() {
             Everything you need to know about ATS filters and how ResumeAI works.
           </p>
         </div>
-        <dl className="divide-y divide-gray-100">
+        <dl className="divide-y divide-gray-100 space-y-1">
           {faqItems.map(({ q, a }) => (
             <details key={q} className="group py-5 cursor-pointer list-none">
-              <summary className="flex items-center justify-between gap-4 font-medium text-gray-900 text-sm select-none list-none marker:hidden">
+              <summary className="flex items-center justify-between gap-4 font-medium text-gray-900 text-sm select-none list-none marker:hidden hover:text-indigo-700 transition-colors duration-150">
                 {q}
-                <span className="shrink-0 h-5 w-5 text-indigo-600 transition-transform group-open:rotate-45">
+                <span className="shrink-0 h-5 w-5 text-indigo-600 transition-transform duration-200 group-open:rotate-45">
                   <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden>
                     <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                   </svg>

@@ -62,7 +62,7 @@ export default function GapAnalysis() {
             onChange={(e) => setJobText(e.target.value)}
             placeholder="Paste the full job description here..."
             rows={12}
-            className="w-full rounded-xl border border-gray-200 bg-white p-3 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-y"
+            className="w-full rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-y"
           />
           <p className="text-xs text-gray-400">
             {jobText.trim().split(/\s+/).filter(Boolean).length} words
@@ -78,7 +78,7 @@ export default function GapAnalysis() {
             onChange={(e) => setResumeText(e.target.value)}
             placeholder="Paste your resume text here (plain text — copy from Word, Google Docs, or PDF)..."
             rows={12}
-            className="w-full rounded-xl border border-gray-200 bg-white p-3 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-y"
+            className="w-full rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-y"
           />
           <p className="text-xs text-gray-400">
             {resumeText.trim().split(/\s+/).filter(Boolean).length} words
