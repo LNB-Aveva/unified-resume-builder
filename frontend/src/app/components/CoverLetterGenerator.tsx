@@ -93,15 +93,15 @@ export default function CoverLetterGenerator() {
   }
 
   const inputCls =
-    "w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100";
+    "w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900";
 
   return (
     <div className="space-y-6">
 
       {/* ── Tone switcher ── */}
       <div className="flex items-center gap-3">
-        <span className="text-sm font-semibold text-gray-700">Tone:</span>
-        <div className="flex rounded-xl border border-gray-200 bg-gray-50 p-1 gap-1">
+        <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Tone:</span>
+        <div className="flex rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-1 gap-1">
           {(["formal", "conversational"] as Tone[]).map((t) => (
             <button
               key={t}
@@ -109,14 +109,14 @@ export default function CoverLetterGenerator() {
               className={`rounded-lg px-4 py-1.5 text-sm font-semibold capitalize transition
                 ${tone === t
                   ? "bg-indigo-600 text-white shadow-sm"
-                  : "text-gray-500 hover:text-gray-700"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                 }`}
             >
               {t}
             </button>
           ))}
         </div>
-        <span className="text-xs text-gray-400">
+        <span className="text-xs text-gray-400 dark:text-gray-500">
           {tone === "formal"
             ? "Traditional business style · Dear Hiring Team"
             : "Warm & direct · Starts with a hook, no 'Dear...'"}
@@ -128,7 +128,7 @@ export default function CoverLetterGenerator() {
 
         {/* Job Title */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Job Title <span className="text-red-400">*</span>
           </label>
           <input
@@ -142,7 +142,7 @@ export default function CoverLetterGenerator() {
 
         {/* Company Name */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Company Name <span className="text-red-400">*</span>
           </label>
           <input
@@ -156,9 +156,9 @@ export default function CoverLetterGenerator() {
 
         {/* Skills */}
         <div className="sm:col-span-2 space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Key Skills
-            <span className="ml-1.5 font-normal text-gray-400 text-xs">(optional — comma-separated)</span>
+            <span className="ml-1.5 font-normal text-gray-400 dark:text-gray-500 text-xs">(optional — comma-separated)</span>
           </label>
           <input
             type="text"
@@ -172,7 +172,7 @@ export default function CoverLetterGenerator() {
         {/* Job Description */}
         <div className="sm:col-span-2 space-y-1.5">
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-semibold text-gray-700">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
               Job Description <span className="text-red-400">*</span>
             </label>
             <span className={`text-xs font-medium ${jobDescription.length > 900 ? "text-red-500" : jobDescription.length > 800 ? "text-amber-600" : "text-gray-400"}`}>
@@ -190,10 +190,10 @@ export default function CoverLetterGenerator() {
 
         {/* Experience Summary */}
         <div className="sm:col-span-2 space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Your Key Experience <span className="text-red-400">*</span>
           </label>
-          <p className="text-xs text-gray-400 -mt-1">
+          <p className="text-xs text-gray-400 dark:text-gray-500 -mt-1">
             Paste 3-5 achievement bullets from your resume. The AI uses these as evidence — no facts will be invented.
           </p>
           <textarea
@@ -243,7 +243,7 @@ export default function CoverLetterGenerator() {
 
       {/* ── Result ── */}
       {result && (
-        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-6 space-y-4">
+        <div className="rounded-2xl border border-indigo-100 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950 p-6 space-y-4">
 
           {/* Header */}
           <div className="flex items-center justify-between flex-wrap gap-2">
@@ -253,9 +253,9 @@ export default function CoverLetterGenerator() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <span className="text-sm font-semibold text-gray-900">
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">
                 AI Generated Cover Letter
-                <span className="ml-2 text-xs font-normal text-gray-500 capitalize">· {tone}</span>
+                <span className="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400 capitalize">· {tone}</span>
               </span>
             </div>
 
@@ -266,9 +266,9 @@ export default function CoverLetterGenerator() {
           </div>
 
           {/* Letter text */}
-          <div className="rounded-xl bg-white border border-indigo-100 p-5">
+          <div className="rounded-xl bg-white dark:bg-gray-900 border border-indigo-100 dark:border-indigo-800 p-5">
             {result.cover_letter.split("\n\n").map((para, i) => (
-              <p key={i} className={`text-sm text-gray-800 leading-relaxed ${i > 0 ? "mt-4" : ""}`}>
+              <p key={i} className={`text-sm text-gray-800 dark:text-gray-100 leading-relaxed ${i > 0 ? "mt-4" : ""}`}>
                 {para}
               </p>
             ))}
@@ -278,7 +278,7 @@ export default function CoverLetterGenerator() {
           <div className="flex gap-3 flex-wrap">
             <button
               onClick={handleCopy}
-              className="flex items-center gap-2 rounded-lg bg-white border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
+              className="flex items-center gap-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               {copied ? (
                 <>
@@ -299,7 +299,7 @@ export default function CoverLetterGenerator() {
 
             <button
               onClick={handleGenerate}
-              className="flex items-center gap-2 rounded-lg bg-white border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
+              className="flex items-center gap-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -310,7 +310,7 @@ export default function CoverLetterGenerator() {
             {/* Tone switcher in result (quick switch without scrolling up) */}
             <button
               onClick={() => { setTone(tone === "formal" ? "conversational" : "formal"); setResult(null); }}
-              className="flex items-center gap-2 rounded-lg bg-white border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
+              className="flex items-center gap-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
@@ -320,14 +320,14 @@ export default function CoverLetterGenerator() {
           </div>
 
           {/* Tip */}
-          <div className="flex items-start gap-2.5 rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
+          <div className="flex items-start gap-2.5 rounded-xl bg-amber-50 dark:bg-amber-950 border border-amber-100 dark:border-amber-800 px-4 py-3">
             <svg className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
-            <p className="text-xs text-amber-800"><span className="font-semibold">Tip:</span> {result.tip}</p>
+            <p className="text-xs text-amber-800 dark:text-amber-300"><span className="font-semibold">Tip:</span> {result.tip}</p>
           </div>
 
-          <p className="text-xs text-gray-400 text-right">
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-right">
             Generated by {result.model_used} via HuggingFace Inference API
           </p>
         </div>

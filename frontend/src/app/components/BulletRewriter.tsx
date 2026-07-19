@@ -109,7 +109,7 @@ export default function BulletRewriter() {
       <div className="grid sm:grid-cols-2 gap-4">
         {/* Job Title */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Job Title <span className="text-red-400">*</span>
           </label>
           <input
@@ -117,13 +117,13 @@ export default function BulletRewriter() {
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
             placeholder="e.g. Senior Software Engineer"
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900"
           />
         </div>
 
         {/* Missing Keywords */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Missing Keywords
             <span className="ml-1.5 font-normal text-gray-400 text-xs">(from Gap Analysis above)</span>
           </label>
@@ -132,21 +132,21 @@ export default function BulletRewriter() {
             value={missingKeywords}
             onChange={(e) => setMissingKeywords(e.target.value)}
             placeholder="e.g. Docker, Kubernetes, CI/CD, microservices"
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900"
           />
         </div>
 
         {/* Bullets textarea */}
         <div className="sm:col-span-2 space-y-1.5">
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-semibold text-gray-700">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
               Your Resume Bullets <span className="text-red-400">*</span>
             </label>
             <span className={`text-xs font-medium ${overLimit ? "text-red-500" : "text-gray-400"}`}>
               {bulletLines}/5 bullets {overLimit && "— only first 5 will be rewritten"}
             </span>
           </div>
-          <p className="text-xs text-gray-400 -mt-1">
+          <p className="text-xs text-gray-400 dark:text-gray-500 -mt-1">
             Paste weak or generic bullets — one per line. AI rewrites each to include your missing keywords.
           </p>
           <textarea
@@ -154,7 +154,7 @@ export default function BulletRewriter() {
             onChange={(e) => setBullets(e.target.value)}
             placeholder={"- Worked on backend services\n- Helped with deployments\n- Wrote code for the data pipeline"}
             rows={6}
-            className="w-full rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-y font-mono"
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y font-mono"
           />
         </div>
       </div>
@@ -210,14 +210,14 @@ export default function BulletRewriter() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </div>
-              <span className="text-sm font-semibold text-gray-900">
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">
                 {result.rewrites.length} bullet{result.rewrites.length !== 1 ? "s" : ""} rewritten
               </span>
             </div>
 
             <button
               onClick={handleCopyAll}
-              className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow-sm hover:bg-gray-50 transition"
+              className="flex items-center gap-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               {copiedAll ? (
                 <>
@@ -239,17 +239,17 @@ export default function BulletRewriter() {
 
           {/* Before / After cards */}
           {result.rewrites.map((item, i) => (
-            <div key={i} className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+            <div key={i} className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
               {/* Before */}
-              <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Before</p>
-                <p className="text-sm text-gray-600 leading-relaxed">{item.original || bullets.trim().split("\n").filter(l => l.trim())[i] || "—"}</p>
+              <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1.5">Before</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{item.original || bullets.trim().split("\n").filter(l => l.trim())[i] || "—"}</p>
               </div>
 
               {/* After */}
               <div className="px-5 py-4">
-                <p className="text-xs font-semibold text-indigo-500 uppercase tracking-wide mb-1.5">After</p>
-                <p className="text-sm text-gray-900 leading-relaxed">
+                <p className="text-xs font-semibold text-indigo-500 dark:text-indigo-400 uppercase tracking-wide mb-1.5">After</p>
+                <p className="text-sm text-gray-900 dark:text-white leading-relaxed">
                   {highlightKeywords(item.rewritten, item.keywords_woven)}
                 </p>
 
@@ -266,14 +266,14 @@ export default function BulletRewriter() {
                         </span>
                       ))
                     ) : (
-                      <span className="text-xs text-gray-400 italic">No keywords woven in</span>
+                      <span className="text-xs text-gray-400 dark:text-gray-500 italic">No keywords woven in</span>
                     )}
                   </div>
 
                   {/* Copy this bullet */}
                   <button
                     onClick={() => handleCopyOne(item.rewritten, i)}
-                    className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition shrink-0"
+                    className="flex items-center gap-1.5 rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition shrink-0"
                   >
                     {copiedIndex === i ? (
                       <>
@@ -297,25 +297,25 @@ export default function BulletRewriter() {
           ))}
 
           {/* Tip */}
-          <div className="flex items-start gap-2.5 rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
+          <div className="flex items-start gap-2.5 rounded-xl bg-amber-50 dark:bg-amber-950 border border-amber-100 dark:border-amber-800 px-4 py-3">
             <svg className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
-            <p className="text-xs text-amber-800"><span className="font-semibold">Tip:</span> {result.tip}</p>
+            <p className="text-xs text-amber-800 dark:text-amber-300"><span className="font-semibold">Tip:</span> {result.tip}</p>
           </div>
 
           {/* Regenerate + model attribution */}
           <div className="flex items-center justify-between">
             <button
               onClick={handleRewrite}
-              className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
+              className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
               Rewrite Again
             </button>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-gray-400 dark:text-gray-500">
               Generated by {result.model_used} via HuggingFace
             </p>
           </div>

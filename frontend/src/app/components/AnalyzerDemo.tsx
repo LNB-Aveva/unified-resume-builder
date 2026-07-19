@@ -48,11 +48,11 @@ export default function AnalyzerDemo() {
           onChange={(e) => setJobText(e.target.value)}
           placeholder="Paste a full job description here — title, requirements, responsibilities, everything..."
           rows={10}
-          className="w-full rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-y"
+          className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
         />
 
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+          <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg px-4 py-2">
             {error}
           </p>
         )}
@@ -72,16 +72,16 @@ export default function AnalyzerDemo() {
 
       {/* Results */}
       {result && (
-        <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6 space-y-5 animate-in fade-in duration-300">
+        <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-6 space-y-5 animate-in fade-in duration-300">
           {/* Header */}
-          <div className="border-b border-gray-200 pb-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-400 mb-1">
+          <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+            <p className="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
               Detected role
             </p>
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               {result.job_title}
               {result.company && (
-                <span className="ml-2 text-sm font-normal text-gray-500">
+                <span className="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
                   @ {result.company}
                 </span>
               )}
@@ -95,9 +95,9 @@ export default function AnalyzerDemo() {
 
           {/* Stats bar */}
           <div className="grid grid-cols-3 gap-3">
-            <StatCard label="Total Keywords" value={result.keywords.length} color="indigo" />
-            <StatCard label="Hard Skills" value={result.hard_skills.length} color="blue" />
-            <StatCard label="Soft Skills" value={result.soft_skills.length} color="violet" />
+            <StatCard label="Total keywords" value={result.keywords.length} color="indigo" />
+            <StatCard label="Hard skills" value={result.hard_skills.length} color="blue" />
+            <StatCard label="Soft skills" value={result.soft_skills.length} color="violet" />
           </div>
 
           {/* Hard skills */}
@@ -118,7 +118,7 @@ export default function AnalyzerDemo() {
             />
           )}
 
-          <p className="text-xs text-gray-400 pt-2">
+          <p className="text-xs text-gray-400 dark:text-gray-500 pt-2">
             These {result.keywords.length} keywords are what ATS systems scan for.
             Next step: compare your resume against them.
           </p>
@@ -138,9 +138,9 @@ function StatCard({
   color: "indigo" | "blue" | "violet";
 }) {
   const colors = {
-    indigo: "bg-indigo-50 text-indigo-700",
-    blue: "bg-blue-50 text-blue-700",
-    violet: "bg-violet-50 text-violet-700",
+    indigo: "bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300",
+    blue: "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300",
+    violet: "bg-violet-50 dark:bg-violet-950 text-violet-700 dark:text-violet-300",
   };
   return (
     <div className={`rounded-xl p-3 text-center ${colors[color]}`}>
@@ -161,7 +161,7 @@ function SkillGroup({
 }) {
   return (
     <div>
-      <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
+      <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2">
         {title}
       </p>
       <div className="flex flex-wrap gap-2">

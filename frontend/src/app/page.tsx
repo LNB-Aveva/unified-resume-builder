@@ -21,6 +21,7 @@ import BulletRewriter from "./components/BulletRewriter";
 import JobTracker from "./components/JobTracker";
 import ResumeExporter from "./components/ResumeExporter";
 import CoverLetterGenerator from "./components/CoverLetterGenerator";
+import ThemeToggle from "./components/ThemeToggle";
 
 const faqItems = [
   {
@@ -110,7 +111,7 @@ const faqJsonLd = {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
       {/* JSON-LD — WebApplication + FAQPage schemas for Google rich results */}
       <script
         type="application/ld+json"
@@ -121,24 +122,25 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
       />
       {/* ── Navigation ── */}
-      <nav className="border-b border-gray-100 bg-white/80 backdrop-blur sticky top-0 z-10">
+      <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-lg bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-xs font-bold">R</span>
             </div>
-            <span className="font-semibold text-gray-900">ResumeAI</span>
+            <span className="font-semibold text-gray-900 dark:text-white">ResumeAI</span>
           </div>
-          <div className="flex items-center gap-4 text-sm text-gray-500">
-            <a href="#how-it-works" className="hover:text-gray-900 transition">
+          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+            <a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">
               How it works
             </a>
-            <a href="/blog" className="hover:text-gray-900 transition">
+            <a href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">
               Blog
             </a>
-            <a href="#faq" className="hover:text-gray-900 transition">
+            <a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition">
               FAQ
             </a>
+            <ThemeToggle />
             <a
               href="#demo"
               className="rounded-lg bg-indigo-600 px-4 py-1.5 text-white font-medium hover:bg-indigo-700 hover:shadow-md transition-all duration-200"
@@ -152,23 +154,23 @@ export default function Home() {
       {/* ── Hero ── */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-indigo-100/40 blur-3xl" />
-          <div className="absolute top-[100px] left-[-100px] w-[400px] h-[400px] rounded-full bg-violet-100/30 blur-3xl" />
-          <div className="absolute top-[50px] right-[-100px] w-[350px] h-[350px] rounded-full bg-blue-100/30 blur-3xl" />
+          <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-indigo-100/40 dark:bg-indigo-900/20 blur-3xl" />
+          <div className="absolute top-[100px] left-[-100px] w-[400px] h-[400px] rounded-full bg-violet-100/30 dark:bg-violet-900/15 blur-3xl" />
+          <div className="absolute top-[50px] right-[-100px] w-[350px] h-[350px] rounded-full bg-blue-100/30 dark:bg-blue-900/15 blur-3xl" />
         </div>
       <div className="mx-auto max-w-5xl px-4 pt-20 pb-16 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-6">
+        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
           <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
           Free • No sign-up required • Works instantly
         </div>
 
-        <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-5">
+        <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
           Free ATS Resume Checker
           <br />
-          <span className="text-indigo-600">& Keyword Analyzer</span>
+          <span className="text-indigo-600 dark:text-indigo-400">& Keyword Analyzer</span>
         </h1>
 
-        <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-8">
+        <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-8">
           75% of resumes are rejected by ATS software before a human ever reads
           them. Scan any job description and get your ATS match score in
           10 seconds — no sign-up, no paywall, 9 AI tools, 100% free.
@@ -176,7 +178,7 @@ export default function Home() {
 
         <a
           href="#demo"
-          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-300 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-300 dark:hover:shadow-indigo-800/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
         >
           Analyze a Job Description
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -194,8 +196,8 @@ export default function Home() {
             { n: "100%", label: "free forever" },
           ].map(({ n, label }) => (
             <div key={label} className="flex flex-col items-center gap-0.5 group">
-              <span className="text-3xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors duration-200">{n}</span>
-              <span className="text-xs text-gray-400">{label}</span>
+              <span className="text-3xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">{n}</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">{label}</span>
             </div>
           ))}
         </div>
@@ -205,10 +207,10 @@ export default function Home() {
       {/* ── How It Works ── */}
       <section
         id="how-it-works"
-        className="bg-gray-50 border-y border-gray-100 py-16"
+        className="bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 py-16"
       >
         <div className="mx-auto max-w-5xl px-4">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 text-center mb-10">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white text-center mb-10">
             How It Works — 8 Free ATS Resume Tools
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -264,14 +266,14 @@ export default function Home() {
             ].map(({ step, title, body, icon }) => (
               <div
                 key={step}
-                className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200"
+                className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200"
               >
-                <div className="h-10 w-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-4">
+                <div className="h-10 w-10 rounded-xl bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4">
                   {icon}
                 </div>
-                <div className="text-xs font-semibold text-indigo-600 mb-1">Step {step}</div>
-                <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
+                <div className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-1">Step {step}</div>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
@@ -281,10 +283,10 @@ export default function Home() {
       {/* ── Live Demo ── */}
       <section id="demo" className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-8">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
             ATS Keyword Extractor — Try it free
           </h2>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
             Paste any job description. Results appear in under 2 seconds.
           </p>
         </div>
@@ -294,16 +296,16 @@ export default function Home() {
       </section>
 
       {/* ── Gap Analysis ── */}
-      <section className="bg-gray-50 border-t border-gray-100 py-16">
+      <section className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
         <div className="mx-auto max-w-5xl px-4">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
               Step 2
             </div>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Resume Gap Analysis — Find Missing Keywords
             </h2>
-            <p className="text-gray-500 text-sm max-w-xl mx-auto">
+            <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Paste both documents. We&apos;ll show you exactly which keywords
               your resume is missing — and what to add to pass ATS filters.
             </p>
@@ -317,13 +319,13 @@ export default function Home() {
       {/* ── Compliance Checker ── */}
       <section className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
             Step 3
           </div>
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
             ATS Compliance Checker — 15 Format Rules
           </h2>
-          <p className="text-gray-500 text-sm max-w-xl mx-auto">
+          <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
             Keywords don&apos;t matter if ATS can&apos;t parse the file. Run 15 formatting
             checks to catch issues before you apply.
           </p>
@@ -332,16 +334,16 @@ export default function Home() {
       </section>
 
       {/* ── AI Summary Generator ── */}
-      <section className="bg-gray-50 border-t border-gray-100 py-16">
+      <section className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
         <div className="mx-auto max-w-3xl px-4">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
               Step 4
             </div>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
               AI Professional Summary Generator
             </h2>
-            <p className="text-gray-500 text-sm max-w-xl mx-auto">
+            <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Paste your experience bullets and the job description — AI rewrites them into a
               concise, ATS-friendly &quot;About Me&quot; paragraph in seconds.
             </p>
@@ -353,13 +355,13 @@ export default function Home() {
       {/* ── Cover Letter Generator ── */}
       <section className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
             Step 5
           </div>
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Free AI Cover Letter Generator
           </h2>
-          <p className="text-gray-500 text-sm max-w-xl mx-auto">
+          <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
             Paste your key achievements and the job description — AI writes a personalised
             250–320 word cover letter. Choose formal or conversational tone.
           </p>
@@ -368,16 +370,16 @@ export default function Home() {
       </section>
 
       {/* ── AI Bullet Rewriter ── */}
-      <section className="bg-gray-50 border-t border-gray-100 py-16">
+      <section className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
         <div className="mx-auto max-w-3xl px-4">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
               Step 6
             </div>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
               AI Bullet Rewriter — Add Missing Keywords
             </h2>
-            <p className="text-gray-500 text-sm max-w-xl mx-auto">
+            <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Paste up to 5 bullets from your resume and the missing keywords from Step 2.
               AI rewrites each one to naturally include the keywords — without inventing facts.
             </p>
@@ -389,13 +391,13 @@ export default function Home() {
       {/* ── PDF Export ── */}
       <section className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
             Step 7
           </div>
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Download ATS-Friendly Resume as PDF
           </h2>
-          <p className="text-gray-500 text-sm max-w-xl mx-auto">
+          <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
             Fill in your details — paste the AI summary from Step 4 and rewritten
             bullets from Step 6. Downloads as a clean, ATS-friendly PDF.
           </p>
@@ -404,16 +406,16 @@ export default function Home() {
       </section>
 
       {/* ── Job Application Tracker ── */}
-      <section className="bg-gray-50 border-t border-gray-100 py-16">
+      <section className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
         <div className="mx-auto max-w-3xl px-4">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-4">
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
               Step 8
             </div>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Job Application Tracker
             </h2>
-            <p className="text-gray-500 text-sm max-w-xl mx-auto">
+            <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Save the jobs you&apos;re applying to, track their status, and add notes — all stored
               privately in your browser. No sign-up required.
             </p>
@@ -425,58 +427,58 @@ export default function Home() {
       {/* ── FAQ ── */}
       <section id="faq" className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-10">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Frequently asked questions
           </h2>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
             Everything you need to know about ATS filters and how ResumeAI works.
           </p>
         </div>
-        <dl className="divide-y divide-gray-100 space-y-1">
+        <dl className="divide-y divide-gray-100 dark:divide-gray-800 space-y-1">
           {faqItems.map(({ q, a }) => (
             <details key={q} className="group py-5 cursor-pointer list-none">
-              <summary className="flex items-center justify-between gap-4 font-medium text-gray-900 text-sm select-none list-none marker:hidden hover:text-indigo-700 transition-colors duration-150">
+              <summary className="flex items-center justify-between gap-4 font-medium text-gray-900 dark:text-gray-100 text-sm select-none list-none marker:hidden hover:text-indigo-700 dark:hover:text-indigo-400 transition-colors duration-150">
                 {q}
-                <span className="shrink-0 h-5 w-5 text-indigo-600 transition-transform duration-200 group-open:rotate-45">
+                <span className="shrink-0 h-5 w-5 text-indigo-600 dark:text-indigo-400 transition-transform duration-200 group-open:rotate-45">
                   <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden>
                     <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                   </svg>
                 </span>
               </summary>
-              <p className="mt-3 text-sm text-gray-500 leading-7">{a}</p>
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-7">{a}</p>
             </details>
           ))}
         </dl>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-gray-100 bg-gray-50/50 py-10">
+      <footer className="border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 py-10">
         <div className="mx-auto max-w-5xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Wordmark */}
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-md bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-[10px] font-bold">R</span>
             </div>
-            <span className="text-sm font-semibold text-gray-700">ResumeAI</span>
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">ResumeAI</span>
           </div>
 
           {/* Tech stack note */}
-          <p className="text-xs text-gray-400 text-center">
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
             Built with Next.js · FastAPI · spaCy · HuggingFace · fpdf2 &mdash; open source, 100% free.
           </p>
 
           {/* Links */}
-          <div className="flex items-center gap-4 text-xs text-gray-400">
+          <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-500">
             <a
               href="https://github.com/LNB-Aveva/unified-resume-builder"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-gray-700 transition"
+              className="hover:text-gray-700 dark:hover:text-gray-300 transition"
             >
               GitHub
             </a>
             <span aria-hidden>·</span>
-            <a href="#demo" className="hover:text-gray-700 transition">
+            <a href="#demo" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
               Get started free
             </a>
           </div>

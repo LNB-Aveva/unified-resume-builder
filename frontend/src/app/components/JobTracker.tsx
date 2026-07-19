@@ -239,7 +239,7 @@ export default function JobTracker() {
 
   if (!isHydrated) {
     return (
-      <div className="h-40 flex items-center justify-center text-sm text-gray-400">
+      <div className="h-40 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500">
         Loading tracker...
       </div>
     );
@@ -260,7 +260,7 @@ export default function JobTracker() {
               className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition
                 ${filterStatus === s
                   ? "bg-indigo-600 text-white shadow-sm"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                 }`}
             >
               {s !== "All" && (
@@ -268,7 +268,7 @@ export default function JobTracker() {
               )}
               {s}
               <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold
-                ${filterStatus === s ? "bg-indigo-500 text-white" : "bg-gray-200 text-gray-500"}`}>
+                ${filterStatus === s ? "bg-indigo-500 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"}`}>
                 {counts[s] ?? 0}
               </span>
             </button>
@@ -289,49 +289,49 @@ export default function JobTracker() {
 
       {/* ── Add Job form ── */}
       {showForm && (
-        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-5 space-y-4">
-          <p className="text-sm font-semibold text-gray-800">Save a new job</p>
+        <div className="rounded-2xl border border-indigo-100 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950 p-5 space-y-4">
+          <p className="text-sm font-semibold text-gray-800 dark:text-white">Save a new job</p>
 
           <div className="grid sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-gray-600">
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">
                 Company <span className="text-red-400">*</span>
               </label>
               <input
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="e.g. Accenture"
-                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900"
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-gray-600">
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">
                 Job Title <span className="text-red-400">*</span>
               </label>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Senior Software Engineer"
-                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900"
               />
             </div>
             <div className="sm:col-span-2 space-y-1">
-              <label className="block text-xs font-semibold text-gray-600">Job URL</label>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">Job URL</label>
               <input
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://..."
-                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900"
               />
             </div>
             <div className="sm:col-span-2 space-y-1">
-              <label className="block text-xs font-semibold text-gray-600">Notes</label>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">Notes</label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="e.g. Referral from John, $65k range, hybrid 2 days..."
                 rows={2}
-                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-none"
+                className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-none"
               />
             </div>
           </div>
@@ -343,7 +343,7 @@ export default function JobTracker() {
           <div className="flex gap-2 justify-end">
             <button
               onClick={() => { setShowForm(false); setFormError(""); }}
-              className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition"
+              className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
             >
               Cancel
             </button>
@@ -359,17 +359,17 @@ export default function JobTracker() {
 
       {/* ── Empty state ── */}
       {filtered.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-gray-200 py-14 text-center">
-          <div className="mx-auto mb-3 h-10 w-10 rounded-xl bg-gray-100 flex items-center justify-center">
-            <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <div className="rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 py-14 text-center">
+          <div className="mx-auto mb-3 h-10 w-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+            <svg className="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
           </div>
-          <p className="text-sm font-medium text-gray-500">
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
             {filterStatus === "All" ? "No jobs saved yet." : `No jobs with status "${filterStatus}".`}
           </p>
           {filterStatus === "All" && (
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
               Click &ldquo;Save a Job&rdquo; to start tracking your applications.
             </p>
           )}
@@ -383,18 +383,18 @@ export default function JobTracker() {
           const isExpanded = expandedId === job.id;
 
           return (
-            <div key={job.id} className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+            <div key={job.id} className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
               {/* Card header */}
               <div className="flex items-start gap-3 px-5 py-4">
-                <div className="h-9 w-9 rounded-xl bg-indigo-100 flex items-center justify-center shrink-0">
-                  <span className="text-sm font-bold text-indigo-700">
+                <div className="h-9 w-9 rounded-xl bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center shrink-0">
+                  <span className="text-sm font-bold text-indigo-700 dark:text-indigo-300">
                     {job.company.charAt(0).toUpperCase()}
                   </span>
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-gray-900 text-sm truncate">{job.title}</p>
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="font-semibold text-gray-900 dark:text-white text-sm truncate">{job.title}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                     {job.company}
                     {job.url && (
                       <>
@@ -420,7 +420,7 @@ export default function JobTracker() {
                   <select
                     value={job.status}
                     onChange={(e) => handleStatusChange(job.id, e.target.value as Status)}
-                    className="rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs font-medium text-gray-600 outline-none focus:border-indigo-400 cursor-pointer"
+                    className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 outline-none focus:border-indigo-400 cursor-pointer"
                   >
                     {STATUS_ORDER.map((s) => (
                       <option key={s} value={s}>{s}</option>
@@ -431,12 +431,12 @@ export default function JobTracker() {
 
               {/* Footer */}
               <div className="flex items-center justify-between px-5 pb-3 -mt-1">
-                <p className="text-xs text-gray-400">Saved {formatDate(job.dateAdded)}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">Saved {formatDate(job.dateAdded)}</p>
 
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : job.id)}
-                    className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-100 transition"
+                    className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                   >
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -449,7 +449,7 @@ export default function JobTracker() {
 
                   <button
                     onClick={() => handleDelete(job.id)}
-                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 transition"
+                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition"
                     title="Remove"
                   >
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -461,15 +461,15 @@ export default function JobTracker() {
 
               {/* Expandable notes editor */}
               {isExpanded && (
-                <div className="border-t border-gray-100 px-5 py-4">
+                <div className="border-t border-gray-100 dark:border-gray-700 px-5 py-4">
                   <textarea
                     value={job.notes}
                     onChange={(e) => handleNotesChange(job.id, e.target.value)}
                     placeholder="Add notes — salary range, referral, interview round, next steps..."
                     rows={3}
-                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-none"
+                    className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-none"
                   />
-                  <p className="mt-1 text-xs text-gray-400">Notes auto-save as you type.</p>
+                  <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">Notes auto-save as you type.</p>
                 </div>
               )}
             </div>
@@ -479,7 +479,7 @@ export default function JobTracker() {
 
       {/* Storage notice */}
       {jobs.length > 0 && (
-        <p className="text-center text-xs text-gray-400">
+        <p className="text-center text-xs text-gray-400 dark:text-gray-500">
           {jobs.length} job{jobs.length !== 1 ? "s" : ""} tracked
           {useSupabase ? " · Synced to cloud" : " · Saved in your browser · Clears if you clear browser data"}
         </p>

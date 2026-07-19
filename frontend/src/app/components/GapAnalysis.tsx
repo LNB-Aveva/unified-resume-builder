@@ -54,7 +54,7 @@ export default function GapAnalysis() {
       {/* Two-column paste area */}
       <div className="grid sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Job Description
           </label>
           <textarea
@@ -62,15 +62,15 @@ export default function GapAnalysis() {
             onChange={(e) => setJobText(e.target.value)}
             placeholder="Paste the full job description here..."
             rows={12}
-            className="w-full rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-y"
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
           />
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
             {jobText.trim().split(/\s+/).filter(Boolean).length} words
           </p>
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700">
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Your Resume
           </label>
           <textarea
@@ -78,16 +78,16 @@ export default function GapAnalysis() {
             onChange={(e) => setResumeText(e.target.value)}
             placeholder="Paste your resume text here (plain text — copy from Word, Google Docs, or PDF)..."
             rows={12}
-            className="w-full rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-y"
+            className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
           />
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
             {resumeText.trim().split(/\s+/).filter(Boolean).length} words
           </p>
         </div>
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg px-4 py-2">
           {error}
         </p>
       )}
@@ -106,7 +106,7 @@ export default function GapAnalysis() {
 
       {/* Results */}
       {result && gradeStyle && (
-        <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6 space-y-6">
+        <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-6 space-y-6">
 
           {/* Score header */}
           <div className="flex items-center gap-4">
@@ -123,16 +123,16 @@ export default function GapAnalysis() {
 
             <div className="flex-1">
               <div className="flex items-end justify-between mb-1">
-                <p className="text-lg font-bold text-gray-900">
+                <p className="text-lg font-bold text-gray-900 dark:text-white">
                   {result.overall_score}
-                  <span className="text-sm font-normal text-gray-400">/100</span>
+                  <span className="text-sm font-normal text-gray-400 dark:text-gray-500">/100</span>
                 </p>
                 <p className={`text-sm font-semibold ${gradeStyle.text}`}>
                   {result.grade_label}
                 </p>
               </div>
               {/* Score bar */}
-              <div className="h-3 w-full rounded-full bg-gray-200">
+              <div className="h-3 w-full rounded-full bg-gray-200 dark:bg-gray-700">
                 <div
                   className="h-3 rounded-full transition-all duration-700"
                   style={{
@@ -147,10 +147,10 @@ export default function GapAnalysis() {
                 />
               </div>
               <div className="flex justify-between mt-1">
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-400 dark:text-gray-500">
                   Hard skills: {result.hard_skills_score}%
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-400 dark:text-gray-500">
                   Soft skills: {result.soft_skills_score}%
                 </p>
               </div>
@@ -182,12 +182,12 @@ export default function GapAnalysis() {
           {/* Side-by-side skill columns */}
           <div className="grid sm:grid-cols-2 gap-4">
             {/* Matched — green */}
-            <div className="rounded-xl bg-white border border-emerald-100 p-4 space-y-3">
+            <div className="rounded-xl bg-white dark:bg-gray-800 border border-emerald-100 dark:border-emerald-800 p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white text-xs font-bold">
                   ✓
                 </span>
-                <h4 className="font-semibold text-gray-900 text-sm">
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">
                   Skills You Have ({result.total_matched})
                 </h4>
               </div>
@@ -202,18 +202,18 @@ export default function GapAnalysis() {
                     </span>
                   ))
                 ) : (
-                  <p className="text-xs text-gray-400 italic">None matched yet</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 italic">None matched yet</p>
                 )}
               </div>
             </div>
 
             {/* Missing — red */}
-            <div className="rounded-xl bg-white border border-red-100 p-4 space-y-3">
+            <div className="rounded-xl bg-white dark:bg-gray-800 border border-red-100 dark:border-red-800 p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold">
                   ✗
                 </span>
-                <h4 className="font-semibold text-gray-900 text-sm">
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">
                   Missing Keywords ({result.total_missing})
                 </h4>
               </div>
@@ -238,13 +238,13 @@ export default function GapAnalysis() {
 
           {/* Action hint */}
           {result.missing_keywords.length > 0 && (
-            <div className="border-t border-gray-200 pt-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2">
                 What to do next
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 Add these top missing keywords naturally into your resume bullet points:{" "}
-                <span className="font-semibold text-gray-900">
+                <span className="font-semibold text-gray-900 dark:text-white">
                   {result.missing_keywords.slice(0, 5).join(", ")}
                   {result.missing_keywords.length > 5
                     ? ` +${result.missing_keywords.length - 5} more`

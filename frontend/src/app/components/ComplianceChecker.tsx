@@ -47,7 +47,7 @@ export default function ComplianceChecker() {
     <div className="space-y-6">
       {/* Resume textarea */}
       <div className="space-y-2">
-        <label className="block text-sm font-semibold text-gray-700">
+        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
           Your Resume Text
         </label>
         <textarea
@@ -55,12 +55,12 @@ export default function ComplianceChecker() {
           onChange={(e) => setResumeText(e.target.value)}
           placeholder="Paste your full resume here (plain text from Word, Google Docs, or copy from PDF)..."
           rows={10}
-          className="w-full rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-800 shadow-sm outline-none placeholder:text-gray-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 resize-y"
+          className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
         />
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg px-4 py-2">
           {error}
         </p>
       )}
@@ -79,19 +79,19 @@ export default function ComplianceChecker() {
 
       {/* Results */}
       {result && (
-        <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6 space-y-5">
+        <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-6 space-y-5">
 
           {/* Score row */}
           <div className="flex items-center gap-4">
-            <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-2xl bg-white ring-2 ring-gray-200">
+            <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-2xl bg-white dark:bg-gray-800 ring-2 ring-gray-200 dark:ring-gray-700">
               <span className={`text-3xl font-black ${result.overall_score >= 80 ? "text-emerald-600" : result.overall_score >= 60 ? "text-amber-600" : "text-red-600"}`}>
                 {result.overall_score}
               </span>
-              <span className="text-xs text-gray-400 font-medium">/ 100</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">/ 100</span>
             </div>
 
             <div className="flex-1 space-y-1">
-              <p className="font-semibold text-gray-900">
+              <p className="font-semibold text-gray-900 dark:text-white">
                 {result.passed_count} of {result.total_checks} checks passed
               </p>
               <div className="flex gap-3 text-xs">
@@ -123,7 +123,7 @@ export default function ComplianceChecker() {
           {/* Issues to fix */}
           {failed.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                 Issues to fix
               </p>
               <div className="space-y-2">
@@ -138,14 +138,14 @@ export default function ComplianceChecker() {
                         <span className={`mt-0.5 h-2 w-2 shrink-0 rounded-full ${style.dot}`} />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-semibold text-gray-900">
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white">
                               {check.rule}
                             </span>
                             <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${style.badge}`}>
                               {check.severity}
                             </span>
                           </div>
-                          <p className="mt-1 text-xs text-gray-600">{check.message}</p>
+                          <p className="mt-1 text-xs text-gray-600 dark:text-gray-300">{check.message}</p>
                         </div>
                       </div>
                     </div>
@@ -158,7 +158,7 @@ export default function ComplianceChecker() {
           {/* Passing checks (collapsible feel — show as compact list) */}
           {passed.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                 Passing checks ({passed.length})
               </p>
               <div className="flex flex-wrap gap-2">
