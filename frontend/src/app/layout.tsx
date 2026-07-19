@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Free ATS resume checker with no sign-up. Scan your resume for ATS keywords, " +
+    "Free ATS resume checker. Scan your resume for ATS keywords, " +
     "get an instant match score, run 15 formatting checks, rewrite bullets with AI, " +
     "and download ATS-safe PDFs. 9 tools, 100% free.",
 
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     "ATS score checker free",
     "resume keyword analyzer",
     "ATS friendly resume builder",
-    "free resume builder no sign up",
+    "free resume builder",
     "AI cover letter generator free",
     "resume gap analysis tool",
     "ATS compliance checker",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     siteName: "ResumeAI",
     title: "Free ATS Resume Checker & Keyword Analyzer | ResumeAI",
     description:
-      "Free ATS resume checker with no sign-up. Scan for keywords, get your match " +
+      "Free ATS resume checker. Scan for keywords, get your match " +
       "score, run 15 formatting checks, rewrite bullets with AI, and export ATS-safe PDFs. " +
       "9 tools. 100% free.",
     url: "/",
@@ -91,7 +91,7 @@ export const metadata: Metadata = {
     title: "Free ATS Resume Checker & Keyword Analyzer | ResumeAI",
     description:
       "9 free AI tools to pass ATS filters. Keyword extractor, gap analysis, " +
-      "compliance checker, AI cover letter, bullet rewriter, PDF export. No sign-up.",
+      "compliance checker, AI cover letter, bullet rewriter, PDF export. Free account.",
     images: ["/opengraph-image"],
   },
 

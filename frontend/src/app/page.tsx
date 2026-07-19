@@ -23,6 +23,7 @@ import ResumeExporter from "./components/ResumeExporter";
 import CoverLetterGenerator from "./components/CoverLetterGenerator";
 import ThemeToggle from "./components/ThemeToggle";
 import InfoTooltip from "./components/InfoTooltip";
+import AuthGate from "./components/AuthGate";
 
 const faqItems = [
   {
@@ -39,11 +40,11 @@ const faqItems = [
   },
   {
     q: "Is ResumeAI really free? Are there any hidden fees or premium tiers?",
-    a: "Yes, 100% free. All 9 tools — keyword extractor, gap analysis, ATS compliance checker, AI summary generator, AI cover letter generator, AI bullet rewriter, PDF export, job application tracker, and visual templates — are available with no sign-up, no credit card, and no usage limits. We keep costs at zero by using free-tier infrastructure and open-source AI models.",
+    a: "Yes, 100% free. All 9 tools — keyword extractor, gap analysis, ATS compliance checker, AI summary generator, AI cover letter generator, AI bullet rewriter, PDF export, job application tracker, and visual templates — are available with a free account, no credit card, and no usage limits. We keep costs at zero by using free-tier infrastructure and open-source AI models.",
   },
   {
     q: "Do I need to create an account or sign up?",
-    a: "No account required at all. Everything works immediately. Your resume data and job applications are stored locally in your browser (localStorage) — nothing is sent to a server or saved on our end. Your data stays private on your own device.",
+    a: "Yes, a free account is required to use the tools. Sign up takes 10 seconds with just an email and password. Your resume data is stored securely in your account and syncs across devices.",
   },
   {
     q: "What are the 15 ATS compliance rules you check?",
@@ -142,11 +143,14 @@ export default function Home() {
               FAQ
             </a>
             <ThemeToggle />
+            <a href="/sign-in" className="hover:text-gray-900 dark:hover:text-white transition">
+              Sign In
+            </a>
             <a
-              href="#demo"
+              href="/sign-up"
               className="rounded-lg bg-indigo-600 px-4 py-1.5 text-white font-medium hover:bg-indigo-700 hover:shadow-md transition-all duration-200"
             >
-              Try Free
+              Get Started
             </a>
           </div>
         </div>
@@ -165,7 +169,7 @@ export default function Home() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
               <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
-              Free • No sign-up required • Works instantly
+              Free • Create account in 10 seconds • Works instantly
             </div>
 
             <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
@@ -176,15 +180,15 @@ export default function Home() {
 
             <p className="text-lg text-gray-500 dark:text-gray-400 mb-8 max-w-lg">
               75% of resumes are rejected by ATS software before a human ever reads
-              them. Scan any job description and get your ATS match score in
-              10 seconds — no sign-up, no paywall, 9 AI tools, 100% free.
+              them. Create a free account and get your ATS match score in
+              10 seconds — 9 AI tools, 100% free.
             </p>
 
             <a
-              href="#demo"
+              href="/sign-up"
               className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-300 dark:hover:shadow-indigo-800/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
             >
-              Analyze a Job Description
+              Get Started Free
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
@@ -360,7 +364,7 @@ export default function Home() {
         </div>
 
         {/* AnalyzerDemo is a Client Component — interactive form + results */}
-        <AnalyzerDemo />
+        <AuthGate><AnalyzerDemo /></AuthGate>
       </section>
 
       {/* ── Gap Analysis ── */}
@@ -381,7 +385,7 @@ export default function Home() {
           </div>
 
           {/* GapAnalysis is a Client Component */}
-          <GapAnalysis />
+          <AuthGate><GapAnalysis /></AuthGate>
         </div>
       </section>
 
@@ -400,7 +404,7 @@ export default function Home() {
             checks to catch issues before you apply.
           </p>
         </div>
-        <ComplianceChecker />
+        <AuthGate><ComplianceChecker /></AuthGate>
       </section>
 
       {/* ── AI Summary Generator ── */}
@@ -419,7 +423,7 @@ export default function Home() {
               concise, ATS-friendly &quot;About Me&quot; paragraph in seconds.
             </p>
           </div>
-          <SummaryGenerator />
+          <AuthGate><SummaryGenerator /></AuthGate>
         </div>
       </section>
 
@@ -438,7 +442,7 @@ export default function Home() {
             250–320 word cover letter. Choose formal or conversational tone.
           </p>
         </div>
-        <CoverLetterGenerator />
+        <AuthGate><CoverLetterGenerator /></AuthGate>
       </section>
 
       {/* ── AI Bullet Rewriter ── */}
@@ -457,7 +461,7 @@ export default function Home() {
               AI rewrites each one to naturally include the keywords — without inventing facts.
             </p>
           </div>
-          <BulletRewriter />
+          <AuthGate><BulletRewriter /></AuthGate>
         </div>
       </section>
 
@@ -476,7 +480,7 @@ export default function Home() {
             bullets from Step 6. Downloads as a clean, ATS-friendly PDF.
           </p>
         </div>
-        <ResumeExporter />
+        <AuthGate><ResumeExporter /></AuthGate>
       </section>
 
       {/* ── Job Application Tracker ── */}
@@ -492,10 +496,10 @@ export default function Home() {
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Save the jobs you&apos;re applying to, track their status, and add notes — all stored
-              privately in your browser. No sign-up required.
+              securely in your account.
             </p>
           </div>
-          <JobTracker />
+          <AuthGate><JobTracker /></AuthGate>
         </div>
       </section>
 
