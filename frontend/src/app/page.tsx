@@ -22,6 +22,7 @@ import JobTracker from "./components/JobTracker";
 import ResumeExporter from "./components/ResumeExporter";
 import CoverLetterGenerator from "./components/CoverLetterGenerator";
 import ThemeToggle from "./components/ThemeToggle";
+import InfoTooltip from "./components/InfoTooltip";
 
 const faqItems = [
   {
@@ -285,6 +286,7 @@ export default function Home() {
         <div className="text-center mb-8">
           <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
             ATS Keyword Extractor — Try it free
+            <InfoTooltip tip="Copy the entire job posting including title, requirements, and responsibilities. More text = better keyword extraction." />
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm">
             Paste any job description. Results appear in under 2 seconds.
@@ -304,6 +306,7 @@ export default function Home() {
             </div>
             <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Resume Gap Analysis — Find Missing Keywords
+              <InfoTooltip tip="Use the same job description from Step 1. Paste your full resume as plain text — copy from Word, Google Docs, or PDF." />
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Paste both documents. We&apos;ll show you exactly which keywords
@@ -324,6 +327,7 @@ export default function Home() {
           </div>
           <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
             ATS Compliance Checker — 15 Format Rules
+            <InfoTooltip tip="Checks formatting issues like tables, columns, images, and headers that break ATS parsers. Aim for 15/15 to maximize compatibility." />
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
             Keywords don&apos;t matter if ATS can&apos;t parse the file. Run 15 formatting
@@ -342,6 +346,7 @@ export default function Home() {
             </div>
             <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
               AI Professional Summary Generator
+              <InfoTooltip tip="Paste 3-5 achievement bullets from your resume. The AI turns them into a 40-60 word professional summary — ideal length for the top of your resume." />
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Paste your experience bullets and the job description — AI rewrites them into a
@@ -360,6 +365,7 @@ export default function Home() {
           </div>
           <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Free AI Cover Letter Generator
+            <InfoTooltip tip="Formal tone uses 'Dear Hiring Team' style. Conversational starts with a hook. Keep job description under 900 chars — paste just the key requirements." />
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
             Paste your key achievements and the job description — AI writes a personalised
@@ -378,6 +384,7 @@ export default function Home() {
             </div>
             <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
               AI Bullet Rewriter — Add Missing Keywords
+              <InfoTooltip tip="Copy the missing keywords from Step 2's gap analysis. Paste your weakest bullets — one per line, up to 5. AI rewrites each to weave in those keywords." />
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Paste up to 5 bullets from your resume and the missing keywords from Step 2.
@@ -396,6 +403,7 @@ export default function Home() {
           </div>
           <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Download ATS-Friendly Resume as PDF
+            <InfoTooltip tip="All 3 templates are single-column with no graphics — maximally ATS-safe. Paste your AI summary from Step 4 and rewritten bullets from Step 6 for best results." />
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
             Fill in your details — paste the AI summary from Step 4 and rewritten
@@ -414,6 +422,7 @@ export default function Home() {
             </div>
             <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Job Application Tracker
+              <InfoTooltip tip="Data is stored in your browser's localStorage — nothing is sent to any server. Clear browser data to reset. Works offline too." />
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Save the jobs you&apos;re applying to, track their status, and add notes — all stored
