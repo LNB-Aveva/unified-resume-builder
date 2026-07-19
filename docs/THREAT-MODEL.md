@@ -238,7 +238,8 @@ Utility endpoints (no rate limit):
 | Security tests     | 37    | Schema bounds, header injection, path traversal   |
 | Adversarial tests  | 57    | ReDoS, Unicode, null bytes, oversized payloads    |
 | Integration tests  | 33    | All 8 endpoints, error codes, malformed requests  |
-| **Total**          | **201** | **~1.6-3.2s execution time**                   |
+| Property-based     | 9     | Hypothesis-generated random inputs, edge cases    |
+| **Total**          | **210** | **~6-11s execution time**                      |
 
 ---
 
@@ -253,10 +254,14 @@ Utility endpoints (no rate limit):
 | CSP (no unsafe-eval prod)  | Frontend   | Active    |
 | HSTS                       | Backend    | Active    |
 | RLS (Supabase)             | Database   | Active    |
-| Pre-commit hooks           | Dev        | Active    |
-| CI security scan           | Pipeline   | Active    |
+| Pre-commit hooks (6)       | Dev        | Active    |
+| CI security scan (11 steps)| Pipeline   | Active    |
 | Docs disabled in prod      | Backend    | Active    |
 | Filename sanitization      | Backend    | Active    |
+| pip-audit (CVE gating)     | Pipeline   | Active    |
+| npm audit (CVE gating)     | Pipeline   | Active    |
+| SBOM generation            | Dev        | Active    |
+| Incident response plan     | Ops        | Active    |
 
 ---
 
