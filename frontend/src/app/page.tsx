@@ -1,18 +1,3 @@
-/*
- * page.tsx — The landing page (home page) of the Unified Resume Builder.
- *
- * WHY THIS IS A SERVER COMPONENT (no "use client"):
- * This page has no interactivity of its own — no buttons, no state.
- * The interactive part (the keyword extractor form) is in AnalyzerDemo.tsx
- * and is marked as a Client Component there. By keeping page.tsx as a
- * Server Component, Next.js can render it on the server and send pure HTML
- * to the browser instantly — great for SEO and first-load speed.
- *
- * PATTERN USED HERE: "Server Shell + Client Island"
- * The page is a static shell. AnalyzerDemo is a small interactive "island"
- * dropped into it. This is the recommended Next.js App Router pattern.
- */
-
 import AnalyzerDemo from "./components/AnalyzerDemo";
 import GapAnalysis from "./components/GapAnalysis";
 import ComplianceChecker from "./components/ComplianceChecker";
@@ -68,10 +53,6 @@ const faqItems = [
   },
 ];
 
-// JSON-LD structured data — tells Google this is a free web application.
-// Google uses this to show rich results and understand the page without
-// needing to execute JavaScript. "WebApplication" schema is the right type
-// for an interactive online tool.
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -114,7 +95,6 @@ const faqJsonLd = {
 export default function Home() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
-      {/* JSON-LD — WebApplication + FAQPage schemas for Google rich results */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
@@ -123,34 +103,35 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
       />
+
       {/* ── Navigation ── */}
-      <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur sticky top-0 z-10">
-        <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
+      <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-lg sticky top-0 z-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-4 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2.5 group">
-            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
               <span className="text-white text-sm font-bold tracking-tight">R</span>
             </div>
-            <span className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white tracking-tight">ResumeAI</span>
+            <span className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white tracking-tight">ResumeAI</span>
           </a>
-          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-            <a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">
-              How it works
-            </a>
-            <a href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">
-              Blog
-            </a>
-            <a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition">
-              FAQ
-            </a>
+
+          <div className="hidden md:flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+            <a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">How it works</a>
+            <a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">Tools</a>
+            <a href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">Blog</a>
+            <a href="#compare" className="hover:text-gray-900 dark:hover:text-white transition">Compare</a>
+            <a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition">FAQ</a>
+          </div>
+
+          <div className="flex items-center gap-3">
             <ThemeToggle />
-            <a href="/sign-in" className="hover:text-gray-900 dark:hover:text-white transition">
+            <a href="/sign-in" className="hidden sm:inline-flex text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition font-medium">
               Sign In
             </a>
             <a
               href="/sign-up"
-              className="rounded-lg bg-indigo-600 px-4 py-1.5 text-white font-medium hover:bg-indigo-700 hover:shadow-md transition-all duration-200"
+              className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
             >
-              Get Started
+              Get Started Free
             </a>
           </div>
         </div>
@@ -159,244 +140,309 @@ export default function Home() {
       {/* ── Hero ── */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-indigo-100/40 dark:bg-indigo-900/20 blur-3xl" />
-          <div className="absolute top-[100px] left-[-100px] w-[400px] h-[400px] rounded-full bg-violet-100/30 dark:bg-violet-900/15 blur-3xl" />
-          <div className="absolute top-[50px] right-[-100px] w-[350px] h-[350px] rounded-full bg-blue-100/30 dark:bg-blue-900/15 blur-3xl" />
+          <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[900px] h-[700px] rounded-full bg-indigo-100/50 dark:bg-indigo-950/30 blur-3xl" />
+          <div className="absolute top-[100px] left-[-150px] w-[500px] h-[500px] rounded-full bg-violet-100/40 dark:bg-violet-950/20 blur-3xl animate-float" />
+          <div className="absolute top-[50px] right-[-150px] w-[400px] h-[400px] rounded-full bg-blue-100/30 dark:bg-blue-950/15 blur-3xl animate-float-delayed" />
         </div>
-      <div className="mx-auto max-w-6xl px-4 pt-20 pb-16">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Left — Copy + CTA */}
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
-              <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
-              Free • Create account in 10 seconds • Works instantly
-            </div>
 
-            <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
-              Free ATS Resume Checker
-              <br />
-              <span className="text-indigo-600 dark:text-indigo-400">& Keyword Analyzer</span>
-            </h1>
-
-            <p className="text-lg text-gray-500 dark:text-gray-400 mb-8 max-w-lg">
-              75% of resumes are rejected by ATS software before a human ever reads
-              them. Create a free account and get your ATS match score in
-              10 seconds — 9 AI tools, 100% free.
-            </p>
-
-            <a
-              href="/sign-up"
-              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-300 dark:hover:shadow-indigo-800/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
-            >
-              Get Started Free
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </a>
-
-            {/* Stat strip */}
-            <div className="flex flex-wrap gap-x-6 gap-y-3 mt-10">
-              {[
-                { n: "9", label: "AI tools" },
-                { n: "15", label: "ATS rules" },
-                { n: "3", label: "PDF templates" },
-                { n: "100%", label: "free forever" },
-              ].map(({ n, label }) => (
-                <div key={label} className="flex items-center gap-2 group">
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">{n}</span>
-                  <span className="text-xs text-gray-400 dark:text-gray-500">{label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right — Visual ATS score preview mock */}
-          <div className="relative">
-            <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-xl dark:shadow-2xl p-6 space-y-5">
-              {/* Mock header */}
-              <div className="flex items-center gap-2">
-                <div className="h-2.5 w-2.5 rounded-full bg-red-400" />
-                <div className="h-2.5 w-2.5 rounded-full bg-amber-400" />
-                <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">ATS Analysis Result</span>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-16 sm:pt-24 pb-16 sm:pb-20">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-8">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                9 Free AI Tools &mdash; No Credit Card Required
               </div>
 
-              {/* Score circle */}
-              <div className="flex items-center gap-6">
-                <div className="relative h-24 w-24 shrink-0">
-                  <svg className="h-24 w-24 -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="8" className="text-gray-100 dark:text-gray-700" />
-                    <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="8" strokeDasharray="264" strokeDashoffset="40" strokeLinecap="round" className="text-emerald-500" />
+              <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
+                <span className="text-gray-900 dark:text-white">Beat ATS Filters.</span>
+                <br />
+                <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-500 bg-clip-text text-transparent">Land More Interviews.</span>
+              </h1>
+
+              <p className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 mb-10 max-w-xl leading-relaxed">
+                75% of resumes are rejected before a human reads them. Our free ATS
+                resume checker and 9 AI tools help you match keywords, fix formatting,
+                and get seen by recruiters.
+              </p>
+
+              <div className="flex flex-wrap gap-4 mb-12">
+                <a
+                  href="/sign-up"
+                  className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 dark:shadow-indigo-500/15 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+                >
+                  Create Free Account
+                  <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                   </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-gray-900 dark:text-white">85%</span>
+                </a>
+                <a
+                  href="#how-it-works"
+                  className="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 px-8 py-4 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200"
+                >
+                  See How It Works
+                </a>
+              </div>
+
+              <div className="flex flex-wrap gap-8">
+                {[
+                  { n: "9", label: "AI-powered tools" },
+                  { n: "15", label: "ATS format checks" },
+                  { n: "3", label: "PDF templates" },
+                  { n: "100%", label: "free forever" },
+                ].map(({ n, label }) => (
+                  <div key={label} className="group">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">{n}</div>
+                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ATS Score Preview */}
+            <div className="relative hidden lg:block">
+              <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-2xl dark:shadow-gray-900/50 p-6 space-y-5 rotate-1 hover:rotate-0 transition-transform duration-500">
+                <div className="flex items-center gap-2">
+                  <div className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                  <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">ATS Analysis Result</span>
+                </div>
+
+                <div className="flex items-center gap-6">
+                  <div className="relative h-24 w-24 shrink-0">
+                    <svg className="h-24 w-24 -rotate-90" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="8" className="text-gray-100 dark:text-gray-700" />
+                      <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="8" strokeDasharray="264" strokeDashoffset="40" strokeLinecap="round" className="text-emerald-500" />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-gray-900 dark:text-white">85%</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white">Strong ATS Match</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">23 of 27 keywords found</p>
                   </div>
                 </div>
+
                 <div>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white">Strong ATS Match</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">23 of 27 keywords found</p>
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Matched Keywords</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["Python", "React", "AWS", "Docker", "CI/CD", "PostgreSQL", "REST API", "Agile"].map((kw) => (
+                      <span key={kw} className="rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">{kw}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Missing &mdash; Add These</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["Kubernetes", "Terraform", "GraphQL", "TypeScript"].map((kw) => (
+                      <span key={kw} className="rounded-full bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">{kw}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <svg className="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
+                    <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">ATS Compliance</span>
+                  </div>
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">15/15 passed</span>
                 </div>
               </div>
 
-              {/* Mock keyword badges */}
-              <div>
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Matched Keywords</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {["Python", "React", "AWS", "Docker", "CI/CD", "PostgreSQL", "REST API", "Agile"].map((kw) => (
-                    <span key={kw} className="rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">{kw}</span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Mock missing keywords */}
-              <div>
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Missing — Add These</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {["Kubernetes", "Terraform", "GraphQL", "TypeScript"].map((kw) => (
-                    <span key={kw} className="rounded-full bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">{kw}</span>
-                  ))}
-                </div>
-              </div>
-
-              {/* ATS compliance bar */}
-              <div className="flex items-center justify-between rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 px-4 py-3">
-                <div className="flex items-center gap-2">
-                  <svg className="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
-                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">ATS Compliance</span>
-                </div>
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">15/15 passed</span>
-              </div>
+              <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-indigo-100 via-violet-50 to-blue-100 dark:from-indigo-950 dark:via-violet-950 dark:to-blue-950 opacity-60 blur-xl" />
             </div>
-
-            {/* Decorative glow behind the card */}
-            <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-indigo-100 via-violet-50 to-blue-100 dark:from-indigo-950 dark:via-violet-950 dark:to-blue-950 opacity-60 blur-xl" />
           </div>
         </div>
-      </div>
       </section>
 
-      {/* ── How It Works ── */}
-      <section
-        id="how-it-works"
-        className="bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 py-16"
-      >
-        <div className="mx-auto max-w-5xl px-4">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white text-center mb-10">
-            How It Works — 8 Free ATS Resume Tools
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* ── Trust Strip ── */}
+      <section className="border-y border-gray-100 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-900/80 py-5">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
             {[
               {
-                step: "1",
-                title: "Extract ATS keywords from any job posting",
-                body: "Paste any job description — our NLP engine instantly identifies every keyword ATS filters scan for.",
-                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>,
+                label: "Private & Secure",
+                icon: <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>,
               },
               {
-                step: "2",
-                title: "Resume gap analysis — find missing keywords",
-                body: "Paste your resume to see matched vs missing keywords and your ATS match score.",
-                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" /></svg>,
+                label: "AI-Powered Analysis",
+                icon: <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" /></svg>,
               },
               {
-                step: "3",
-                title: "ATS compliance checker — 15 format rules",
-                body: "Run 15 ATS format checks to catch issues that prevent parsers from reading your resume.",
-                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>,
+                label: "Results in Seconds",
+                icon: <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" /></svg>,
               },
               {
-                step: "4",
-                title: "AI professional summary generator",
-                body: "Paste your experience bullets — AI rewrites them into a tailored professional summary.",
-                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" /></svg>,
+                label: "No Usage Limits",
+                icon: <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" /></svg>,
               },
-              {
-                step: "5",
-                title: "Free AI cover letter generator",
-                body: "AI generates a 250-320 word cover letter tailored to the company. Formal or conversational tone.",
-                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" /></svg>,
-              },
-              {
-                step: "6",
-                title: "AI bullet rewriter — add missing keywords",
-                body: "AI rewrites each bullet to naturally include your missing keywords — without inventing facts.",
-                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>,
-              },
-              {
-                step: "7",
-                title: "Download PDF",
-                body: "Choose from 3 ATS-safe templates (Classic, Modern, Minimal), fill in your details, and download a clean single-column PDF.",
-                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>,
-              },
-              {
-                step: "8",
-                title: "Track applications",
-                body: "Save jobs, update status from Saved → Applied → Interview → Offer, add notes per role.",
-                icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15a2.25 2.25 0 0 1 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" /></svg>,
-              },
-            ].map(({ step, title, body, icon }) => (
-              <div
-                key={step}
-                className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200"
-              >
-                <div className="h-10 w-10 rounded-xl bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4">
-                  {icon}
-                </div>
-                <div className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-1">Step {step}</div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{body}</p>
+            ].map(({ label, icon }) => (
+              <div key={label} className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <span className="text-indigo-500 dark:text-indigo-400">{icon}</span>
+                <span className="font-medium">{label}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Live Demo ── */}
-      <section id="demo" className="mx-auto max-w-3xl px-4 py-16">
+      {/* ── How It Works ── */}
+      <section id="how-it-works" className="py-20 sm:py-24 scroll-mt-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
+              Simple 4-Step Workflow
+            </div>
+            <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+              How It Works
+            </h2>
+            <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+              Go from job description to optimized resume in minutes. Nine AI tools handle the heavy lifting.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                step: "1",
+                title: "Extract",
+                desc: "Paste any job description. Our NLP engine instantly identifies every keyword that ATS filters scan for.",
+                tools: "Keyword Extractor",
+                gradient: "from-indigo-600 to-violet-600",
+                shadow: "shadow-indigo-500/20",
+              },
+              {
+                step: "2",
+                title: "Analyze",
+                desc: "Upload your resume. See your ATS match score, find missing keywords, and run 15 formatting checks.",
+                tools: "Gap Analysis + Compliance Checker",
+                gradient: "from-indigo-600 to-violet-600",
+                shadow: "shadow-indigo-500/20",
+              },
+              {
+                step: "3",
+                title: "Optimize",
+                desc: "AI rewrites your bullets, generates cover letters, and creates a professional summary tailored to the role.",
+                tools: "Summary + Cover Letter + Rewriter",
+                gradient: "from-indigo-600 to-violet-600",
+                shadow: "shadow-indigo-500/20",
+              },
+              {
+                step: "4",
+                title: "Export & Apply",
+                desc: "Download an ATS-safe PDF from 3 templates. Track every application from Saved through Offer.",
+                tools: "PDF Export + Job Tracker",
+                gradient: "from-emerald-500 to-emerald-600",
+                shadow: "shadow-emerald-500/20",
+              },
+            ].map(({ step, title, desc, tools, gradient, shadow }) => (
+              <div key={step} className="group">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-8 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
+                  <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-bold text-lg mb-6 shadow-lg ${shadow}`}>
+                    {step}
+                  </div>
+                  <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white mb-3">{title}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-4 flex-1">{desc}</p>
+                  <div className="text-xs text-indigo-600 dark:text-indigo-400 font-medium">{tools}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Why ResumeAI ── */}
+      <section className="bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+              Why Job Seekers Choose ResumeAI
+            </h2>
+            <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+              Everything you need to beat ATS filters &mdash; completely free, no strings attached.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "100% Free, Forever",
+                desc: "No credit card required. No premium tier. No usage limits. All 9 tools are completely free — we keep costs at zero using open-source AI and free-tier infrastructure.",
+                icon: <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" /></svg>,
+              },
+              {
+                title: "AI-Powered Precision",
+                desc: "spaCy NLP extracts every ATS keyword. HuggingFace AI rewrites bullets, generates cover letters, and creates professional summaries — all tailored to your target role.",
+                icon: <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" /></svg>,
+              },
+              {
+                title: "Built for ATS",
+                desc: "Every tool is designed specifically to help you pass ATS filters. 15 compliance checks ensure your formatting, keywords, and structure meet what automated systems expect.",
+                icon: <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>,
+              },
+            ].map(({ title, desc, icon }) => (
+              <div key={title} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-8 text-center shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                <div className="mx-auto h-14 w-14 rounded-2xl bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-6">
+                  {icon}
+                </div>
+                <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white mb-3">{title}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Tools Section Anchor ── */}
+      <div id="tools" className="scroll-mt-20" />
+
+      {/* ── Step 1: ATS Keyword Extractor ── */}
+      <section id="demo" className="mx-auto max-w-3xl px-4 py-16 scroll-mt-20">
         <div className="text-center mb-8">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            ATS Keyword Extractor — Try it free
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
+            Step 1
+          </div>
+          <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            ATS Keyword Extractor &mdash; Try it free
             <InfoTooltip tip="Copy the entire job posting including title, requirements, and responsibilities. More text = better keyword extraction." />
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm">
             Paste any job description. Results appear in under 2 seconds.
           </p>
         </div>
-
-        {/* AnalyzerDemo is a Client Component — interactive form + results */}
         <AuthGate><AnalyzerDemo /></AuthGate>
       </section>
 
-      {/* ── Gap Analysis ── */}
+      {/* ── Step 2: Gap Analysis ── */}
       <section className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
         <div className="mx-auto max-w-5xl px-4">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
               Step 2
             </div>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Resume Gap Analysis — Find Missing Keywords
+            <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              Resume Gap Analysis &mdash; Find Missing Keywords
               <InfoTooltip tip="Use the same job description from Step 1. Paste your full resume as plain text — copy from Word, Google Docs, or PDF." />
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Paste both documents. We&apos;ll show you exactly which keywords
-              your resume is missing — and what to add to pass ATS filters.
+              your resume is missing &mdash; and what to add to pass ATS filters.
             </p>
           </div>
-
-          {/* GapAnalysis is a Client Component */}
           <AuthGate><GapAnalysis /></AuthGate>
         </div>
       </section>
 
-      {/* ── Compliance Checker ── */}
+      {/* ── Step 3: Compliance Checker ── */}
       <section className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
             Step 3
           </div>
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            ATS Compliance Checker — 15 Format Rules
+          <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            ATS Compliance Checker &mdash; 15 Format Rules
             <InfoTooltip tip="Checks formatting issues like tables, columns, images, and headers that break ATS parsers. Aim for 15/15 to maximize compatibility." />
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
@@ -407,19 +453,19 @@ export default function Home() {
         <AuthGate><ComplianceChecker /></AuthGate>
       </section>
 
-      {/* ── AI Summary Generator ── */}
+      {/* ── Step 4: AI Summary Generator ── */}
       <section className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
         <div className="mx-auto max-w-3xl px-4">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
               Step 4
             </div>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
               AI Professional Summary Generator
               <InfoTooltip tip="Paste 3-5 achievement bullets from your resume. The AI turns them into a 40-60 word professional summary — ideal length for the top of your resume." />
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
-              Paste your experience bullets and the job description — AI rewrites them into a
+              Paste your experience bullets and the job description &mdash; AI rewrites them into a
               concise, ATS-friendly &quot;About Me&quot; paragraph in seconds.
             </p>
           </div>
@@ -427,75 +473,75 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Cover Letter Generator ── */}
+      {/* ── Step 5: Cover Letter Generator ── */}
       <section className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
             Step 5
           </div>
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Free AI Cover Letter Generator
             <InfoTooltip tip="Formal tone uses 'Dear Hiring Team' style. Conversational starts with a hook. Keep job description under 900 chars — paste just the key requirements." />
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
-            Paste your key achievements and the job description — AI writes a personalised
-            250–320 word cover letter. Choose formal or conversational tone.
+            Paste your key achievements and the job description &mdash; AI writes a personalised
+            250&ndash;320 word cover letter. Choose formal or conversational tone.
           </p>
         </div>
         <AuthGate><CoverLetterGenerator /></AuthGate>
       </section>
 
-      {/* ── AI Bullet Rewriter ── */}
+      {/* ── Step 6: AI Bullet Rewriter ── */}
       <section className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
         <div className="mx-auto max-w-3xl px-4">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
               Step 6
             </div>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              AI Bullet Rewriter — Add Missing Keywords
+            <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              AI Bullet Rewriter &mdash; Add Missing Keywords
               <InfoTooltip tip="Copy the missing keywords from Step 2's gap analysis. Paste your weakest bullets — one per line, up to 5. AI rewrites each to weave in those keywords." />
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
               Paste up to 5 bullets from your resume and the missing keywords from Step 2.
-              AI rewrites each one to naturally include the keywords — without inventing facts.
+              AI rewrites each one to naturally include the keywords &mdash; without inventing facts.
             </p>
           </div>
           <AuthGate><BulletRewriter /></AuthGate>
         </div>
       </section>
 
-      {/* ── PDF Export ── */}
+      {/* ── Step 7: PDF Export ── */}
       <section className="mx-auto max-w-3xl px-4 py-16">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
             Step 7
           </div>
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Download ATS-Friendly Resume as PDF
             <InfoTooltip tip="All 3 templates are single-column with no graphics — maximally ATS-safe. Paste your AI summary from Step 4 and rewritten bullets from Step 6 for best results." />
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
-            Fill in your details — paste the AI summary from Step 4 and rewritten
+            Fill in your details &mdash; paste the AI summary from Step 4 and rewritten
             bullets from Step 6. Downloads as a clean, ATS-friendly PDF.
           </p>
         </div>
         <AuthGate><ResumeExporter /></AuthGate>
       </section>
 
-      {/* ── Job Application Tracker ── */}
+      {/* ── Step 8: Job Application Tracker ── */}
       <section className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
         <div className="mx-auto max-w-3xl px-4">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">
               Step 8
             </div>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
               Job Application Tracker
               <InfoTooltip tip="Data is stored in your browser's localStorage — nothing is sent to any server. Clear browser data to reset. Works offline too." />
             </h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto">
-              Save the jobs you&apos;re applying to, track their status, and add notes — all stored
+              Save the jobs you&apos;re applying to, track their status, and add notes &mdash; all stored
               securely in your account.
             </p>
           </div>
@@ -503,63 +549,194 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── FAQ ── */}
-      <section id="faq" className="mx-auto max-w-3xl px-4 py-16">
-        <div className="text-center mb-10">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Frequently asked questions
-          </h2>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
-            Everything you need to know about ATS filters and how ResumeAI works.
-          </p>
+      {/* ── Comparison Section ── */}
+      <section id="compare" className="py-20 sm:py-24 scroll-mt-20">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800 px-4 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 mb-4">
+              Save $24&ndash;49/month
+            </div>
+            <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+              Everything Paid Tools Offer, for Free
+            </h2>
+            <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+              Other resume tools lock their best features behind a paywall. We don&apos;t.
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[500px]">
+                <thead>
+                  <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Feature</th>
+                    <th className="px-6 py-4 text-center">
+                      <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">ResumeAI</div>
+                      <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">Free</div>
+                    </th>
+                    <th className="px-6 py-4 text-center">
+                      <div className="text-sm font-semibold text-gray-500 dark:text-gray-400">Paid Tools</div>
+                      <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">$24&ndash;49/mo</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {([
+                    ["ATS Keyword Extraction", "included", "included"],
+                    ["Resume Gap Analysis", "included", "premium"],
+                    ["ATS Compliance (15 checks)", "included", "limited"],
+                    ["AI Cover Letter Generator", "included", "premium"],
+                    ["AI Bullet Rewriter", "included", "premium"],
+                    ["AI Summary Generator", "included", "premium"],
+                    ["PDF Export (3 templates)", "included", "premium"],
+                    ["Job Application Tracker", "included", "included"],
+                    ["Usage Limits", "none", "restricted"],
+                  ] as [string, string, string][]).map(([feature, us, them], i) => (
+                    <tr key={i} className="border-b border-gray-50 dark:border-gray-700/50 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors">
+                      <td className="px-6 py-3.5 text-sm text-gray-700 dark:text-gray-200">{feature}</td>
+                      <td className="px-6 py-3.5 text-center">
+                        {us === "included" ? (
+                          <svg className="mx-auto h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                        ) : (
+                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">Unlimited</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-3.5 text-center">
+                        {them === "included" ? (
+                          <svg className="mx-auto h-5 w-5 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                        ) : them === "restricted" ? (
+                          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800">Restricted</span>
+                        ) : (
+                          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">{them === "premium" ? "Premium" : "Limited"}</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="text-center mt-10">
+            <a
+              href="/sign-up"
+              className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+            >
+              Get All Features Free
+              <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+            </a>
+          </div>
         </div>
-        <dl className="divide-y divide-gray-100 dark:divide-gray-800 space-y-1">
-          {faqItems.map(({ q, a }) => (
-            <details key={q} className="group py-5 cursor-pointer list-none">
-              <summary className="flex items-center justify-between gap-4 font-medium text-gray-900 dark:text-gray-100 text-sm select-none list-none marker:hidden hover:text-indigo-700 dark:hover:text-indigo-400 transition-colors duration-150">
-                {q}
-                <span className="shrink-0 h-5 w-5 text-indigo-600 dark:text-indigo-400 transition-transform duration-200 group-open:rotate-45">
-                  <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-                    <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                  </svg>
-                </span>
-              </summary>
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-7">{a}</p>
-            </details>
-          ))}
-        </dl>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section id="faq" className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-20 sm:py-24 scroll-mt-20">
+        <div className="mx-auto max-w-3xl px-4">
+          <div className="text-center mb-12">
+            <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
+              Everything you need to know about ATS filters and how ResumeAI works.
+            </p>
+          </div>
+          <dl className="divide-y divide-gray-200 dark:divide-gray-700 space-y-1">
+            {faqItems.map(({ q, a }) => (
+              <details key={q} className="group py-5 cursor-pointer list-none">
+                <summary className="flex items-center justify-between gap-4 font-medium text-gray-900 dark:text-gray-100 text-sm select-none list-none marker:hidden hover:text-indigo-700 dark:hover:text-indigo-400 transition-colors duration-150">
+                  {q}
+                  <span className="shrink-0 h-5 w-5 text-indigo-600 dark:text-indigo-400 transition-transform duration-200 group-open:rotate-45">
+                    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                      <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                    </svg>
+                  </span>
+                </summary>
+                <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-7">{a}</p>
+              </details>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      {/* ── Bottom CTA ── */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-violet-600 to-indigo-700" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_50%)]" />
+        <div className="relative mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-20 text-center">
+          <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+            Ready to beat ATS filters?
+          </h2>
+          <p className="text-lg text-indigo-100 mb-10 max-w-xl mx-auto">
+            Create your free account in 10 seconds. No credit card required.
+            No trial that expires. Just 9 AI tools to help you land interviews.
+          </p>
+          <a
+            href="/sign-up"
+            className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-sm font-bold text-indigo-700 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+          >
+            Create Free Account
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+          </a>
+        </div>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 py-10">
-        <div className="mx-auto max-w-5xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Wordmark */}
-          <a href="/" className="flex items-center gap-2 group">
-            <div className="h-6 w-6 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center group-hover:shadow-sm transition-all duration-200">
-              <span className="text-white text-[10px] font-bold">R</span>
+      <footer className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            <div className="sm:col-span-2 lg:col-span-1">
+              <a href="/" className="flex items-center gap-2 mb-4 group">
+                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200">
+                  <span className="text-white text-xs font-bold">R</span>
+                </div>
+                <span className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white">ResumeAI</span>
+              </a>
+              <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs">
+                Free ATS resume checker with 9 AI tools. Beat the filters, match keywords, and land more interviews.
+              </p>
             </div>
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">ResumeAI</span>
-          </a>
 
-          {/* Tech stack note */}
-          <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
-            Built with Next.js · FastAPI · spaCy · HuggingFace · fpdf2 &mdash; open source, 100% free.
-          </p>
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Product</h4>
+              <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
+                <li><a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">ATS Tools</a></li>
+                <li><a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">How It Works</a></li>
+                <li><a href="#compare" className="hover:text-gray-900 dark:hover:text-white transition">Free vs Paid</a></li>
+                <li><a href="/sign-up" className="hover:text-gray-900 dark:hover:text-white transition">Get Started</a></li>
+              </ul>
+            </div>
 
-          {/* Links */}
-          <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-500">
-            <a
-              href="https://github.com/LNB-Aveva/unified-resume-builder"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-gray-700 dark:hover:text-gray-300 transition"
-            >
-              GitHub
-            </a>
-            <span aria-hidden>·</span>
-            <a href="#demo" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
-              Get started free
-            </a>
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Resources</h4>
+              <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
+                <li><a href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">Blog</a></li>
+                <li><a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition">FAQ</a></li>
+                <li>
+                  <a href="https://github.com/LNB-Aveva/unified-resume-builder" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition">
+                    GitHub
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Built With</h4>
+              <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
+                <li>Next.js + Tailwind CSS</li>
+                <li>FastAPI + spaCy</li>
+                <li>HuggingFace AI</li>
+                <li>Supabase Auth</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-gray-400 dark:text-gray-500">
+              &copy; {new Date().getFullYear()} ResumeAI. Open source, 100% free.
+            </p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">
+              Built with open-source AI &mdash; no data is stored or logged.
+            </p>
           </div>
         </div>
       </footer>
