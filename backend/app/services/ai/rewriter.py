@@ -1,3 +1,4 @@
+import asyncio
 import re
 
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse, RewrittenBullet
@@ -176,11 +177,10 @@ async def rewrite_bullets(req: BulletRewriteRequest) -> BulletRewriteResponse:
 
     if len(rewrites) < len(bullets):
         rewritten_originals = {r.original.lower().strip() for r in rewrites}
-        for bullet in bullets:
-            clean = bullet.lstrip("- ").lstrip("* ").lower().strip()
-            if clean not in rewritten_originals:
-                single = await _rewrite_single(req, bullet)
-                rewrites.append(single)
+        missing = [b for b in bullets if b.lstrip("- ").lstrip("* ").lower().strip() not in rewritten_originals]
+        if missing:
+            fallbacks = await asyncio.gather(*[_rewrite_single(req, b) for b in missing])
+            rewrites.extend(fallbacks)
 
     if not rewrites:
         raise RuntimeError("Model returned no rewritten bullets. Try again or simplify the input.")

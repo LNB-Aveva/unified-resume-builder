@@ -40,8 +40,7 @@ async def call_hf(
     async with httpx.AsyncClient(timeout=timeout) as client:
         response = await client.post(API_URL, json=payload, headers=headers)
         response.raise_for_status()
-
-    data = response.json()
+        data = response.json()
 
     try:
         return data["choices"][0]["message"]["content"]

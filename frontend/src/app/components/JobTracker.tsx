@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { getSupabase, supabaseEnabled } from "../lib/supabase";
 
 type Status = "Saved" | "Applied" | "Interview" | "Offer" | "Rejected";
@@ -145,8 +145,9 @@ export default function JobTracker() {
   useEffect(() => {
     async function init() {
       if (supabaseEnabled) {
-        const sbJobs = await loadJobsSupabase();
-        if (sbJobs.length > 0 || (await ensureAnonSession())) {
+        const sessionReady = await ensureAnonSession();
+        const sbJobs = sessionReady ? await loadJobsSupabase() : [];
+        if (sessionReady) {
           // Migrate any localStorage jobs to Supabase on first connect
           const localJobs = loadJobsLocal();
           if (localJobs.length > 0 && sbJobs.length === 0) {
@@ -220,12 +221,19 @@ export default function JobTracker() {
     if (useSupabase) await updateJobSupabase(id, { status });
   }
 
-  async function handleNotesChange(id: string, newNotes: string) {
+  const notesTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function handleNotesChange(id: string, newNotes: string) {
     const updated = jobs.map((j) => j.id === id ? { ...j, notes: newNotes } : j);
     setJobs(updated);
     persistLocal(updated);
 
-    if (useSupabase) await updateJobSupabase(id, { notes: newNotes });
+    if (useSupabase) {
+      if (notesTimerRef.current) clearTimeout(notesTimerRef.current);
+      notesTimerRef.current = setTimeout(() => {
+        updateJobSupabase(id, { notes: newNotes });
+      }, 500);
+    }
   }
 
   async function handleDelete(id: string) {
@@ -424,7 +432,7 @@ export default function JobTracker() {
                       <>
                         {" · "}
                         <a
-                          href={job.url}
+                          href={/^https?:\/\//i.test(job.url) ? job.url : `https://${job.url}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-indigo-500 hover:underline"

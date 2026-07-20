@@ -21,7 +21,7 @@ function highlightKeywords(text: string, keywords: string[]): React.ReactNode {
   const parts = text.split(pattern);
 
   return parts.map((part, i) =>
-    pattern.test(part) ? (
+    new RegExp(`^(${escaped.join("|")})$`, "i").test(part) ? (
       <mark key={i} className="bg-emerald-100 text-emerald-800 rounded px-0.5 font-semibold">
         {part}
       </mark>

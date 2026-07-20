@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ATSScore, API_URL, connectionError } from "../types";
 import Spinner from "./Spinner";
 
@@ -18,6 +18,8 @@ export default function GapAnalysis() {
   const [result, setResult] = useState<ATSScore | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const jobWordCount = useMemo(() => jobText.trim().split(/\s+/).filter(Boolean).length, [jobText]);
+  const resumeWordCount = useMemo(() => resumeText.trim().split(/\s+/).filter(Boolean).length, [resumeText]);
 
   async function handleAnalyze() {
     if (!jobText.trim() || !resumeText.trim()) {
@@ -65,7 +67,7 @@ export default function GapAnalysis() {
             className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
           />
           <p className="text-xs text-gray-400 dark:text-gray-500">
-            {jobText.trim().split(/\s+/).filter(Boolean).length} words
+            {jobWordCount} words
           </p>
         </div>
 
@@ -81,7 +83,7 @@ export default function GapAnalysis() {
             className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
           />
           <p className="text-xs text-gray-400 dark:text-gray-500">
-            {resumeText.trim().split(/\s+/).filter(Boolean).length} words
+            {resumeWordCount} words
           </p>
         </div>
       </div>
