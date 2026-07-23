@@ -5,6 +5,15 @@ import httpx
 MODEL = "Qwen/Qwen2.5-7B-Instruct:fastest"
 API_URL = "https://router.huggingface.co/v1/chat/completions"
 
+_client: httpx.AsyncClient | None = None
+
+
+def _get_client(timeout: float) -> httpx.AsyncClient:
+    global _client
+    if _client is None or _client.is_closed:
+        _client = httpx.AsyncClient(timeout=timeout)
+    return _client
+
 
 def _get_api_key() -> str:
     api_key = os.environ.get("HUGGINGFACE_API_KEY", "").strip()
@@ -37,10 +46,10 @@ async def call_hf(
         "Content-Type": "application/json",
     }
 
-    async with httpx.AsyncClient(timeout=timeout) as client:
-        response = await client.post(API_URL, json=payload, headers=headers)
-        response.raise_for_status()
-        data = response.json()
+    client = _get_client(timeout)
+    response = await client.post(API_URL, json=payload, headers=headers)
+    response.raise_for_status()
+    data = response.json()
 
     try:
         return data["choices"][0]["message"]["content"]

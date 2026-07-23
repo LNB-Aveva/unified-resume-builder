@@ -81,10 +81,13 @@ def _extract_responsibilities(text: str) -> list[str]:
             in_benefits = False
             continue
 
-        if not in_benefits and any(stripped.startswith(c) for c in ("-", "*", "•", "·", "–", "--")) and len(stripped) > 5:
-            content = stripped[1:].strip()
-            if content:
-                responsibilities.append(content)
+        if not in_benefits and len(stripped) > 5:
+            for prefix in ("--", "-", "*", "•", "·", "–"):
+                if stripped.startswith(prefix):
+                    content = stripped[len(prefix):].strip()
+                    if content:
+                        responsibilities.append(content)
+                    break
 
     return responsibilities
 

@@ -78,7 +78,7 @@ def _build_single_message(req: BulletRewriteRequest, bullet: str) -> list[dict]:
 
 
 def _parse_rewrites(raw: str, originals: list[str]) -> list[RewrittenBullet]:
-    blocks = re.split(r"-{2,}", raw)
+    blocks = re.split(r"^\s*-{3,}\s*$", raw, flags=re.MULTILINE)
     results: list[RewrittenBullet] = []
 
     for block in blocks:

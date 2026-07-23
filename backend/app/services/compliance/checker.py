@@ -116,8 +116,8 @@ def check_resume(resume_text: str) -> ComplianceReport:
         "No first-person pronouns found",
         pronoun_fail_msg)
 
-    has_action = any(v in bullet_text for v in _ACTION_VERBS) if bullets else \
-                 any(v in text_lower for v in _ACTION_VERBS)
+    search_text = bullet_text if bullets else text_lower
+    has_action = any(re.search(r'\b' + v + r'\b', search_text) for v in _ACTION_VERBS)
     add("Uses action verbs in bullet points", has_action, "warning",
         "Action verbs found",
         "No action verbs detected -- start bullets with 'Developed', 'Led', 'Built', 'Reduced', etc.")

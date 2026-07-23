@@ -113,7 +113,10 @@ async function updateJobSupabase(id: string, fields: Partial<{ status: string; n
   const sb = getSupabase();
   if (!sb) return false;
 
-  const { error } = await sb.from("jobs").update(fields).eq("id", id);
+  const userId = await ensureAnonSession();
+  if (!userId) return false;
+
+  const { error } = await sb.from("jobs").update(fields).eq("id", id).eq("user_id", userId);
   return !error;
 }
 
@@ -121,7 +124,10 @@ async function deleteJobSupabase(id: string): Promise<boolean> {
   const sb = getSupabase();
   if (!sb) return false;
 
-  const { error } = await sb.from("jobs").delete().eq("id", id);
+  const userId = await ensureAnonSession();
+  if (!userId) return false;
+
+  const { error } = await sb.from("jobs").delete().eq("id", id).eq("user_id", userId);
   return !error;
 }
 
