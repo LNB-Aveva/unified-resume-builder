@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ComplianceCheck, ComplianceReport, API_URL, connectionError } from "../types";
 import Spinner from "./Spinner";
+import { DEMO_RESUME_TEXT } from "../lib/demoData";
 
 const SEVERITY_STYLES: Record<string, { badge: string; row: string; dot: string }> = {
   critical:   { badge: "bg-red-100 text-red-700",    row: "border-red-100 bg-red-50",    dot: "bg-red-500"   },
@@ -65,17 +66,28 @@ export default function ComplianceChecker() {
         </p>
       )}
 
-      <button
-        onClick={handleCheck}
-        disabled={loading}
-        className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-      >
-        {loading ? (
-          <Spinner>Checking compliance...</Spinner>
-        ) : (
-          "Run ATS Compliance Check"
+      <div className="flex items-center gap-3">
+        <button
+          onClick={handleCheck}
+          disabled={loading}
+          className="flex-1 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <Spinner>Checking compliance...</Spinner>
+          ) : (
+            "Run ATS Compliance Check"
+          )}
+        </button>
+        {!resumeText.trim() && (
+          <button
+            type="button"
+            onClick={() => setResumeText(DEMO_RESUME_TEXT)}
+            className="shrink-0 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 px-3 py-2.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition"
+          >
+            Try demo
+          </button>
         )}
-      </button>
+      </div>
 
       {/* Results */}
       {result && (

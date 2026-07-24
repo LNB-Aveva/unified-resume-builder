@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { ATSScore, API_URL, connectionError } from "../types";
 import Spinner from "./Spinner";
+import { DEMO_JOB_DESCRIPTION, DEMO_RESUME_TEXT } from "../lib/demoData";
 
 const GRADE_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
   A: { bg: "bg-emerald-50", text: "text-emerald-700", ring: "ring-emerald-200" },
@@ -94,17 +95,28 @@ export default function GapAnalysis() {
         </p>
       )}
 
-      <button
-        onClick={handleAnalyze}
-        disabled={loading}
-        className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-      >
-        {loading ? (
-          <Spinner>Analyzing your gap...</Spinner>
-        ) : (
-          "Analyze My Gap"
+      <div className="flex items-center gap-3">
+        <button
+          onClick={handleAnalyze}
+          disabled={loading}
+          className="flex-1 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <Spinner>Analyzing your gap...</Spinner>
+          ) : (
+            "Analyze My Gap"
+          )}
+        </button>
+        {!jobText.trim() && !resumeText.trim() && (
+          <button
+            type="button"
+            onClick={() => { setJobText(DEMO_JOB_DESCRIPTION); setResumeText(DEMO_RESUME_TEXT); }}
+            className="shrink-0 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 px-3 py-2.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition"
+          >
+            Try demo
+          </button>
         )}
-      </button>
+      </div>
 
       {/* Results */}
       {result && gradeStyle && (

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { API_URL } from "../types";
 import Spinner from "./Spinner";
+import { DEMO_PERSONAL, DEMO_SUMMARY, DEMO_EXPERIENCE, DEMO_EDUCATION, DEMO_RESUME_SKILLS } from "../lib/demoData";
 
 interface PersonalInfo {
   full_name: string;
@@ -502,10 +503,11 @@ export default function ResumeExporter() {
       )}
 
       {/* Download button */}
+      <div className="flex items-center gap-3">
       <button
         onClick={handleDownload}
         disabled={loading}
-        className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+        className="flex-1 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {loading ? (
           <Spinner>Generating PDF...</Spinner>
@@ -525,6 +527,23 @@ export default function ResumeExporter() {
           </span>
         )}
       </button>
+        {!personal.full_name.trim() && (
+          <button
+            type="button"
+            onClick={() => {
+              setPersonal(DEMO_PERSONAL);
+              setSummary(DEMO_SUMMARY);
+              setExperience(DEMO_EXPERIENCE.map((e) => ({ ...e, id: crypto.randomUUID() })));
+              setEducation(DEMO_EDUCATION.map((e) => ({ ...e, id: crypto.randomUUID() })));
+              setSkills(DEMO_RESUME_SKILLS);
+              setOpen({ personal: true, summary: true, experience: true, education: true, skills: true });
+            }}
+            className="shrink-0 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 px-3 py-2.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition"
+          >
+            Try demo
+          </button>
+        )}
+      </div>
 
       <p className="text-center text-xs text-gray-400 dark:text-gray-500">
         3 ATS-safe single-column templates · fpdf2 · No watermarks

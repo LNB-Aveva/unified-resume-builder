@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SummaryResponse, API_URL, connectionError } from "../types";
 import { useLoadingMessages } from "../hooks/useLoadingMessages";
 import Spinner from "./Spinner";
+import { DEMO_JOB_TITLE, DEMO_JOB_DESCRIPTION, DEMO_EXPERIENCE_BULLETS, DEMO_YEARS_EXPERIENCE, DEMO_SKILLS } from "../lib/demoData";
 
 const LOADING_MESSAGES = [
   "Sending to AI model...",
@@ -185,17 +186,28 @@ export default function SummaryGenerator() {
       )}
 
       {/* Generate button */}
-      <button
-        onClick={handleGenerate}
-        disabled={loading}
-        className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-      >
-        {loading ? (
-          <Spinner>{loadingMsg}</Spinner>
-        ) : (
-          "Generate Professional Summary"
+      <div className="flex items-center gap-3">
+        <button
+          onClick={handleGenerate}
+          disabled={loading}
+          className="flex-1 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <Spinner>{loadingMsg}</Spinner>
+          ) : (
+            "Generate Professional Summary"
+          )}
+        </button>
+        {!jobTitle.trim() && !experienceBullets.trim() && (
+          <button
+            type="button"
+            onClick={() => { setJobTitle(DEMO_JOB_TITLE); setJobDescription(DEMO_JOB_DESCRIPTION); setExperienceBullets(DEMO_EXPERIENCE_BULLETS); setYearsExperience(DEMO_YEARS_EXPERIENCE); setSkills(DEMO_SKILLS); }}
+            className="shrink-0 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 px-3 py-2.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition"
+          >
+            Try demo
+          </button>
         )}
-      </button>
+      </div>
 
       {/* ── Result ── */}
       {result && (

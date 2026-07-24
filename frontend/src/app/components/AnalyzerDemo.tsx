@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { JobAnalysis, API_URL, connectionError } from "../types";
 import Spinner from "./Spinner";
+import { DEMO_JOB_DESCRIPTION } from "../lib/demoData";
 
 export default function AnalyzerDemo() {
   const [jobText, setJobText] = useState("");
@@ -57,17 +58,28 @@ export default function AnalyzerDemo() {
           </p>
         )}
 
-        <button
-          onClick={handleAnalyze}
-          disabled={loading}
-          className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {loading ? (
-            <Spinner>Analyzing...</Spinner>
-          ) : (
-            "Extract ATS Keywords"
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleAnalyze}
+            disabled={loading}
+            className="flex-1 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <Spinner>Analyzing...</Spinner>
+            ) : (
+              "Extract ATS Keywords"
+            )}
+          </button>
+          {!jobText.trim() && (
+            <button
+              type="button"
+              onClick={() => setJobText(DEMO_JOB_DESCRIPTION)}
+              className="shrink-0 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 px-3 py-2.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition"
+            >
+              Try demo
+            </button>
           )}
-        </button>
+        </div>
       </div>
 
       {/* Results */}

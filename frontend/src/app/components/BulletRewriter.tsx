@@ -4,6 +4,7 @@ import { useState } from "react";
 import { RewrittenBullet, RewriteResponse, API_URL, connectionError } from "../types";
 import { useLoadingMessages } from "../hooks/useLoadingMessages";
 import Spinner from "./Spinner";
+import { DEMO_JOB_TITLE, DEMO_MISSING_KEYWORDS, DEMO_WEAK_BULLETS } from "../lib/demoData";
 
 const LOADING_MESSAGES = [
   "Sending to AI model...",
@@ -186,17 +187,28 @@ export default function BulletRewriter() {
       )}
 
       {/* Rewrite button */}
-      <button
-        onClick={handleRewrite}
-        disabled={loading}
-        className="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-      >
-        {loading ? (
-          <Spinner>{loadingMsg}</Spinner>
-        ) : (
-          "Rewrite Bullets with AI"
+      <div className="flex items-center gap-3">
+        <button
+          onClick={handleRewrite}
+          disabled={loading}
+          className="flex-1 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <Spinner>{loadingMsg}</Spinner>
+          ) : (
+            "Rewrite Bullets with AI"
+          )}
+        </button>
+        {!jobTitle.trim() && !bullets.trim() && (
+          <button
+            type="button"
+            onClick={() => { setJobTitle(DEMO_JOB_TITLE); setMissingKeywords(DEMO_MISSING_KEYWORDS); setBullets(DEMO_WEAK_BULLETS); }}
+            className="shrink-0 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 px-3 py-2.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition"
+          >
+            Try demo
+          </button>
         )}
-      </button>
+      </div>
 
       {/* ── Results ── */}
       {result && (

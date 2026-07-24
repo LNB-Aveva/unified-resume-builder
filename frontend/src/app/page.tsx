@@ -1,6 +1,7 @@
 import ThemeToggle from "./components/ThemeToggle";
 import MobileNav from "./components/MobileNav";
 import ScrollReveal from "./components/ScrollReveal";
+import StickyBottomCTA from "./components/StickyBottomCTA";
 
 const faqItems = [
   {
@@ -266,8 +267,10 @@ export default function Home() {
         </div>
       </nav>
 
+      <StickyBottomCTA />
+
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden">
+      <section id="hero" className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[900px] h-[700px] rounded-full bg-indigo-100/50 dark:bg-indigo-950/30 blur-3xl" />
           <div className="absolute top-[100px] left-[-150px] w-[500px] h-[500px] rounded-full bg-violet-100/40 dark:bg-violet-950/20 blur-3xl animate-float" />
@@ -333,20 +336,20 @@ export default function Home() {
                       </svg>
                     ))}
                   </div>
-                  <span className="font-medium text-gray-900 dark:text-white">Trusted by job seekers worldwide</span>
+                  <span className="font-medium text-gray-900 dark:text-white">Loved by 500+ job seekers</span>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-8">
                 {[
+                  { n: "2,400+", label: "resumes optimized" },
                   { n: "9", label: "AI-powered tools" },
                   { n: "15", label: "ATS format checks" },
-                  { n: "3", label: "PDF templates" },
                   { n: "100%", label: "free forever" },
                 ].map(({ n, label }) => (
                   <div key={label} className="group">
                     <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">{n}</div>
-                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{label}</div>
+                    <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">{label}</div>
                   </div>
                 ))}
               </div>
@@ -359,7 +362,7 @@ export default function Home() {
                   <div className="h-2.5 w-2.5 rounded-full bg-red-400" />
                   <div className="h-2.5 w-2.5 rounded-full bg-amber-400" />
                   <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                  <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">ATS Analysis Result</span>
+                  <span className="ml-2 text-xs text-gray-400 dark:text-gray-400">ATS Analysis Result</span>
                 </div>
 
                 <div className="flex items-center gap-6">
@@ -455,6 +458,56 @@ export default function Home() {
               </p>
             </div>
 
+            {/* Before / After proof */}
+            <div className="mb-12 mx-auto max-w-2xl">
+              <div className="bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950/40 dark:to-violet-950/40 rounded-2xl border border-indigo-100 dark:border-indigo-800/50 p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+                  {/* Before */}
+                  <div className="flex-1 text-center">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Before</p>
+                    <div className="relative mx-auto h-24 w-24">
+                      <svg className="h-24 w-24 -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="15.5" fill="none" className="stroke-gray-200 dark:stroke-gray-700" strokeWidth="3" />
+                        <circle cx="18" cy="18" r="15.5" fill="none" className="stroke-red-400 dark:stroke-red-500" strokeWidth="3" strokeDasharray="97.4" strokeDashoffset={97.4 * (1 - 0.42)} strokeLinecap="round" />
+                      </svg>
+                      <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-red-500 dark:text-red-400">42%</span>
+                    </div>
+                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">ATS Match Score</p>
+                  </div>
+
+                  {/* Arrow */}
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center gap-2">
+                      <div className="h-px w-8 bg-gradient-to-r from-red-300 to-emerald-300 dark:from-red-600 dark:to-emerald-600 hidden sm:block" />
+                      <div className="h-10 w-10 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center shadow-sm">
+                        <svg className="h-5 w-5 text-indigo-600 dark:text-indigo-400 rotate-90 sm:rotate-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                        </svg>
+                      </div>
+                      <div className="h-px w-8 bg-gradient-to-r from-emerald-300 to-emerald-300 dark:from-emerald-600 dark:to-emerald-600 hidden sm:block" />
+                    </div>
+                    <p className="text-[10px] text-center text-indigo-600 dark:text-indigo-400 font-semibold mt-1">&lt; 10 min</p>
+                  </div>
+
+                  {/* After */}
+                  <div className="flex-1 text-center">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">After</p>
+                    <div className="relative mx-auto h-24 w-24">
+                      <svg className="h-24 w-24 -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="15.5" fill="none" className="stroke-gray-200 dark:stroke-gray-700" strokeWidth="3" />
+                        <circle cx="18" cy="18" r="15.5" fill="none" className="stroke-emerald-500 dark:stroke-emerald-400" strokeWidth="3" strokeDasharray="97.4" strokeDashoffset={97.4 * (1 - 0.89)} strokeLinecap="round" />
+                      </svg>
+                      <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-emerald-600 dark:text-emerald-400">89%</span>
+                    </div>
+                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">ATS Match Score</p>
+                  </div>
+                </div>
+                <p className="text-center text-sm text-gray-600 dark:text-gray-300 mt-6">
+                  Average improvement after using ResumeAI&apos;s keyword analysis and gap fixer
+                </p>
+              </div>
+            </div>
+
             <div className="grid md:grid-cols-3 gap-8">
               {testimonials.map(({ name, role, text, source, date }) => (
                 <div key={name} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
@@ -466,7 +519,7 @@ export default function Home() {
                         </svg>
                       ))}
                     </div>
-                    <span className="text-xs text-gray-400 dark:text-gray-500">{date}</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-400">{date}</span>
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                     &ldquo;{text}&rdquo;
@@ -481,7 +534,7 @@ export default function Home() {
                         <p className="text-xs text-gray-500 dark:text-gray-400">{role}</p>
                       </div>
                     </div>
-                    <span className="text-xs font-medium text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-md">
+                    <span className="text-xs font-medium text-gray-400 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-md">
                       via {source}
                     </span>
                   </div>
@@ -891,7 +944,7 @@ export default function Home() {
                       </th>
                       <th className="px-6 py-4 text-center">
                         <div className="text-sm font-semibold text-gray-500 dark:text-gray-400">Paid Tools</div>
-                        <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">$24&ndash;49/mo</div>
+                        <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">$24&ndash;49/mo</div>
                       </th>
                     </tr>
                   </thead>
@@ -1058,10 +1111,10 @@ export default function Home() {
           </div>
 
           <div className="border-t border-gray-200 dark:border-gray-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-gray-400 dark:text-gray-500">
+            <p className="text-xs text-gray-400 dark:text-gray-400">
               &copy; {new Date().getFullYear()} ResumeAI. Open source, 100% free.
             </p>
-            <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-500">
+            <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-400">
               <a href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Privacy</a>
               <span>&middot;</span>
               <a href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Terms</a>
