@@ -22,6 +22,8 @@ export async function signUp(
     email: formData.get("email"),
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
+    termsAccepted: formData.get("termsAccepted"),
+    newsletterOptIn: formData.get("newsletterOptIn"),
   });
 
   if (!validated.success) {
@@ -34,6 +36,10 @@ export async function signUp(
     password: validated.data.password,
     options: {
       emailRedirectTo: `${siteUrl}/auth/callback`,
+      data: {
+        newsletter_opted_in: validated.data.newsletterOptIn === "on",
+        terms_accepted_at: new Date().toISOString(),
+      },
     },
   });
 

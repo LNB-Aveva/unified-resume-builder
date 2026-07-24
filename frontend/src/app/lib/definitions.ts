@@ -9,6 +9,10 @@ export const SignUpSchema = z
       .regex(/[a-zA-Z]/, "Must contain at least one letter.")
       .regex(/[0-9]/, "Must contain at least one number."),
     confirmPassword: z.string(),
+    termsAccepted: z.literal("on", {
+      message: "You must accept the Terms of Service and Privacy Policy.",
+    }),
+    newsletterOptIn: z.string().nullable().optional(),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords do not match.",
