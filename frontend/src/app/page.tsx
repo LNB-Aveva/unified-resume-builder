@@ -572,8 +572,13 @@ export default function Home() {
                         <p className="text-xs text-gray-500 dark:text-gray-400">{role}</p>
                       </div>
                     </div>
-                    <span className="text-xs font-medium text-gray-400 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-md">
-                      via {source}
+                    <span className={`text-xs font-medium px-2 py-1 rounded-md flex items-center gap-1.5 ${
+                      source === "LinkedIn"
+                        ? "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900"
+                        : "bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-900"
+                    }`}>
+                      <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${source === "LinkedIn" ? "bg-blue-500" : "bg-orange-500"}`} />
+                      {source}
                     </span>
                   </div>
                 </div>
@@ -845,46 +850,144 @@ export default function Home() {
                 {
                   name: "Classic",
                   desc: "Indigo accent with horizontal rules. Traditional, widely accepted across all industries.",
-                  accentColor: "bg-indigo-600",
-                  headerBg: "bg-white dark:bg-gray-800",
                 },
                 {
                   name: "Modern",
                   desc: "Navy header band with teal section accents. Clean, contemporary, and professional.",
-                  accentColor: "bg-teal-600",
-                  headerBg: "bg-gray-800 dark:bg-gray-700",
                 },
                 {
                   name: "Minimal",
                   desc: "Pure black-and-white. Zero colour. Maximally conservative for strict ATS environments.",
-                  accentColor: "bg-gray-800 dark:bg-gray-200",
-                  headerBg: "bg-white dark:bg-gray-800",
                 },
-              ].map(({ name, desc, accentColor, headerBg }) => (
+              ].map(({ name, desc }) => (
                 <div key={name} className="group">
                   <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                    {/* Mini template preview */}
-                    <div className="aspect-[8.5/11] p-4 bg-gray-50 dark:bg-gray-900 relative">
-                      <div className="h-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3 flex flex-col gap-2 overflow-hidden">
-                        <div className={`h-6 rounded ${headerBg} ${name === "Modern" ? "" : ""} flex items-center px-2`}>
-                          {name === "Modern" && <div className="h-1.5 w-12 rounded bg-white/60" />}
-                        </div>
-                        <div className={`h-0.5 w-full ${accentColor} rounded`} />
-                        <div className="space-y-1.5 flex-1">
-                          <div className="h-1.5 w-3/4 bg-gray-200 dark:bg-gray-600 rounded" />
-                          <div className="h-1 w-full bg-gray-100 dark:bg-gray-700 rounded" />
-                          <div className="h-1 w-full bg-gray-100 dark:bg-gray-700 rounded" />
-                          <div className="h-1 w-5/6 bg-gray-100 dark:bg-gray-700 rounded" />
-                          <div className={`h-0.5 w-full ${accentColor} rounded mt-2 opacity-40`} />
-                          <div className="h-1.5 w-2/3 bg-gray-200 dark:bg-gray-600 rounded" />
-                          <div className="h-1 w-full bg-gray-100 dark:bg-gray-700 rounded" />
-                          <div className="h-1 w-full bg-gray-100 dark:bg-gray-700 rounded" />
-                          <div className="h-1 w-4/5 bg-gray-100 dark:bg-gray-700 rounded" />
-                          <div className={`h-0.5 w-full ${accentColor} rounded mt-2 opacity-40`} />
-                          <div className="h-1.5 w-1/2 bg-gray-200 dark:bg-gray-600 rounded" />
-                          <div className="h-1 w-full bg-gray-100 dark:bg-gray-700 rounded" />
-                          <div className="h-1 w-3/4 bg-gray-100 dark:bg-gray-700 rounded" />
-                        </div>
+                    {/* Mini template preview — always light, mimics printed PDF */}
+                    <div className="aspect-[8.5/11] p-3 bg-gray-100 dark:bg-gray-900 relative">
+                      <div className="h-full rounded border border-gray-200 bg-white overflow-hidden flex flex-col">
+
+                        {name === "Classic" && (
+                          <>
+                            <div className="px-2.5 pt-2.5 pb-1.5 shrink-0">
+                              <p className="text-[8px] font-bold text-indigo-700 leading-none tracking-tight">ALEX JOHNSON</p>
+                              <p className="text-[5.5px] text-gray-600 mt-0.5 leading-none">Senior Software Engineer</p>
+                              <p className="text-[4.5px] text-gray-400 mt-0.5 leading-none">alex@email.com · (555) 123-4567 · New York, NY</p>
+                              <div className="h-[1.5px] bg-indigo-600 mt-1.5 rounded" />
+                            </div>
+                            <div className="px-2.5 pb-2 flex-1 space-y-1.5">
+                              <p className="text-[5.5px] font-bold text-indigo-600 uppercase tracking-widest">Experience</p>
+                              <div>
+                                <p className="text-[5px] font-semibold text-gray-800 leading-none">Senior Engineer · TechCorp</p>
+                                <p className="text-[4px] text-gray-400 mt-0.5 mb-1 leading-none">2021 – Present</p>
+                                <div className="space-y-[2px]">
+                                  <div className="h-[2px] bg-gray-200 rounded w-full" />
+                                  <div className="h-[2px] bg-gray-200 rounded w-5/6" />
+                                  <div className="h-[2px] bg-gray-200 rounded w-4/5" />
+                                </div>
+                              </div>
+                              <div className="h-[1.5px] bg-indigo-600 rounded opacity-30" />
+                              <p className="text-[5.5px] font-bold text-indigo-600 uppercase tracking-widest">Education</p>
+                              <div>
+                                <p className="text-[5px] font-semibold text-gray-800 leading-none">B.S. Computer Science · MIT</p>
+                                <p className="text-[4px] text-gray-400 mt-0.5 mb-1 leading-none">2017 – 2021</p>
+                                <div className="space-y-[2px]">
+                                  <div className="h-[2px] bg-gray-200 rounded w-3/4" />
+                                  <div className="h-[2px] bg-gray-200 rounded w-2/3" />
+                                </div>
+                              </div>
+                              <div className="h-[1.5px] bg-indigo-600 rounded opacity-30" />
+                              <p className="text-[5.5px] font-bold text-indigo-600 uppercase tracking-widest">Skills</p>
+                              <div className="flex flex-wrap gap-[2px]">
+                                {["Python", "React", "AWS", "Docker"].map((s) => (
+                                  <span key={s} className="text-[3.5px] bg-indigo-50 text-indigo-700 px-[2px] py-px rounded">{s}</span>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        {name === "Modern" && (
+                          <>
+                            <div className="bg-slate-800 px-2.5 py-2 shrink-0">
+                              <p className="text-[8px] font-bold text-white leading-none tracking-tight">ALEX JOHNSON</p>
+                              <p className="text-[5.5px] text-slate-300 mt-0.5 leading-none">Senior Software Engineer</p>
+                              <p className="text-[4.5px] text-slate-400 mt-0.5 leading-none">alex@email.com · (555) 123-4567</p>
+                            </div>
+                            <div className="px-2.5 pt-1.5 pb-2 flex-1 space-y-1.5">
+                              <div>
+                                <p className="text-[5.5px] font-bold text-teal-700 uppercase tracking-widest">Experience</p>
+                                <div className="h-[1.5px] bg-teal-600 rounded opacity-50 mb-1" />
+                                <p className="text-[5px] font-semibold text-gray-800 leading-none">Senior Engineer · TechCorp</p>
+                                <p className="text-[4px] text-gray-400 mt-0.5 mb-1 leading-none">2021 – Present</p>
+                                <div className="space-y-[2px]">
+                                  <div className="h-[2px] bg-gray-200 rounded w-full" />
+                                  <div className="h-[2px] bg-gray-200 rounded w-5/6" />
+                                  <div className="h-[2px] bg-gray-200 rounded w-4/5" />
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-[5.5px] font-bold text-teal-700 uppercase tracking-widest">Education</p>
+                                <div className="h-[1.5px] bg-teal-600 rounded opacity-50 mb-1" />
+                                <p className="text-[5px] font-semibold text-gray-800 leading-none">B.S. Computer Science · MIT</p>
+                                <p className="text-[4px] text-gray-400 mt-0.5 mb-1 leading-none">2017 – 2021</p>
+                                <div className="space-y-[2px]">
+                                  <div className="h-[2px] bg-gray-200 rounded w-3/4" />
+                                  <div className="h-[2px] bg-gray-200 rounded w-2/3" />
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-[5.5px] font-bold text-teal-700 uppercase tracking-widest">Skills</p>
+                                <div className="h-[1.5px] bg-teal-600 rounded opacity-50 mb-1" />
+                                <div className="flex flex-wrap gap-[2px]">
+                                  {["Python", "React", "AWS", "Docker"].map((s) => (
+                                    <span key={s} className="text-[3.5px] bg-teal-50 text-teal-700 px-[2px] py-px rounded">{s}</span>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        {name === "Minimal" && (
+                          <>
+                            <div className="px-2.5 pt-2.5 pb-1.5 shrink-0">
+                              <p className="text-[8px] font-bold text-gray-900 leading-none tracking-tight">ALEX JOHNSON</p>
+                              <p className="text-[5.5px] text-gray-600 mt-0.5 leading-none">Senior Software Engineer</p>
+                              <p className="text-[4.5px] text-gray-500 mt-0.5 leading-none">alex@email.com · (555) 123-4567 · New York, NY</p>
+                              <div className="h-[1.5px] bg-gray-900 mt-1.5 rounded" />
+                            </div>
+                            <div className="px-2.5 pb-2 flex-1 space-y-1.5">
+                              <p className="text-[5.5px] font-bold text-gray-900 uppercase tracking-widest">Experience</p>
+                              <div>
+                                <p className="text-[5px] font-semibold text-gray-800 leading-none">Senior Engineer · TechCorp</p>
+                                <p className="text-[4px] text-gray-500 mt-0.5 mb-1 leading-none">2021 – Present</p>
+                                <div className="space-y-[2px]">
+                                  <div className="h-[2px] bg-gray-200 rounded w-full" />
+                                  <div className="h-[2px] bg-gray-200 rounded w-5/6" />
+                                  <div className="h-[2px] bg-gray-200 rounded w-4/5" />
+                                </div>
+                              </div>
+                              <div className="h-[1.5px] bg-gray-300 rounded" />
+                              <p className="text-[5.5px] font-bold text-gray-900 uppercase tracking-widest">Education</p>
+                              <div>
+                                <p className="text-[5px] font-semibold text-gray-800 leading-none">B.S. Computer Science · MIT</p>
+                                <p className="text-[4px] text-gray-500 mt-0.5 mb-1 leading-none">2017 – 2021</p>
+                                <div className="space-y-[2px]">
+                                  <div className="h-[2px] bg-gray-200 rounded w-3/4" />
+                                  <div className="h-[2px] bg-gray-200 rounded w-2/3" />
+                                </div>
+                              </div>
+                              <div className="h-[1.5px] bg-gray-300 rounded" />
+                              <p className="text-[5.5px] font-bold text-gray-900 uppercase tracking-widest">Skills</p>
+                              <div className="flex flex-wrap gap-[2px]">
+                                {["Python", "React", "AWS", "Docker"].map((s) => (
+                                  <span key={s} className="text-[3.5px] bg-gray-100 text-gray-700 px-[2px] py-px rounded border border-gray-200">{s}</span>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        )}
+
                       </div>
                     </div>
 
