@@ -2,6 +2,7 @@ import ThemeToggle from "./components/ThemeToggle";
 import MobileNav from "./components/MobileNav";
 import ScrollReveal from "./components/ScrollReveal";
 import StickyBottomCTA from "./components/StickyBottomCTA";
+import AnalyzerDemo from "./components/AnalyzerDemo";
 
 const faqItems = [
   {
@@ -308,10 +309,10 @@ export default function Home() {
                   </svg>
                 </a>
                 <a
-                  href="#tools"
+                  href="#demo"
                   className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 px-8 py-4 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200"
                 >
-                  Check Your ATS Score
+                  Try Free — No Sign-Up
                   <svg className="h-4 w-4 text-indigo-500 group-hover:translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
                   </svg>
@@ -441,6 +442,43 @@ export default function Home() {
                 <span className="font-medium">{label}</span>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Live Demo ── */}
+      <section id="demo" className="py-20 sm:py-24 scroll-mt-20">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800 px-4 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 mb-4">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Live Demo &mdash; No Account Needed
+            </div>
+            <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+              Try the ATS Keyword Extractor Free
+            </h2>
+            <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
+              Paste any job description below. Our NLP engine instantly pulls every keyword ATS systems scan for &mdash; hard skills, soft skills, certifications, and tools.
+            </p>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 sm:p-8">
+            <AnalyzerDemo />
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Want the full analysis? Gap scoring, compliance checks, AI rewrites, and PDF export are all free with an account.
+            </p>
+            <a
+              href="/sign-up"
+              className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+            >
+              Get Full ATS Analysis Free
+              <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </a>
           </div>
         </div>
       </section>
