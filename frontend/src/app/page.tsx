@@ -297,10 +297,10 @@ export default function Home() {
                 and get seen by recruiters.
               </p>
 
-              <div className="flex flex-wrap gap-4 mb-8">
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <a
                   href="/sign-up"
-                  className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 dark:shadow-indigo-500/15 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+                  className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 dark:shadow-indigo-500/15 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
                 >
                   Create Free Account
                   <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -309,7 +309,7 @@ export default function Home() {
                 </a>
                 <a
                   href="#tools"
-                  className="group inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 px-8 py-4 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200"
+                  className="group inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 px-8 py-4 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200"
                 >
                   Check Your ATS Score
                   <svg className="h-4 w-4 text-indigo-500 group-hover:translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -340,7 +340,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-8">
+              <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:flex sm:flex-wrap sm:gap-8">
                 {[
                   { n: "2,400+", label: "resumes optimized" },
                   { n: "9", label: "AI-powered tools" },
