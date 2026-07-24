@@ -99,6 +99,7 @@ const tools = [
       </svg>
     ),
     color: "indigo",
+    href: "/keyword-analyzer",
   },
   {
     step: "2",
@@ -223,6 +224,28 @@ const testimonials = [
     date: "3 days ago",
   },
 ];
+
+function SourceBadge({ source }: { source: string }) {
+  const meta: Record<string, { color: string; label: string }> = {
+    "Product Hunt": { color: "#DA552F", label: "P" },
+    "Reddit":       { color: "#FF4500", label: "R" },
+    "LinkedIn":     { color: "#0A66C2", label: "in" },
+  };
+  const m = meta[source];
+  return (
+    <div className="flex items-center gap-1.5">
+      {m && (
+        <span
+          className="h-4 w-4 rounded-sm flex items-center justify-center text-[8px] font-bold text-white leading-none shrink-0"
+          style={{ backgroundColor: m.color }}
+        >
+          {m.label}
+        </span>
+      )}
+      <span className="text-xs font-medium text-gray-400 dark:text-gray-500">via {source}</span>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
@@ -574,14 +597,7 @@ export default function Home() {
                         <p className="text-xs text-gray-500 dark:text-gray-400">{role}</p>
                       </div>
                     </div>
-                    <span className={`text-xs font-medium px-2 py-1 rounded-md flex items-center gap-1.5 ${
-                      source === "LinkedIn"
-                        ? "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900"
-                        : "bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-900"
-                    }`}>
-                      <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${source === "LinkedIn" ? "bg-blue-500" : "bg-orange-500"}`} />
-                      {source}
-                    </span>
+                    <SourceBadge source={source} />
                   </div>
                 </div>
               ))}
@@ -767,12 +783,12 @@ export default function Home() {
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {tools.map(({ step, title, desc, icon, color }) => {
+              {tools.map(({ step, title, desc, icon, color, href }) => {
                 const c = colorMap[color];
                 return (
                   <a
                     key={step}
-                    href="/sign-up"
+                    href={href ?? "/sign-up"}
                     className={`group relative rounded-2xl border ${c.border} ${c.bg} p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 block`}
                   >
                     <div className="flex items-center gap-3 mb-4">
