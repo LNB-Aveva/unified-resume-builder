@@ -590,6 +590,99 @@ export default function Home() {
         </section>
       </ScrollReveal>
 
+      {/* ── Who Uses ResumeAI ── */}
+      <ScrollReveal>
+        <section className="py-20 sm:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="text-center mb-14">
+              <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+                Built for Every Stage of Your Job Search
+              </h2>
+              <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+                Whether you&apos;re switching careers, landing your first role, or competing in a keyword-dense field &mdash; the same free tools work for you.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="rounded-2xl border border-indigo-100 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-950/20 p-8">
+                <div className="inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-900/50 px-3 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-300 mb-5 uppercase tracking-wider">
+                  Switching Industries
+                </div>
+                <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-4">
+                  Make transferable skills visible to ATS
+                </h3>
+                <ul className="space-y-3">
+                  {[
+                    "Gap analysis shows which new-field keywords are missing from your current resume",
+                    "AI bullet rewriter translates your experience into the target industry’s language",
+                    "Keyword extractor decodes exactly what ATS scans for in your new field",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                      <svg className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-2xl border border-violet-100 dark:border-violet-800/50 bg-violet-50/50 dark:bg-violet-950/20 p-8">
+                <div className="inline-flex items-center rounded-full bg-violet-100 dark:bg-violet-900/50 px-3 py-1 text-xs font-bold text-violet-700 dark:text-violet-300 mb-5 uppercase tracking-wider">
+                  New Grads &amp; First Jobs
+                </div>
+                <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-4">
+                  Start with an ATS-ready resume from day one
+                </h3>
+                <ul className="space-y-3">
+                  {[
+                    "Keyword extractor shows exactly what skills entry-level roles expect",
+                    "ATS compliance checker ensures formatting passes automated filters before a recruiter sees it",
+                    "AI summary generator writes a professional summary even without years of experience",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                      <svg className="h-4 w-4 text-violet-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-2xl border border-emerald-100 dark:border-emerald-800/50 bg-emerald-50/50 dark:bg-emerald-950/20 p-8">
+                <div className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/50 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 mb-5 uppercase tracking-wider">
+                  Engineering &amp; Tech
+                </div>
+                <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-4">
+                  Tech job descriptions are keyword-dense &mdash; don&apos;t miss any
+                </h3>
+                <ul className="space-y-3">
+                  {[
+                    "NLP engine extracts frameworks, cloud platforms, and certification variants from any JD",
+                    "Gap analysis compares your stack against the role’s exact requirements",
+                    "AI bullet rewriter weaves missing tools into your experience without inventing facts",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                      <svg className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="text-center mt-12">
+              <a
+                href="/sign-up"
+                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+              >
+                Get Started Free &mdash; All 9 Tools
+                <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
+
       {/* ── How It Works ── */}
       <ScrollReveal>
         <section id="how-it-works" className="bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 py-20 sm:py-24 scroll-mt-20">
