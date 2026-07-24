@@ -141,6 +141,8 @@ export async function setupAccount(
     targetRole: formData.get("targetRole"),
     industry: formData.get("industry"),
     yearsExperience: formData.get("yearsExperience"),
+    termsAccepted: formData.get("termsAccepted"),
+    newsletterOptIn: formData.get("newsletterOptIn"),
   });
 
   if (!validated.success) {
@@ -155,6 +157,13 @@ export async function setupAccount(
   if (!user) {
     return { message: "Not authenticated." };
   }
+
+  await supabase.auth.updateUser({
+    data: {
+      newsletter_opted_in: true,
+      terms_accepted_at: new Date().toISOString(),
+    },
+  });
 
   const { error } = await supabase.from("profiles").upsert({
     id: user.id,

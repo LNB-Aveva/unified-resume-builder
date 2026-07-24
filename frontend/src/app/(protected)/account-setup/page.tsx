@@ -93,6 +93,47 @@ export default function AccountSetupPage() {
               />
             </div>
 
+            <div className="space-y-3 pt-2 border-t border-gray-100 dark:border-gray-700">
+              <div>
+                <div className="flex items-start gap-3">
+                  <input
+                    id="termsAccepted"
+                    name="termsAccepted"
+                    type="checkbox"
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800"
+                  />
+                  <label htmlFor="termsAccepted" className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                    I agree to the{" "}
+                    <a href="/terms" className="text-indigo-600 dark:text-indigo-400 hover:underline">Terms of Service</a>
+                    {" "}and{" "}
+                    <a href="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline">Privacy Policy</a>
+                    <span className="text-red-500 ml-0.5">*</span>
+                  </label>
+                </div>
+                {state?.errors?.termsAccepted && (
+                  <p className="mt-1.5 text-xs text-red-600 dark:text-red-400 pl-7">{state.errors.termsAccepted[0]}</p>
+                )}
+              </div>
+
+              <div>
+                <div className="flex items-start gap-3">
+                  <input
+                    id="newsletterOptIn"
+                    name="newsletterOptIn"
+                    type="checkbox"
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800"
+                  />
+                  <label htmlFor="newsletterOptIn" className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                    Subscribe to ResumeAI updates &mdash; resume tips, ATS guides, and new features
+                    <span className="text-red-500 ml-0.5">*</span>
+                  </label>
+                </div>
+                {state?.errors?.newsletterOptIn && (
+                  <p className="mt-1.5 text-xs text-red-600 dark:text-red-400 pl-7">{state.errors.newsletterOptIn[0]}</p>
+                )}
+              </div>
+            </div>
+
             <button
               type="submit"
               disabled={pending}

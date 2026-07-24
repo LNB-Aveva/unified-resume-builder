@@ -49,6 +49,12 @@ export const AccountSetupSchema = z.object({
   targetRole: z.string().optional(),
   industry: z.string().optional(),
   yearsExperience: z.coerce.number().min(0).max(50).optional(),
+  termsAccepted: z.literal("on", {
+    message: "You must accept the Terms of Service and Privacy Policy.",
+  }),
+  newsletterOptIn: z.literal("on", {
+    message: "Please check this box to stay updated on ATS tips and tool improvements.",
+  }),
 });
 
 export type FormState =
