@@ -1,10 +1,21 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/app/lib/supabase/server";
 import ThemeToggle from "@/app/components/ThemeToggle";
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect("/tools");
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-gray-50 dark:bg-gray-950 transition-colors">
       <div className="absolute top-4 right-4">

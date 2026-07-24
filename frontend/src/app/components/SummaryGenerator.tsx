@@ -5,6 +5,7 @@ import { SummaryResponse, API_URL, connectionError } from "../types";
 import { useLoadingMessages } from "../hooks/useLoadingMessages";
 import Spinner from "./Spinner";
 import { DEMO_JOB_TITLE, DEMO_JOB_DESCRIPTION, DEMO_EXPERIENCE_BULLETS, DEMO_YEARS_EXPERIENCE, DEMO_SKILLS } from "../lib/demoData";
+import TryDemoButton from "./TryDemoButton";
 
 const LOADING_MESSAGES = [
   "Sending to AI model...",
@@ -199,13 +200,7 @@ export default function SummaryGenerator() {
           )}
         </button>
         {!jobTitle.trim() && !experienceBullets.trim() && (
-          <button
-            type="button"
-            onClick={() => { setJobTitle(DEMO_JOB_TITLE); setJobDescription(DEMO_JOB_DESCRIPTION); setExperienceBullets(DEMO_EXPERIENCE_BULLETS); setYearsExperience(DEMO_YEARS_EXPERIENCE); setSkills(DEMO_SKILLS); }}
-            className="shrink-0 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 px-3 py-2.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition"
-          >
-            Try demo
-          </button>
+          <TryDemoButton onClick={() => { setJobTitle(DEMO_JOB_TITLE); setJobDescription(DEMO_JOB_DESCRIPTION); setExperienceBullets(DEMO_EXPERIENCE_BULLETS); setYearsExperience(DEMO_YEARS_EXPERIENCE); setSkills(DEMO_SKILLS); }} />
         )}
       </div>
 

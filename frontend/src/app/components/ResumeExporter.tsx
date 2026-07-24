@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { API_URL } from "../types";
 import Spinner from "./Spinner";
 import { DEMO_PERSONAL, DEMO_SUMMARY, DEMO_EXPERIENCE, DEMO_EDUCATION, DEMO_RESUME_SKILLS } from "../lib/demoData";
+import TryDemoButton from "./TryDemoButton";
 
 interface PersonalInfo {
   full_name: string;
@@ -527,21 +528,15 @@ export default function ResumeExporter() {
           </span>
         )}
       </button>
-        {!personal.full_name.trim() && (
-          <button
-            type="button"
-            onClick={() => {
-              setPersonal(DEMO_PERSONAL);
-              setSummary(DEMO_SUMMARY);
-              setExperience(DEMO_EXPERIENCE.map((e) => ({ ...e, id: crypto.randomUUID() })));
-              setEducation(DEMO_EDUCATION.map((e) => ({ ...e, id: crypto.randomUUID() })));
-              setSkills(DEMO_RESUME_SKILLS);
-              setOpen({ personal: true, summary: true, experience: true, education: true, skills: true });
-            }}
-            className="shrink-0 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 px-3 py-2.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition"
-          >
-            Try demo
-          </button>
+        {!personal.full_name.trim() && !personal.email.trim() && !summary.trim() && experience.length === 0 && (
+          <TryDemoButton onClick={() => {
+            setPersonal(DEMO_PERSONAL);
+            setSummary(DEMO_SUMMARY);
+            setExperience(DEMO_EXPERIENCE.map((e) => ({ ...e, id: crypto.randomUUID() })));
+            setEducation(DEMO_EDUCATION.map((e) => ({ ...e, id: crypto.randomUUID() })));
+            setSkills(DEMO_RESUME_SKILLS);
+            setOpen({ personal: true, summary: true, experience: true, education: true, skills: true });
+          }} />
         )}
       </div>
 

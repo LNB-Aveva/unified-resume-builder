@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { ATSScore, API_URL, connectionError } from "../types";
 import Spinner from "./Spinner";
 import { DEMO_JOB_DESCRIPTION, DEMO_RESUME_TEXT } from "../lib/demoData";
+import TryDemoButton from "./TryDemoButton";
 
 const GRADE_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
   A: { bg: "bg-emerald-50", text: "text-emerald-700", ring: "ring-emerald-200" },
@@ -108,13 +109,7 @@ export default function GapAnalysis() {
           )}
         </button>
         {!jobText.trim() && !resumeText.trim() && (
-          <button
-            type="button"
-            onClick={() => { setJobText(DEMO_JOB_DESCRIPTION); setResumeText(DEMO_RESUME_TEXT); }}
-            className="shrink-0 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 px-3 py-2.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition"
-          >
-            Try demo
-          </button>
+          <TryDemoButton onClick={() => { setJobText(DEMO_JOB_DESCRIPTION); setResumeText(DEMO_RESUME_TEXT); }} />
         )}
       </div>
 

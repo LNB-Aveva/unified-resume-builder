@@ -5,6 +5,7 @@ import { RewrittenBullet, RewriteResponse, API_URL, connectionError } from "../t
 import { useLoadingMessages } from "../hooks/useLoadingMessages";
 import Spinner from "./Spinner";
 import { DEMO_JOB_TITLE, DEMO_MISSING_KEYWORDS, DEMO_WEAK_BULLETS } from "../lib/demoData";
+import TryDemoButton from "./TryDemoButton";
 
 const LOADING_MESSAGES = [
   "Sending to AI model...",
@@ -200,13 +201,7 @@ export default function BulletRewriter() {
           )}
         </button>
         {!jobTitle.trim() && !bullets.trim() && (
-          <button
-            type="button"
-            onClick={() => { setJobTitle(DEMO_JOB_TITLE); setMissingKeywords(DEMO_MISSING_KEYWORDS); setBullets(DEMO_WEAK_BULLETS); }}
-            className="shrink-0 rounded-lg border border-dashed border-indigo-300 dark:border-indigo-700 px-3 py-2.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition"
-          >
-            Try demo
-          </button>
+          <TryDemoButton onClick={() => { setJobTitle(DEMO_JOB_TITLE); setMissingKeywords(DEMO_MISSING_KEYWORDS); setBullets(DEMO_WEAK_BULLETS); }} />
         )}
       </div>
 

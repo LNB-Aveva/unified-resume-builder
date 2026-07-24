@@ -4,6 +4,8 @@ import ScrollReveal from "./components/ScrollReveal";
 import StickyBottomCTA from "./components/StickyBottomCTA";
 import AnalyzerDemo from "./components/AnalyzerDemo";
 
+const PREVIEW_SKILLS = ["Python", "React", "AWS", "Docker"];
+
 const faqItems = [
   {
     q: "What is ATS and why do 75% of resumes get rejected before a human reads them?",
@@ -898,7 +900,7 @@ export default function Home() {
                               <div className="h-[1.5px] bg-indigo-600 rounded opacity-30" />
                               <p className="text-[5.5px] font-bold text-indigo-600 uppercase tracking-widest">Skills</p>
                               <div className="flex flex-wrap gap-[2px]">
-                                {["Python", "React", "AWS", "Docker"].map((s) => (
+                                {PREVIEW_SKILLS.map((s) => (
                                   <span key={s} className="text-[3.5px] bg-indigo-50 text-indigo-700 px-[2px] py-px rounded">{s}</span>
                                 ))}
                               </div>
@@ -939,7 +941,7 @@ export default function Home() {
                                 <p className="text-[5.5px] font-bold text-teal-700 uppercase tracking-widest">Skills</p>
                                 <div className="h-[1.5px] bg-teal-600 rounded opacity-50 mb-1" />
                                 <div className="flex flex-wrap gap-[2px]">
-                                  {["Python", "React", "AWS", "Docker"].map((s) => (
+                                  {PREVIEW_SKILLS.map((s) => (
                                     <span key={s} className="text-[3.5px] bg-teal-50 text-teal-700 px-[2px] py-px rounded">{s}</span>
                                   ))}
                                 </div>
@@ -980,7 +982,7 @@ export default function Home() {
                               <div className="h-[1.5px] bg-gray-300 rounded" />
                               <p className="text-[5.5px] font-bold text-gray-900 uppercase tracking-widest">Skills</p>
                               <div className="flex flex-wrap gap-[2px]">
-                                {["Python", "React", "AWS", "Docker"].map((s) => (
+                                {PREVIEW_SKILLS.map((s) => (
                                   <span key={s} className="text-[3.5px] bg-gray-100 text-gray-700 px-[2px] py-px rounded border border-gray-200">{s}</span>
                                 ))}
                               </div>
