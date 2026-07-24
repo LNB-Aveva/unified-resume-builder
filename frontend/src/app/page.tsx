@@ -488,7 +488,7 @@ export default function Home() {
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 sm:p-8">
-            <AnalyzerDemo />
+            <AnalyzerDemo publicMode={true} />
           </div>
 
           <div className="mt-8 text-center">
