@@ -70,3 +70,16 @@ mypy==2.3.0
 semgrep==1.170.0
 # pip-audit = Scans installed packages for known CVEs (vulnerability checker)
 pip-audit==2.10.1
+
+# ============================
+# Security: pin transitive deps to patched versions
+# ============================
+# Semgrep and other tools pull in these packages; pin to versions that clear pip-audit.
+# Unfixable CVEs (pip itself, scapy via semgrep, cryptography 48.x jump) are
+# --ignore-vuln'd in ci.yml instead.
+requests>=2.33.0
+urllib3>=2.7.0
+idna>=3.15
+pygments>=2.20.0
+filelock>=3.20.3
+cryptography>=46.0.7
