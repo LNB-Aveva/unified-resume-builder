@@ -12,7 +12,9 @@ export const SignUpSchema = z
     termsAccepted: z.literal("on", {
       message: "You must accept the Terms of Service and Privacy Policy.",
     }),
-    newsletterOptIn: z.string().nullable().optional(),
+    newsletterOptIn: z.literal("on", {
+      message: "Please check this box to stay updated on ATS tips and tool improvements.",
+    }),
   })
   .refine((d) => d.password === d.confirmPassword, {
     message: "Passwords do not match.",
