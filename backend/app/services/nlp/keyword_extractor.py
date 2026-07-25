@@ -63,10 +63,8 @@ HARD_SKILLS: set[str] = {
     # ── CRM, Sales & Business Tools ──
     "salesforce", "hubspot", "marketo", "pardot", "zendesk", "freshdesk",
     "intercom", "drift", "outreach", "salesloft", "apollo", "zoominfo",
-    "servicenow", "workday", "sap", "oracle", "netsuite", "dynamics 365",
-    "quickbooks", "xero", "sage", "netsuite",
-
-    # ── Marketing Tools ──
+    "servicenow", "workday", "sap", "netsuite", "dynamics 365",
+    "quickbooks", "xero", "sage", # ── Marketing Tools ──
     "google ads", "facebook ads", "meta ads", "linkedin ads", "tiktok ads",
     "seo", "sem", "ppc", "pay-per-click", "google tag manager", "adobe analytics",
     "mailchimp", "klaviyo", "constant contact", "hootsuite", "buffer",
@@ -101,7 +99,7 @@ HARD_SKILLS: set[str] = {
     "portfolio management", "risk management", "derivatives", "options",
 
     # ── Healthcare & Life Sciences ──
-    "ehr", "emr", "epic", "cerner", "hipaa", "icd-10", "cpt coding",
+    "ehr", "emr", "epic", "cerner", "icd-10", "cpt coding",
     "clinical documentation", "fda", "gmp", "clinical trials",
     "medical device", "biostatistics", "sas", "r statistical",
 
@@ -112,8 +110,8 @@ HARD_SKILLS: set[str] = {
 
     # ── Certifications & Credentials ──
     "aws certified", "google cloud certified", "microsoft certified",
-    "cisco ccna", "cisco ccnp", "pmp", "scrum master", "csm",
-    "safe", "itil", "six sigma", "lean six sigma", "black belt",
+    "cisco ccna", "cisco ccnp", "scrum master", "csm",
+    "itil", "lean six sigma", "black belt",
     "google analytics certified", "hubspot certified", "salesforce certified",
     "tableau certified",
 }
