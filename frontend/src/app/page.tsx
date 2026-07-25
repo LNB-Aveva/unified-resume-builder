@@ -465,23 +465,12 @@ export default function Home() {
                 label: "Open-Source AI",
                 icon: <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" /></svg>,
               },
-            ].map(({ label, icon, href }) => {
-              const inner = (
-                <>
-                  <span className="text-indigo-500 dark:text-indigo-400">{icon}</span>
-                  <span className="font-medium">{label}</span>
-                </>
-              );
-              return href ? (
-                <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-150">
-                  {inner}
-                </a>
-              ) : (
-                <div key={label} className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                  {inner}
-                </div>
-              );
-            })}
+            ].map(({ label, icon }) => (
+              <div key={label} className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <span className="text-indigo-500 dark:text-indigo-400">{icon}</span>
+                <span className="font-medium">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -1324,19 +1313,13 @@ export default function Home() {
                     </svg>
                   ),
                 },
-              ].map(({ title, desc, icon, link }) => (
+              ].map(({ title, desc, icon }) => (
                 <div key={title} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-8 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
                   <div className="h-12 w-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-5">
                     {icon}
                   </div>
                   <h3 className="font-[family-name:var(--font-display)] text-base font-bold text-gray-900 dark:text-white mb-3">{title}</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{desc}</p>
-                  {link && (
-                    <a href={link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 mt-4 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors">
-                      View on GitHub
-                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-                    </a>
-                  )}
                 </div>
               ))}
             </div>
