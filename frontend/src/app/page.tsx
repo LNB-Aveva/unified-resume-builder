@@ -1177,88 +1177,6 @@ export default function Home() {
         </section>
       </ScrollReveal>
 
-      {/* ── Comparison Section ── */}
-      <ScrollReveal>
-        <section id="compare" className="py-20 sm:py-24 scroll-mt-20">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800 px-4 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 mb-4">
-                Save $24&ndash;49/month
-              </div>
-              <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
-                Everything Paid Tools Offer, for Free
-              </h2>
-              <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                Other resume tools lock their best features behind a paywall. We don&apos;t.
-              </p>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[500px]">
-                  <thead>
-                    <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Feature</th>
-                      <th className="px-6 py-4 text-center">
-                        <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">ResumeAI</div>
-                        <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">Free</div>
-                      </th>
-                      <th className="px-6 py-4 text-center">
-                        <div className="text-sm font-semibold text-gray-500 dark:text-gray-400">Paid Tools</div>
-                        <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">$24&ndash;49/mo</div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {([
-                      ["ATS Keyword Extraction", "included", "included"],
-                      ["Resume Gap Analysis", "included", "premium"],
-                      ["ATS Compliance (15 checks)", "included", "limited"],
-                      ["AI Cover Letter Generator", "included", "premium"],
-                      ["AI Bullet Rewriter", "included", "premium"],
-                      ["AI Summary Generator", "included", "premium"],
-                      ["PDF Export (3 templates)", "included", "premium"],
-                      ["Job Application Tracker", "included", "included"],
-                      ["Usage Limits", "none", "restricted"],
-                    ] as [string, string, string][]).map(([feature, us, them], i) => (
-                      <tr key={i} className="border-b border-gray-50 dark:border-gray-700/50 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors">
-                        <td className="px-6 py-3.5 text-sm text-gray-700 dark:text-gray-200">{feature}</td>
-                        <td className="px-6 py-3.5 text-center">
-                          {us === "included" ? (
-                            <svg className="mx-auto h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                          ) : (
-                            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">Unlimited</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-3.5 text-center">
-                          {them === "included" ? (
-                            <svg className="mx-auto h-5 w-5 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                          ) : them === "restricted" ? (
-                            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800">Restricted</span>
-                          ) : (
-                            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">{them === "premium" ? "Premium" : "Limited"}</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div className="text-center mt-10">
-              <a
-                href="/sign-up"
-                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
-              >
-                Get All Features Free
-                <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-              </a>
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
-
       {/* ── Privacy & Trust ── */}
       <ScrollReveal>
         <section className="py-20 sm:py-24">
@@ -1398,9 +1316,9 @@ export default function Home() {
                 Helping 500+ job seekers optimize their resumes
               </p>
               <div className="flex items-center gap-3">
-                <a href="https://github.com/LNB-Aveva" target="_blank" rel="noopener noreferrer" className="h-9 w-9 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-all" aria-label="GitHub">
+                <span className="h-9 w-9 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500" aria-hidden="true">
                   <svg className="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" /></svg>
-                </a>
+                </span>
                 <span className="h-9 w-9 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500" aria-hidden="true">
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065Zm1.782 13.019H3.555V9h3.564v11.452ZM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003Z" /></svg>
                 </span>
@@ -1425,11 +1343,6 @@ export default function Home() {
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><a href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">Blog</a></li>
                 <li><a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition">FAQ</a></li>
-                <li>
-                  <a href="https://github.com/LNB-Aveva" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 dark:hover:text-white transition">
-                    GitHub
-                  </a>
-                </li>
               </ul>
             </div>
 
