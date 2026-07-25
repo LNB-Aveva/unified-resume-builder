@@ -770,6 +770,88 @@ export default function Home() {
         </section>
       </ScrollReveal>
 
+      {/* ── Comparison Section ── */}
+      <ScrollReveal>
+        <section id="compare" className="py-20 sm:py-24 scroll-mt-20">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800 px-4 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 mb-4">
+                Save $24&ndash;49/month
+              </div>
+              <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+                Everything Paid Tools Offer, for Free
+              </h2>
+              <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+                Other resume tools lock their best features behind a paywall. We don&apos;t.
+              </p>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[500px]">
+                  <thead>
+                    <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Feature</th>
+                      <th className="px-6 py-4 text-center">
+                        <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">ResumeAI</div>
+                        <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">Free</div>
+                      </th>
+                      <th className="px-6 py-4 text-center">
+                        <div className="text-sm font-semibold text-gray-500 dark:text-gray-400">Paid Tools</div>
+                        <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">$24&ndash;49/mo</div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {([
+                      ["ATS Keyword Extraction", "included", "included"],
+                      ["Resume Gap Analysis", "included", "premium"],
+                      ["ATS Compliance (15 checks)", "included", "limited"],
+                      ["AI Cover Letter Generator", "included", "premium"],
+                      ["AI Bullet Rewriter", "included", "premium"],
+                      ["AI Summary Generator", "included", "premium"],
+                      ["PDF Export (3 templates)", "included", "premium"],
+                      ["Job Application Tracker", "included", "included"],
+                      ["Usage Limits", "none", "restricted"],
+                    ] as [string, string, string][]).map(([feature, us, them], i) => (
+                      <tr key={i} className="border-b border-gray-50 dark:border-gray-700/50 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors">
+                        <td className="px-6 py-3.5 text-sm text-gray-700 dark:text-gray-200">{feature}</td>
+                        <td className="px-6 py-3.5 text-center">
+                          {us === "included" ? (
+                            <svg className="mx-auto h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                          ) : (
+                            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">Unlimited</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-3.5 text-center">
+                          {them === "included" ? (
+                            <svg className="mx-auto h-5 w-5 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
+                          ) : them === "restricted" ? (
+                            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800">Restricted</span>
+                          ) : (
+                            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">{them === "premium" ? "Premium" : "Limited"}</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="text-center mt-10">
+              <a
+                href="/sign-up"
+                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+              >
+                Get All Features Free
+                <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+              </a>
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
+
       {/* ── Tool Showcase ── */}
       <ScrollReveal>
         <section id="tools" className="py-20 sm:py-24 scroll-mt-20">
