@@ -9,7 +9,7 @@ from slowapi.errors import RateLimitExceeded
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
-from app.api.routes import analyze, compliance, cover_letter, export, gap, rewrite, score, summary
+from app.api.routes import analyze, compliance, cover_letter, export, gap, preview, rewrite, score, summary
 from app.core.config import settings  # noqa: F401
 from app.core.rate_limit import limiter
 
@@ -66,6 +66,7 @@ app.include_router(summary.router, prefix="/api/v1", tags=["AI Summary"])
 app.include_router(rewrite.router, prefix="/api/v1", tags=["AI Rewriter"])
 app.include_router(export.router, prefix="/api/v1", tags=["PDF Export"])
 app.include_router(cover_letter.router, prefix="/api/v1", tags=["Cover Letter"])
+app.include_router(preview.router, prefix="/api/v1", tags=["Preview"])
 
 
 @app.get("/")

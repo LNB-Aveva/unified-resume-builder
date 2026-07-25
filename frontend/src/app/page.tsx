@@ -3,6 +3,7 @@ import MobileNav from "./components/MobileNav";
 import ScrollReveal from "./components/ScrollReveal";
 import StickyBottomCTA from "./components/StickyBottomCTA";
 import AnalyzerDemo from "./components/AnalyzerDemo";
+import BulletPreviewWidget from "./components/BulletPreviewWidget";
 
 const PREVIEW_SKILLS = ["Python", "React", "AWS", "Docker"];
 
@@ -509,6 +510,26 @@ export default function Home() {
               </svg>
             </a>
           </div>
+        </div>
+      </section>
+
+      {/* ── Bullet Rewriter Preview ── */}
+      <section className="py-20 sm:py-24 bg-gray-50/50 dark:bg-gray-900/30">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 rounded-full bg-violet-50 dark:bg-violet-950/50 border border-violet-100 dark:border-violet-800 px-4 py-1.5 text-xs font-semibold text-violet-700 dark:text-violet-300 mb-4">
+              <span className="h-1.5 w-1.5 rounded-full bg-violet-500 animate-pulse" />
+              Live Preview &mdash; No Signup Needed
+            </div>
+            <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+              Watch AI Strengthen Your Bullet
+            </h2>
+            <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
+              Paste a weak resume bullet. Our AI rewrites it with a stronger action verb and tighter phrasing &mdash; live, in seconds, before you sign up.
+            </p>
+          </div>
+
+          <BulletPreviewWidget />
         </div>
       </section>
 
