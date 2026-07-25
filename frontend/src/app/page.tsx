@@ -1448,6 +1448,9 @@ export default function Home() {
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><a href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">Blog</a></li>
                 <li><a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition">FAQ</a></li>
+                <li><a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">ATS Resume Guide</a></li>
+                <li><a href="/keyword-analyzer" className="hover:text-gray-900 dark:hover:text-white transition">Keyword Tips</a></li>
+                <li><a href="/ats-checker" className="hover:text-gray-900 dark:hover:text-white transition">ATS Checklist</a></li>
               </ul>
             </div>
 
