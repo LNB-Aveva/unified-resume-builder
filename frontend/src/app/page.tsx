@@ -502,7 +502,7 @@ export default function Home() {
             </p>
             <a
               href="/sign-up"
-              className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+              className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
             >
               Get Full ATS Analysis Free
               <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -1435,6 +1435,8 @@ export default function Home() {
               <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Product</h4>
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">ATS Tools</a></li>
+                <li><a href="/keyword-analyzer" className="hover:text-gray-900 dark:hover:text-white transition">Keyword Analyzer</a></li>
+                <li><a href="/ats-checker" className="hover:text-gray-900 dark:hover:text-white transition">ATS Checker</a></li>
                 <li><a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">How It Works</a></li>
                 <li><a href="#compare" className="hover:text-gray-900 dark:hover:text-white transition">Free vs Paid</a></li>
                 <li><a href="/sign-up" className="hover:text-gray-900 dark:hover:text-white transition">Get Started</a></li>

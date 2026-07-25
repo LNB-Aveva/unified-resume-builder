@@ -56,7 +56,7 @@ export default function MobileNav() {
               <a
                 href="/sign-up"
                 onClick={() => setOpen(false)}
-                className="mx-3 mb-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white text-center shadow-md"
+                className="mx-3 mb-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 text-sm font-semibold text-white text-center shadow-md"
               >
                 Get Started Free
               </a>
