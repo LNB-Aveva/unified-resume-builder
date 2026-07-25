@@ -86,8 +86,7 @@ export default function PrivacyPolicy() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Data Security</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
             We implement appropriate security measures including HTTPS encryption, secure authentication via Supabase,
-            Content Security Policy headers, and regular security audits. Our codebase is open source, allowing public
-            verification of our security practices.
+            Content Security Policy headers, and regular security audits.
           </p>
         </section>
 
@@ -113,9 +112,9 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Contact</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-            If you have questions about this Privacy Policy, please open an issue on our{" "}
-            <a href="https://github.com/LNB-Aveva/unified-resume-builder" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline">
-              GitHub repository
+            If you have questions about this Privacy Policy, please email us at{" "}
+            <a href="mailto:lnbingi.work@gmail.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">
+              lnbingi.work@gmail.com
             </a>.
           </p>
         </section>

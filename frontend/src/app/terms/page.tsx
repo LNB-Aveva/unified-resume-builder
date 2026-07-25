@@ -103,14 +103,9 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">10. Open Source</h2>
+          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">10. Free Service</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-            ResumeAI is open-source software. The source code is available on{" "}
-            <a href="https://github.com/LNB-Aveva/unified-resume-builder" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline">
-              GitHub
-            </a>.
-            Use of the hosted Service at resumeai.cv is governed by these Terms. Use of the source code is governed
-            by the applicable open-source license in the repository.
+            ResumeAI is provided free of charge. The Service at resumeai.cv is governed by these Terms.
           </p>
         </section>
 
@@ -126,9 +121,9 @@ export default function TermsOfService() {
         <section>
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">12. Contact</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-            If you have questions about these Terms, please open an issue on our{" "}
-            <a href="https://github.com/LNB-Aveva/unified-resume-builder" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline">
-              GitHub repository
+            If you have questions about these Terms, please email us at{" "}
+            <a href="mailto:lnbingi.work@gmail.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">
+              lnbingi.work@gmail.com
             </a>.
           </p>
         </section>
