@@ -1440,7 +1440,7 @@ export default function Home() {
               <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Compare</h4>
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><a href="#compare" className="hover:text-gray-900 dark:hover:text-white transition">Free vs Paid Tools</a></li>
-                <li><a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">All 8 AI Tools</a></li>
+                <li><a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">All 9 AI Tools</a></li>
               </ul>
             </div>
           </div>
