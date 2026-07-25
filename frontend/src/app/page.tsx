@@ -1383,7 +1383,7 @@ export default function Home() {
       {/* ── Footer ── */}
       <footer className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
             <div className="sm:col-span-2 lg:col-span-2">
               <a href="/" className="flex items-center gap-2 mb-4 group">
                 <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200">
@@ -1433,6 +1433,15 @@ export default function Home() {
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><a href="/privacy" className="hover:text-gray-900 dark:hover:text-white transition">Privacy Policy</a></li>
                 <li><a href="/terms" className="hover:text-gray-900 dark:hover:text-white transition">Terms of Service</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Compare</h4>
+              <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
+                <li><a href="#compare" className="hover:text-gray-900 dark:hover:text-white transition">Free vs Paid Tools</a></li>
+                <li><a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">All 9 AI Tools</a></li>
+                <li><span>Open Source</span></li>
               </ul>
             </div>
           </div>
