@@ -39,3 +39,37 @@ create policy "Users delete own jobs"
 
 -- Index for fast user-specific queries
 create index if not exists idx_jobs_user_id on public.jobs(user_id);
+
+-- -----------------------------------------------------------------------
+-- shared_scores: stores anonymous ATS score snapshots for shareable links
+-- -----------------------------------------------------------------------
+create table if not exists public.shared_scores (
+  id                 text primary key,
+  overall_score      numeric(5,2) not null,
+  grade              text not null,
+  grade_label        text not null,
+  matched_keywords   text[] not null default '{}',
+  missing_keywords   text[] not null default '{}',
+  total_matched      int not null default 0,
+  total_missing      int not null default 0,
+  total_job_keywords int not null default 0,
+  job_role_hint      text,
+  created_at         timestamptz not null default now(),
+  expires_at         timestamptz not null
+);
+
+-- Anyone (anon) can read unexpired scores via the public share link
+alter table public.shared_scores enable row level security;
+
+create policy "Anyone can read unexpired shared scores"
+  on public.shared_scores for select
+  using (expires_at >= now());
+
+-- Anyone (anon) can insert a new share (rate-limited at the API layer)
+create policy "Anyone can insert shared scores"
+  on public.shared_scores for insert
+  with check (true);
+
+-- Index so the expiry filter is fast
+create index if not exists idx_shared_scores_expires_at
+  on public.shared_scores(expires_at);

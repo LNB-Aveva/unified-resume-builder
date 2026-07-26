@@ -49,8 +49,7 @@ const jsonLd = {
   "@type": "WebApplication",
   name: "ResumeAI Keyword Analyzer",
   url:
-    (process.env.NEXT_PUBLIC_SITE_URL ??
-      "https://unified-resume-builder.vercel.app") + "/keyword-analyzer",
+    (process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv") + "/keyword-analyzer",
   description:
     "Free ATS keyword analyzer. Extract every keyword ATS systems scan for from any job description.",
   applicationCategory: "BusinessApplication",

@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getScoreStyle } from "../../lib/score-styles";
 
 interface SharedScore {
   id: string;
@@ -76,19 +77,9 @@ export default async function SharedScorePage({
   }
 
   const pct = Math.round(score.overall_score);
-  const isStrong = pct >= 70;
-  const isModerate = pct >= 50 && pct < 70;
-
-  const ringColor = isStrong
-    ? "text-emerald-500"
-    : isModerate
-    ? "text-amber-500"
-    : "text-red-500";
-  const labelColor = isStrong
-    ? "text-emerald-600 dark:text-emerald-400"
-    : isModerate
-    ? "text-amber-600 dark:text-amber-400"
-    : "text-red-600 dark:text-red-400";
+  const style = getScoreStyle(pct);
+  const ringColor = style.ring;
+  const labelColor = style.label;
   const matchedChip =
     "bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300";
   const missingChip =

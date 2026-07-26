@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllSlugs } from "./lib/blog-posts";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://unified-resume-builder.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv";
 
   const blogEntries: MetadataRoute.Sitemap = getAllSlugs().map((slug) => ({
     url: `${siteUrl}/blog/${slug}`,

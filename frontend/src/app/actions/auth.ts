@@ -8,6 +8,7 @@ import {
   ForgotPasswordSchema,
   ResetPasswordSchema,
   AccountSetupSchema,
+  UpdateProfileSchema,
   type FormState,
 } from "@/app/lib/definitions";
 
@@ -160,7 +161,7 @@ export async function setupAccount(
 
   await supabase.auth.updateUser({
     data: {
-      newsletter_opted_in: true,
+      newsletter_opted_in: validated.data.newsletterOptIn === "on",
       terms_accepted_at: new Date().toISOString(),
     },
   });
@@ -185,7 +186,7 @@ export async function updateProfile(
   _state: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const validated = AccountSetupSchema.safeParse({
+  const validated = UpdateProfileSchema.safeParse({
     fullName: formData.get("fullName"),
     targetRole: formData.get("targetRole"),
     industry: formData.get("industry"),

@@ -5,8 +5,10 @@ from starlette.requests import Request
 
 
 def get_client_ip(request: Request) -> str:
+    # Only trust CF-Connecting-IP when CF-Ray is also present (Cloudflare always
+    # sets it); without CF-Ray the header could be spoofed by a direct caller.
     cf_ip = request.headers.get("CF-Connecting-IP")
-    if cf_ip:
+    if cf_ip and request.headers.get("CF-Ray"):
         return cf_ip
     xff = request.headers.get("X-Forwarded-For")
     if xff:

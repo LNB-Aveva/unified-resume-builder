@@ -52,8 +52,7 @@ const jsonLd = {
   "@type": "WebApplication",
   name: "ResumeAI ATS Score Checker",
   url:
-    (process.env.NEXT_PUBLIC_SITE_URL ??
-      "https://unified-resume-builder.vercel.app") + "/ats-checker",
+    (process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv") + "/ats-checker",
   description:
     "Free ATS resume score checker. Get your ATS match score, find missing keywords, and run 15 formatting compliance checks.",
   applicationCategory: "BusinessApplication",

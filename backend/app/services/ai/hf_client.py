@@ -8,10 +8,10 @@ API_URL = "https://router.huggingface.co/v1/chat/completions"
 _client: httpx.AsyncClient | None = None
 
 
-def _get_client(timeout: float) -> httpx.AsyncClient:
+def _get_client() -> httpx.AsyncClient:
     global _client
     if _client is None or _client.is_closed:
-        _client = httpx.AsyncClient(timeout=timeout)
+        _client = httpx.AsyncClient()
     return _client
 
 
@@ -46,8 +46,8 @@ async def call_hf(
         "Content-Type": "application/json",
     }
 
-    client = _get_client(timeout)
-    response = await client.post(API_URL, json=payload, headers=headers)
+    client = _get_client()
+    response = await client.post(API_URL, json=payload, headers=headers, timeout=timeout)
     response.raise_for_status()
     data = response.json()
 

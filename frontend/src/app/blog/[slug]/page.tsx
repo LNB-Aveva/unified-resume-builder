@@ -42,9 +42,7 @@ export default async function BlogArticle({ params }: Props) {
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    "https://unified-resume-builder.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv";
 
   const articleJsonLd = {
     "@context": "https://schema.org",

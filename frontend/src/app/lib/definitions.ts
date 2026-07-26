@@ -57,6 +57,13 @@ export const AccountSetupSchema = z.object({
   }),
 });
 
+export const UpdateProfileSchema = z.object({
+  fullName: z.string().min(2, "Name must be at least 2 characters.").trim(),
+  targetRole: z.string().optional(),
+  industry: z.string().optional(),
+  yearsExperience: z.coerce.number().min(0).max(50).optional(),
+});
+
 export type FormState =
   | {
       errors?: Record<string, string[]>;

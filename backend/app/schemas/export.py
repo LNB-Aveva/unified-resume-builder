@@ -35,5 +35,5 @@ class ResumeExportRequest(BaseModel):
     experience: list[WorkExperience] = Field(default_factory=list, max_length=20)
     skills: str = Field("", max_length=5_000)
     education: list[Education] = Field(default_factory=list, max_length=15)
-    filename: str = Field("resume", max_length=100)
+    filename: str = Field("resume", max_length=60)
     template: Literal["classic", "modern", "minimal"] = "classic"

@@ -3,37 +3,11 @@
 import { useState } from "react";
 import { ATSScore, API_URL, connectionError } from "../types";
 import { createClient } from "../lib/supabase/client";
+import { getScoreStyle } from "../lib/score-styles";
 import Spinner from "./Spinner";
 
 function generateId(): string {
   return crypto.randomUUID().replace(/-/g, "").slice(0, 10);
-}
-
-const SCORE_STYLES = {
-  strong: {
-    ring: "text-emerald-500",
-    label: "text-emerald-600 dark:text-emerald-400",
-    badge: "bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300",
-    result: "border-emerald-200 dark:border-emerald-800 bg-emerald-50/60 dark:bg-emerald-950/20",
-  },
-  moderate: {
-    ring: "text-amber-500",
-    label: "text-amber-600 dark:text-amber-400",
-    badge: "bg-amber-50 dark:bg-amber-950/50 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300",
-    result: "border-amber-200 dark:border-amber-800 bg-amber-50/60 dark:bg-amber-950/20",
-  },
-  weak: {
-    ring: "text-red-500",
-    label: "text-red-600 dark:text-red-400",
-    badge: "bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300",
-    result: "border-red-200 dark:border-red-800 bg-red-50/60 dark:bg-red-950/20",
-  },
-};
-
-function getStyle(score: number) {
-  if (score >= 70) return SCORE_STYLES.strong;
-  if (score >= 50) return SCORE_STYLES.moderate;
-  return SCORE_STYLES.weak;
 }
 
 export default function ShareableScoreWidget() {
@@ -66,6 +40,7 @@ export default function ShareableScoreWidget() {
 
       const id = generateId();
       const supabase = createClient();
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
       const { error: dbError } = await supabase.from("shared_scores").insert({
         id,
         overall_score: data.overall_score,
@@ -77,6 +52,7 @@ export default function ShareableScoreWidget() {
         total_missing: data.total_missing,
         total_job_keywords: data.total_job_keywords,
         job_role_hint: jobText.slice(0, 120).trim(),
+        expires_at: expiresAt,
       });
       if (dbError) throw new Error("Could not save your score. " + dbError.message);
 
@@ -98,7 +74,7 @@ export default function ShareableScoreWidget() {
     });
   }
 
-  const style = score ? getStyle(score.overall_score) : null;
+  const style = score ? getScoreStyle(score.overall_score) : null;
 
   return (
     <div className="space-y-5">

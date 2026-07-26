@@ -22,10 +22,10 @@ const playfair = Playfair_Display({
 });
 
 // NEXT_PUBLIC_SITE_URL must be set in Vercel → Project Settings → Environment Variables.
-// Example value: https://resumeai.vercel.app
+// Example value: https://resumeai.cv
 // It is used here for absolute URLs in OG tags, canonical links, and the sitemap.
 // In local dev, the fallback keeps things functional without needing the var set.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://unified-resume-builder.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv";
 
 export const metadata: Metadata = {
   // metadataBase makes all relative URLs in openGraph/twitter absolute without

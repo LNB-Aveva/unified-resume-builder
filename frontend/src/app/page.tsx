@@ -55,7 +55,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "ResumeAI",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://unified-resume-builder.vercel.app",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv",
   description:
     "Free ATS resume checker and keyword analyzer. Extract ATS keywords, score your resume, " +
     "run 15 compliance checks, generate AI cover letters, rewrite bullets, and export ATS-safe PDFs.",
