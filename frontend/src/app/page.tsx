@@ -5,6 +5,9 @@ import StickyBottomCTA from "./components/StickyBottomCTA";
 import AnalyzerDemo from "./components/AnalyzerDemo";
 import BulletPreviewWidget from "./components/BulletPreviewWidget";
 import ShareableScoreWidget from "./components/ShareableScoreWidget";
+import TypewriterHeadline from "./components/TypewriterHeadline";
+import AnimatedCounter from "./components/AnimatedCounter";
+import HeroScoreCard from "./components/HeroScoreCard";
 
 const PREVIEW_SKILLS = ["Python", "React", "AWS", "Docker"];
 
@@ -316,7 +319,7 @@ export default function Home() {
               <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
                 <span className="text-gray-900 dark:text-white">Beat ATS Filters.</span>
                 <br />
-                <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-500 bg-clip-text text-transparent">Land More Interviews.</span>
+                <TypewriterHeadline />
               </h1>
 
               <p className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 mb-10 max-w-xl leading-relaxed">
@@ -328,7 +331,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <a
                   href="/sign-up"
-                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 dark:shadow-indigo-500/15 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 dark:shadow-indigo-500/15 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.97] transition-all duration-200"
                 >
                   Create Free Account
                   <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -369,75 +372,35 @@ export default function Home() {
               </div>
 
               <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:flex sm:flex-wrap sm:gap-8">
-                {[
-                  { n: "2,400+", label: "resumes optimized" },
-                  { n: "9", label: "AI-powered tools" },
-                  { n: "15", label: "ATS format checks" },
-                  { n: "100%", label: "free forever" },
-                ].map(({ n, label }) => (
-                  <div key={label} className="group">
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">{n}</div>
-                    <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">{label}</div>
+                <div className="group">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
+                    <AnimatedCounter target={2400} suffix="+" locale />
                   </div>
-                ))}
+                  <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">resumes optimized</div>
+                </div>
+                <div className="group">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
+                    <AnimatedCounter target={9} />
+                  </div>
+                  <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">AI-powered tools</div>
+                </div>
+                <div className="group">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
+                    <AnimatedCounter target={15} />
+                  </div>
+                  <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">ATS format checks</div>
+                </div>
+                <div className="group">
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
+                    <AnimatedCounter target={100} suffix="%" />
+                  </div>
+                  <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">free forever</div>
+                </div>
               </div>
             </div>
 
             {/* ATS Score Preview */}
-            <div className="relative hidden lg:block">
-              <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-2xl dark:shadow-gray-900/50 p-6 space-y-5 rotate-1 hover:rotate-0 transition-transform duration-500">
-                <div className="flex items-center gap-2">
-                  <div className="h-2.5 w-2.5 rounded-full bg-red-400" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-amber-400" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                  <span className="ml-2 text-xs text-gray-400 dark:text-gray-400">ATS Analysis Result</span>
-                </div>
-
-                <div className="flex items-center gap-6">
-                  <div className="relative h-24 w-24 shrink-0">
-                    <svg className="h-24 w-24 -rotate-90" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="8" className="text-gray-100 dark:text-gray-700" />
-                      <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="8" strokeDasharray="264" strokeDashoffset="40" strokeLinecap="round" className="text-emerald-500" />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-gray-900 dark:text-white">85%</span>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">Strong ATS Match</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">23 of 27 keywords found</p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Matched Keywords</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Python", "React", "AWS", "Docker", "CI/CD", "PostgreSQL", "REST API", "Agile"].map((kw) => (
-                      <span key={kw} className="rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">{kw}</span>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Missing &mdash; Add These</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Kubernetes", "Terraform", "GraphQL", "TypeScript"].map((kw) => (
-                      <span key={kw} className="rounded-full bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">{kw}</span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <svg className="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
-                    <span className="text-xs font-semibold text-gray-700 dark:text-gray-200">ATS Compliance</span>
-                  </div>
-                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">15/15 passed</span>
-                </div>
-              </div>
-
-              <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-indigo-100 via-violet-50 to-blue-100 dark:from-indigo-950 dark:via-violet-950 dark:to-blue-950 opacity-60 blur-xl" />
-            </div>
+            <HeroScoreCard />
           </div>
         </div>
       </section>
