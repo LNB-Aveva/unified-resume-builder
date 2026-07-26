@@ -635,14 +635,14 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="rounded-2xl border border-indigo-100 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-950/20 p-8">
+              <a href="/resume-checker-for-career-changers" className="group block rounded-2xl border border-indigo-100 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-950/20 p-8 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-md transition-all duration-200">
                 <div className="inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-900/50 px-3 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-300 mb-5 uppercase tracking-wider">
                   Switching Industries
                 </div>
                 <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Make transferable skills visible to ATS
                 </h3>
-                <ul className="space-y-3">
+                <ul className="space-y-3 mb-6">
                   {[
                     "Gap analysis shows which new-field keywords are missing from your current resume",
                     "AI bullet rewriter translates your experience into the target industry’s language",
@@ -654,16 +654,20 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-              </div>
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-2.5 transition-all duration-200">
+                  Career changers guide
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+                </span>
+              </a>
 
-              <div className="rounded-2xl border border-violet-100 dark:border-violet-800/50 bg-violet-50/50 dark:bg-violet-950/20 p-8">
+              <a href="/ats-checker-for-new-grads" className="group block rounded-2xl border border-violet-100 dark:border-violet-800/50 bg-violet-50/50 dark:bg-violet-950/20 p-8 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-md transition-all duration-200">
                 <div className="inline-flex items-center rounded-full bg-violet-100 dark:bg-violet-900/50 px-3 py-1 text-xs font-bold text-violet-700 dark:text-violet-300 mb-5 uppercase tracking-wider">
                   New Grads &amp; First Jobs
                 </div>
                 <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Start with an ATS-ready resume from day one
                 </h3>
-                <ul className="space-y-3">
+                <ul className="space-y-3 mb-6">
                   {[
                     "Keyword extractor shows exactly what skills entry-level roles expect",
                     "ATS compliance checker ensures formatting passes automated filters before a recruiter sees it",
@@ -675,16 +679,20 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-              </div>
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-violet-600 dark:text-violet-400 group-hover:gap-2.5 transition-all duration-200">
+                  New grads guide
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+                </span>
+              </a>
 
-              <div className="rounded-2xl border border-emerald-100 dark:border-emerald-800/50 bg-emerald-50/50 dark:bg-emerald-950/20 p-8">
+              <a href="/resume-checker-for-tech-jobs" className="group block rounded-2xl border border-emerald-100 dark:border-emerald-800/50 bg-emerald-50/50 dark:bg-emerald-950/20 p-8 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md transition-all duration-200">
                 <div className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/50 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 mb-5 uppercase tracking-wider">
                   Engineering &amp; Tech
                 </div>
                 <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Tech job descriptions are keyword-dense &mdash; don&apos;t miss any
                 </h3>
-                <ul className="space-y-3">
+                <ul className="space-y-3 mb-6">
                   {[
                     "NLP engine extracts frameworks, cloud platforms, and certification variants from any JD",
                     "Gap analysis compares your stack against the role’s exact requirements",
@@ -696,7 +704,11 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-              </div>
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400 group-hover:gap-2.5 transition-all duration-200">
+                  Tech jobs guide
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+                </span>
+              </a>
             </div>
 
             <div className="text-center mt-12">
