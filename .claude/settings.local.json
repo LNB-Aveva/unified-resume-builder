@@ -8,7 +8,14 @@
       "Bash(python -m py_compile backend/app/main.py)",
       "Bash(python -m pytest tests/unit/ -q)",
       "Bash(ls backend/.env)",
-      "Bash(ls frontend/.env.local)"
+      "Bash(ls frontend/.env.local)",
+      "PowerShell(Get-Service *)",
+      "Bash(xargs cat)",
+      "Bash(Get-Content \"C:\\\\Users\\\\smian\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--My-Work-Space-AI-Resume-Generator\\\\be6c8fac-0ca5-4fff-a2b3-84e17afc00a6\\\\tasks\\\\ab5d888aee21d4397.output\")",
+      "Bash(Select-String '\\\\[')",
+      "Bash(Select-Object -First 5)",
+      "Bash(npx next *)",
+      "Workflow(code-review)"
     ]
   }
 }
