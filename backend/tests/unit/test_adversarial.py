@@ -304,18 +304,18 @@ class TestBoundaryInputs:
                 summary="x" * 5_001,
             )
 
-    def test_filename_at_100_passes(self):
+    def test_filename_at_60_passes(self):
         req = ResumeExportRequest(
             personal=ExportPersonal(full_name="Test", email="t@t.com"),
-            filename="x" * 100,
+            filename="x" * 60,
         )
-        assert len(req.filename) == 100
+        assert len(req.filename) == 60
 
-    def test_filename_over_100_rejected(self):
+    def test_filename_over_60_rejected(self):
         with pytest.raises(ValidationError):
             ResumeExportRequest(
                 personal=ExportPersonal(full_name="Test", email="t@t.com"),
-                filename="x" * 101,
+                filename="x" * 61,
             )
 
     def test_years_experience_at_0(self):
