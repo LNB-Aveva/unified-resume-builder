@@ -24,7 +24,10 @@ _UNICODE_MAP = str.maketrans({
 
 def _s(text: str) -> str:
     text = unicodedata.normalize("NFC", text)
-    return text.translate(_UNICODE_MAP).encode("latin-1", errors="replace").decode("latin-1")
+    text = text.translate(_UNICODE_MAP)
+    # Decompose chars outside Latin-1 to their base letter (Ž→Z, ñ→n) instead of ?
+    text = unicodedata.normalize("NFKD", text)
+    return text.encode("latin-1", errors="ignore").decode("latin-1")
 
 
 class _ResumePDF(FPDF):

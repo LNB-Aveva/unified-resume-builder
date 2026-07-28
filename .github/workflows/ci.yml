@@ -132,14 +132,15 @@ jobs:
 
       - name: Audit npm dependencies for CVEs
         working-directory: frontend
-        run: npm audit --audit-level=high
+        # Production dependencies are deployed. Auditing dev-only lint tooling here
+        # previously required a breaking transitive override that made ESLint crash.
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Build Next.js app
         working-directory: frontend
-        # 'npm run build' does THREE things at once:
+        # 'npm run build' does two things at once:
         # 1. TypeScript type checking — catches type errors
-        # 2. ESLint — catches code style issues
-        # 3. Next.js page compilation — catches broken imports and JSX errors
+        # 2. Next.js page compilation — catches broken imports and JSX errors
         # If any of these fail, the build fails and CI blocks the PR.
         env:
           # Set a dummy API URL so NEXT_PUBLIC_API_URL is defined during build.

@@ -118,6 +118,26 @@ class TestExtractResponsibilities:
         assert len(result) == 2
         assert not any("lunch" in r.lower() for r in result)
 
+    def test_benefits_word_in_responsibility_is_not_a_section_header(self):
+        text = (
+            "Responsibilities:\n"
+            "- Explain benefits to employees\n"
+            "- Maintain enrollment records"
+        )
+        result = _extract_responsibilities(text)
+        assert result == [
+            "Explain benefits to employees",
+            "Maintain enrollment records",
+        ]
+
+    def test_responsibilities_after_benefits_are_included(self):
+        text = (
+            "Benefits:\n- Health insurance\n"
+            "Responsibilities:\n- Build APIs\n- Write tests"
+        )
+        result = _extract_responsibilities(text)
+        assert result == ["Build APIs", "Write tests"]
+
     def test_short_bullets_ignored(self):
         text = "- OK\n- This is a real requirement"
         result = _extract_responsibilities(text)

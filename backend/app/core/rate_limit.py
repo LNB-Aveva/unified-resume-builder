@@ -10,9 +10,8 @@ def get_client_ip(request: Request) -> str:
     cf_ip = request.headers.get("CF-Connecting-IP")
     if cf_ip and request.headers.get("CF-Ray"):
         return cf_ip
-    xff = request.headers.get("X-Forwarded-For")
-    if xff:
-        return xff.split(",")[0].strip()
+    # X-Forwarded-For leftmost entry is client-supplied and cannot be trusted
+    # when there is no upstream proxy asserting it. Fall back to the socket IP.
     return request.client.host if request.client else "unknown"
 
 

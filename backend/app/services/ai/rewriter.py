@@ -131,11 +131,19 @@ def _parse_rewrites(raw: str, originals: list[str]) -> list[RewrittenBullet]:
                 ))
 
     if not results and originals:
-        lines = [line.strip() for line in raw.splitlines() if line.strip() and not line.startswith("-")]
-        if not lines:
+        candidate_lines = []
+        for raw_line in raw.splitlines():
+            stripped = raw_line.strip()
+            if not stripped or re.match(r'^[-*–—]+$', stripped):
+                continue
+            # Strip a single leading bullet marker
+            stripped = re.sub(r'^[-*•·–—]\s+', '', stripped)
+            if stripped:
+                candidate_lines.append(stripped)
+        if not candidate_lines:
             return results
         for i, orig in enumerate(originals):
-            rewritten = lines[i] if i < len(lines) else orig
+            rewritten = candidate_lines[i] if i < len(candidate_lines) else orig
             results.append(RewrittenBullet(
                 original=orig,
                 rewritten=rewritten,

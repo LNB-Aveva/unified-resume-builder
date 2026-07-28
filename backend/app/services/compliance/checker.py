@@ -8,7 +8,7 @@ _EMAIL = re.compile(r'\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b')
 _PHONE = re.compile(r'(?<!\d)[\+\(]?\d[\d\s\-\(\)\.]{7,}\d(?!\d)')
 _DATE_RANGE = re.compile(r'^\d{4}\s*[-–]\s*\d{4}$')
 _LINKEDIN = re.compile(r'linkedin\.com/in/', re.I)
-_PRONOUN = re.compile(r"(?<![a-zA-Z])(I\s+[a-z]+\b|I\'ve|I\'m|my\s|myself\b)", re.I)
+_PRONOUN = re.compile(r"(?<![a-zA-Z])([Ii]\s+[a-z]+\b|[Ii]'ve|[Ii]'m|[Mm][Yy]\s+[a-z]|[Mm]yself\b)")
 _DATE_MONTH_YEAR = re.compile(
     r'\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|'
     r'January|February|March|April|June|July|August|September|October|November|December)'
@@ -46,8 +46,8 @@ _BUZZWORDS = {
 
 def _has_section(text_lower: str, headers: set[str]) -> bool:
     for line in text_lower.split('\n'):
-        line = line.strip()
-        if line in headers or any(line.startswith(h) for h in headers):
+        line = line.strip().rstrip(':')
+        if line in headers:
             return True
     return False
 

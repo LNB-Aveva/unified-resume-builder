@@ -139,6 +139,17 @@ _BENEFIT_HEADERS: set[str] = {
     "eeo", "affirmative action", "accommodation",
 }
 
+_RESPONSIBILITY_HEADERS: set[str] = {
+    "responsibilities", "requirements", "qualifications", "what you'll do",
+    "what you will do", "the role", "role overview", "job duties", "duties",
+}
+
+
+def _is_section_header(line: str, headers: set[str]) -> bool:
+    """Match a section heading: exact match (after stripping colon) or header is a prefix word."""
+    normalized = line.strip().lower().rstrip(":").strip()
+    return normalized in headers or any(normalized.startswith(h + " ") for h in headers)
+
 _EXPERIENCE_RE = re.compile(
     r'(\d+)\+?\s*(?:[-–]\s*\d+\+?)?\s*years?\s+(?:of\s+[^.\n]{0,40})?experience',
     re.IGNORECASE,
@@ -208,7 +219,7 @@ def _extract_context_skills(text: str, known_hard: list[str], known_soft: list[s
             and not any(c.isdigit() for c in phrase)
             and phrase_lower not in _BENEFIT_HEADERS
         ):
-            extracted.append(phrase)
+            extracted.append(phrase_lower)
             already_found.add(phrase_lower)
     return sorted(set(extracted))
 
@@ -233,11 +244,11 @@ def _extract_responsibilities(text: str) -> list[str]:
         stripped = line.strip()
         lower = stripped.lower()
 
-        if any(h in lower for h in _BENEFIT_HEADERS):
+        if _is_section_header(lower, _BENEFIT_HEADERS):
             in_benefits = True
             continue
 
-        if in_benefits and (lower.endswith(":") or lower.endswith("requirements")):
+        if in_benefits and _is_section_header(lower, _RESPONSIBILITY_HEADERS):
             in_benefits = False
             continue
 

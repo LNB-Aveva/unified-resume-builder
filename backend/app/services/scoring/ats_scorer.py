@@ -34,7 +34,7 @@ def _build_resume_text(resume: ResumeData) -> str:
 
 def _skill_present(skill: str, resume_text_lower: str) -> bool:
     pattern = r"(?<![a-zA-Z0-9])" + re.escape(skill) + r"(?![a-zA-Z0-9])"
-    return bool(re.search(pattern, resume_text_lower))
+    return bool(re.search(pattern, resume_text_lower, re.IGNORECASE))
 
 
 def _compute_grade(score: float) -> tuple[str, str]:
