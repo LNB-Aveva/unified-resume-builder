@@ -15,7 +15,9 @@
       "Bash(Select-String '\\\\[')",
       "Bash(Select-Object -First 5)",
       "Bash(npx next *)",
-      "Workflow(code-review)"
+      "Workflow(code-review)",
+      "Bash(xargs grep -l \"callback\\\\|next=\")",
+      "Bash(xargs grep -l \"signUp\\\\|sign-up\\\\|signup\\\\|accountSetup\\\\|account-setup\")"
     ]
   }
 }
