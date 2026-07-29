@@ -65,6 +65,35 @@ class TestMatchSkills:
         assert "machine learning" in result
         assert "nlp" in result
 
+    def test_synonym_golang_matches_go(self):
+        result = _match_skills("experience with golang microservices", HARD_SKILLS)
+        assert "go" in result
+
+    def test_synonym_reactjs_matches_react(self):
+        result = _match_skills("built frontend with reactjs", HARD_SKILLS)
+        assert "react" in result
+
+    def test_synonym_js_matches_javascript(self):
+        result = _match_skills("proficient in js and ts", HARD_SKILLS)
+        assert "javascript" in result
+        assert "typescript" in result
+
+    def test_synonym_k8s_matches_kubernetes(self):
+        result = _match_skills("deployed to k8s clusters", HARD_SKILLS)
+        assert "kubernetes" in result
+
+    def test_synonym_postgres_matches_postgresql(self):
+        result = _match_skills("experience with postgres databases", HARD_SKILLS)
+        assert "postgresql" in result
+
+    def test_synonym_cicd_variations(self):
+        result = _match_skills("set up continuous integration pipelines", HARD_SKILLS)
+        assert "ci/cd" in result
+
+    def test_synonym_does_not_create_duplicates(self):
+        result = _match_skills("uses both react and reactjs daily", HARD_SKILLS)
+        assert result.count("react") == 1
+
 
 class TestExtractExperience:
     def test_standard_format(self):

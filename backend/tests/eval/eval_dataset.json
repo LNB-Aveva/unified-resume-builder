@@ -1,0 +1,177 @@
+[
+  {
+    "id": "exact-match-fullstack",
+    "description": "Full-stack developer, exact keyword overlap",
+    "expected_grade": "A",
+    "job_description": "Senior Full Stack Engineer\n\nRequirements:\n- 5+ years of experience in web development\n- Proficient in Python and JavaScript\n- Experience with React and Node.js\n- PostgreSQL database experience\n- Docker and Kubernetes for deployments\n- Strong communication and teamwork skills\n\nEducation:\nBachelor's degree in Computer Science",
+    "resume_text": "Full Stack Developer with 6 years of web development experience. Built REST APIs in Python with FastAPI. Created React frontends with JavaScript and TypeScript. Built backend services with Node.js. Managed PostgreSQL databases. Deployed applications using Docker and Kubernetes. Strong communication skills and teamwork across cross-functional teams."
+  },
+  {
+    "id": "synonym-heavy-match",
+    "description": "Same skills but using alternate names (JS, K8s, Postgres, etc.)",
+    "expected_grade": "A",
+    "job_description": "Backend Engineer\n\nRequirements:\n- Python development experience\n- PostgreSQL and MongoDB databases\n- Kubernetes container orchestration\n- CI/CD pipeline experience\n- REST API design\n- Leadership and problem-solving skills",
+    "resume_text": "Backend developer with 4 years of experience. Built services in Python3. Used Postgres and Mongo for data storage. Deployed to K8s clusters with Helm. Set up continuous integration pipelines with GitHub Actions. Designed RESTful APIs. Strong leader and problem solver who drives team initiatives."
+  },
+  {
+    "id": "synonym-frontend",
+    "description": "Frontend role with ReactJS/JS/TS synonyms",
+    "expected_grade": "A",
+    "job_description": "Frontend Developer\n\nRequirements:\n- JavaScript and TypeScript\n- React framework experience\n- Next.js for SSR\n- Tailwind CSS for styling\n- Git version control\n- Attention to detail",
+    "resume_text": "Frontend engineer specializing in JS and TS. Built production apps with ReactJS and NextJS. Styled with TailwindCSS and responsive design. Version control with Git and GitHub. Known for meticulous attention to detail in UI work."
+  },
+  {
+    "id": "partial-match-devops",
+    "description": "DevOps role, resume has about half the required skills",
+    "expected_grade": "D",
+    "job_description": "DevOps Engineer\n\nRequirements:\n- AWS cloud infrastructure\n- Terraform for infrastructure as code\n- Docker and Kubernetes\n- CI/CD pipelines (GitHub Actions or Jenkins)\n- Linux administration\n- Python or Bash scripting\n- Ansible for configuration management\n- Prometheus and Grafana monitoring\n- Strong problem-solving and communication skills",
+    "resume_text": "Systems administrator with 3 years of experience. Managed Linux servers and wrote Bash scripts for automation. Used Docker for containerization. Set up Jenkins CI pipelines. Good communication with stakeholders."
+  },
+  {
+    "id": "partial-match-datascience",
+    "description": "Data science role, resume covers some skills",
+    "expected_grade": "D",
+    "job_description": "Data Scientist\n\nRequirements:\n- Python with pandas and NumPy\n- Machine learning with scikit-learn or PyTorch\n- SQL for data analysis\n- Tableau or Power BI for visualization\n- A/B testing and statistical modeling\n- Deep learning experience\n- Communication and presentation skills",
+    "resume_text": "Data analyst with Python experience. Used pandas and NumPy for data processing. Wrote SQL queries for reporting. Created dashboards in Tableau. Good presentation skills for stakeholder meetings."
+  },
+  {
+    "id": "poor-match-wrong-domain",
+    "description": "Marketing role vs engineering resume",
+    "expected_grade": "F",
+    "job_description": "Digital Marketing Manager\n\nRequirements:\n- Google Ads and Facebook Ads campaign management\n- SEO and SEM strategy\n- Email marketing with Mailchimp or Klaviyo\n- Google Analytics and Google Tag Manager\n- Content marketing and social media marketing\n- Brand management experience\n- HubSpot CRM\n- Strong creativity and communication skills",
+    "resume_text": "Software engineer with 5 years experience building web applications. Proficient in Python, JavaScript, React, and PostgreSQL. Deployed services on AWS with Docker. Experience with agile methodologies and CI/CD pipelines."
+  },
+  {
+    "id": "poor-match-finance-vs-engineering",
+    "description": "Finance role vs software resume",
+    "expected_grade": "F",
+    "job_description": "Financial Analyst\n\nRequirements:\n- Financial modeling and valuation\n- Excel and PowerPoint proficiency\n- Bloomberg Terminal experience\n- Knowledge of GAAP and IFRS\n- Budgeting and forecasting\n- CFA or CPA preferred\n- Strong analytical and attention to detail skills",
+    "resume_text": "Full stack developer building SaaS products. Experience with React, Node.js, Python, and MongoDB. Set up CI/CD pipelines and deployed to AWS. Familiar with agile and scrum methodologies."
+  },
+  {
+    "id": "strong-match-mobile",
+    "description": "Mobile developer, most skills present",
+    "expected_grade": "C",
+    "job_description": "Senior iOS Developer\n\nRequirements:\n- Swift and SwiftUI\n- iOS development with UIKit\n- RESTful API integration\n- Git version control\n- Unit testing and TDD\n- CI/CD for mobile apps\n- Agile/Scrum methodology\n- Strong collaboration and mentoring skills",
+    "resume_text": "iOS developer with 5 years experience. Built apps in Swift with SwiftUI and UIKit. Integrated REST APIs for backend communication. Used Git for version control. Practiced test-driven development with XCTest. Worked in agile scrum teams and collaborated across functions. Mentored 2 junior developers."
+  },
+  {
+    "id": "cloud-architect-strong",
+    "description": "Cloud architect with good AWS coverage",
+    "expected_grade": "C",
+    "job_description": "Cloud Solutions Architect\n\nRequirements:\n- AWS (EC2, S3, Lambda, RDS)\n- Terraform infrastructure as code\n- Docker and Kubernetes\n- Serverless architecture\n- Microservices design patterns\n- Python or Go programming\n- AWS Certified Solutions Architect preferred\n- Strategic thinking and stakeholder management",
+    "resume_text": "Cloud architect with 7 years of Amazon Web Services experience. Designed serverless applications using AWS Lambda and Amazon S3. Provisioned infrastructure with Terraform. Containerized services with Docker and deployed to Kubernetes. Built microservices in Golang. AWS Certified Solutions Architect Associate. Strategic thinker who manages stakeholder expectations effectively."
+  },
+  {
+    "id": "ml-engineer-partial",
+    "description": "ML engineer, resume has Python/ML but missing frameworks",
+    "expected_grade": "D",
+    "job_description": "Machine Learning Engineer\n\nRequirements:\n- Python with PyTorch or TensorFlow\n- Deep learning and NLP experience\n- MLflow for experiment tracking\n- Feature engineering\n- Kubernetes for model serving\n- Apache Spark for data processing\n- LLM and generative AI experience\n- Strong analytical and problem-solving skills",
+    "resume_text": "Software developer with Python experience. Built data pipelines and automated ETL processes. Some exposure to machine learning concepts through online courses. Analytical thinker with strong problem-solving skills."
+  },
+  {
+    "id": "synonym-cloud-gcp",
+    "description": "GCP role where resume says Google Cloud Platform",
+    "expected_grade": "B",
+    "job_description": "Cloud Engineer — GCP\n\nRequirements:\n- GCP (Compute Engine, Cloud Storage, BigQuery)\n- Terraform or Pulumi\n- Docker and Kubernetes\n- CI/CD with GitHub Actions\n- Python scripting\n- Linux administration\n- Collaboration and teamwork",
+    "resume_text": "Cloud engineer specializing in Google Cloud Platform. Experience with Google BigQuery for analytics. Used Terraform for infrastructure provisioning. Built and deployed Docker containers to K8s. Automated deployments with GitHub Actions. Python scripting for cloud automation. Linux server management. Strong team collaboration skills."
+  },
+  {
+    "id": "synonym-dotnet",
+    "description": ".NET role where resume uses dotnet/aspnet",
+    "expected_grade": "B",
+    "job_description": "Senior .NET Developer\n\nRequirements:\n- C# and .NET framework\n- ASP.NET for web APIs\n- SQL Server database experience\n- Docker containerization\n- Azure cloud services\n- Git version control\n- Agile methodology\n- Communication and teamwork",
+    "resume_text": "Experienced C# developer working with dotnet 8 and ASPNET Core. Built web APIs and microservices. Used MSSQL databases for data persistence. Containerized applications with Docker. Deployed to Azure App Service. Version control with Git. Worked in agile teams with daily standups. Strong communicator across engineering and product teams."
+  },
+  {
+    "id": "qa-engineer-match",
+    "description": "QA role with testing terminology",
+    "expected_grade": "B",
+    "job_description": "QA Engineer\n\nRequirements:\n- Unit testing and BDD frameworks\n- Python or JavaScript test automation\n- CI/CD pipeline integration\n- Jira for bug tracking\n- SQL for test data queries\n- Agile/Scrum methodology\n- Attention to detail and analytical skills",
+    "resume_text": "QA engineer with 4 years of test automation experience. Wrote unit tests and behavior-driven development specs using Python. Integrated test suites into CICD pipelines. Tracked defects in Jira. Queried SQL databases for test validation. Worked in scrum teams with sprint-based delivery. Detail-oriented with strong analytical approach."
+  },
+  {
+    "id": "product-manager-partial",
+    "description": "PM role, resume has some but not most skills",
+    "expected_grade": "D",
+    "job_description": "Product Manager\n\nRequirements:\n- Product roadmap creation and management\n- Jira and Confluence for documentation\n- SQL for data analysis\n- A/B testing methodology\n- Stakeholder management\n- Agile/Scrum experience\n- Figma for design collaboration\n- Strategic thinking and prioritization",
+    "resume_text": "Project coordinator with 2 years experience. Used Jira for task tracking. Familiar with agile methodology. Good at prioritization and meeting deadlines."
+  },
+  {
+    "id": "security-engineer",
+    "description": "Security role with compliance focus",
+    "expected_grade": "B",
+    "job_description": "Security Engineer\n\nRequirements:\n- Penetration testing and vulnerability assessment\n- CISSP or CEH certification\n- SIEM tools for security monitoring\n- Python scripting for automation\n- AWS security best practices\n- ISO 27001 and SOC compliance\n- Zero trust architecture\n- Problem-solving and analytical skills",
+    "resume_text": "Cybersecurity professional with pen testing experience. CEH certified. Used SIEM platforms for threat detection and incident response. Wrote Python scripts for security automation. Implemented AWS security controls. Achieved SOC 2 and ISO 27001 compliance. Designed zero trust network architecture. Strong analytical and problem-solving capabilities."
+  },
+  {
+    "id": "data-engineer-strong",
+    "description": "Data engineer with good pipeline coverage",
+    "expected_grade": "A",
+    "job_description": "Senior Data Engineer\n\nRequirements:\n- Python and SQL\n- Apache Kafka for event streaming\n- Apache Spark or PySpark\n- Snowflake or BigQuery data warehouse\n- ETL pipeline development\n- Airflow for orchestration\n- Docker and Kubernetes\n- Teamwork and communication",
+    "resume_text": "Data engineer with 6 years experience. Built data pipelines in Python with SQL transformations. Implemented event streaming with Apache Kafka. Processed large datasets with PySpark. Managed data warehouse in Snowflake. Built ETL workflows orchestrated by Apache Airflow. Containerized jobs with Docker and deployed to Kubernetes. Team player with excellent communication."
+  },
+  {
+    "id": "frontend-missing-framework",
+    "description": "Frontend role, resume has JS but not React specifically",
+    "expected_grade": "D",
+    "job_description": "React Developer\n\nRequirements:\n- React and Redux\n- TypeScript\n- Next.js\n- REST API integration\n- CSS/Tailwind\n- Git version control\n- Unit testing\n- Teamwork",
+    "resume_text": "Frontend developer with 3 years of JavaScript experience. Built web applications with Vue.js and Nuxt. Used TypeScript throughout. Styled with CSS and some Tailwind usage. Integrated REST APIs. Version control with Git. Wrote unit tests. Works well in team environments."
+  },
+  {
+    "id": "devops-synonym-heavy",
+    "description": "DevOps role, resume uses all synonym forms",
+    "expected_grade": "A",
+    "job_description": "DevOps Engineer\n\nRequirements:\n- AWS cloud services\n- Docker and Kubernetes\n- Terraform\n- CI/CD pipelines\n- Python or Bash\n- Linux\n- Microservices architecture\n- Problem-solving and adaptability",
+    "resume_text": "DevOps engineer with Amazon Web Services experience. Containerized with Docker and deployed to K8s clusters. Infrastructure as code using Terraform. Built continuous integration and continuous deployment pipelines. Scripted in Python3 and Bash. Managed Linux servers. Designed micro-services architecture. Strong problem solver who adapts quickly to new challenges."
+  },
+  {
+    "id": "junior-dev-basic",
+    "description": "Junior role, resume covers basics only",
+    "expected_grade": "D",
+    "job_description": "Junior Software Developer\n\nRequirements:\n- Python or JavaScript\n- HTML, CSS\n- SQL basics\n- Git version control\n- REST API understanding\n- Agile methodology\n- Communication and teamwork\n- Adaptability and growth mindset",
+    "resume_text": "Recent CS graduate. Completed coursework in Python and HTML5. Basic SQL knowledge from database class. Used Git for school projects. Eager to learn and grow. Good communicator and team player."
+  },
+  {
+    "id": "overqualified-senior",
+    "description": "Senior resume for a junior role — should still match well",
+    "expected_grade": "A",
+    "job_description": "Junior Software Developer\n\nRequirements:\n- Python or JavaScript\n- HTML, CSS\n- SQL basics\n- Git version control\n- REST API understanding\n- Agile methodology\n- Communication and teamwork\n- Adaptability and growth mindset",
+    "resume_text": "Senior software engineer with 10 years experience. Expert in Python, JavaScript, TypeScript, and Go. Deep knowledge of HTML, CSS, and modern frontend frameworks. Advanced SQL and PostgreSQL. Git power user. Designed and built dozens of REST APIs. Led agile teams at 3 companies. Excellent communicator, mentor, and adaptable leader with growth mindset."
+  },
+  {
+    "id": "healthcare-it",
+    "description": "Healthcare IT role",
+    "expected_grade": "B",
+    "job_description": "Healthcare IT Analyst\n\nRequirements:\n- EHR systems (Epic or Cerner)\n- ICD-10 coding knowledge\n- SQL for reporting\n- Clinical documentation experience\n- HIPAA compliance\n- Excel and data analysis\n- Communication and attention to detail",
+    "resume_text": "Healthcare IT specialist with 5 years of experience. Configured and supported Epic EHR system. Trained staff on ICD-10 coding procedures. Built SQL reports for clinical data. Managed clinical documentation workflows. Ensured HIPAA compliance across departments. Advanced Excel skills for data analysis. Detail-oriented communicator."
+  },
+  {
+    "id": "empty-resume",
+    "description": "Empty resume against a real JD",
+    "expected_grade": "F",
+    "job_description": "Software Engineer\n\nRequirements:\n- Python\n- React\n- Docker\n- Communication skills",
+    "resume_text": "Looking for a job in technology."
+  },
+  {
+    "id": "generic-resume",
+    "description": "Generic resume with no specific skills",
+    "expected_grade": "F",
+    "job_description": "Data Engineer\n\nRequirements:\n- Python and SQL\n- Apache Kafka\n- Snowflake\n- ETL pipelines\n- Docker\n- Teamwork",
+    "resume_text": "Hard-working professional with 5 years of experience. Proven track record of delivering results. Managed multiple projects simultaneously. Received positive feedback from managers."
+  },
+  {
+    "id": "acronym-expansion",
+    "description": "JD uses full forms, resume uses acronyms",
+    "expected_grade": "A",
+    "job_description": "Platform Engineer\n\nRequirements:\n- Natural language processing experience\n- Machine learning pipelines\n- Large language model development\n- Continuous integration and continuous deployment\n- Amazon Web Services\n- Test-driven development\n- Collaboration and leadership",
+    "resume_text": "Platform engineer specializing in NLP and ML. Built LLM-powered applications. Set up CI/CD pipelines for model deployment. Deployed to AWS infrastructure. Practiced TDD for all production code. Collaborative leader who drives team initiatives."
+  },
+  {
+    "id": "reverse-acronym",
+    "description": "JD uses acronyms, resume uses full forms",
+    "expected_grade": "A",
+    "job_description": "ML Engineer\n\nRequirements:\n- NLP experience\n- LLM development\n- CI/CD pipelines\n- AWS infrastructure\n- TDD practices\n- Python\n- Teamwork and leadership",
+    "resume_text": "Engineer focused on natural language processing and machine learning. Built large language model applications. Set up continuous integration and continuous deployment pipelines. Managed Amazon Web Services infrastructure. Wrote Python code with test-driven development methodology. Strong teamwork and leadership skills."
+  }
+]

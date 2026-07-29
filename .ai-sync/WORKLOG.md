@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 2 COMPLETE. Phase 3 (Scoring Quality) is next.
+- **Status:** Phase 3 COMPLETE. Phase 4 (Reliability & Performance) is next.
 
 ---
 
@@ -17,15 +17,49 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | —                          |
-| Started    | —                          |
-| Working On | —                          |
+| Agent      | claude                     |
+| Started    | 2026-07-29                 |
+| Working On | Phase 3 complete — ready for commit
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 68 — 2026-07-29
+- **Agent:** claude
+- **Did:**
+  - Completed Phase 3 (Scoring Quality) — all 9 tasks DONE
+  - Created skills taxonomy JSON with 220+ canonical skills and 65+ synonym groups
+  - Built taxonomy.py loader module (replaces hardcoded skill sets)
+  - Added synonym-aware matching to both keyword_extractor.py and ats_scorer.py
+  - Calibrated grade boundaries: A≥85, B≥65, C≥50, D≥30, F<30 (old A≥90 was unreachable)
+  - Built evaluation harness (run_eval.py) with 25 labeled resume/JD pairs
+  - Result: 100% within-one-grade, 72% exact match — EXIT GATE PASS
+  - Added 12 golden-file tests for rewriter response parsing
+  - Updated GapAnalysis UI: hard/soft skill breakdown with "Found"/"Add" labels
+  - Updated frontend threshold colors to match new grade boundaries
+  - Added soft skill inflection synonyms (communicator→communication, mentored→mentoring, etc.)
+- **Files Changed:**
+  - `backend/app/services/nlp/skills_taxonomy.json` (new — 220+ skills, 65+ synonym groups)
+  - `backend/app/services/nlp/taxonomy.py` (new — JSON taxonomy loader)
+  - `backend/app/services/nlp/keyword_extractor.py` (refactored — uses taxonomy)
+  - `backend/app/services/scoring/ats_scorer.py` (synonym-aware matching, new grade boundaries)
+  - `backend/tests/unit/test_keyword_extractor.py` (7 new synonym tests)
+  - `backend/tests/unit/test_ats_scorer.py` (synonym match + updated grade tests)
+  - `backend/tests/unit/test_property.py` (updated grade boundaries)
+  - `backend/tests/unit/test_rewriter_parsing.py` (new — 12 golden-file tests)
+  - `backend/tests/eval/eval_dataset.json` (new — 25 labeled cases)
+  - `backend/tests/eval/run_eval.py` (new — evaluation harness)
+  - `backend/tests/eval/test_eval_harness.py` (new — pytest wrapper)
+  - `frontend/src/app/components/GapAnalysis.tsx` (explainable scores UI)
+  - `frontend/src/app/components/ComplianceChecker.tsx` (updated thresholds)
+  - `docs/LAUNCH_PROGRAM.md` (Phase 3 marked complete)
+- **Next Steps:**
+  - Phase 4: Reliability & Performance (Render cold start, HuggingFace timeout/retry, graceful degradation)
+- **Blockers:**
+  - None
 
 ### Session 67 — 2026-07-29
 - **Agent:** claude
@@ -156,7 +190,7 @@
 - **Stack:** Next.js 16 (frontend/) + FastAPI (backend/) + Supabase auth/db
 - **Domain:** resumeai.cv (Vercel deploy)
 - **Backend deploy:** Render (render.yaml)
-- **Tests:** 245 passing (backend pytest), frontend production build clean
+- **Tests:** 267 passing (backend pytest), frontend production build clean
 - **proxy.ts IS the Next.js middleware** — never recreate middleware.ts
 - **Commit rule:** no Co-Authored-By, no AI attribution, ever
 - **Localhost rule:** make changes → localhost:3000 → user approves → then commit

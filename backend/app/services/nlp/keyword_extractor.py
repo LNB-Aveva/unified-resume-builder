@@ -3,135 +3,10 @@
 import re
 
 from app.schemas.job import JobAnalysis, JobDescription
+from app.services.nlp import taxonomy
 
-HARD_SKILLS: set[str] = {
-    # ── Programming Languages ──
-    "python", "javascript", "typescript", "java", "c++", "c#", "golang", "go",
-    "rust", "ruby", "scala", "kotlin", "swift", "r language", "r programming",
-    "matlab", "bash", "shell scripting", "html", "css", "sass", "less",
-    "perl", "php", "dart", "lua", "elixir", "clojure", "haskell", "groovy",
-    "solidity", "objective-c", "julia", "vba", "powershell",
-
-    # ── Web Frameworks & Libraries ──
-    "react", "vue", "vue.js", "angular", "next.js", "nuxt", "svelte", "tailwind",
-    "bootstrap", "jquery", "gatsby", "remix", "astro", "htmx",
-    "fastapi", "django", "flask", "node.js", "express", "spring", "spring boot",
-    "rails", "laravel", "symfony", "asp.net", ".net", "blazor",
-    "graphql", "rest", "restful", "grpc", "websocket", "oauth", "jwt",
-    "api", "rest api", "graphql api", "sdk", "webhooks",
-
-    # ── Databases ──
-    "sql", "nosql", "postgresql", "postgres", "mysql", "sqlite", "mongodb",
-    "redis", "cassandra", "dynamodb", "firebase", "supabase", "elasticsearch",
-    "oracle", "sql server", "mariadb", "couchdb", "neo4j", "influxdb",
-    "snowflake", "bigquery", "redshift", "databricks", "dbt", "hive", "presto",
-
-    # ── Cloud & DevOps ──
-    "aws", "gcp", "azure", "google cloud", "docker", "kubernetes", "k8s",
-    "terraform", "ansible", "jenkins", "linux", "unix", "git", "github", "gitlab",
-    "ci/cd", "github actions", "bitbucket", "helm", "pulumi", "cloudformation",
-    "nginx", "apache", "microservices", "serverless", "lambda", "s3", "ec2",
-
-    # ── Data Science & ML ──
-    "pytorch", "tensorflow", "keras", "scikit-learn", "pandas", "numpy",
-    "machine learning", "deep learning", "nlp", "natural language processing",
-    "data science", "huggingface", "llm", "generative ai", "computer vision",
-    "opencv", "matplotlib", "scipy", "jupyter", "pyspark", "apache spark",
-    "hadoop", "apache kafka", "kafka", "airflow", "mlflow", "feature engineering",
-    "statistical modeling", "a/b testing", "regression", "classification",
-
-    # ── BI & Analytics ──
-    "tableau", "power bi", "looker", "looker studio", "google data studio",
-    "qlik", "qlikview", "domo", "metabase", "google analytics", "ga4",
-    "mixpanel", "amplitude", "segment", "heap", "hotjar",
-    "excel", "microsoft excel", "google sheets", "pivot tables", "vlookup",
-    "data visualization", "data analysis", "data modeling", "etl", "data pipeline",
-    "data warehouse", "data lake", "business intelligence",
-
-    # ── Microsoft & Business Productivity ──
-    "microsoft office", "microsoft 365", "word", "powerpoint", "outlook",
-    "sharepoint", "onenote", "microsoft teams", "teams", "access", "visio",
-    "google workspace", "google docs", "google slides",
-
-    # ── Project Management & Methodology ──
-    "jira", "confluence", "trello", "asana", "monday.com", "basecamp",
-    "notion", "wrike", "smartsheet", "linear", "clickup", "miro",
-    "agile", "scrum", "kanban", "waterfall", "lean", "six sigma", "kaizen",
-    "pmp", "prince2", "safe", "tdd", "bdd", "unit testing", "open source",
-    "product roadmap", "sprint planning", "retrospective",
-
-    # ── CRM, Sales & Business Tools ──
-    "salesforce", "hubspot", "marketo", "pardot", "zendesk", "freshdesk",
-    "intercom", "drift", "outreach", "salesloft", "apollo", "zoominfo",
-    "servicenow", "workday", "sap", "netsuite", "dynamics 365",
-    "quickbooks", "xero", "sage", # ── Marketing Tools ──
-    "google ads", "facebook ads", "meta ads", "linkedin ads", "tiktok ads",
-    "seo", "sem", "ppc", "pay-per-click", "google tag manager", "adobe analytics",
-    "mailchimp", "klaviyo", "constant contact", "hootsuite", "buffer",
-    "semrush", "ahrefs", "moz", "screaming frog", "wordpress",
-    "content marketing", "email marketing", "affiliate marketing",
-    "brand management", "social media marketing", "influencer marketing",
-    "conversion rate optimization", "cro", "demand generation",
-
-    # ── Design & Creative ──
-    "figma", "sketch", "adobe xd", "invision", "zeplin", "storybook",
-    "photoshop", "illustrator", "indesign", "after effects", "premiere pro",
-    "lightroom", "canva", "blender", "ux design", "ui design",
-    "user research", "wireframing", "prototyping", "usability testing",
-    "design systems", "accessibility", "wcag",
-
-    # ── Mobile Development ──
-    "ios", "android", "react native", "flutter", "swiftui", "swift ui",
-    "kotlin multiplatform", "xamarin", "cordova", "ionic",
-
-    # ── Security & Compliance ──
-    "penetration testing", "ethical hacking", "vulnerability assessment",
-    "cissp", "ceh", "oscp", "comptia", "siem", "soc", "iso 27001",
-    "gdpr", "hipaa", "sox", "ccpa", "nist", "pci dss", "firewall", "vpn",
-    "zero trust", "identity management", "iam", "privileged access",
-
-    # ── Finance & Accounting ──
-    "financial modeling", "financial analysis", "financial reporting",
-    "budgeting", "forecasting", "gaap", "ifrs", "accounts payable",
-    "accounts receivable", "tax", "audit", "valuation", "dcf",
-    "cpa", "cfa", "cma", "acca", "bloomberg terminal",
-    "equity research", "investment banking", "private equity", "venture capital",
-    "portfolio management", "risk management", "derivatives", "options",
-
-    # ── Healthcare & Life Sciences ──
-    "ehr", "emr", "epic", "cerner", "icd-10", "cpt coding",
-    "clinical documentation", "fda", "gmp", "clinical trials",
-    "medical device", "biostatistics", "sas", "r statistical",
-
-    # ── Supply Chain & Operations ──
-    "erp", "supply chain management", "logistics", "procurement",
-    "inventory management", "vendor management", "lean manufacturing",
-    "warehouse management", "demand planning", "s&op",
-
-    # ── Certifications & Credentials ──
-    "aws certified", "google cloud certified", "microsoft certified",
-    "cisco ccna", "cisco ccnp", "scrum master", "csm",
-    "itil", "lean six sigma", "black belt",
-    "google analytics certified", "hubspot certified", "salesforce certified",
-    "tableau certified",
-}
-
-SOFT_SKILLS: set[str] = {
-    "communication", "leadership", "teamwork", "collaboration",
-    "problem-solving", "problem solving", "attention to detail",
-    "critical thinking", "time management", "adaptability",
-    "creativity", "mentoring", "analytical", "self-motivated",
-    "proactive", "organized", "presentation", "negotiation",
-    "stakeholder management", "cross-functional", "strategic thinking",
-    "detail-oriented", "results-driven", "customer-focused", "data-driven",
-    "multitasking", "prioritization", "conflict resolution", "active listening",
-    "coaching", "facilitation", "risk management", "continuous improvement",
-    "innovation", "initiative", "accountability", "verbal communication",
-    "written communication", "interpersonal skills", "decision making",
-    "emotional intelligence", "empathy", "resilience", "growth mindset",
-    "fast-paced", "deadline-driven", "self-starter", "relationship building",
-    "customer service", "client management", "account management",
-}
+HARD_SKILLS: frozenset[str] = taxonomy.get_hard_skills()
+SOFT_SKILLS: frozenset[str] = taxonomy.get_soft_skills()
 
 _BENEFIT_HEADERS: set[str] = {
     "what we offer", "benefits", "perks", "compensation", "we offer",
@@ -169,12 +44,16 @@ _SKILL_CONTEXT_RE = re.compile(
 )
 
 
-def _match_skills(text_lower: str, skill_set: set[str]) -> list[str]:
-    found = []
+def _match_skills(text_lower: str, skill_set: set[str] | frozenset[str]) -> list[str]:
+    synonym_map = taxonomy.get_synonym_map()
+    found: set[str] = set()
     for skill in skill_set:
-        pattern = r"(?<![a-zA-Z0-9])" + re.escape(skill) + r"(?![a-zA-Z0-9])"
-        if re.search(pattern, text_lower, re.IGNORECASE):
-            found.append(skill)
+        terms = [skill] + list(synonym_map.get(skill, ()))
+        for term in terms:
+            pattern = r"(?<![a-zA-Z0-9])" + re.escape(term) + r"(?![a-zA-Z0-9])"
+            if re.search(pattern, text_lower, re.IGNORECASE):
+                found.add(skill)
+                break
     return _dedup_substrings(sorted(found))
 
 

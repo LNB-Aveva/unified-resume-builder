@@ -1,0 +1,239 @@
+{
+  "version": 1,
+  "hard_skills": {
+    "Programming Languages": [
+      "python", "javascript", "typescript", "java", "c++", "c#", "go",
+      "rust", "ruby", "scala", "kotlin", "swift", "r", "matlab", "bash",
+      "shell scripting", "html", "css", "sass", "less", "perl", "php",
+      "dart", "lua", "elixir", "clojure", "haskell", "groovy", "solidity",
+      "objective-c", "julia", "vba", "powershell"
+    ],
+    "Web Frameworks & Libraries": [
+      "react", "vue", "angular", "next.js", "nuxt", "svelte", "tailwind",
+      "bootstrap", "jquery", "gatsby", "remix", "astro", "htmx",
+      "fastapi", "django", "flask", "node.js", "express", "spring",
+      "spring boot", "rails", "laravel", "symfony", "asp.net", ".net",
+      "blazor", "graphql", "rest", "grpc", "websocket", "oauth", "jwt",
+      "api", "rest api", "graphql api", "sdk", "webhooks"
+    ],
+    "Databases": [
+      "sql", "nosql", "postgresql", "mysql", "sqlite", "mongodb", "redis",
+      "cassandra", "dynamodb", "firebase", "supabase", "elasticsearch",
+      "oracle", "sql server", "mariadb", "couchdb", "neo4j", "influxdb",
+      "snowflake", "bigquery", "redshift", "databricks", "dbt", "hive",
+      "presto"
+    ],
+    "Cloud & DevOps": [
+      "aws", "gcp", "azure", "docker", "kubernetes", "terraform",
+      "ansible", "jenkins", "linux", "unix", "git", "github", "gitlab",
+      "ci/cd", "github actions", "bitbucket", "helm", "pulumi",
+      "cloudformation", "nginx", "apache", "microservices", "serverless",
+      "lambda", "s3", "ec2"
+    ],
+    "Data Science & ML": [
+      "pytorch", "tensorflow", "keras", "scikit-learn", "pandas", "numpy",
+      "machine learning", "deep learning", "nlp", "data science",
+      "huggingface", "llm", "generative ai", "computer vision", "opencv",
+      "matplotlib", "scipy", "jupyter", "pyspark", "apache spark",
+      "hadoop", "kafka", "airflow", "mlflow", "feature engineering",
+      "statistical modeling", "a/b testing", "regression", "classification"
+    ],
+    "BI & Analytics": [
+      "tableau", "power bi", "looker", "looker studio",
+      "google data studio", "qlik", "qlikview", "domo", "metabase",
+      "google analytics", "ga4", "mixpanel", "amplitude", "segment",
+      "heap", "hotjar", "excel", "microsoft excel", "google sheets",
+      "pivot tables", "vlookup", "data visualization", "data analysis",
+      "data modeling", "etl", "data pipeline", "data warehouse",
+      "data lake", "business intelligence"
+    ],
+    "Microsoft & Business Productivity": [
+      "microsoft office", "microsoft 365", "word", "powerpoint", "outlook",
+      "sharepoint", "onenote", "microsoft teams", "teams", "access",
+      "visio", "google workspace", "google docs", "google slides"
+    ],
+    "Project Management & Methodology": [
+      "jira", "confluence", "trello", "asana", "monday.com", "basecamp",
+      "notion", "wrike", "smartsheet", "linear", "clickup", "miro",
+      "agile", "scrum", "kanban", "waterfall", "lean", "six sigma",
+      "kaizen", "pmp", "prince2", "safe", "tdd", "bdd", "unit testing",
+      "open source", "product roadmap", "sprint planning", "retrospective"
+    ],
+    "CRM, Sales & Business Tools": [
+      "salesforce", "hubspot", "marketo", "pardot", "zendesk", "freshdesk",
+      "intercom", "drift", "outreach", "salesloft", "apollo", "zoominfo",
+      "servicenow", "workday", "sap", "netsuite", "dynamics 365",
+      "quickbooks", "xero", "sage"
+    ],
+    "Marketing Tools": [
+      "google ads", "facebook ads", "meta ads", "linkedin ads",
+      "tiktok ads", "seo", "sem", "ppc", "pay-per-click",
+      "google tag manager", "adobe analytics", "mailchimp", "klaviyo",
+      "constant contact", "hootsuite", "buffer", "semrush", "ahrefs",
+      "moz", "screaming frog", "wordpress", "content marketing",
+      "email marketing", "affiliate marketing", "brand management",
+      "social media marketing", "influencer marketing",
+      "conversion rate optimization", "cro", "demand generation"
+    ],
+    "Design & Creative": [
+      "figma", "sketch", "adobe xd", "invision", "zeplin", "storybook",
+      "photoshop", "illustrator", "indesign", "after effects",
+      "premiere pro", "lightroom", "canva", "blender", "ux design",
+      "ui design", "user research", "wireframing", "prototyping",
+      "usability testing", "design systems", "accessibility", "wcag"
+    ],
+    "Mobile Development": [
+      "ios", "android", "react native", "flutter", "swiftui",
+      "kotlin multiplatform", "xamarin", "cordova", "ionic"
+    ],
+    "Security & Compliance": [
+      "penetration testing", "ethical hacking", "vulnerability assessment",
+      "cissp", "ceh", "oscp", "comptia", "siem", "soc", "iso 27001",
+      "gdpr", "hipaa", "sox", "ccpa", "nist", "pci dss", "firewall",
+      "vpn", "zero trust", "identity management", "iam",
+      "privileged access"
+    ],
+    "Finance & Accounting": [
+      "financial modeling", "financial analysis", "financial reporting",
+      "budgeting", "forecasting", "gaap", "ifrs", "accounts payable",
+      "accounts receivable", "tax", "audit", "valuation", "dcf", "cpa",
+      "cfa", "cma", "acca", "bloomberg terminal", "equity research",
+      "investment banking", "private equity", "venture capital",
+      "portfolio management", "risk management", "derivatives", "options"
+    ],
+    "Healthcare & Life Sciences": [
+      "ehr", "emr", "epic", "cerner", "icd-10", "cpt coding",
+      "clinical documentation", "fda", "gmp", "clinical trials",
+      "medical device", "biostatistics", "sas"
+    ],
+    "Supply Chain & Operations": [
+      "erp", "supply chain management", "logistics", "procurement",
+      "inventory management", "vendor management", "lean manufacturing",
+      "warehouse management", "demand planning", "s&op"
+    ],
+    "Certifications & Credentials": [
+      "aws certified", "google cloud certified", "microsoft certified",
+      "cisco ccna", "cisco ccnp", "scrum master", "csm", "itil",
+      "lean six sigma", "black belt", "google analytics certified",
+      "hubspot certified", "salesforce certified", "tableau certified"
+    ]
+  },
+  "soft_skills": [
+    "communication", "leadership", "teamwork", "collaboration",
+    "problem-solving", "attention to detail", "critical thinking",
+    "time management", "adaptability", "creativity", "mentoring",
+    "analytical", "self-motivated", "proactive", "organized",
+    "presentation", "negotiation", "stakeholder management",
+    "cross-functional", "strategic thinking", "detail-oriented",
+    "results-driven", "customer-focused", "data-driven", "multitasking",
+    "prioritization", "conflict resolution", "active listening",
+    "coaching", "facilitation", "risk management", "continuous improvement",
+    "innovation", "initiative", "accountability", "verbal communication",
+    "written communication", "interpersonal skills", "decision making",
+    "emotional intelligence", "empathy", "resilience", "growth mindset",
+    "fast-paced", "deadline-driven", "self-starter",
+    "relationship building", "customer service", "client management",
+    "account management"
+  ],
+  "synonyms": {
+    "python": ["python3", "python 3"],
+    "javascript": ["js", "ecmascript", "es6"],
+    "typescript": ["ts"],
+    "c++": ["cpp", "cplusplus"],
+    "c#": ["csharp", "c sharp"],
+    "go": ["golang"],
+    "r": ["r language", "r programming", "r statistical"],
+    "html": ["html5"],
+    "css": ["css3"],
+    "sass": ["scss"],
+    "objective-c": ["objc", "obj-c"],
+    "vba": ["visual basic"],
+    "powershell": ["pwsh"],
+
+    "react": ["reactjs", "react.js"],
+    "vue": ["vuejs", "vue.js"],
+    "next.js": ["nextjs"],
+    "nuxt": ["nuxtjs", "nuxt.js"],
+    "tailwind": ["tailwindcss", "tailwind css"],
+    "fastapi": ["fast api"],
+    "node.js": ["nodejs", "node"],
+    "express": ["expressjs", "express.js"],
+    "spring boot": ["springboot"],
+    "rails": ["ruby on rails"],
+    ".net": ["dotnet"],
+    "asp.net": ["aspnet"],
+    "rest": ["restful"],
+    "rest api": ["restful api", "restful apis", "rest apis"],
+    "websocket": ["websockets", "web socket"],
+    "oauth": ["oauth2", "oauth 2.0"],
+    "jwt": ["json web token", "json web tokens"],
+
+    "postgresql": ["postgres", "psql"],
+    "sqlite": ["sqlite3"],
+    "mongodb": ["mongo"],
+    "dynamodb": ["amazon dynamodb"],
+    "elasticsearch": ["elastic search"],
+    "sql server": ["mssql", "microsoft sql server"],
+    "bigquery": ["big query", "google bigquery"],
+    "redshift": ["amazon redshift"],
+
+    "aws": ["amazon web services"],
+    "gcp": ["google cloud", "google cloud platform"],
+    "kubernetes": ["k8s", "kube"],
+    "ci/cd": ["cicd", "continuous integration", "continuous deployment", "continuous delivery"],
+    "cloudformation": ["aws cloudformation"],
+    "microservices": ["micro services", "micro-services"],
+    "lambda": ["aws lambda"],
+    "s3": ["aws s3", "amazon s3"],
+    "ec2": ["aws ec2", "amazon ec2"],
+
+    "scikit-learn": ["sklearn", "scikit learn"],
+    "nlp": ["natural language processing"],
+    "machine learning": ["ml"],
+    "deep learning": ["dl"],
+    "huggingface": ["hugging face"],
+    "llm": ["large language model", "large language models"],
+    "generative ai": ["gen ai", "genai"],
+    "opencv": ["open cv"],
+    "kafka": ["apache kafka"],
+    "airflow": ["apache airflow"],
+    "a/b testing": ["ab testing", "split testing"],
+
+    "power bi": ["powerbi"],
+    "ga4": ["google analytics 4"],
+    "etl": ["extract transform load"],
+
+    "react native": ["react-native"],
+    "swiftui": ["swift ui"],
+    "kotlin multiplatform": ["kmp"],
+
+    "penetration testing": ["pen testing", "pentest"],
+    "tdd": ["test-driven development", "test driven development"],
+    "bdd": ["behavior-driven development", "behavior driven development"],
+    "unit testing": ["unit test", "unit tests"],
+    "scrum master": ["scrummaster"],
+
+    "communication": ["communicator", "communicating"],
+    "leadership": ["leader"],
+    "teamwork": ["team player", "team work"],
+    "collaboration": ["collaborate", "collaborative", "collaborating"],
+    "problem-solving": ["problem solving", "problem solver"],
+    "adaptability": ["adaptable"],
+    "creativity": ["creative"],
+    "mentoring": ["mentor", "mentored"],
+    "organized": ["organization", "organizational"],
+    "negotiation": ["negotiate", "negotiator"],
+    "accountability": ["accountable"],
+    "resilience": ["resilient"],
+    "strategic thinking": ["strategic thinker"],
+    "detail-oriented": ["detail oriented"],
+    "self-motivated": ["self motivated"],
+    "cross-functional": ["cross functional"],
+    "results-driven": ["results driven"],
+    "customer-focused": ["customer focused"],
+    "data-driven": ["data driven"],
+    "fast-paced": ["fast paced"],
+    "deadline-driven": ["deadline driven"],
+    "self-starter": ["self starter"]
+  }
+}

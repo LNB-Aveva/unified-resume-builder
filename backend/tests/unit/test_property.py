@@ -33,13 +33,13 @@ class TestScoreProperties:
     def test_grade_monotonic(self, score):
         grade_order = {"A": 4, "B": 3, "C": 2, "D": 1, "F": 0}
         grade, _ = _compute_grade(score)
-        if score >= 90:
+        if score >= 85:
             assert grade_order[grade] == 4
-        elif score >= 80:
+        elif score >= 65:
             assert grade_order[grade] == 3
-        elif score >= 70:
+        elif score >= 50:
             assert grade_order[grade] == 2
-        elif score >= 60:
+        elif score >= 30:
             assert grade_order[grade] == 1
         else:
             assert grade_order[grade] == 0

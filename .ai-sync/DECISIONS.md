@@ -20,6 +20,22 @@
 
 ## Decisions
 
+### DEC-011: Grade Boundaries — A≥85, B≥65, C≥50, D≥30, F<30
+- **Date:** 2026-07-29
+- **Agent:** claude
+- **Context:** Old boundaries (A≥90, B≥80, C≥70, D≥60) made A nearly unreachable with keyword matching. A resume matching 73% of keywords got "C" which felt wrong.
+- **Decision:** Lowered all thresholds. Calibrated against 25 labeled resume/JD pairs. Exit gate: 100% within-one-grade.
+- **Alternatives Considered:** Keeping old boundaries — rejected; users would lose trust when a strong match shows C/D.
+- **Files Affected:** `backend/app/services/scoring/ats_scorer.py`, frontend threshold colors, `backend/tests/`
+
+### DEC-010: Skills Taxonomy as JSON + Synonym Map
+- **Date:** 2026-07-29
+- **Agent:** claude
+- **Context:** Hardcoded skill sets (230+ entries) couldn't grow without code changes. No synonym matching meant "ReactJS" ≠ "React" and "K8s" ≠ "Kubernetes".
+- **Decision:** Externalized all skills to `skills_taxonomy.json` with categories and a synonym map. taxonomy.py loads and provides lookup functions. Both extractor and scorer check synonyms.
+- **Alternatives Considered:** nltk/spaCy for NLP matching — rejected; adds 100MB+ dependency. Simple synonym map covers the common cases.
+- **Files Affected:** `backend/app/services/nlp/skills_taxonomy.json`, `taxonomy.py`, `keyword_extractor.py`, `ats_scorer.py`
+
 ### DEC-007: Cookie Consent — localStorage + Dynamic GA4 Loading
 - **Date:** 2026-07-29
 - **Agent:** claude

@@ -5,12 +5,13 @@ import re
 from app.schemas.job import JobAnalysis
 from app.schemas.resume import ResumeData
 from app.schemas.score import ATSScore
+from app.services.nlp import taxonomy
 
 _GRADE_MAP = [
-    (90, "A", "Excellent match"),
-    (80, "B", "Strong match"),
-    (70, "C", "Good match"),
-    (60, "D", "Needs improvement"),
+    (85, "A", "Excellent match"),
+    (65, "B", "Strong match"),
+    (50, "C", "Good match"),
+    (30, "D", "Needs improvement"),
     (0,  "F", "Poor match -- likely filtered by ATS"),
 ]
 
@@ -33,8 +34,13 @@ def _build_resume_text(resume: ResumeData) -> str:
 
 
 def _skill_present(skill: str, resume_text_lower: str) -> bool:
-    pattern = r"(?<![a-zA-Z0-9])" + re.escape(skill) + r"(?![a-zA-Z0-9])"
-    return bool(re.search(pattern, resume_text_lower, re.IGNORECASE))
+    synonym_map = taxonomy.get_synonym_map()
+    terms = [skill] + list(synonym_map.get(skill, ()))
+    for term in terms:
+        pattern = r"(?<![a-zA-Z0-9])" + re.escape(term) + r"(?![a-zA-Z0-9])"
+        if re.search(pattern, resume_text_lower, re.IGNORECASE):
+            return True
+    return False
 
 
 def _compute_grade(score: float) -> tuple[str, str]:

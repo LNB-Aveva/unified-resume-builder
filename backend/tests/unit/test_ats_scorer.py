@@ -45,7 +45,14 @@ class TestSkillPresent:
         assert not _skill_present("sql", "uses nosql databases")
 
     def test_word_boundary_suffix(self):
-        assert not _skill_present("go", "uses golang for services")
+        assert not _skill_present("go", "uses gopher for services")
+
+    def test_synonym_match(self):
+        assert _skill_present("go", "uses golang for services")
+        assert _skill_present("javascript", "proficient in js and css")
+        assert _skill_present("react", "built apps with reactjs")
+        assert _skill_present("kubernetes", "deployed on k8s clusters")
+        assert _skill_present("postgresql", "experience with postgres databases")
 
     def test_case_insensitive_text(self):
         assert _skill_present("python", "built with python and docker")
@@ -61,9 +68,9 @@ class TestSkillPresent:
 
 class TestComputeGrade:
     @pytest.mark.parametrize("score,letter", [
-        (100, "A"), (90, "A"), (89.9, "B"), (80, "B"),
-        (79, "C"), (70, "C"), (69, "D"), (60, "D"),
-        (59, "F"), (0, "F"),
+        (100, "A"), (85, "A"), (84.9, "B"), (65, "B"),
+        (64, "C"), (50, "C"), (49, "D"), (30, "D"),
+        (29, "F"), (0, "F"),
     ])
     def test_grade_thresholds(self, score, letter):
         grade, _ = _compute_grade(score)

@@ -147,9 +147,9 @@ export default function GapAnalysis() {
                   style={{
                     width: barWidth,
                     background:
-                      result.overall_score >= 80
+                      result.overall_score >= 65
                         ? "#10b981"
-                        : result.overall_score >= 60
+                        : result.overall_score >= 50
                         ? "#f59e0b"
                         : "#ef4444",
                   }}
@@ -167,80 +167,105 @@ export default function GapAnalysis() {
           </div>
 
           {/* ATS context message */}
-          {result.overall_score < 60 && (
+          {result.overall_score < 50 && (
             <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-700">
-              <strong>ATS Risk:</strong> Scores below 60% are typically auto-rejected before
+              <strong>ATS Risk:</strong> Scores below 50% are typically auto-rejected before
               a human reads the resume. Adding {result.total_missing} missing keywords
-              could push this above 70%.
+              could push this above 65%.
             </div>
           )}
-          {result.overall_score >= 60 && result.overall_score < 80 && (
+          {result.overall_score >= 50 && result.overall_score < 65 && (
             <div className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3 text-sm text-amber-700">
               <strong>Getting closer:</strong> Add{" "}
               {Math.ceil(result.total_missing * 0.5)} more missing keywords to reach
-              a strong match (80%+).
+              a strong match (65%+).
             </div>
           )}
-          {result.overall_score >= 80 && (
+          {result.overall_score >= 65 && (
             <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-sm text-emerald-700">
               <strong>Strong match!</strong> Your resume is well-aligned with this role.
               Focus on tailoring your bullet points to naturally include any remaining keywords.
             </div>
           )}
 
-          {/* Side-by-side skill columns */}
-          <div className="grid sm:grid-cols-2 gap-4">
-            {/* Matched — green */}
-            <div className="rounded-xl bg-white dark:bg-gray-800 border border-emerald-100 dark:border-emerald-800 p-4 space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white text-xs font-bold">
-                  ✓
-                </span>
-                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">
-                  Skills You Have ({result.total_matched})
-                </h4>
+          {/* Hard Skills breakdown */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+              Hard Skills ({result.matched_hard_skills.length}/{result.matched_hard_skills.length + result.missing_hard_skills.length})
+            </h4>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="rounded-xl bg-white dark:bg-gray-800 border border-emerald-100 dark:border-emerald-800 p-3 space-y-2">
+                <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                  Found in your resume
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {result.matched_hard_skills.length > 0 ? (
+                    result.matched_hard_skills.map((skill) => (
+                      <span key={skill} className="rounded-full border border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300 capitalize">
+                        {skill}
+                      </span>
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-400 italic">None matched</p>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {result.matched_keywords.length > 0 ? (
-                  result.matched_keywords.map((skill) => (
-                    <span
-                      key={skill}
-                      className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 capitalize"
-                    >
-                      {skill}
-                    </span>
-                  ))
-                ) : (
-                  <p className="text-xs text-gray-400 dark:text-gray-500 italic">None matched yet</p>
-                )}
+              <div className="rounded-xl bg-white dark:bg-gray-800 border border-red-100 dark:border-red-800 p-3 space-y-2">
+                <p className="text-xs font-medium text-red-600 dark:text-red-400">
+                  Add to your resume
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {result.missing_hard_skills.length > 0 ? (
+                    result.missing_hard_skills.map((skill) => (
+                      <span key={skill} className="rounded-full border border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950 px-2.5 py-0.5 text-xs font-medium text-red-600 dark:text-red-300 capitalize">
+                        {skill}
+                      </span>
+                    ))
+                  ) : (
+                    <p className="text-xs text-emerald-600 italic font-medium">All hard skills matched!</p>
+                  )}
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* Missing — red */}
-            <div className="rounded-xl bg-white dark:bg-gray-800 border border-red-100 dark:border-red-800 p-4 space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold">
-                  ✗
-                </span>
-                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">
-                  Missing Keywords ({result.total_missing})
-                </h4>
+          {/* Soft Skills breakdown */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+              Soft Skills ({result.matched_soft_skills.length}/{result.matched_soft_skills.length + result.missing_soft_skills.length})
+            </h4>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="rounded-xl bg-white dark:bg-gray-800 border border-emerald-100 dark:border-emerald-800 p-3 space-y-2">
+                <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                  Found in your resume
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {result.matched_soft_skills.length > 0 ? (
+                    result.matched_soft_skills.map((skill) => (
+                      <span key={skill} className="rounded-full border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300 capitalize">
+                        {skill}
+                      </span>
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-400 italic">None matched</p>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {result.missing_keywords.length > 0 ? (
-                  result.missing_keywords.map((skill) => (
-                    <span
-                      key={skill}
-                      className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-600 capitalize"
-                    >
-                      {skill}
-                    </span>
-                  ))
-                ) : (
-                  <p className="text-xs text-emerald-600 italic font-medium">
-                    All keywords matched!
-                  </p>
-                )}
+              <div className="rounded-xl bg-white dark:bg-gray-800 border border-red-100 dark:border-red-800 p-3 space-y-2">
+                <p className="text-xs font-medium text-red-600 dark:text-red-400">
+                  Add to your resume
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {result.missing_soft_skills.length > 0 ? (
+                    result.missing_soft_skills.map((skill) => (
+                      <span key={skill} className="rounded-full border border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950 px-2.5 py-0.5 text-xs font-medium text-red-600 dark:text-red-300 capitalize">
+                        {skill}
+                      </span>
+                    ))
+                  ) : (
+                    <p className="text-xs text-emerald-600 italic font-medium">All soft skills matched!</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
