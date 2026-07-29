@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 1 complete. Phase 2 next.
+- **Status:** Phase 2 partially complete; dashboard verification and tasks 2.9–2.14 remain.
 
 ---
 
@@ -17,15 +17,35 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
-| Started    | 2026-07-28                 |
-| Working On | Phase 1: Fill Foundation Gaps (COMPLETE) |
+| Agent      | —                          |
+| Started    | —                          |
+| Working On | —                          |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 66 — 2026-07-29
+- **Agent:** claude / codex
+- **Did:**
+  - Added account deletion UI, server action, and self-deletion SQL function
+  - Added consent-gated analytics, cookie settings, and privacy/terms updates
+  - Fixed new and touched-file Next.js lint violations
+  - Verified the production build and all 245 backend tests
+- **Files Changed:**
+  - `frontend/src/app/(protected)/account/`
+  - `frontend/src/app/actions/auth.ts`
+  - `frontend/src/app/components/CookieConsent.tsx`
+  - `frontend/src/app/layout.tsx`, `page.tsx`, `privacy/page.tsx`, `terms/page.tsx`
+  - `supabase-schema.sql`
+  - `docs/LAUNCH_PROGRAM.md`
+- **Next Steps:**
+  - Apply and verify the updated RLS/function schema in Supabase
+  - Continue Phase 2 tasks 2.9–2.14
+- **Blockers:**
+  - Production Supabase dashboard verification requires manual access
 
 ### Session 65 — 2026-07-28
 - **Agent:** claude
@@ -111,8 +131,7 @@
 - **Stack:** Next.js 16 (frontend/) + FastAPI (backend/) + Supabase auth/db
 - **Domain:** resumeai.cv (Vercel deploy)
 - **Backend deploy:** Render (render.yaml)
-- **Repo tip:** bab69c8 (as of Session 62)
-- **Tests:** 201 passing (backend pytest), frontend builds clean
+- **Tests:** 245 passing (backend pytest), frontend production build clean
 - **proxy.ts IS the Next.js middleware** — never recreate middleware.ts
 - **Commit rule:** no Co-Authored-By, no AI attribution, ever
 - **Localhost rule:** make changes → localhost:3000 → user approves → then commit

@@ -108,3 +108,18 @@ create policy "Anyone can insert shared scores"
 -- Index so the expiry filter is fast
 create index if not exists idx_shared_scores_expires_at
   on public.shared_scores(expires_at);
+
+-- -----------------------------------------------------------------------
+-- delete_own_user: allows an authenticated user to delete their own
+-- auth.users row. Runs as SECURITY DEFINER so it has the privileges
+-- to touch auth.users. The WHERE clause ensures a user can only
+-- delete themselves.
+-- -----------------------------------------------------------------------
+create or replace function public.delete_own_user()
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  delete from auth.users where id = auth.uid();
+$$;

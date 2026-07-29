@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
+import CookieConsent from "@/app/components/CookieConsent";
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -138,17 +138,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}` }} />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
-      {gaId && (
-        <>
-          <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-            strategy="afterInteractive"
-          />
-          <Script id="ga4-init" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`}
-          </Script>
-        </>
-      )}
+      <CookieConsent gaId={gaId} />
     </html>
   );
 }

@@ -83,6 +83,29 @@ export async function signOut() {
   redirect("/");
 }
 
+export async function deleteAccount(): Promise<FormState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { message: "Not authenticated." };
+  }
+
+  await supabase.from("jobs").delete().eq("user_id", user.id);
+  await supabase.from("profiles").delete().eq("id", user.id);
+
+  const { error } = await supabase.rpc("delete_own_user");
+
+  if (error) {
+    return { message: "Failed to delete account. Please contact support." };
+  }
+
+  await supabase.auth.signOut();
+  redirect("/");
+}
+
 export async function forgotPassword(
   _state: FormState,
   formData: FormData

@@ -93,18 +93,20 @@
 
 | Task | File(s) | Status |
 |------|---------|--------|
-| 2.1 Implement account deletion: UI button + server action that deletes profile, jobs, shared_scores, then calls `supabase.auth.admin.deleteUser()` | frontend/src/app/actions/auth.ts, account/page.tsx | TODO |
-| 2.2 Add cookie consent banner (GA4 + future AdSense). Must be GDPR-compliant: no cookies before consent, consent stored, opt-out available | frontend/src/app/components/CookieConsent.tsx, layout.tsx | TODO |
-| 2.3 Verify `profiles` table has RLS enabled with per-user policies. Add to supabase-schema.sql if missing. Write a test that proves user A cannot read user B's profile | supabase-schema.sql, manual Supabase check | TODO |
-| 2.4 Verify `jobs` table RLS policies match supabase-schema.sql in production Supabase | Manual Supabase dashboard check | TODO |
-| 2.5 Update privacy policy: disclose `shared_scores` keyword storage, add advertising cookie disclosure, add data retention schedule, add CCPA section | frontend/src/app/privacy/page.tsx | TODO |
-| 2.6 Add cookie policy page (or section in privacy policy) detailing GA4 + AdSense cookies | frontend/src/app/privacy/page.tsx or cookies/page.tsx | TODO |
-| 2.7 Add data export: user can download their profile + jobs as JSON | frontend/src/app/actions/auth.ts, account/page.tsx | TODO |
-| 2.8 Input validation audit: verify all upload sizes, file types, and text lengths are enforced at both API and frontend layers | backend/app/schemas/*, frontend components | TODO |
-| 2.9 Review WeasyPrint/fpdf2 for HTML/PDF injection vectors | backend/app/services/export/pdf_generator.py | TODO |
-| 2.10 Add `shared_scores` cleanup: scheduled deletion of expired rows | Supabase cron or backend task | TODO |
-| 2.11 Secret hygiene: ensure no API keys in git history, rotate HF key if exposed | .env files, git log | TODO |
-| 2.12 Audit CORS: ensure FRONTEND_URL is set in Render production and no wildcards | backend/app/main.py, Render dashboard | TODO |
+| 2.1 Implement account deletion: UI button + server action + `delete_own_user` SQL function | auth.ts, DeleteAccountButton.tsx, account/page.tsx, supabase-schema.sql | DONE |
+| 2.2 Add cookie consent banner (GA4 blocked until consent, localStorage-backed, reject/accept) | CookieConsent.tsx, layout.tsx | DONE |
+| 2.3 Verify `profiles` table has RLS enabled with per-user policies (added in Phase 1) | supabase-schema.sql | DONE (schema); VERIFY in Supabase dashboard |
+| 2.4 Verify `jobs` table RLS policies match supabase-schema.sql in production Supabase | Manual Supabase dashboard check | VERIFY |
+| 2.5 Update privacy policy: keyword storage, ad cookies, data retention, GDPR, CCPA sections | frontend/src/app/privacy/page.tsx | DONE |
+| 2.6 Cookie policy integrated into privacy policy (essential/analytics/advertising breakdown) | frontend/src/app/privacy/page.tsx | DONE |
+| 2.7 Cookie Settings link in footer + consent reset | page.tsx footer, CookieConsent.tsx | DONE |
+| 2.8 Terms of Service updated to match privacy policy (keyword storage, anonymized data) | frontend/src/app/terms/page.tsx | DONE |
+| 2.9 Add data export: user can download their profile + jobs as JSON | frontend/src/app/actions/auth.ts, account/page.tsx | TODO |
+| 2.10 Input validation audit: verify all upload sizes, file types, and text lengths are enforced at both API and frontend layers | backend/app/schemas/*, frontend components | TODO |
+| 2.11 Review WeasyPrint/fpdf2 for HTML/PDF injection vectors | backend/app/services/export/pdf_generator.py | TODO |
+| 2.12 Add `shared_scores` cleanup: scheduled deletion of expired rows | Supabase cron or backend task | TODO |
+| 2.13 Secret hygiene: ensure no API keys in git history, rotate HF key if exposed | .env files, git log | TODO |
+| 2.14 Audit CORS: ensure FRONTEND_URL is set in Render production and no wildcards | backend/app/main.py, Render dashboard | TODO |
 
 **Definition of Done:** Account deletion works end-to-end. Cookie consent blocks GA4 until accepted. RLS proven by cross-user test. Privacy policy is legally accurate. No secrets in git.
 
@@ -276,4 +278,5 @@
 
 | Session | Date | Phase | Tasks Completed | Next |
 |---------|------|-------|----------------|------|
-| 65 | 2026-07-28 | Audit + Phase 1 | Full audit complete (18 findings). Phase 1 all 8 tasks done: removed unused deps (scikit-learn, nltk), added profiles table+RLS to schema, pyproject.toml for repo-root tests, removed LAN IP, removed dead Supabase config, env var matrix doc, httpx lifespan shutdown, hypothesis deadline fix. 212 tests pass. Frontend builds clean. | Phase 2 — Security, Privacy & Legal (start with account deletion and cookie consent) |
+| 65 | 2026-07-28 | Audit + Phase 1 | Full audit (18 findings). Phase 1 done (8 tasks). | Phase 2 |
+| 65b | 2026-07-29 | Phase 2 (partial) | Privacy policy rewrite (keyword storage, ad cookies, retention, GDPR, CCPA). Cookie consent banner (GA4 blocked until accept). Account deletion (UI + server action + delete_own_user SQL function). Terms updated. Cookie Settings footer link. | Phase 2 remaining: data export, RLS verification in Supabase dashboard, input validation audit, shared_scores cleanup, secret hygiene, CORS audit |

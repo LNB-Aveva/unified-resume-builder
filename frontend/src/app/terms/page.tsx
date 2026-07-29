@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
@@ -9,11 +10,11 @@ export default function TermsOfService() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-16">
       <div className="mb-12">
-        <a href="/" className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition mb-6 inline-block">&larr; Back to home</a>
+        <Link href="/" className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition mb-6 inline-block">&larr; Back to home</Link>
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">
           Terms of Service
         </h1>
-        <p className="text-sm text-gray-400 dark:text-gray-500">Last updated: July 22, 2026</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">Last updated: July 29, 2026</p>
       </div>
 
       <div className="prose prose-gray dark:prose-invert prose-sm max-w-none space-y-8">
@@ -60,8 +61,9 @@ export default function TermsOfService() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">5. Your Content</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
             You retain ownership of all content you submit to the Service (resume text, job descriptions, bullet points).
-            We do not claim any rights to your content. As described in our Privacy Policy, your content is not stored
-            on our servers beyond the duration needed to process your request.
+            We do not claim any rights to your content. As described in our Privacy Policy, your full resume text is not stored
+            on our servers. When you create a shareable ATS score link, the matched and missing keyword lists are stored for
+            up to 30 days. We may use anonymized, aggregated keyword data to improve our matching algorithms.
           </p>
         </section>
 

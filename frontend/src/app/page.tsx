@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ThemeToggle from "./components/ThemeToggle";
 import MobileNav from "./components/MobileNav";
 import ScrollReveal from "./components/ScrollReveal";
@@ -8,6 +9,7 @@ import ShareableScoreWidget from "./components/ShareableScoreWidget";
 import TypewriterHeadline from "./components/TypewriterHeadline";
 import AnimatedCounter from "./components/AnimatedCounter";
 import HeroScoreCard from "./components/HeroScoreCard";
+import { CookieSettingsButton } from "./components/CookieConsent";
 
 const PREVIEW_SKILLS = ["Python", "React", "AWS", "Docker"];
 
@@ -267,17 +269,17 @@ export default function Home() {
       {/* ── Navigation ── */}
       <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-lg sticky top-0 z-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2.5 group">
+          <Link href="/" className="flex items-center gap-2.5 group">
             <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
               <span className="text-white text-sm font-bold tracking-tight">R</span>
             </div>
             <span className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white tracking-tight">ResumeAI</span>
-          </a>
+          </Link>
 
           <div className="hidden md:flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
             <a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">How it works</a>
             <a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">Tools</a>
-            <a href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">Blog</a>
+            <Link href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">Blog</Link>
             <a href="#compare" className="hover:text-gray-900 dark:hover:text-white transition">Compare</a>
             <a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition">FAQ</a>
           </div>
@@ -1408,12 +1410,12 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
             <div className="sm:col-span-2 lg:col-span-2">
-              <a href="/" className="flex items-center gap-2 mb-4 group">
+              <Link href="/" className="flex items-center gap-2 mb-4 group">
                 <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200">
                   <span className="text-white text-xs font-bold">R</span>
                 </div>
                 <span className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white">ResumeAI</span>
-              </a>
+              </Link>
               <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mb-3">
                 Free ATS resume checker with 9 AI tools. Beat the filters, match keywords, and land more interviews.
               </p>
@@ -1448,7 +1450,7 @@ export default function Home() {
             <div>
               <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Resources</h4>
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
-                <li><a href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">Blog</a></li>
+                <li><Link href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">Blog</Link></li>
                 <li><a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition">FAQ</a></li>
                 <li><a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">ATS Resume Guide</a></li>
                 <li><a href="/keyword-analyzer" className="hover:text-gray-900 dark:hover:text-white transition">Keyword Tips</a></li>
@@ -1481,6 +1483,8 @@ export default function Home() {
               <a href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Privacy</a>
               <span>&middot;</span>
               <a href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Terms</a>
+              <span>&middot;</span>
+              <CookieSettingsButton />
               <span>&middot;</span>
               <span>Built with open-source AI</span>
             </div>
