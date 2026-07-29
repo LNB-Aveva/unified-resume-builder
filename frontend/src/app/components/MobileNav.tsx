@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const links = [
   { href: "#how-it-works", label: "How it works" },
@@ -46,20 +47,20 @@ export default function MobileNav() {
               </a>
             ))}
             <div className="border-t border-gray-100 dark:border-gray-800 pt-2 mt-2 flex flex-col gap-2">
-              <a
+              <Link
                 href="/sign-in"
                 onClick={() => setOpen(false)}
                 className="px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 Sign In
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/sign-up"
                 onClick={() => setOpen(false)}
                 className="mx-3 mb-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3 text-sm font-semibold text-white text-center shadow-md"
               >
                 Get Started Free
-              </a>
+              </Link>
             </div>
           </div>
         </div>
