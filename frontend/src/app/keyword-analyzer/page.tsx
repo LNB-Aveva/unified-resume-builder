@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import AnalyzerDemo from "../components/AnalyzerDemo";
 
 export const metadata: Metadata = {
@@ -90,22 +91,22 @@ export default function KeywordAnalyzerPage() {
       {/* Nav */}
       <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto max-w-3xl px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center">
               <span className="text-white text-xs font-bold">R</span>
             </div>
             <span className="font-semibold text-gray-900 dark:text-white">ResumeAI</span>
-          </a>
+          </Link>
           <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-            <a href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">
+            <Link href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">
               Blog
-            </a>
-            <a
+            </Link>
+            <Link
               href="/sign-up"
               className="rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-1.5 text-white font-medium hover:opacity-90 transition"
             >
               Sign Up Free
-            </a>
+            </Link>
           </div>
         </div>
       </nav>
@@ -291,7 +292,7 @@ export default function KeywordAnalyzerPage() {
               Sign up free to run Gap Analysis, check ATS compliance, rewrite bullets,
               and export an ATS-safe PDF &mdash; all 9 tools, no credit card.
             </p>
-            <a
+            <Link
               href="/sign-up"
               className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.97] transition-all duration-200"
             >
@@ -299,7 +300,7 @@ export default function KeywordAnalyzerPage() {
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
               </svg>
-            </a>
+            </Link>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">No credit card &middot; 10 seconds to sign up</p>
           </div>
         </div>
@@ -308,25 +309,25 @@ export default function KeywordAnalyzerPage() {
       {/* Footer */}
       <footer className="border-t border-gray-100 dark:border-gray-800 py-10">
         <div className="mx-auto max-w-3xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-md bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center">
               <span className="text-white text-[10px] font-bold">R</span>
             </div>
             <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
               ResumeAI
             </span>
-          </a>
+          </Link>
           <p className="text-xs text-gray-400 text-center">
             Free ATS resume checker &mdash; 9 AI tools, no sign-up required.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-400">
-            <a href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
+            <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
               Home
-            </a>
+            </Link>
             <span aria-hidden>&middot;</span>
-            <a href="/blog" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
+            <Link href="/blog" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
               Blog
-            </a>
+            </Link>
           </div>
         </div>
       </footer>

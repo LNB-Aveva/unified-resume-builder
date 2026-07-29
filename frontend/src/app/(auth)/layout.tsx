@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/server";
 import ThemeToggle from "@/app/components/ThemeToggle";
@@ -24,14 +25,14 @@ export default async function AuthLayout({
 
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
-          <a href="/" className="flex items-center gap-2.5 group">
+          <Link href="/" className="flex items-center gap-2.5 group">
             <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
               <span className="text-white text-lg font-bold tracking-tight">R</span>
             </div>
             <span className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white tracking-tight">
               ResumeAI
             </span>
-          </a>
+          </Link>
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-8">
@@ -39,9 +40,9 @@ export default async function AuthLayout({
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          <a href="/" className="hover:text-gray-900 dark:hover:text-white transition">
+          <Link href="/" className="hover:text-gray-900 dark:hover:text-white transition">
             &larr; Back to home
-          </a>
+          </Link>
         </p>
       </div>
     </div>

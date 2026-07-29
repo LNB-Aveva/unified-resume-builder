@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { RewrittenBullet, RewriteResponse, API_URL, connectionError } from "../types";
+import { RewriteResponse, API_URL, connectionError } from "../types";
 import { useLoadingMessages } from "../hooks/useLoadingMessages";
 import { fetchWithRetry } from "../lib/fetchWithRetry";
 import Spinner from "./Spinner";

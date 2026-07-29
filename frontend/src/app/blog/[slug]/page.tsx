@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { blogPosts, getPostBySlug, getAllSlugs } from "../../lib/blog-posts";
 
@@ -81,13 +82,13 @@ export default async function BlogArticle({ params }: Props) {
       <main className="mx-auto max-w-3xl px-4 py-12">
         {/* Breadcrumb */}
         <nav className="text-xs text-gray-400 mb-8">
-          <a href="/" className="hover:text-gray-600 transition">
+          <Link href="/" className="hover:text-gray-600 transition">
             Home
-          </a>
+          </Link>
           <span className="mx-2">/</span>
-          <a href="/blog" className="hover:text-gray-600 transition">
+          <Link href="/blog" className="hover:text-gray-600 transition">
             Blog
-          </a>
+          </Link>
           <span className="mx-2">/</span>
           <span className="text-gray-600">{post.title}</span>
         </nav>
@@ -160,12 +161,12 @@ export default async function BlogArticle({ params }: Props) {
             Use our free ATS keyword extractor, gap analysis, and 15-rule
             compliance checker. No sign-up required.
           </p>
-          <a
+          <Link
             href="/#demo"
             className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-indigo-700 transition"
           >
             Try ResumeAI Free
-          </a>
+          </Link>
         </div>
 
         {/* Related articles */}
@@ -176,7 +177,7 @@ export default async function BlogArticle({ params }: Props) {
             </h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {otherPosts.map((related) => (
-                <a
+                <Link
                   key={related.slug}
                   href={`/blog/${related.slug}`}
                   className="block group"
@@ -189,7 +190,7 @@ export default async function BlogArticle({ params }: Props) {
                       {related.description}
                     </p>
                   </article>
-                </a>
+                </Link>
               ))}
             </div>
           </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Free ATS Score Checker — Check Your Resume Score Instantly",
@@ -76,7 +77,7 @@ const faqJsonLd = {
 
 export default function ATSCheckerPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -91,24 +92,24 @@ export default function ATSCheckerPage() {
       />
 
       {/* Nav */}
-      <nav className="border-b border-gray-100 bg-white/80 backdrop-blur sticky top-0 z-10">
+      <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto max-w-3xl px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-lg bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-xs font-bold">R</span>
             </div>
-            <span className="font-semibold text-gray-900">ResumeAI</span>
-          </a>
-          <div className="flex items-center gap-4 text-sm text-gray-500">
-            <a href="/blog" className="hover:text-gray-900 transition">
+            <span className="font-semibold text-gray-900 dark:text-white">ResumeAI</span>
+          </Link>
+          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+            <Link href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">
               Blog
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#demo"
               className="rounded-lg bg-indigo-600 px-4 py-1.5 text-white font-medium hover:bg-indigo-700 transition"
             >
               Try Free
-            </a>
+            </Link>
           </div>
         </div>
       </nav>
@@ -130,7 +131,7 @@ export default function ATSCheckerPage() {
           issues that get your resume filtered out.
         </p>
 
-        <a
+        <Link
           href="/#demo"
           className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-indigo-700 transition"
         >
@@ -148,7 +149,7 @@ export default function ATSCheckerPage() {
               d="M13 7l5 5m0 0l-5 5m5-5H6"
             />
           </svg>
-        </a>
+        </Link>
       </section>
 
       {/* How ATS scoring works */}
@@ -364,37 +365,37 @@ export default function ATSCheckerPage() {
             Check your resume against any job description. Get your score, find
             missing keywords, and fix formatting issues — all free.
           </p>
-          <a
+          <Link
             href="/#demo"
             className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3.5 text-sm font-semibold text-indigo-700 shadow hover:bg-indigo-50 transition"
           >
             Check Your ATS Score Now
-          </a>
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="border-t border-gray-100 py-10">
         <div className="mx-auto max-w-3xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-md bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-[10px] font-bold">R</span>
             </div>
             <span className="text-sm font-semibold text-gray-700">
               ResumeAI
             </span>
-          </a>
+          </Link>
           <p className="text-xs text-gray-400 text-center">
             Free ATS resume checker &mdash; 9 AI tools, no sign-up required.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-400">
-            <a href="/" className="hover:text-gray-700 transition">
+            <Link href="/" className="hover:text-gray-700 transition">
               Home
-            </a>
+            </Link>
             <span aria-hidden>&middot;</span>
-            <a href="/blog" className="hover:text-gray-700 transition">
+            <Link href="/blog" className="hover:text-gray-700 transition">
               Blog
-            </a>
+            </Link>
           </div>
         </div>
       </footer>

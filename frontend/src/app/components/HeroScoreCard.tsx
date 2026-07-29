@@ -72,9 +72,7 @@ function ScorePanel() {
 
   useEffect(() => {
     if (prefersReduced()) {
-      setRingActive(true);
-      setScore(85);
-      setPillsVisible(true);
+      requestAnimationFrame(() => { setRingActive(true); setScore(85); setPillsVisible(true); });
       return;
     }
     let rafId: number;
@@ -224,8 +222,7 @@ function GapPanel() {
 
   useEffect(() => {
     if (prefersReduced()) {
-      setBarW(68);
-      setPillsVisible(true);
+      requestAnimationFrame(() => { setBarW(68); setPillsVisible(true); });
       return;
     }
     let rafId: number;
@@ -342,8 +339,7 @@ function RewriterPanel() {
 
   useEffect(() => {
     if (prefersReduced()) {
-      setShowStrong(true);
-      setTyped(STRONG);
+      requestAnimationFrame(() => { setShowStrong(true); setTyped(STRONG); });
       return;
     }
     let intervalId: ReturnType<typeof setInterval> | null = null;

@@ -22,7 +22,7 @@ export default function TypewriterHeadline() {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    setActive(true);
+    requestAnimationFrame(() => setActive(true));
   }, []);
 
   useEffect(() => {

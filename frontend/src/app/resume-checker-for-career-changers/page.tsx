@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Resume Checker for Career Changers — Fix ATS Keyword Gaps",
@@ -136,17 +137,17 @@ export default function CareerChangersPage() {
       {/* Nav */}
       <nav className="border-b border-gray-100 bg-white/90 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto max-w-4xl px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm">
               <span className="text-white text-sm font-bold">R</span>
             </div>
             <span className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900">ResumeAI</span>
-          </a>
+          </Link>
           <div className="flex items-center gap-4 text-sm">
-            <a href="/#tools" className="text-gray-500 hover:text-gray-900 transition hidden sm:inline">All Tools</a>
-            <a href="/sign-up" className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2 text-white font-semibold text-sm shadow hover:shadow-md transition">
+            <Link href="/#tools" className="text-gray-500 hover:text-gray-900 transition hidden sm:inline">All Tools</Link>
+            <Link href="/sign-up" className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2 text-white font-semibold text-sm shadow hover:shadow-md transition">
               Get Started Free
-            </a>
+            </Link>
           </div>
         </div>
       </nav>
@@ -292,12 +293,12 @@ export default function CareerChangersPage() {
       {/* Footer */}
       <footer className="border-t border-gray-100 py-8">
         <div className="mx-auto max-w-4xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-          <a href="/" className="font-semibold text-gray-700 hover:text-indigo-600 transition">ResumeAI</a>
+          <Link href="/" className="font-semibold text-gray-700 hover:text-indigo-600 transition">ResumeAI</Link>
           <div className="flex items-center gap-6">
-            <a href="/resume-checker-for-career-changers" className="hover:text-gray-700 transition">Career Changers</a>
-            <a href="/ats-checker-for-new-grads" className="hover:text-gray-700 transition">New Grads</a>
-            <a href="/resume-checker-for-tech-jobs" className="hover:text-gray-700 transition">Tech Jobs</a>
-            <a href="/privacy" className="hover:text-gray-700 transition">Privacy</a>
+            <Link href="/resume-checker-for-career-changers" className="hover:text-gray-700 transition">Career Changers</Link>
+            <Link href="/ats-checker-for-new-grads" className="hover:text-gray-700 transition">New Grads</Link>
+            <Link href="/resume-checker-for-tech-jobs" className="hover:text-gray-700 transition">Tech Jobs</Link>
+            <Link href="/privacy" className="hover:text-gray-700 transition">Privacy</Link>
           </div>
           <span>&copy; {new Date().getFullYear()} ResumeAI</span>
         </div>

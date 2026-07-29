@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 4 COMPLETE. Phase 5 (Tests & CI Hardening) is next.
+- **Status:** Phase 5 COMPLETE. Phase 6 (UX & Accessibility) is next.
 
 ---
 
@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-07-29                 |
-| Working On | Phase 4 complete — ready for commit
+| Working On | Phase 5 complete — committed, moving to Phase 6
 
 ---
 
@@ -30,34 +30,30 @@
 ### Session 69 — 2026-07-29
 - **Agent:** claude
 - **Did:**
-  - Completed Phase 4 (Reliability & Performance) — all 6 tasks DONE
-  - 4.1: GitHub Actions cron keepalive (pings /health every 14 min) + fetchWithRetry in all 8 frontend API components (auto-retry on network errors with 3s delay)
-  - 4.2: HuggingFace retry with exponential backoff (2 retries, 1s→2s, on timeout/5xx only)
-  - 4.3: Graceful degradation — AI-specific error messages in connectionError(), fetchWithRetry wired into SummaryGenerator, BulletRewriter, CoverLetterGenerator, BulletPreviewWidget, AnalyzerDemo, ComplianceChecker, GapAnalysis, ResumeExporter, ShareableScoreWidget
-  - 4.4: Request timeout middleware (anyio.fail_after 60s) — kills hanging requests
-  - 4.5: PDF stress test with 20 jobs × 30 bullets across all 3 templates (5 new tests, all pass)
-  - 4.6: Keyword extraction cache (SHA-256 keyed, 128 entries, 5-min TTL)
-  - 272 tests passing (up from 267)
+  - Completed Phase 4 (Reliability & Performance) — all 6 tasks DONE (commit 555a031)
+  - Completed Phase 5 (Tests & CI Hardening) — all 5 tasks DONE
+  - 5.1: Golden-file parsing tests — 19 tests for summary/cover-letter/preview `_clean_output()` + regex parsing
+  - 5.2: Playwright E2E — 6 smoke tests (landing, footer, keyword-analyzer, ats-checker, blog, privacy)
+  - 5.3: Coverage floor — `--cov-fail-under=60` in CI (actual coverage: 82%)
+  - 5.4: Frontend lint in CI — `npm run lint` step added, all `<a>`→`<Link>` errors fixed (13+ pages), react-compiler warnings fixed, ResumeExporter unused-var warnings fixed
+  - 5.5: Node.js pinned to 20.18 in CI
+  - 291 tests passing (up from 272)
 - **Files Changed:**
-  - `backend/app/services/ai/hf_client.py` (retry + backoff logic)
-  - `backend/app/main.py` (RequestTimeoutMiddleware with anyio)
-  - `backend/app/services/nlp/keyword_extractor.py` (LRU cache with TTL)
-  - `backend/tests/unit/test_pdf_generation.py` (new — 5 stress tests)
-  - `frontend/src/app/lib/fetchWithRetry.ts` (new — auto-retry on network errors)
-  - `frontend/src/app/types.ts` (AI-specific error messages)
-  - `frontend/src/app/components/SummaryGenerator.tsx` (fetchWithRetry)
-  - `frontend/src/app/components/BulletRewriter.tsx` (fetchWithRetry)
-  - `frontend/src/app/components/CoverLetterGenerator.tsx` (fetchWithRetry)
-  - `frontend/src/app/components/BulletPreviewWidget.tsx` (fetchWithRetry)
-  - `frontend/src/app/components/AnalyzerDemo.tsx` (fetchWithRetry)
-  - `frontend/src/app/components/ComplianceChecker.tsx` (fetchWithRetry)
-  - `frontend/src/app/components/GapAnalysis.tsx` (fetchWithRetry)
-  - `frontend/src/app/components/ResumeExporter.tsx` (fetchWithRetry)
-  - `frontend/src/app/components/ShareableScoreWidget.tsx` (fetchWithRetry)
-  - `.github/workflows/keepalive.yml` (new — cron ping)
-  - `docs/LAUNCH_PROGRAM.md` (Phase 4 marked complete)
+  - `backend/tests/unit/test_ai_parsing.py` (new — 19 golden-file tests)
+  - `frontend/tests/e2e/smoke.spec.ts` (new — 6 Playwright smoke tests)
+  - `frontend/playwright.config.ts` (new — Playwright config)
+  - `.github/workflows/ci.yml` (coverage floor + frontend lint + Node pin)
+  - `frontend/src/app/components/AnimatedCounter.tsx` (react-compiler fix)
+  - `frontend/src/app/components/ThemeToggle.tsx` (react-compiler fix)
+  - `frontend/src/app/components/TypewriterHeadline.tsx` (react-compiler fix)
+  - `frontend/src/app/components/HeroScoreCard.tsx` (react-compiler fix)
+  - `frontend/src/app/components/BulletRewriter.tsx` (removed unused import)
+  - `frontend/src/app/components/ComplianceChecker.tsx` (removed unused import)
+  - `frontend/src/app/components/ResumeExporter.tsx` (unused-var lint fix)
+  - 13+ page files (`<a>` → `<Link>` conversion)
+  - `docs/LAUNCH_PROGRAM.md` (Phase 5 marked complete)
 - **Next Steps:**
-  - Phase 5: Tests & CI Hardening
+  - Phase 6: UX & Accessibility
 - **Blockers:**
   - None
 

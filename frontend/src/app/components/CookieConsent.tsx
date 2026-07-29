@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 
 const CONSENT_KEY = "cookie_consent";
 
@@ -61,9 +62,9 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
           We use cookies for analytics (Google Analytics) and may use advertising cookies (Google AdSense) in the future.
           Essential cookies for authentication are always active.
           See our{" "}
-          <a href="/privacy" className="text-indigo-600 dark:text-indigo-400 underline">
+          <Link href="/privacy" className="text-indigo-600 dark:text-indigo-400 underline">
             Privacy Policy
-          </a>{" "}
+          </Link>{" "}
           for details.
         </p>
         <div className="flex gap-3 shrink-0">

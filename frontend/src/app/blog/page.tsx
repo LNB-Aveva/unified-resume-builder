@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { blogPosts } from "../lib/blog-posts";
 
 export const metadata: Metadata = {
@@ -29,7 +30,7 @@ export default function BlogIndex() {
 
       <div className="space-y-6">
         {blogPosts.map((post) => (
-          <a
+          <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
             className="block group"
@@ -56,7 +57,7 @@ export default function BlogIndex() {
                 Read article
               </span>
             </article>
-          </a>
+          </Link>
         ))}
       </div>
 
@@ -68,12 +69,12 @@ export default function BlogIndex() {
           Use our free ATS keyword extractor and compliance checker to see
           exactly why your resume is getting filtered out.
         </p>
-        <a
+        <Link
           href="/#demo"
           className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow hover:bg-indigo-700 transition"
         >
           Try ResumeAI Free
-        </a>
+        </Link>
       </div>
     </main>
   );

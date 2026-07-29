@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function VerifyEmailPage() {
   return (
     <div className="text-center">
@@ -24,9 +26,9 @@ export default function VerifyEmailPage() {
       </div>
 
       <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
-        <a href="/sign-up" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
+        <Link href="/sign-up" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
           Try with a different email
-        </a>
+        </Link>
       </p>
     </div>
   );

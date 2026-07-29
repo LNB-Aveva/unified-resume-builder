@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { signIn } from "@/app/actions/auth";
 import GoogleSignInButton from "@/app/components/GoogleSignInButton";
 
@@ -57,9 +58,9 @@ export default function SignInPage() {
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Password
             </label>
-            <a href="/forgot-password" className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+            <Link href="/forgot-password" className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
               Forgot password?
-            </a>
+            </Link>
           </div>
           <input
             id="password"
@@ -86,9 +87,9 @@ export default function SignInPage() {
 
       <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
         Don&apos;t have an account?{" "}
-        <a href="/sign-up" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
+        <Link href="/sign-up" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
           Create one free
-        </a>
+        </Link>
       </p>
     </>
   );

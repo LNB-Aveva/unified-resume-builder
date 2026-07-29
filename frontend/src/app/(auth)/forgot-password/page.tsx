@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { forgotPassword } from "@/app/actions/auth";
 
 export default function ForgotPasswordPage() {
@@ -57,9 +58,9 @@ export default function ForgotPasswordPage() {
 
       <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
         Remember your password?{" "}
-        <a href="/sign-in" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
+        <Link href="/sign-in" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
           Sign in
-        </a>
+        </Link>
       </p>
     </>
   );

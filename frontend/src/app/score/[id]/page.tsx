@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getScoreStyle } from "../../lib/score-styles";
 
 interface SharedScore {
@@ -90,18 +91,18 @@ export default async function SharedScorePage({
       {/* Header */}
       <header className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-lg sticky top-0 z-50">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm">
               <span className="text-white text-xs font-bold">R</span>
             </div>
             <span className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">ResumeAI</span>
-          </a>
-          <a
+          </Link>
+          <Link
             href="/sign-up"
             className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.97] transition-all duration-200"
           >
             Check My Score Free
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -203,7 +204,7 @@ export default async function SharedScorePage({
               Paste any job description + your resume. Get your ATS score, find missing keywords,
               and rewrite weak bullets — all free, no credit card.
             </p>
-            <a
+            <Link
               href="/sign-up"
               className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-sm font-bold text-indigo-700 shadow-xl hover:shadow-2xl hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.97] transition-all duration-200"
             >
@@ -211,7 +212,7 @@ export default async function SharedScorePage({
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
               </svg>
-            </a>
+            </Link>
             <p className="text-indigo-200 text-xs mt-4">9 free AI tools &middot; No credit card &middot; Sign up in 10 seconds</p>
           </div>
         </div>
@@ -219,9 +220,9 @@ export default async function SharedScorePage({
         {/* Footer attribution */}
         <p className="text-center text-xs text-gray-400 dark:text-gray-500">
           Score generated with{" "}
-          <a href="/" className="text-indigo-500 hover:text-indigo-600 transition">
+          <Link href="/" className="text-indigo-500 hover:text-indigo-600 transition">
             ResumeAI
-          </a>{" "}
+          </Link>{" "}
           — free ATS resume checker
         </p>
       </main>

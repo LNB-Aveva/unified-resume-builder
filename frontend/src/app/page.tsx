@@ -286,15 +286,15 @@ export default function Home() {
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <a href="/sign-in" className="hidden sm:inline-flex text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition font-medium">
+            <Link href="/sign-in" className="hidden sm:inline-flex text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition font-medium">
               Sign In
-            </a>
-            <a
+            </Link>
+            <Link
               href="/sign-up"
               className="hidden sm:inline-flex rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.97] transition-all duration-200"
             >
               Get Started Free
-            </a>
+            </Link>
             <MobileNav />
           </div>
         </div>
@@ -637,7 +637,7 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              <a href="/resume-checker-for-career-changers" className="group block rounded-2xl border border-indigo-100 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-950/20 p-8 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-md transition-all duration-200">
+              <Link href="/resume-checker-for-career-changers" className="group block rounded-2xl border border-indigo-100 dark:border-indigo-800/50 bg-indigo-50/50 dark:bg-indigo-950/20 p-8 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-md transition-all duration-200">
                 <div className="inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-900/50 px-3 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-300 mb-5 uppercase tracking-wider">
                   Switching Industries
                 </div>
@@ -660,9 +660,9 @@ export default function Home() {
                   Career changers guide
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </span>
-              </a>
+              </Link>
 
-              <a href="/ats-checker-for-new-grads" className="group block rounded-2xl border border-violet-100 dark:border-violet-800/50 bg-violet-50/50 dark:bg-violet-950/20 p-8 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-md transition-all duration-200">
+              <Link href="/ats-checker-for-new-grads" className="group block rounded-2xl border border-violet-100 dark:border-violet-800/50 bg-violet-50/50 dark:bg-violet-950/20 p-8 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-md transition-all duration-200">
                 <div className="inline-flex items-center rounded-full bg-violet-100 dark:bg-violet-900/50 px-3 py-1 text-xs font-bold text-violet-700 dark:text-violet-300 mb-5 uppercase tracking-wider">
                   New Grads &amp; First Jobs
                 </div>
@@ -685,9 +685,9 @@ export default function Home() {
                   New grads guide
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </span>
-              </a>
+              </Link>
 
-              <a href="/resume-checker-for-tech-jobs" className="group block rounded-2xl border border-emerald-100 dark:border-emerald-800/50 bg-emerald-50/50 dark:bg-emerald-950/20 p-8 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md transition-all duration-200">
+              <Link href="/resume-checker-for-tech-jobs" className="group block rounded-2xl border border-emerald-100 dark:border-emerald-800/50 bg-emerald-50/50 dark:bg-emerald-950/20 p-8 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md transition-all duration-200">
                 <div className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/50 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 mb-5 uppercase tracking-wider">
                   Engineering &amp; Tech
                 </div>
@@ -710,11 +710,11 @@ export default function Home() {
                   Tech jobs guide
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 </span>
-              </a>
+              </Link>
             </div>
 
             <div className="text-center mt-12">
-              <a
+              <Link
                 href="/sign-up"
                 className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/35 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.97] transition-all duration-200"
               >
@@ -722,7 +722,7 @@ export default function Home() {
                 <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -1439,11 +1439,11 @@ export default function Home() {
               <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Product</h4>
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">ATS Tools</a></li>
-                <li><a href="/keyword-analyzer" className="hover:text-gray-900 dark:hover:text-white transition">Keyword Analyzer</a></li>
-                <li><a href="/ats-checker" className="hover:text-gray-900 dark:hover:text-white transition">ATS Checker</a></li>
+                <li><Link href="/keyword-analyzer" className="hover:text-gray-900 dark:hover:text-white transition">Keyword Analyzer</Link></li>
+                <li><Link href="/ats-checker" className="hover:text-gray-900 dark:hover:text-white transition">ATS Checker</Link></li>
                 <li><a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">How It Works</a></li>
                 <li><a href="#compare" className="hover:text-gray-900 dark:hover:text-white transition">Free vs Paid</a></li>
-                <li><a href="/sign-up" className="hover:text-gray-900 dark:hover:text-white transition">Get Started</a></li>
+                <li><Link href="/sign-up" className="hover:text-gray-900 dark:hover:text-white transition">Get Started</Link></li>
               </ul>
             </div>
 
@@ -1453,16 +1453,16 @@ export default function Home() {
                 <li><Link href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">Blog</Link></li>
                 <li><a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition">FAQ</a></li>
                 <li><a href="#how-it-works" className="hover:text-gray-900 dark:hover:text-white transition">ATS Resume Guide</a></li>
-                <li><a href="/keyword-analyzer" className="hover:text-gray-900 dark:hover:text-white transition">Keyword Tips</a></li>
-                <li><a href="/ats-checker" className="hover:text-gray-900 dark:hover:text-white transition">ATS Checklist</a></li>
+                <li><Link href="/keyword-analyzer" className="hover:text-gray-900 dark:hover:text-white transition">Keyword Tips</Link></li>
+                <li><Link href="/ats-checker" className="hover:text-gray-900 dark:hover:text-white transition">ATS Checklist</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Legal</h4>
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
-                <li><a href="/privacy" className="hover:text-gray-900 dark:hover:text-white transition">Privacy Policy</a></li>
-                <li><a href="/terms" className="hover:text-gray-900 dark:hover:text-white transition">Terms of Service</a></li>
+                <li><Link href="/privacy" className="hover:text-gray-900 dark:hover:text-white transition">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-gray-900 dark:hover:text-white transition">Terms of Service</Link></li>
               </ul>
             </div>
 
@@ -1480,9 +1480,9 @@ export default function Home() {
               &copy; {new Date().getFullYear()} ResumeAI. 100% free.
             </p>
             <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-400">
-              <a href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Privacy</a>
+              <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Privacy</Link>
               <span>&middot;</span>
-              <a href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Terms</a>
+              <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Terms</Link>
               <span>&middot;</span>
               <CookieSettingsButton />
               <span>&middot;</span>

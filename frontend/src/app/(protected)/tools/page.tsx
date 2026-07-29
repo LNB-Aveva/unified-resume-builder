@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/app/lib/supabase/server";
 import AnalyzerDemo from "@/app/components/AnalyzerDemo";
 import GapAnalysis from "@/app/components/GapAnalysis";
@@ -28,16 +29,16 @@ export default async function ToolsPage() {
       {/* Nav */}
       <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2.5 group">
+          <Link href="/" className="flex items-center gap-2.5 group">
             <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
               <span className="text-white text-sm font-bold tracking-tight">R</span>
             </div>
             <span className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white tracking-tight">ResumeAI</span>
-          </a>
+          </Link>
           <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-            <a href="/account" className="hover:text-gray-900 dark:hover:text-white transition">
+            <Link href="/account" className="hover:text-gray-900 dark:hover:text-white transition">
               Account
-            </a>
+            </Link>
             <ThemeToggle />
             <UserMenu email={user?.email ?? ""} />
           </div>

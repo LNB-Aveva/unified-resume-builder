@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { setupAccount } from "@/app/actions/auth";
 
 export default function AccountSetupPage() {
@@ -104,9 +105,9 @@ export default function AccountSetupPage() {
                   />
                   <label htmlFor="termsAccepted" className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                     I agree to the{" "}
-                    <a href="/terms" className="text-indigo-600 dark:text-indigo-400 hover:underline">Terms of Service</a>
+                    <Link href="/terms" className="text-indigo-600 dark:text-indigo-400 hover:underline">Terms of Service</Link>
                     {" "}and{" "}
-                    <a href="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline">Privacy Policy</a>
+                    <Link href="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline">Privacy Policy</Link>
                     <span className="text-red-500 ml-0.5">*</span>
                   </label>
                 </div>
@@ -144,9 +145,9 @@ export default function AccountSetupPage() {
           </form>
 
           <p className="mt-4 text-center text-sm text-gray-400 dark:text-gray-500">
-            <a href="/tools" className="hover:text-gray-600 dark:hover:text-gray-300 transition">
+            <Link href="/tools" className="hover:text-gray-600 dark:hover:text-gray-300 transition">
               Skip for now &rarr;
-            </a>
+            </Link>
           </p>
         </div>
       </div>

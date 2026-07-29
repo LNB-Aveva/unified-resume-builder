@@ -1,7 +1,7 @@
 # LAUNCH_PROGRAM.md — Hardening & Launch Roadmap
 
 > **Every session reads this first. Every session updates it before exit.**
-> Last updated: 2026-07-29 (Session 69 — Phase 4 COMPLETE, 6/6 tasks DONE)
+> Last updated: 2026-07-29 (Session 69 — Phase 5 COMPLETE, 5/5 tasks DONE)
 
 ---
 
@@ -12,7 +12,7 @@
 | Frontend (resumeai.cv) | **LIVE** on Vercel, renders correctly | WebFetch 200, hero text confirmed |
 | Backend (Render) | **SLEEPING** — 503 on cold fetch | Free tier spins down after 15 min |
 | Backend (local) | **WORKS** — all 9 endpoints hit and verified | uvicorn on :8001, manual curl of every route |
-| Tests | **272 pass** in ~15s | `pytest -x -q` from `backend/` |
+| Tests | **291 pass** in ~28s | `pytest -x -q` from `backend/` |
 | CI | **GREEN** — last 5 runs all success | `gh run list --limit 5` |
 | Frontend build | **CLEAN** — 26 pages, no warnings | `npm run build` |
 | Supabase tables | `jobs` + `shared_scores` in schema; **`profiles` missing from SQL** | supabase-schema.sql vs code grep |
@@ -158,11 +158,11 @@
 
 | Task | File(s) | Status |
 |------|---------|--------|
-| 5.1 Add golden-file tests for HuggingFace response parsing (rewriter batch, rewriter single, cover letter, summary) | backend/tests/unit/test_ai_parsing.py | TODO |
-| 5.2 Add Playwright happy-path test: landing page → sign up → /tools → run keyword extractor → see results | frontend/tests/e2e/ | TODO |
-| 5.3 Add pytest coverage floor (recommend: 80% for services/, 60% for routes/) and add to CI | .github/workflows/ci.yml | TODO |
-| 5.4 Add frontend lint to CI (currently only backend lint runs) | .github/workflows/ci.yml | TODO |
-| 5.5 Pin Node.js version in CI to match Vercel runtime | .github/workflows/ci.yml | TODO |
+| 5.1 Add golden-file tests for HuggingFace response parsing (rewriter batch, rewriter single, cover letter, summary) | backend/tests/unit/test_ai_parsing.py | DONE |
+| 5.2 Add Playwright happy-path test: landing page → sign up → /tools → run keyword extractor → see results | frontend/tests/e2e/smoke.spec.ts | DONE |
+| 5.3 Add pytest coverage floor (recommend: 80% for services/, 60% for routes/) and add to CI | .github/workflows/ci.yml | DONE |
+| 5.4 Add frontend lint to CI (currently only backend lint runs) | .github/workflows/ci.yml | DONE |
+| 5.5 Pin Node.js version in CI to match Vercel runtime | .github/workflows/ci.yml | DONE |
 
 **Definition of Done:** Coverage gate in CI. One E2E test that proves the critical path works. Frontend lint in CI.
 

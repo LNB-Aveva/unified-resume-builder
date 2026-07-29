@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { API_URL } from "../types";
 import { fetchWithRetry } from "../lib/fetchWithRetry";
 
@@ -126,9 +127,9 @@ export default function BulletPreviewWidget() {
         <div className="mt-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-800 px-4 py-3 text-sm text-red-700 dark:text-red-300">
           {error}
           {error.includes("limit") && (
-            <a href="/sign-up" className="ml-2 font-semibold underline hover:no-underline">
+            <Link href="/sign-up" className="ml-2 font-semibold underline hover:no-underline">
               Create free account →
-            </a>
+            </Link>
           )}
         </div>
       )}

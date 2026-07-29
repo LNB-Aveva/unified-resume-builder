@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ComplianceCheck, ComplianceReport, API_URL, connectionError } from "../types";
+import { ComplianceReport, API_URL, connectionError } from "../types";
 import { fetchWithRetry } from "../lib/fetchWithRetry";
 import Spinner from "./Spinner";
 import { DEMO_RESUME_TEXT } from "../lib/demoData";

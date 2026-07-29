@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { signUp } from "@/app/actions/auth";
 import GoogleSignInButton from "@/app/components/GoogleSignInButton";
 
@@ -103,9 +104,9 @@ export default function SignUpPage() {
               />
               <label htmlFor="termsAccepted" className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                 I agree to the{" "}
-                <a href="/terms" className="text-indigo-600 dark:text-indigo-400 hover:underline">Terms of Service</a>
+                <Link href="/terms" className="text-indigo-600 dark:text-indigo-400 hover:underline">Terms of Service</Link>
                 {" "}and{" "}
-                <a href="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline">Privacy Policy</a>
+                <Link href="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline">Privacy Policy</Link>
                 <span className="text-red-500 ml-0.5">*</span>
               </label>
             </div>
@@ -144,9 +145,9 @@ export default function SignUpPage() {
 
       <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
         Already have an account?{" "}
-        <a href="/sign-in" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
+        <Link href="/sign-in" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
           Sign in
-        </a>
+        </Link>
       </p>
     </>
   );

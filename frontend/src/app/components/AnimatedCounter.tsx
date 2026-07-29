@@ -31,7 +31,7 @@ export default function AnimatedCounter({
       "(prefers-reduced-motion: reduce)",
     ).matches;
     if (prefersReduced) {
-      setCount(target);
+      requestAnimationFrame(() => setCount(target));
       return;
     }
 
