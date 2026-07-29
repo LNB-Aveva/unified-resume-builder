@@ -20,6 +20,25 @@
 
 ## Decisions
 
+### DEC-017: Coverage Floor Raised to 80%
+- **Date:** 2026-07-29
+- **Agent:** claude
+- **Context:** CI was using `--cov-fail-under=60` but actual coverage was 82.44%. The gap let coverage regressions go unnoticed.
+- **Decision:** Raised floor to 80%. Still leaves 2.4% headroom for adding new uncovered code paths.
+- **Files Affected:** .github/workflows/ci.yml
+
+---
+
+### DEC-016: Structured JSON Access Logging
+- **Date:** 2026-07-29
+- **Agent:** claude
+- **Context:** No structured logging existed — only uvicorn's default access log. Need machine-parseable logs for debugging and future integration with log aggregators.
+- **Decision:** Custom `AccessLogMiddleware` with `_JSONFormatter`. Each request gets a short UUID (`X-Request-ID` header). Log fields: ts, level, method, path, status, duration_ms, client IP. No resume content is ever logged.
+- **Alternatives Considered:** Sentry performance tracing (overkill for current scale), python-json-logger library (unnecessary dependency for a simple formatter).
+- **Files Affected:** backend/app/main.py
+
+---
+
 ### DEC-015: react-compiler lint — requestAnimationFrame wrapper
 - **Date:** 2026-07-29
 - **Agent:** claude

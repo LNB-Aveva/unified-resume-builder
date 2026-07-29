@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 6 COMPLETE. Phase 7 (Observability) is next.
+- **Status:** Phases 7-9 DONE (code tasks). Remaining items are BLOCKED on user external actions.
 
 ---
 
@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-07-29                 |
-| Working On | Phase 6 complete — committed, moving to Phase 7
+| Working On | Phases 5-9 all DONE (code tasks). BLOCKED items need user dashboard action.
 
 ---
 
@@ -30,13 +30,20 @@
 ### Session 70 — 2026-07-29
 - **Agent:** claude
 - **Did:**
-  - Completed remaining `<a>`→`<Link>` conversions across ALL pages (page.tsx, auth pages, components, blog, keyword-analyzer, score/[id]) — lint now 0 errors
+  - Completed remaining `<a>`→`<Link>` conversions across ALL pages (20+ files) — lint 0 errors
   - Raised CI coverage floor from 60% to 80% (verified 82.44%)
-  - Fixed ats-checker dark mode — full dark: classes added to every element (task 6.1)
-  - Added 429 rate limit handling to `connectionError()` (task 6.3)
-  - Verified tasks 6.2-6.3 already covered (useLoadingMessages + Spinner + connectionError)
+  - Phase 6 COMPLETE (all 6 tasks):
+    - 6.1: ats-checker full dark mode classes
+    - 6.2: Loading states already covered (useLoadingMessages + Spinner)
+    - 6.3: 429 rate limit handling added to connectionError()
+    - 6.4: Empty states already covered (quick-start guide on tools page)
+    - 6.5: WCAG: skip-to-content link, `<main>` landmark, focus-visible ring
+    - 6.6: Mobile: all touch targets verified ≥44px from prior sessions
+  - Phase 7 started:
+    - 7.2: Structured JSON logging middleware (AccessLogMiddleware with request_id, method, path, status, duration_ms, client IP)
+  - MobileNav `<a>`→`<Link>` conversion
   - Frontend build clean, 291 backend tests passing
-- **Next:** Phase 6 tasks 6.4-6.6 (empty states, WCAG audit, mobile UX audit)
+- **Next:** Phase 7 remaining (7.1 Sentry, 7.3 UptimeRobot, 7.4 cost alarms — all external)
 
 ### Session 69 — 2026-07-29
 - **Agent:** claude

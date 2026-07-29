@@ -1,6 +1,10 @@
 """FastAPI entry point for the Unified Resume Builder API."""
 
+import json
+import logging
 import os
+import time
+import uuid
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -13,10 +17,41 @@ from slowapi.errors import RateLimitExceeded
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
+_sentry_dsn = os.environ.get("SENTRY_DSN", "")
+if _sentry_dsn:
+    import sentry_sdk
+    sentry_sdk.init(
+        dsn=_sentry_dsn,
+        traces_sample_rate=0.1,
+        environment=os.environ.get("ENV", "production"),
+    )
+
 from app.api.routes import analyze, compliance, cover_letter, export, gap, preview, rewrite, score, summary
 from app.core.config import settings  # noqa: F401
 from app.core.rate_limit import limiter
 from app.services.ai.hf_client import close_client
+
+
+class _JSONFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        log = {
+            "ts": self.formatTime(record, self.datefmt),
+            "level": record.levelname,
+            "msg": record.getMessage(),
+        }
+        if hasattr(record, "request_id"):
+            log["request_id"] = record.request_id  # type: ignore[attr-defined]
+        if hasattr(record, "extra_data"):
+            log.update(record.extra_data)  # type: ignore[attr-defined]
+        return json.dumps(log, default=str)
+
+
+_logger = logging.getLogger("app.access")
+_logger.setLevel(logging.INFO)
+_handler = logging.StreamHandler()
+_handler.setFormatter(_JSONFormatter())
+_logger.addHandler(_handler)
+_logger.propagate = False
 
 
 @asynccontextmanager
@@ -38,6 +73,31 @@ class RequestTimeoutMiddleware(BaseHTTPMiddleware):
                 status_code=504,
                 content={"detail": "Request timed out. Please try again."},
             )
+
+
+class AccessLogMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        request_id = str(uuid.uuid4())[:8]
+        start = time.monotonic()
+        response = await call_next(request)
+        duration_ms = round((time.monotonic() - start) * 1000)
+        extra = {
+            "request_id": request_id,
+            "extra_data": {
+                "method": request.method,
+                "path": request.url.path,
+                "status": response.status_code,
+                "duration_ms": duration_ms,
+                "client": request.headers.get("x-forwarded-for", request.client.host if request.client else "unknown"),
+            },
+        }
+        _logger.info(
+            "%s %s %s %dms",
+            request.method, request.url.path, response.status_code, duration_ms,
+            extra=extra,
+        )
+        response.headers["X-Request-ID"] = request_id
+        return response
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -83,6 +143,7 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization"],
 )
 
+app.add_middleware(AccessLogMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RequestTimeoutMiddleware)
 

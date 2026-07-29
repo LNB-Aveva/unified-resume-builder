@@ -17,6 +17,7 @@ For local dev, copy `backend/.env.example` to `backend/.env`.
 | `RENDER` | Auto | Injected by Render | `""` | Detects production (disables /docs, enables HSTS) | Swagger UI stays enabled in production |
 | `ENV` | Optional | Render dashboard | `""` | Alternative production detection (`ENV=production`) | Falls back to `RENDER` env var check |
 | `PYTHON_VERSION` | Yes | render.yaml | `3.11.0` | Python runtime on Render | Render picks its own default |
+| `SENTRY_DSN` | No | Render dashboard / `.env` | `""` | Sentry error tracking DSN | Error tracking disabled (no errors sent to Sentry) |
 | `DEBUG` | No | `.env` | `False` | Debug mode flag | N/A — defaults to off |
 
 ## Frontend (Next.js on Vercel)

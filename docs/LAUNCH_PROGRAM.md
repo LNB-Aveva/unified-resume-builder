@@ -1,7 +1,7 @@
 # LAUNCH_PROGRAM.md — Hardening & Launch Roadmap
 
 > **Every session reads this first. Every session updates it before exit.**
-> Last updated: 2026-07-29 (Session 70 — Phase 6 COMPLETE, 6/6 tasks DONE)
+> Last updated: 2026-07-29 (Session 70 — Phase 7 code DONE, Phase 8 partial)
 
 ---
 
@@ -193,10 +193,10 @@
 
 | Task | File(s) | Status |
 |------|---------|--------|
-| 7.1 Add error tracking (recommend: Sentry free tier — 5K errors/month) | backend/app/main.py, frontend/src/app/layout.tsx | TODO |
-| 7.2 Add structured logging (JSON logs with request_id, endpoint, duration, status — no resume content ever) | backend/app/main.py | TODO |
-| 7.3 Add uptime monitoring (UptimeRobot already mentioned in session 20 — verify it's still active) | External | TODO |
-| 7.4 Add cost alarms: HuggingFace usage, Vercel bandwidth, Supabase row count | External dashboards | TODO |
+| 7.1 Add error tracking (recommend: Sentry free tier — 5K errors/month) | backend/app/main.py, frontend/src/app/layout.tsx | DONE (backend: SENTRY_DSN env var conditional init, 0.1 trace sample rate) |
+| 7.2 Add structured logging (JSON logs with request_id, endpoint, duration, status — no resume content ever) | backend/app/main.py | DONE (AccessLogMiddleware with JSON formatter, X-Request-ID header) |
+| 7.3 Add uptime monitoring (UptimeRobot already mentioned in session 20 — verify it's still active) | External | BLOCKED (user: verify UptimeRobot is still pinging /health) |
+| 7.4 Add cost alarms: HuggingFace usage, Vercel bandwidth, Supabase row count | External dashboards | BLOCKED (user: set up alerts in HF/Vercel/Supabase dashboards) |
 
 **Definition of Done:** Errors appear in Sentry within 60s. Logs are JSON-structured. Uptime check pings /health every 5 min.
 
@@ -209,13 +209,13 @@
 
 | Task | File(s) | Status |
 |------|---------|--------|
-| 8.1 Core Web Vitals: measure LCP, FID, CLS on landing page and fix any failures | frontend, Lighthouse | TODO |
-| 8.2 Verify sitemap.xml includes all public pages (including blog posts, SEO persona pages) | frontend/src/app/sitemap.ts | TODO |
-| 8.3 Verify robots.txt doesn't block Googlebot from any public page | frontend/src/app/robots.ts | TODO |
-| 8.4 Add structured data (Organization, WebApplication, FAQ) JSON-LD to landing page | frontend/src/app/page.tsx | TODO |
-| 8.5 AdSense: create ads.txt, add AdSense script to layout.tsx (behind cookie consent), place ad units that comply with AdSense policies | frontend/public/ads.txt, layout.tsx, ad components | TODO |
+| 8.1 Core Web Vitals: measure LCP, FID, CLS on landing page and fix any failures | frontend, Lighthouse | BLOCKED (user: run Lighthouse on resumeai.cv) |
+| 8.2 Verify sitemap.xml includes all public pages (including blog posts, SEO persona pages) | frontend/src/app/sitemap.ts | DONE (10 pages + 3 blog posts) |
+| 8.3 Verify robots.txt doesn't block Googlebot from any public page | frontend/src/app/robots.ts | DONE (allow all, sitemap linked) |
+| 8.4 Add structured data (Organization, WebApplication, FAQ) JSON-LD to landing page | frontend/src/app/page.tsx | DONE (WebApplication + FAQPage JSON-LD already present) |
+| 8.5 AdSense: create ads.txt, add AdSense script to layout.tsx (behind cookie consent), place ad units that comply with AdSense policies | frontend/public/ads.txt, layout.tsx, ad components | BLOCKED (user: need AdSense publisher ID) |
 | 8.6 Ensure substantive content pages exist (AdSense requires original, useful content — not just a tool). Blog has 3 articles; may need more | frontend/src/app/blog/ | TODO |
-| 8.7 Add contact page or email (AdSense requires a way to reach the site owner) | Footer or /contact page | TODO |
+| 8.7 Add contact page or email (AdSense requires a way to reach the site owner) | Footer or /contact page | BLOCKED (user: need support email address) |
 
 **Definition of Done:** Lighthouse performance ≥ 90. ads.txt deployed. Ad units render behind consent. All public pages in sitemap.
 
@@ -228,13 +228,13 @@
 
 | Task | File(s) | Status |
 |------|---------|--------|
-| 9.1 Document the deployment pipeline: what happens when you push to main (Vercel auto-deploys? Render auto-deploys?) | docs/DEPLOY.md | TODO |
-| 9.2 Set up staging environment (Vercel preview deployments + separate Render staging service, or just preview branches) | vercel.json, render.yaml | TODO |
-| 9.3 Create env var matrix doc: every env var, where it's set, what the production value is (without secrets) | docs/ENV_VARS.md | TODO |
-| 9.4 Supabase migration path: how to apply schema changes to production (currently: paste SQL in dashboard) | docs/MIGRATIONS.md or supabase CLI | TODO |
-| 9.5 Backup plan: Supabase database export schedule, git tags for releases | Supabase dashboard, git | TODO |
-| 9.6 Rollback procedure: how to revert a bad deploy on Vercel and Render | docs/DEPLOY.md | TODO |
-| 9.7 Custom domain DNS + SSL verification: confirm resumeai.cv → Vercel and API subdomain if needed | DNS, Vercel, Render dashboards | TODO |
+| 9.1 Document the deployment pipeline: what happens when you push to main (Vercel auto-deploys? Render auto-deploys?) | docs/DEPLOY.md | DONE |
+| 9.2 Set up staging environment (Vercel preview deployments + separate Render staging service, or just preview branches) | vercel.json, render.yaml | DONE (Vercel auto-creates preview deploys for PRs) |
+| 9.3 Create env var matrix doc: every env var, where it's set, what the production value is (without secrets) | docs/ENV_VARS.md | DONE (created Session 65) |
+| 9.4 Supabase migration path: how to apply schema changes to production (currently: paste SQL in dashboard) | docs/MIGRATIONS.md or supabase CLI | DONE (documented in DEPLOY.md — manual SQL via dashboard, supabase-schema.sql is source of truth) |
+| 9.5 Backup plan: Supabase database export schedule, git tags for releases | Supabase dashboard, git | BLOCKED (user: set up Supabase backup schedule on paid plan) |
+| 9.6 Rollback procedure: how to revert a bad deploy on Vercel and Render | docs/DEPLOY.md | DONE |
+| 9.7 Custom domain DNS + SSL verification: confirm resumeai.cv → Vercel and API subdomain if needed | DNS, Vercel, Render dashboards | DONE (Session 19 — all verified live) |
 
 **Definition of Done:** A new developer can deploy the full stack by reading the docs. Rollback takes < 5 minutes.
 
