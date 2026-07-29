@@ -7,7 +7,6 @@ const _backendUrl =
 const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["10.0.0.183"],
   async headers() {
     return [
       {

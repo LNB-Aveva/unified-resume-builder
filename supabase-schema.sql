@@ -1,6 +1,41 @@
 -- Run this in Supabase Dashboard → SQL Editor → New query → Run
--- Creates the jobs table and Row Level Security policies
+-- Creates all application tables and Row Level Security policies
 
+-- -----------------------------------------------------------------------
+-- profiles: user profile data created during onboarding
+-- -----------------------------------------------------------------------
+create table if not exists public.profiles (
+  id                    uuid primary key references auth.users(id) on delete cascade,
+  full_name             text,
+  target_role           text,
+  industry              text,
+  years_experience      text,
+  onboarding_completed  boolean not null default false,
+  created_at            timestamptz not null default now(),
+  updated_at            timestamptz not null default now()
+);
+
+alter table public.profiles enable row level security;
+
+create policy "Users read own profile"
+  on public.profiles for select
+  using (auth.uid() = id);
+
+create policy "Users insert own profile"
+  on public.profiles for insert
+  with check (auth.uid() = id);
+
+create policy "Users update own profile"
+  on public.profiles for update
+  using (auth.uid() = id);
+
+create policy "Users delete own profile"
+  on public.profiles for delete
+  using (auth.uid() = id);
+
+-- -----------------------------------------------------------------------
+-- jobs: per-user job application tracker
+-- -----------------------------------------------------------------------
 create table if not exists public.jobs (
   id         uuid primary key default gen_random_uuid(),
   user_id    uuid not null references auth.users(id) on delete cascade,

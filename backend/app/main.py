@@ -1,6 +1,8 @@
 """FastAPI entry point for the Unified Resume Builder API."""
 
 import os
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +14,13 @@ from starlette.requests import Request
 from app.api.routes import analyze, compliance, cover_letter, export, gap, preview, rewrite, score, summary
 from app.core.config import settings  # noqa: F401
 from app.core.rate_limit import limiter
+from app.services.ai.hf_client import close_client
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    yield
+    await close_client()
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -30,6 +39,7 @@ app = FastAPI(
     title="Unified Resume Builder API",
     description="ATS scoring, keyword analysis, and AI-powered resume optimization",
     version="0.1.0",
+    lifespan=lifespan,
     docs_url=None if _is_production else "/docs",
     redoc_url=None if _is_production else "/redoc",
     openapi_url=None if _is_production else "/openapi.json",

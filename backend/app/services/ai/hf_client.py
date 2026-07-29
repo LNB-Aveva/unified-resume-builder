@@ -15,6 +15,13 @@ def _get_client() -> httpx.AsyncClient:
     return _client
 
 
+async def close_client() -> None:
+    global _client
+    if _client is not None and not _client.is_closed:
+        await _client.aclose()
+        _client = None
+
+
 def _get_api_key() -> str:
     api_key = os.environ.get("HUGGINGFACE_API_KEY", "").strip()
     if not api_key or api_key == "hf_your_key_here":

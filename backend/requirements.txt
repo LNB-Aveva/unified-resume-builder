@@ -10,17 +10,6 @@ uvicorn==0.32.0
 python-multipart==0.0.31
 
 # ============================
-# NLP / AI Libraries (ALL FREE - run locally on your computer)
-# ============================
-# NLTK = Natural Language Toolkit - simpler text processing tools
-#        Good for word frequency counting, stopword removal, stemming
-nltk==3.9.4
-# scikit-learn = Machine learning toolkit
-#               We use TF-IDF (Term Frequency - Inverse Document Frequency)
-#               to score how well a resume matches a job description
-scikit-learn==1.6.1
-
-# ============================
 # Data Handling
 # ============================
 # Pydantic = Validates data shapes (ensures a resume has the right fields)

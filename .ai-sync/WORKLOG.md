@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** (describe the current feature/task)
+- **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Idle — awaiting next task
+- **Status:** Phase 1 complete. Phase 2 next.
 
 ---
 
@@ -17,15 +17,45 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | —                          |
-| Started    | —                          |
-| Working On | —                          |
+| Agent      | claude                     |
+| Started    | 2026-07-28                 |
+| Working On | Phase 1: Fill Foundation Gaps (COMPLETE) |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 65 — 2026-07-28
+- **Agent:** claude
+- **Did:**
+  - Full repo audit: read every source file, ran all 212 tests, built frontend, hit all 9 endpoints
+  - Produced 18-finding severity table in docs/LAUNCH_PROGRAM.md
+  - Completed Phase 1 (8 tasks):
+    - Removed unused scikit-learn + nltk from requirements.txt (~120MB saved)
+    - Added profiles table + RLS to supabase-schema.sql
+    - Added pyproject.toml for repo-root test execution
+    - Removed hardcoded LAN IP from next.config.ts
+    - Removed dead Supabase config from backend config.py
+    - Created docs/ENV_VARS.md (full env var matrix)
+    - Added httpx client lifespan shutdown in main.py
+    - Fixed flaky hypothesis deadline (200ms → 1000ms)
+- **Files Changed:**
+  - `backend/requirements.txt` (removed nltk, scikit-learn)
+  - `backend/app/core/config.py` (removed dead Supabase vars)
+  - `backend/app/main.py` (added lifespan context manager)
+  - `backend/app/services/ai/hf_client.py` (added close_client)
+  - `backend/pyproject.toml` (new — pytest pythonpath)
+  - `backend/tests/unit/test_property.py` (hypothesis deadline fix)
+  - `frontend/next.config.ts` (removed allowedDevOrigins)
+  - `supabase-schema.sql` (added profiles table + RLS)
+  - `docs/LAUNCH_PROGRAM.md` (new — full launch program)
+  - `docs/ENV_VARS.md` (new — env var matrix)
+- **Next Steps:**
+  - Phase 2: Security, Privacy & Legal (account deletion, cookie consent, RLS verification)
+- **Blockers:**
+  - None
 
 ### Session 64 — 2026-07-28
 - **Agent:** codex

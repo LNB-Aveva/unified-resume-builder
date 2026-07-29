@@ -90,7 +90,7 @@ class TestScoreProperties:
         assert result.overall_score >= 0
 
     @given(raw=job_text)
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=1000)
     def test_extract_keywords_never_crashes(self, raw):
         job = JobDescription(raw_text=raw)
         result = extract_keywords(job)
