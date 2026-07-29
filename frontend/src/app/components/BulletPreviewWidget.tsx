@@ -85,6 +85,7 @@ export default function BulletPreviewWidget() {
         placeholder="Paste your resume bullet here, e.g. &quot;Responsible for managing the sales team&quot;"
         rows={3}
         maxLength={500}
+        aria-label="Resume bullet to rewrite"
         className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition mb-4"
       />
 

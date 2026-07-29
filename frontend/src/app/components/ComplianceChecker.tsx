@@ -50,10 +50,11 @@ export default function ComplianceChecker() {
     <div className="space-y-6">
       {/* Resume textarea */}
       <div className="space-y-2">
-        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+        <label htmlFor="compliance-resume" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
           Your Resume Text
         </label>
         <textarea
+          id="compliance-resume"
           value={resumeText}
           onChange={(e) => setResumeText(e.target.value)}
           placeholder="Paste your full resume here (plain text from Word, Google Docs, or copy from PDF)..."

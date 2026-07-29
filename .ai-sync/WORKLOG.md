@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 5 COMPLETE. Phase 6 (UX & Accessibility) is next.
+- **Status:** Phase 6 COMPLETE. Phase 7 (Observability) is next.
 
 ---
 
@@ -19,13 +19,24 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-07-29                 |
-| Working On | Phase 5 complete — committed, moving to Phase 6
+| Working On | Phase 6 complete — committed, moving to Phase 7
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 70 — 2026-07-29
+- **Agent:** claude
+- **Did:**
+  - Completed remaining `<a>`→`<Link>` conversions across ALL pages (page.tsx, auth pages, components, blog, keyword-analyzer, score/[id]) — lint now 0 errors
+  - Raised CI coverage floor from 60% to 80% (verified 82.44%)
+  - Fixed ats-checker dark mode — full dark: classes added to every element (task 6.1)
+  - Added 429 rate limit handling to `connectionError()` (task 6.3)
+  - Verified tasks 6.2-6.3 already covered (useLoadingMessages + Spinner + connectionError)
+  - Frontend build clean, 291 backend tests passing
+- **Next:** Phase 6 tasks 6.4-6.6 (empty states, WCAG audit, mobile UX audit)
 
 ### Session 69 — 2026-07-29
 - **Agent:** claude

@@ -88,10 +88,11 @@ export default function SummaryGenerator() {
       <div className="grid sm:grid-cols-2 gap-4">
         {/* Job Title */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="sum-job-title" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Job Title <span className="text-red-400">*</span>
           </label>
           <input
+            id="sum-job-title"
             type="text"
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
@@ -102,10 +103,11 @@ export default function SummaryGenerator() {
 
         {/* Years of experience */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="sum-years" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Years of Experience
           </label>
           <input
+            id="sum-years"
             type="number"
             min="0"
             max="40"
@@ -118,10 +120,11 @@ export default function SummaryGenerator() {
 
         {/* Skills */}
         <div className="sm:col-span-2 space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="sum-skills" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Key Skills (comma-separated)
           </label>
           <input
+            id="sum-skills"
             type="text"
             value={skills}
             onChange={(e) => setSkills(e.target.value)}
@@ -132,10 +135,11 @@ export default function SummaryGenerator() {
 
         {/* Job description */}
         <div className="sm:col-span-2 space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="sum-jd" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Job Description <span className="text-red-400">*</span>
           </label>
           <textarea
+            id="sum-jd"
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste the job description (first 2-3 paragraphs is enough)..."
@@ -146,13 +150,14 @@ export default function SummaryGenerator() {
 
         {/* Experience bullets */}
         <div className="sm:col-span-2 space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="sum-exp" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Your Experience Bullets <span className="text-red-400">*</span>
           </label>
           <p className="text-xs text-gray-400 dark:text-gray-500 -mt-1">
             Copy 3-5 bullet points from your resume — the AI will rewrite them into a summary paragraph.
           </p>
           <textarea
+            id="sum-exp"
             value={experienceBullets}
             onChange={(e) => setExperienceBullets(e.target.value)}
             placeholder={"- Built REST APIs with FastAPI serving 10k daily requests\n- Led migration from monolith to microservices (reduced deploy time 60%)\n- Mentored 3 junior engineers on best practices"}

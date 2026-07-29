@@ -116,16 +116,16 @@ export default function ATSCheckerPage() {
 
       {/* Hero */}
       <section className="mx-auto max-w-3xl px-4 pt-16 pb-12 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-6">
+        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
           <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
           Free &bull; No sign-up &bull; Unlimited scans
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight leading-tight mb-5">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
           Free ATS Score Checker
         </h1>
 
-        <p className="text-lg text-gray-500 max-w-xl mx-auto mb-8">
+        <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto mb-8">
           75% of resumes are rejected by ATS before a human reads them. Check
           your ATS match score instantly — find missing keywords and formatting
           issues that get your resume filtered out.
@@ -153,9 +153,9 @@ export default function ATSCheckerPage() {
       </section>
 
       {/* How ATS scoring works */}
-      <section className="bg-gray-50 border-y border-gray-100 py-14">
+      <section className="bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 py-14">
         <div className="mx-auto max-w-3xl px-4">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
             How ATS Scoring Works
           </h2>
           <div className="grid sm:grid-cols-3 gap-6">
@@ -178,13 +178,13 @@ export default function ATSCheckerPage() {
             ].map(({ step, title, body }) => (
               <div
                 key={step}
-                className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm"
+                className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-6 shadow-sm"
               >
                 <div className="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm mb-4">
                   {step}
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
@@ -193,21 +193,21 @@ export default function ATSCheckerPage() {
 
       {/* What we check */}
       <section className="mx-auto max-w-3xl px-4 py-14">
-        <h2 className="text-2xl font-bold text-gray-900 text-center mb-3">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-3">
           What Our ATS Checker Analyses
         </h2>
-        <p className="text-gray-500 text-sm text-center max-w-xl mx-auto mb-8">
+        <p className="text-gray-500 dark:text-gray-400 text-sm text-center max-w-xl mx-auto mb-8">
           Most ATS checkers only match keywords. We check both content and
           formatting — because keywords don&apos;t matter if the parser can&apos;t read
           your resume.
         </p>
 
         <div className="grid sm:grid-cols-2 gap-4">
-          <div className="rounded-xl border border-gray-100 p-5">
-            <h3 className="font-semibold text-gray-900 mb-3">
+          <div className="rounded-xl border border-gray-100 dark:border-gray-700 p-5">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
               Keyword Analysis
             </h3>
-            <ul className="space-y-2 text-sm text-gray-500">
+            <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
               <li className="flex items-start gap-2">
                 <span className="text-indigo-600 mt-0.5">&#10003;</span>
                 Hard skills extraction (tools, languages, frameworks)
@@ -230,11 +230,11 @@ export default function ATSCheckerPage() {
               </li>
             </ul>
           </div>
-          <div className="rounded-xl border border-gray-100 p-5">
-            <h3 className="font-semibold text-gray-900 mb-3">
+          <div className="rounded-xl border border-gray-100 dark:border-gray-700 p-5">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
               15-Rule Format Compliance
             </h3>
-            <ul className="space-y-2 text-sm text-gray-500">
+            <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
               <li className="flex items-start gap-2">
                 <span className="text-indigo-600 mt-0.5">&#10003;</span>
                 Single-column layout check
@@ -261,30 +261,30 @@ export default function ATSCheckerPage() {
       </section>
 
       {/* Comparison */}
-      <section className="bg-gray-50 border-y border-gray-100 py-14">
+      <section className="bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 py-14">
         <div className="mx-auto max-w-3xl px-4">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
             ResumeAI vs Other ATS Checkers
           </h2>
-          <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+          <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">
                     Feature
                   </th>
-                  <th className="text-center py-3 px-4 font-semibold text-indigo-700">
+                  <th className="text-center py-3 px-4 font-semibold text-indigo-700 dark:text-indigo-400">
                     ResumeAI
                   </th>
-                  <th className="text-center py-3 px-4 font-semibold text-gray-500">
+                  <th className="text-center py-3 px-4 font-semibold text-gray-500 dark:text-gray-400">
                     Jobscan
                   </th>
-                  <th className="text-center py-3 px-4 font-semibold text-gray-500">
+                  <th className="text-center py-3 px-4 font-semibold text-gray-500 dark:text-gray-400">
                     Others
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
                 {[
                   ["Keyword extraction", true, true, true],
                   ["Gap analysis with score", true, true, false],
@@ -296,31 +296,31 @@ export default function ATSCheckerPage() {
                   ["No sign-up required", true, false, false],
                 ].map(([feature, us, jobscan, others]) => (
                   <tr key={feature as string}>
-                    <td className="py-2.5 px-4 text-gray-700">
+                    <td className="py-2.5 px-4 text-gray-700 dark:text-gray-300">
                       {feature as string}
                     </td>
-                    <td className="py-2.5 px-4 text-center text-indigo-600 font-bold">
+                    <td className="py-2.5 px-4 text-center text-indigo-600 dark:text-indigo-400 font-bold">
                       {us ? "✓" : "✗"}
                     </td>
-                    <td className="py-2.5 px-4 text-center text-gray-400">
+                    <td className="py-2.5 px-4 text-center text-gray-400 dark:text-gray-500">
                       {jobscan ? "✓" : "✗"}
                     </td>
-                    <td className="py-2.5 px-4 text-center text-gray-400">
+                    <td className="py-2.5 px-4 text-center text-gray-400 dark:text-gray-500">
                       {others ? "✓" : "✗"}
                     </td>
                   </tr>
                 ))}
-                <tr className="bg-gray-50">
-                  <td className="py-2.5 px-4 font-semibold text-gray-700">
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <td className="py-2.5 px-4 font-semibold text-gray-700 dark:text-gray-200">
                     Price
                   </td>
-                  <td className="py-2.5 px-4 text-center font-bold text-indigo-600">
+                  <td className="py-2.5 px-4 text-center font-bold text-indigo-600 dark:text-indigo-400">
                     Free
                   </td>
-                  <td className="py-2.5 px-4 text-center text-gray-500">
+                  <td className="py-2.5 px-4 text-center text-gray-500 dark:text-gray-400">
                     $50/mo
                   </td>
-                  <td className="py-2.5 px-4 text-center text-gray-500">
+                  <td className="py-2.5 px-4 text-center text-gray-500 dark:text-gray-400">
                     $20-30/mo
                   </td>
                 </tr>
@@ -332,24 +332,24 @@ export default function ATSCheckerPage() {
 
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-4 py-14">
-        <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
           ATS Score Checker FAQ
         </h2>
-        <dl className="divide-y divide-gray-100">
+        <dl className="divide-y divide-gray-100 dark:divide-gray-700">
           {faqItems.map(({ q, a }) => (
             <details
               key={q}
               className="group py-5 cursor-pointer list-none"
             >
-              <summary className="flex items-center justify-between gap-4 font-medium text-gray-900 text-sm select-none list-none marker:hidden">
+              <summary className="flex items-center justify-between gap-4 font-medium text-gray-900 dark:text-gray-100 text-sm select-none list-none marker:hidden">
                 {q}
-                <span className="shrink-0 h-5 w-5 text-indigo-600 transition-transform group-open:rotate-45">
+                <span className="shrink-0 h-5 w-5 text-indigo-600 dark:text-indigo-400 transition-transform group-open:rotate-45">
                   <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden>
                     <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                   </svg>
                 </span>
               </summary>
-              <p className="mt-3 text-sm text-gray-500 leading-relaxed">{a}</p>
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{a}</p>
             </details>
           ))}
         </dl>
@@ -375,13 +375,13 @@ export default function ATSCheckerPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-10">
+      <footer className="border-t border-gray-100 dark:border-gray-800 py-10">
         <div className="mx-auto max-w-3xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-md bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-[10px] font-bold">R</span>
             </div>
-            <span className="text-sm font-semibold text-gray-700">
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
               ResumeAI
             </span>
           </Link>
@@ -389,11 +389,11 @@ export default function ATSCheckerPage() {
             Free ATS resume checker &mdash; 9 AI tools, no sign-up required.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-400">
-            <Link href="/" className="hover:text-gray-700 transition">
+            <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
               Home
             </Link>
             <span aria-hidden>&middot;</span>
-            <Link href="/blog" className="hover:text-gray-700 transition">
+            <Link href="/blog" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
               Blog
             </Link>
           </div>

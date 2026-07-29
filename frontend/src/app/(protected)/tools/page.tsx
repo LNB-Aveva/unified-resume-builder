@@ -49,14 +49,22 @@ export default async function ToolsPage() {
       <div className="mx-auto max-w-7xl px-4 py-12 flex gap-8">
         <ToolsSidebar />
 
-        <main className="flex-1 max-w-5xl space-y-16">
+        <main id="main-content" className="flex-1 max-w-5xl space-y-16">
           <div className="text-center mb-8">
             <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">
               Your ATS Toolkit
             </h1>
-            <p className="text-gray-500 dark:text-gray-400">
+            <p className="text-gray-500 dark:text-gray-400 mb-6">
               All 9 tools ready to use. Follow the steps or jump to any section.
             </p>
+            <div className="inline-flex items-start gap-6 rounded-2xl border border-indigo-100 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/30 px-6 py-4 text-left text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex flex-col gap-1">
+                <span className="font-semibold text-gray-900 dark:text-white text-xs uppercase tracking-wider">Quick start</span>
+                <span>1. Paste a job description below to extract keywords</span>
+                <span>2. Paste your resume to see your match score</span>
+                <span>3. Use AI tools to close the gaps</span>
+              </div>
+            </div>
           </div>
 
           <section id="keyword-extractor" className="scroll-mt-24">

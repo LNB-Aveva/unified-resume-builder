@@ -51,6 +51,7 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
           onChange={(e) => setJobText(e.target.value)}
           placeholder="Paste a full job description here — title, requirements, responsibilities, everything..."
           rows={10}
+          aria-label="Job description text"
           className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
         />
 

@@ -12,6 +12,7 @@ type Tone = "formal" | "conversational";
 
 const LOADING_MESSAGES = [
   "Sending to AI model...",
+  "Model is thinking... (first call can take ~15s)",
   "Crafting your opening hook...",
   "Writing the body paragraphs...",
   "Polishing the closing...",
@@ -131,10 +132,11 @@ export default function CoverLetterGenerator() {
 
         {/* Job Title */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="cl-job-title" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Job Title <span className="text-red-400">*</span>
           </label>
           <input
+            id="cl-job-title"
             type="text"
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
@@ -145,10 +147,11 @@ export default function CoverLetterGenerator() {
 
         {/* Company Name */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="cl-company" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Company Name <span className="text-red-400">*</span>
           </label>
           <input
+            id="cl-company"
             type="text"
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
@@ -159,11 +162,12 @@ export default function CoverLetterGenerator() {
 
         {/* Skills */}
         <div className="sm:col-span-2 space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="cl-skills" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Key Skills
             <span className="ml-1.5 font-normal text-gray-400 dark:text-gray-500 text-xs">(optional — comma-separated)</span>
           </label>
           <input
+            id="cl-skills"
             type="text"
             value={skills}
             onChange={(e) => setSkills(e.target.value)}
@@ -175,7 +179,7 @@ export default function CoverLetterGenerator() {
         {/* Job Description */}
         <div className="sm:col-span-2 space-y-1.5">
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+            <label htmlFor="cl-jd" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
               Job Description <span className="text-red-400">*</span>
             </label>
             <span className={`text-xs font-medium ${jobDescription.length > 900 ? "text-red-500" : jobDescription.length > 800 ? "text-amber-600" : "text-gray-400"}`}>
@@ -183,6 +187,7 @@ export default function CoverLetterGenerator() {
             </span>
           </div>
           <textarea
+            id="cl-jd"
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste the first 2-3 paragraphs of the job posting..."
@@ -193,13 +198,14 @@ export default function CoverLetterGenerator() {
 
         {/* Experience Summary */}
         <div className="sm:col-span-2 space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="cl-exp" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Your Key Experience <span className="text-red-400">*</span>
           </label>
           <p className="text-xs text-gray-400 dark:text-gray-500 -mt-1">
             Paste 3-5 achievement bullets from your resume. The AI uses these as evidence — no facts will be invented.
           </p>
           <textarea
+            id="cl-exp"
             value={experienceSummary}
             onChange={(e) => setExperienceSummary(e.target.value)}
             placeholder={

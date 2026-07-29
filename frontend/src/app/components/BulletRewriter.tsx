@@ -10,6 +10,7 @@ import TryDemoButton from "./TryDemoButton";
 
 const LOADING_MESSAGES = [
   "Sending to AI model...",
+  "Model is thinking... (first call can take ~15s)",
   "Analysing keywords to weave in...",
   "Rewriting your bullets...",
   "Almost there...",
@@ -112,10 +113,11 @@ export default function BulletRewriter() {
       <div className="grid sm:grid-cols-2 gap-4">
         {/* Job Title */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="br-job-title" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Job Title <span className="text-red-400">*</span>
           </label>
           <input
+            id="br-job-title"
             type="text"
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
@@ -126,11 +128,12 @@ export default function BulletRewriter() {
 
         {/* Missing Keywords */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="br-keywords" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Missing Keywords
             <span className="ml-1.5 font-normal text-gray-400 text-xs">(from Gap Analysis above)</span>
           </label>
           <input
+            id="br-keywords"
             type="text"
             value={missingKeywords}
             onChange={(e) => setMissingKeywords(e.target.value)}
@@ -142,7 +145,7 @@ export default function BulletRewriter() {
         {/* Bullets textarea */}
         <div className="sm:col-span-2 space-y-1.5">
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+            <label htmlFor="br-bullets" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
               Your Resume Bullets <span className="text-red-400">*</span>
             </label>
             <span className={`text-xs font-medium ${overLimit ? "text-red-500" : "text-gray-400"}`}>
@@ -153,6 +156,7 @@ export default function BulletRewriter() {
             Paste weak or generic bullets — one per line. AI rewrites each to include your missing keywords.
           </p>
           <textarea
+            id="br-bullets"
             value={bullets}
             onChange={(e) => setBullets(e.target.value)}
             placeholder={"- Worked on backend services\n- Helped with deployments\n- Wrote code for the data pipeline"}

@@ -59,10 +59,11 @@ export default function GapAnalysis() {
       {/* Two-column paste area */}
       <div className="grid sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="gap-job-desc" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Job Description
           </label>
           <textarea
+            id="gap-job-desc"
             value={jobText}
             onChange={(e) => setJobText(e.target.value)}
             placeholder="Paste the full job description here..."
@@ -75,10 +76,11 @@ export default function GapAnalysis() {
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <label htmlFor="gap-resume" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Your Resume
           </label>
           <textarea
+            id="gap-resume"
             value={resumeText}
             onChange={(e) => setResumeText(e.target.value)}
             placeholder="Paste your resume text here (plain text — copy from Word, Google Docs, or PDF)..."
