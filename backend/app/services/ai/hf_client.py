@@ -1,9 +1,16 @@
+import asyncio
+import logging
 import os
 
 import httpx
 
 MODEL = "Qwen/Qwen2.5-7B-Instruct:fastest"
 API_URL = "https://router.huggingface.co/v1/chat/completions"
+
+_MAX_RETRIES = 2
+_BACKOFF_BASE = 1.0
+
+logger = logging.getLogger(__name__)
 
 _client: httpx.AsyncClient | None = None
 
@@ -33,6 +40,14 @@ def _get_api_key() -> str:
     return api_key
 
 
+def _is_retryable(exc: Exception) -> bool:
+    if isinstance(exc, httpx.TimeoutException):
+        return True
+    if isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code >= 500:
+        return True
+    return False
+
+
 async def call_hf(
     messages: list[dict],
     max_tokens: int,
@@ -54,11 +69,26 @@ async def call_hf(
     }
 
     client = _get_client()
-    response = await client.post(API_URL, json=payload, headers=headers, timeout=timeout)
-    response.raise_for_status()
-    data = response.json()
+    last_exc: Exception | None = None
 
-    try:
-        return data["choices"][0]["message"]["content"]
-    except (KeyError, IndexError, TypeError):
-        raise RuntimeError(f"Unexpected response shape from HuggingFace: {data}") from None
+    for attempt in range(_MAX_RETRIES + 1):
+        try:
+            response = await client.post(API_URL, json=payload, headers=headers, timeout=timeout)
+            response.raise_for_status()
+            data = response.json()
+
+            try:
+                return data["choices"][0]["message"]["content"]
+            except (KeyError, IndexError, TypeError):
+                raise RuntimeError(f"Unexpected response shape from HuggingFace: {data}") from None
+
+        except Exception as exc:
+            last_exc = exc
+            if attempt < _MAX_RETRIES and _is_retryable(exc):
+                delay = _BACKOFF_BASE * (2 ** attempt)
+                logger.warning("HF call attempt %d failed (%s), retrying in %.1fs", attempt + 1, exc, delay)
+                await asyncio.sleep(delay)
+                continue
+            raise
+
+    raise last_exc  # type: ignore[misc]

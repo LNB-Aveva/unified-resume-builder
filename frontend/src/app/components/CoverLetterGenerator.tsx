@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CoverLetterResponse, API_URL, connectionError } from "../types";
 import { useLoadingMessages } from "../hooks/useLoadingMessages";
+import { fetchWithRetry } from "../lib/fetchWithRetry";
 import Spinner from "./Spinner";
 import { DEMO_JOB_TITLE, DEMO_COMPANY_NAME, DEMO_JOB_DESCRIPTION_SHORT, DEMO_EXPERIENCE_BULLETS, DEMO_SKILLS } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
@@ -61,7 +62,7 @@ export default function CoverLetterGenerator() {
     startLoading();
 
     try {
-      const res = await fetch(`${API_URL}/api/v1/cover-letter`, {
+      const res = await fetchWithRetry(`${API_URL}/api/v1/cover-letter`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -20,6 +20,22 @@
 
 ## Decisions
 
+### DEC-013: Keyword Extraction Cache (SHA-256 + OrderedDict + TTL)
+- **Date:** 2026-07-29
+- **Agent:** claude
+- **Context:** Keyword extraction runs regex across 220+ skills on every request. Same JD produces identical results — wasted CPU on repeated calls.
+- **Decision:** In-memory OrderedDict keyed by SHA-256(raw_text + title + company). Max 128 entries, 5-minute TTL. Evicts LRU on overflow.
+- **Alternatives Considered:** functools.lru_cache — rejected; doesn't support TTL. Redis — rejected; adds infra dependency for a cache that's fine in-process.
+- **Files Affected:** `backend/app/services/nlp/keyword_extractor.py`
+
+### DEC-012: Request Timeout via anyio.fail_after (60s)
+- **Date:** 2026-07-29
+- **Agent:** claude
+- **Context:** No request timeout existed. A hanging HuggingFace call could block a request indefinitely, exhausting Render's connection pool.
+- **Decision:** RequestTimeoutMiddleware using `anyio.fail_after(60)` wraps all requests. Returns 504 on timeout. Used anyio instead of asyncio for trio test compatibility.
+- **Alternatives Considered:** asyncio.wait_for — rejected; breaks trio-backed tests. uvicorn timeout flag — rejected; kills the worker, not the request.
+- **Files Affected:** `backend/app/main.py`
+
 ### DEC-011: Grade Boundaries — A≥85, B≥65, C≥50, D≥30, F<30
 - **Date:** 2026-07-29
 - **Agent:** claude

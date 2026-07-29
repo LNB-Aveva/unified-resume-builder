@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ATSScore, API_URL, connectionError } from "../types";
+import { fetchWithRetry } from "../lib/fetchWithRetry";
 import { createClient } from "../lib/supabase/client";
 import { getScoreStyle } from "../lib/score-styles";
 import Spinner from "./Spinner";
@@ -30,7 +31,7 @@ export default function ShareableScoreWidget() {
     setScore(null);
 
     try {
-      const res = await fetch(`${API_URL}/api/v1/gap`, {
+      const res = await fetchWithRetry(`${API_URL}/api/v1/gap`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ job_text: jobText, resume_text: resumeText }),

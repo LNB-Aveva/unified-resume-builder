@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 3 COMPLETE. Phase 4 (Reliability & Performance) is next.
+- **Status:** Phase 4 COMPLETE. Phase 5 (Tests & CI Hardening) is next.
 
 ---
 
@@ -19,13 +19,47 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-07-29                 |
-| Working On | Phase 3 complete — ready for commit
+| Working On | Phase 4 complete — ready for commit
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 69 — 2026-07-29
+- **Agent:** claude
+- **Did:**
+  - Completed Phase 4 (Reliability & Performance) — all 6 tasks DONE
+  - 4.1: GitHub Actions cron keepalive (pings /health every 14 min) + fetchWithRetry in all 8 frontend API components (auto-retry on network errors with 3s delay)
+  - 4.2: HuggingFace retry with exponential backoff (2 retries, 1s→2s, on timeout/5xx only)
+  - 4.3: Graceful degradation — AI-specific error messages in connectionError(), fetchWithRetry wired into SummaryGenerator, BulletRewriter, CoverLetterGenerator, BulletPreviewWidget, AnalyzerDemo, ComplianceChecker, GapAnalysis, ResumeExporter, ShareableScoreWidget
+  - 4.4: Request timeout middleware (anyio.fail_after 60s) — kills hanging requests
+  - 4.5: PDF stress test with 20 jobs × 30 bullets across all 3 templates (5 new tests, all pass)
+  - 4.6: Keyword extraction cache (SHA-256 keyed, 128 entries, 5-min TTL)
+  - 272 tests passing (up from 267)
+- **Files Changed:**
+  - `backend/app/services/ai/hf_client.py` (retry + backoff logic)
+  - `backend/app/main.py` (RequestTimeoutMiddleware with anyio)
+  - `backend/app/services/nlp/keyword_extractor.py` (LRU cache with TTL)
+  - `backend/tests/unit/test_pdf_generation.py` (new — 5 stress tests)
+  - `frontend/src/app/lib/fetchWithRetry.ts` (new — auto-retry on network errors)
+  - `frontend/src/app/types.ts` (AI-specific error messages)
+  - `frontend/src/app/components/SummaryGenerator.tsx` (fetchWithRetry)
+  - `frontend/src/app/components/BulletRewriter.tsx` (fetchWithRetry)
+  - `frontend/src/app/components/CoverLetterGenerator.tsx` (fetchWithRetry)
+  - `frontend/src/app/components/BulletPreviewWidget.tsx` (fetchWithRetry)
+  - `frontend/src/app/components/AnalyzerDemo.tsx` (fetchWithRetry)
+  - `frontend/src/app/components/ComplianceChecker.tsx` (fetchWithRetry)
+  - `frontend/src/app/components/GapAnalysis.tsx` (fetchWithRetry)
+  - `frontend/src/app/components/ResumeExporter.tsx` (fetchWithRetry)
+  - `frontend/src/app/components/ShareableScoreWidget.tsx` (fetchWithRetry)
+  - `.github/workflows/keepalive.yml` (new — cron ping)
+  - `docs/LAUNCH_PROGRAM.md` (Phase 4 marked complete)
+- **Next Steps:**
+  - Phase 5: Tests & CI Hardening
+- **Blockers:**
+  - None
 
 ### Session 68 — 2026-07-29
 - **Agent:** claude
@@ -190,7 +224,7 @@
 - **Stack:** Next.js 16 (frontend/) + FastAPI (backend/) + Supabase auth/db
 - **Domain:** resumeai.cv (Vercel deploy)
 - **Backend deploy:** Render (render.yaml)
-- **Tests:** 267 passing (backend pytest), frontend production build clean
+- **Tests:** 272 passing (backend pytest), frontend production build clean
 - **proxy.ts IS the Next.js middleware** — never recreate middleware.ts
 - **Commit rule:** no Co-Authored-By, no AI attribution, ever
 - **Localhost rule:** make changes → localhost:3000 → user approves → then commit

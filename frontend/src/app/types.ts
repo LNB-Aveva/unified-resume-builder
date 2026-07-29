@@ -79,5 +79,11 @@ export function connectionError(err: unknown): string {
       "Please wait 30–60 seconds and try again."
     );
   }
+  if (msg.includes("AI service") || msg.includes("AI model timed out") || msg.includes("AI generation failed")) {
+    return (
+      "AI features are temporarily unavailable. " +
+      "This usually resolves within a minute — please try again shortly."
+    );
+  }
   return msg || "Something went wrong. Please try again.";
 }

@@ -4,8 +4,10 @@ import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
+import anyio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -21,6 +23,21 @@ from app.services.ai.hf_client import close_client
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     yield
     await close_client()
+
+
+_REQUEST_TIMEOUT = 60.0
+
+
+class RequestTimeoutMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        try:
+            with anyio.fail_after(_REQUEST_TIMEOUT):
+                return await call_next(request)
+        except TimeoutError:
+            return JSONResponse(
+                status_code=504,
+                content={"detail": "Request timed out. Please try again."},
+            )
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -67,6 +84,7 @@ app.add_middleware(
 )
 
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RequestTimeoutMiddleware)
 
 app.include_router(analyze.router, prefix="/api/v1", tags=["Analysis"])
 app.include_router(score.router, prefix="/api/v1", tags=["Scoring"])

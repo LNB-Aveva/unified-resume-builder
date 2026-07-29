@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { JobAnalysis, API_URL, connectionError } from "../types";
+import { fetchWithRetry } from "../lib/fetchWithRetry";
 import Spinner from "./Spinner";
 import { DEMO_JOB_DESCRIPTION } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
@@ -22,7 +23,7 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
     setResult(null);
 
     try {
-      const res = await fetch(`${API_URL}/api/v1/analyze`, {
+      const res = await fetchWithRetry(`${API_URL}/api/v1/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ raw_text: jobText }),

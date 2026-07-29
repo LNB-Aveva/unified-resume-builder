@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { SummaryResponse, API_URL, connectionError } from "../types";
 import { useLoadingMessages } from "../hooks/useLoadingMessages";
+import { fetchWithRetry } from "../lib/fetchWithRetry";
 import Spinner from "./Spinner";
 import { DEMO_JOB_TITLE, DEMO_JOB_DESCRIPTION, DEMO_EXPERIENCE_BULLETS, DEMO_YEARS_EXPERIENCE, DEMO_SKILLS } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
@@ -40,7 +41,7 @@ export default function SummaryGenerator() {
     startLoading();
 
     try {
-      const res = await fetch(`${API_URL}/api/v1/summary`, {
+      const res = await fetchWithRetry(`${API_URL}/api/v1/summary`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

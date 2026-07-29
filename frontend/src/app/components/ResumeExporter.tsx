@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { API_URL } from "../types";
+import { fetchWithRetry } from "../lib/fetchWithRetry";
 import Spinner from "./Spinner";
 import { DEMO_PERSONAL, DEMO_SUMMARY, DEMO_EXPERIENCE, DEMO_EDUCATION, DEMO_RESUME_SKILLS } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
@@ -207,7 +208,7 @@ export default function ResumeExporter() {
     };
 
     try {
-      const res = await fetch(`${API_URL}/api/v1/export/pdf`, {
+      const res = await fetchWithRetry(`${API_URL}/api/v1/export/pdf`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

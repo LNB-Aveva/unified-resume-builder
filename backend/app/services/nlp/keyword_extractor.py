@@ -1,9 +1,16 @@
 """Extracts hard skills, soft skills, and requirements from raw job descriptions."""
 
+import hashlib
 import re
+import time
+from collections import OrderedDict
 
 from app.schemas.job import JobAnalysis, JobDescription
 from app.services.nlp import taxonomy
+
+_CACHE_MAX_SIZE = 128
+_CACHE_TTL = 300  # 5 minutes
+_cache: OrderedDict[str, tuple[float, JobAnalysis]] = OrderedDict()
 
 HARD_SKILLS: frozenset[str] = taxonomy.get_hard_skills()
 SOFT_SKILLS: frozenset[str] = taxonomy.get_soft_skills()
@@ -152,7 +159,22 @@ def _infer_job_title(job: JobDescription) -> str:
     return "Unknown Position"
 
 
+def _cache_key(job: JobDescription) -> str:
+    raw = f"{job.raw_text}|{job.title or ''}|{job.company or ''}"
+    return hashlib.sha256(raw.encode()).hexdigest()
+
+
 def extract_keywords(job: JobDescription) -> JobAnalysis:
+    key = _cache_key(job)
+    now = time.monotonic()
+
+    if key in _cache:
+        ts, result = _cache[key]
+        if now - ts < _CACHE_TTL:
+            _cache.move_to_end(key)
+            return result
+        del _cache[key]
+
     text = job.raw_text
     text_lower = text.lower()
 
@@ -166,7 +188,7 @@ def extract_keywords(job: JobDescription) -> JobAnalysis:
 
     all_keywords = sorted(set(hard_skills + soft_skills + context_skills))
 
-    return JobAnalysis(
+    result = JobAnalysis(
         job_title=job_title,
         company=job.company,
         hard_skills=hard_skills + context_skills,
@@ -176,3 +198,9 @@ def extract_keywords(job: JobDescription) -> JobAnalysis:
         keywords=all_keywords,
         responsibilities=responsibilities,
     )
+
+    _cache[key] = (now, result)
+    if len(_cache) > _CACHE_MAX_SIZE:
+        _cache.popitem(last=False)
+
+    return result

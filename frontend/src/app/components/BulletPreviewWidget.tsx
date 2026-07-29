@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { API_URL } from "../types";
+import { fetchWithRetry } from "../lib/fetchWithRetry";
 
 const EXAMPLES = [
   "Responsible for managing the sales team and hitting targets",
@@ -32,7 +33,7 @@ export default function BulletPreviewWidget() {
     setError(null);
     setResult(null);
     try {
-      const res = await fetch(`${API_URL}/api/v1/preview-rewrite`, {
+      const res = await fetchWithRetry(`${API_URL}/api/v1/preview-rewrite`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bullet: trimmed }),

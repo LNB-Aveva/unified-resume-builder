@@ -1,0 +1,23 @@
+name: Keepalive
+
+on:
+  schedule:
+    - cron: "*/14 * * * *"
+
+jobs:
+  ping:
+    name: Ping backend health
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake up Render backend
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 \
+            "${BACKEND_URL}/health" || echo "000")
+          echo "Health check returned: $status"
+          if [ "$status" = "000" ]; then
+            echo "::warning::Backend did not respond within 60s (cold start?)"
+          elif [ "$status" != "200" ]; then
+            echo "::warning::Backend returned $status"
+          fi
+        env:
+          BACKEND_URL: ${{ vars.BACKEND_URL || 'https://unified-resume-builder-api.onrender.com' }}

@@ -1,7 +1,7 @@
 # LAUNCH_PROGRAM.md — Hardening & Launch Roadmap
 
 > **Every session reads this first. Every session updates it before exit.**
-> Last updated: 2026-07-29 (Session 68 — Phase 3 COMPLETE, 9/9 tasks DONE)
+> Last updated: 2026-07-29 (Session 69 — Phase 4 COMPLETE, 6/6 tasks DONE)
 
 ---
 
@@ -12,7 +12,7 @@
 | Frontend (resumeai.cv) | **LIVE** on Vercel, renders correctly | WebFetch 200, hero text confirmed |
 | Backend (Render) | **SLEEPING** — 503 on cold fetch | Free tier spins down after 15 min |
 | Backend (local) | **WORKS** — all 9 endpoints hit and verified | uvicorn on :8001, manual curl of every route |
-| Tests | **212 pass** in 11.4s (7 test files, ~1519 lines) | `pytest -x -q` from `backend/` |
+| Tests | **272 pass** in ~15s | `pytest -x -q` from `backend/` |
 | CI | **GREEN** — last 5 runs all success | `gh run list --limit 5` |
 | Frontend build | **CLEAN** — 26 pages, no warnings | `npm run build` |
 | Supabase tables | `jobs` + `shared_scores` in schema; **`profiles` missing from SQL** | supabase-schema.sql vs code grep |
@@ -140,12 +140,12 @@
 
 | Task | File(s) | Status |
 |------|---------|--------|
-| 4.1 Solve Render cold start: either upgrade to paid tier, add a cron ping (UptimeRobot or GitHub Actions cron), or add a "warming up" UI state that's better than a blank hang | render.yaml, frontend loading states | TODO |
-| 4.2 Add timeout + retry for HuggingFace calls (currently 30s default, no retry) | backend/app/services/ai/hf_client.py | TODO |
-| 4.3 Add graceful degradation when HuggingFace is down: show "AI features temporarily unavailable" instead of 500/502/503/504 | frontend components (SummaryGenerator, BulletRewriter, CoverLetterGenerator) | TODO |
-| 4.4 Add request timeout middleware (kill requests that hang > 30s) | backend/app/main.py | TODO |
-| 4.5 Test PDF generation with large resumes (20 experiences, 30 bullets each) — does it OOM on 512MB Render? | backend/app/services/export/pdf_generator.py | TODO |
-| 4.6 Add caching for keyword extraction (same JD → same result, no need to recompute) | backend/app/services/nlp/keyword_extractor.py | TODO |
+| 4.1 Solve Render cold start: GitHub Actions cron pings /health every 14 min + frontend auto-retry (fetchWithRetry) on network errors | .github/workflows/keepalive.yml, frontend/src/app/lib/fetchWithRetry.ts | DONE |
+| 4.2 Add timeout + retry for HuggingFace calls: 2 retries with exponential backoff (1s, 2s) on timeout/5xx | backend/app/services/ai/hf_client.py | DONE |
+| 4.3 Graceful degradation: AI-specific error messages in connectionError(), fetchWithRetry in all 8 API-calling components | frontend/src/app/types.ts, all components | DONE |
+| 4.4 Request timeout middleware: anyio.fail_after(60s) wrapping all requests | backend/app/main.py (RequestTimeoutMiddleware) | DONE |
+| 4.5 PDF stress test: 20 jobs × 30 bullets across all 3 templates, size < 5MB, empty resume edge case | backend/tests/unit/test_pdf_generation.py (5 tests) | DONE |
+| 4.6 Keyword extraction cache: SHA-256 keyed OrderedDict, 128 entries max, 5-min TTL | backend/app/services/nlp/keyword_extractor.py | DONE |
 
 **Definition of Done:** First visitor after a cold start sees a loading state, not a timeout. HuggingFace outage doesn't crash the app. Large PDFs generate without OOM.
 
