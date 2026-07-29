@@ -106,6 +106,34 @@ export async function deleteAccount(): Promise<FormState> {
   redirect("/");
 }
 
+export async function exportUserData(): Promise<{ json?: string; error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated." };
+  }
+
+  const [profileResult, jobsResult] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", user.id).single(),
+    supabase.from("jobs").select("*").eq("user_id", user.id).order("date_added", { ascending: false }),
+  ]);
+
+  const exportData = {
+    exported_at: new Date().toISOString(),
+    account: {
+      email: user.email,
+      created_at: user.created_at,
+    },
+    profile: profileResult.data ?? null,
+    jobs: jobsResult.data ?? [],
+  };
+
+  return { json: JSON.stringify(exportData, null, 2) };
+}
+
 export async function forgotPassword(
   _state: FormState,
   formData: FormData

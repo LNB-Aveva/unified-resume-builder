@@ -137,8 +137,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}` }} />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
-      <CookieConsent gaId={gaId} />
+      <body className="min-h-full flex flex-col">
+        {children}
+        <CookieConsent gaId={gaId} />
+      </body>
     </html>
   );
 }

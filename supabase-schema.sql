@@ -110,6 +110,25 @@ create index if not exists idx_shared_scores_expires_at
   on public.shared_scores(expires_at);
 
 -- -----------------------------------------------------------------------
+-- cleanup_expired_scores: deletes shared_scores rows past their
+-- expires_at timestamp. Call via pg_cron (paid tier) or an external
+-- cron hitting GET /api/v1/cleanup?key=<SECRET>.
+-- -----------------------------------------------------------------------
+create or replace function public.cleanup_expired_scores()
+returns int
+language sql
+security definer
+set search_path = ''
+as $$
+  with deleted as (
+    delete from public.shared_scores
+    where expires_at < now()
+    returning 1
+  )
+  select count(*)::int from deleted;
+$$;
+
+-- -----------------------------------------------------------------------
 -- delete_own_user: allows an authenticated user to delete their own
 -- auth.users row. Runs as SECURITY DEFINER so it has the privileges
 -- to touch auth.users. The WHERE clause ensures a user can only

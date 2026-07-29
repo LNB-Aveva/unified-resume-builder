@@ -5,6 +5,7 @@ import ThemeToggle from "@/app/components/ThemeToggle";
 import UserMenu from "@/app/components/UserMenu";
 import AccountForm from "./AccountForm";
 import DeleteAccountButton from "./DeleteAccountButton";
+import ExportDataButton from "./ExportDataButton";
 
 export const metadata = {
   title: "Account",
@@ -70,6 +71,16 @@ export default async function AccountPage() {
               yearsExperience: profile?.years_experience?.toString() ?? "",
             }}
           />
+        </div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 mt-6">
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+            Your Data
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Download a copy of your profile and job tracker entries as a JSON file.
+          </p>
+          <ExportDataButton />
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-red-200 dark:border-red-900/50 p-6 mt-6">
