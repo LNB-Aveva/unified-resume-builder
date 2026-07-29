@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** ALL code tasks for Phases 1-9 DONE. Remaining items BLOCKED on user external actions. Phase 10 (Launch) is next.
+- **Status:** Re-audit found launch Blockers despite prior phase labels: current CI is red, saved resume/version persistence is missing, backend AI routes lack token verification, anonymous score writes bypass API limits, and AdSense is not ready. Follow the refreshed 12-phase program.
 
 ---
 
@@ -17,15 +17,31 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
+| Agent      | codex                      |
 | Started    | 2026-07-29                 |
-| Working On | Session complete. Handover written for Codex continuation.
+| Working On | Audit and launch-program refresh complete; awaiting localhost review/approval before any implementation or commit. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 71 — 2026-07-29
+- **Agent:** codex
+- **Did:**
+  - Re-audited all 234 tracked files and refreshed `docs/LAUNCH_PROGRAM.md` into a 12-phase, evidence-based program
+  - Installed/verified dependencies; ran 291 backend tests at 82.44% coverage, frontend lint/build, six Playwright smoke tests, Bandit, npm audit, pip-audit, Ruff, and mypy
+  - Started a fresh backend and hit all nine routes; all returned 200 with outbound Hugging Face access
+  - Verified production frontend, compiled Render API target, backend health, production CORS, security headers, robots, sitemap, and missing ads.txt
+  - Verified production Supabase exposes `profiles`, `jobs`, and `shared_scores`; confirmed `resumes` and `resume_versions` are missing
+  - Found current `main` CI red, backend AI routes unauthenticated, anonymous direct `shared_scores` writes, CSP-blocked GA4, shallow E2E coverage, stale public stack claims, and current Python advisories
+- **Files Changed:**
+  - `docs/LAUNCH_PROGRAM.md`
+  - `.ai-sync/WORKLOG.md`
+  - `.ai-sync/DECISIONS.md`
+- **Next:** Restore green CI first; then authenticate cost-bearing routes and implement saved resume/version persistence with two-user RLS tests
+- **Blockers:** AdSense publisher ID/certified CMP setup, Sentry DSN/dashboard verification, uptime/cost alarms, backup plan, and monthly budget ceiling require owner input
 
 ### Session 70 — 2026-07-29
 - **Agent:** claude
@@ -244,7 +260,7 @@
 - **Stack:** Next.js 16 (frontend/) + FastAPI (backend/) + Supabase auth/db
 - **Domain:** resumeai.cv (Vercel deploy)
 - **Backend deploy:** Render (render.yaml)
-- **Tests:** 272 passing (backend pytest), frontend production build clean
+- **Tests:** 291 passing (backend pytest), 82.44% measured services/routes coverage; frontend lint/build and six smoke tests pass locally
 - **proxy.ts IS the Next.js middleware** — never recreate middleware.ts
 - **Commit rule:** no Co-Authored-By, no AI attribution, ever
 - **Localhost rule:** make changes → localhost:3000 → user approves → then commit

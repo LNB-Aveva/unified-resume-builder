@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-018: Restore Twelve Separate Launch Gates
+- **Date:** 2026-07-29
+- **Agent:** codex
+- **Context:** The prior roadmap merged security, privacy, legal, auth, persistence, observability, and release work. That allowed code-complete subtasks to obscure unproven exit gates, including missing saved-resume persistence, cross-user RLS tests, and red CI.
+- **Decision:** Track the launch program as twelve separate phases with explicit Definitions of Done and exit gates. Execution priority is green CI, authenticated/capped data and AI paths, saved resume versioning with RLS proof, then AdSense/operations/release gates. Any open Blocker makes launch a no-go.
+- **Alternatives Considered:** Keep the compressed ten-phase roadmap — rejected because phase-level completion labels were masking mandatory unfinished work.
+- **Files Affected:** `docs/LAUNCH_PROGRAM.md`
+
 ### DEC-017: Coverage Floor Raised to 80%
 - **Date:** 2026-07-29
 - **Agent:** claude
