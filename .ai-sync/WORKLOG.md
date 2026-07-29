@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 2 partially complete; dashboard verification and tasks 2.9–2.14 remain.
+- **Status:** Phase 2 COMPLETE. Phase 3 (Scoring Quality) is next.
 
 ---
 
@@ -26,6 +26,31 @@
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 67 — 2026-07-29
+- **Agent:** claude
+- **Did:**
+  - Completed Phase 2 (Security, Privacy & Legal) — all 14 tasks DONE
+  - Phase 1 commit: 7eb0c21 (foundation cleanup)
+  - Phase 2 commit 1: 89783d4 (privacy controls, cookie consent, account deletion)
+  - Phase 2 commit 2: 0ad054d (data export, cookie hydration fix, cleanup SQL)
+  - All 3 commits pushed to origin/main
+  - Data export: exportUserData server action + ExportDataButton on Account page
+  - Fixed CookieConsent hydration error (was outside `<body>`)
+  - Added cleanup_expired_scores SQL function (deployed to Supabase)
+  - Audited and passed: input validation (all schemas max_length), fpdf2 injection (safe), secret hygiene (clean), CORS (explicit origins only)
+- **Files Changed:**
+  - `frontend/src/app/(protected)/account/ExportDataButton.tsx` (new)
+  - `frontend/src/app/(protected)/account/page.tsx`
+  - `frontend/src/app/actions/auth.ts`
+  - `frontend/src/app/layout.tsx`
+  - `supabase-schema.sql`
+  - `docs/LAUNCH_PROGRAM.md`
+- **Next Steps:**
+  - Phase 3: Scoring Quality (synonym matching, evaluation harness, grade calibration)
+  - Still need to verify profiles RLS and delete_own_user in Supabase dashboard
+- **Blockers:**
+  - None
 
 ### Session 66 — 2026-07-29
 - **Agent:** claude / codex

@@ -20,6 +20,30 @@
 
 ## Decisions
 
+### DEC-007: Cookie Consent — localStorage + Dynamic GA4 Loading
+- **Date:** 2026-07-29
+- **Agent:** claude
+- **Context:** GDPR/ePrivacy requires consent before analytics/advertising cookies. GA4 was loading unconditionally.
+- **Decision:** CookieConsent component stores consent in localStorage (`cookie_consent` key). GA4 scripts are dynamically injected only after "Accept". Cookie Settings button in footer resets consent.
+- **Alternatives Considered:** Third-party consent SDK (CookieYes, OneTrust) — rejected; adds external dependency for a simple use case.
+- **Files Affected:** `frontend/src/app/components/CookieConsent.tsx`, `frontend/src/app/layout.tsx`
+
+### DEC-008: Account Deletion via SQL SECURITY DEFINER Function
+- **Date:** 2026-07-29
+- **Agent:** claude
+- **Context:** Users need to delete their own auth.users row (GDPR Art. 17). Supabase client SDK cannot delete from auth.users directly.
+- **Decision:** SQL function `delete_own_user()` with SECURITY DEFINER executes `delete from auth.users where id = auth.uid()`. Frontend server action deletes jobs → profiles → calls RPC → signs out.
+- **Alternatives Considered:** Supabase Edge Function with service_role key — rejected; adds infra complexity. Admin API call from backend — rejected; backend doesn't connect to Supabase.
+- **Files Affected:** `supabase-schema.sql`, `frontend/src/app/actions/auth.ts`
+
+### DEC-009: Data Export as JSON Download (No Email)
+- **Date:** 2026-07-29
+- **Agent:** claude
+- **Context:** GDPR data portability right requires users to export their data.
+- **Decision:** Server action fetches profile + jobs from Supabase, returns JSON string. Client component creates a Blob and triggers browser download. No email, no S3, no background job.
+- **Alternatives Considered:** Email export — rejected; requires email service. ZIP with PDF — rejected; overengineered for the data volume.
+- **Files Affected:** `frontend/src/app/actions/auth.ts`, `frontend/src/app/(protected)/account/ExportDataButton.tsx`
+
 ### DEC-006: Tool Count Fixed at 9
 - **Date:** 2026-07-25
 - **Agent:** claude

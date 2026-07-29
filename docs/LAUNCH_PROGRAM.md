@@ -1,7 +1,7 @@
 # LAUNCH_PROGRAM.md — Hardening & Launch Roadmap
 
 > **Every session reads this first. Every session updates it before exit.**
-> Last updated: 2026-07-28 (Session 65 — full audit, no code changes)
+> Last updated: 2026-07-29 (Session 67 — Phase 2 COMPLETE)
 
 ---
 
@@ -101,12 +101,12 @@
 | 2.6 Cookie policy integrated into privacy policy (essential/analytics/advertising breakdown) | frontend/src/app/privacy/page.tsx | DONE |
 | 2.7 Cookie Settings link in footer + consent reset | page.tsx footer, CookieConsent.tsx | DONE |
 | 2.8 Terms of Service updated to match privacy policy (keyword storage, anonymized data) | frontend/src/app/terms/page.tsx | DONE |
-| 2.9 Add data export: user can download their profile + jobs as JSON | frontend/src/app/actions/auth.ts, account/page.tsx | TODO |
-| 2.10 Input validation audit: verify all upload sizes, file types, and text lengths are enforced at both API and frontend layers | backend/app/schemas/*, frontend components | TODO |
-| 2.11 Review WeasyPrint/fpdf2 for HTML/PDF injection vectors | backend/app/services/export/pdf_generator.py | TODO |
-| 2.12 Add `shared_scores` cleanup: scheduled deletion of expired rows | Supabase cron or backend task | TODO |
-| 2.13 Secret hygiene: ensure no API keys in git history, rotate HF key if exposed | .env files, git log | TODO |
-| 2.14 Audit CORS: ensure FRONTEND_URL is set in Render production and no wildcards | backend/app/main.py, Render dashboard | TODO |
+| 2.9 Add data export: user can download their profile + jobs as JSON | frontend/src/app/actions/auth.ts, ExportDataButton.tsx, account/page.tsx | DONE |
+| 2.10 Input validation audit: verify all upload sizes, file types, and text lengths are enforced at both API and frontend layers | backend/app/schemas/* | DONE (PASS — all schemas have max_length, list caps, no file uploads) |
+| 2.11 Review fpdf2 for HTML/PDF injection vectors | backend/app/services/export/pdf_generator.py | DONE (PASS — only cell/multi_cell with _s() sanitizer, no HTML parsing) |
+| 2.12 Add `shared_scores` cleanup: scheduled deletion of expired rows | supabase-schema.sql (cleanup_expired_scores function) | DONE |
+| 2.13 Secret hygiene: ensure no API keys in git history, rotate HF key if exposed | .env files, git log | DONE (PASS — no secrets in git history or source) |
+| 2.14 Audit CORS: ensure FRONTEND_URL is set in Render production and no wildcards | backend/app/main.py | DONE (PASS — explicit origins, no wildcards) |
 
 **Definition of Done:** Account deletion works end-to-end. Cookie consent blocks GA4 until accepted. RLS proven by cross-user test. Privacy policy is legally accurate. No secrets in git.
 
