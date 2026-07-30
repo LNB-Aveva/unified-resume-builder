@@ -201,7 +201,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 9.1 Keep privacy, terms, AI-processing disclosure, cookie categories, rights, and 30-day shared-score retention accurate. | privacy/terms pages | PARTIAL |
+| 9.1 Keep privacy, terms, AI-processing disclosure, cookie categories, rights, and 30-day shared-score retention accurate. | privacy/terms pages | DONE — reconciled export fields, consent behavior, 30-day score expiry/cleanup, AI circuit breaking, access-log metadata, and layered rate limits with current code |
 | 9.2 Update policy and retention schedule for saved resumes/versions before persistence ships. | privacy and terms pages | DONE — documents stored fields, Supabase PostgreSQL, immutable timestamped versions, retention, cascade deletion, and complete JSON export |
 | 9.3 Replace inaccurate vendor/technology claims and document Hugging Face processing and telemetry controls precisely. | legal pages, public copy | DONE — privacy and terms describe taxonomy synonym matching, fpdf2, Hugging Face AI processing, saved-resume storage, and Sentry error tracking without resume content |
 | 9.4 Keep a reachable support email; `lnbingi.work@gmail.com` currently appears in privacy and terms. Add a dedicated contact route if that is the launch identity. | privacy/terms/footer/contact | VERIFY owner acceptance |

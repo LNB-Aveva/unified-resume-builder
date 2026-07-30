@@ -74,9 +74,10 @@ export default function TermsOfService() {
             </p>
             <p>
               Deleting a resume removes it and all of its versions. Account deletion removes all resumes, all version snapshots,
-              jobs, profile data, and your authentication identity. Your JSON data export includes all resumes and version
-              snapshots. When you create a shareable ATS score link, the matched and missing keyword lists are stored for up to
-              30 days. We may use anonymized, aggregated keyword data to improve our matching algorithms.
+              jobs, profile data, and your authentication identity. Your JSON data export includes your account email and creation
+              date, profile, jobs, saved-resume metadata, and all resume version snapshots. When you create a shareable ATS score
+              link, the score and matched and missing keyword lists expire 30 days after creation; expired records are removed by
+              the cleanup process based on their expiration timestamp.
             </p>
           </div>
         </section>
@@ -89,6 +90,9 @@ export default function TermsOfService() {
             You are responsible for reviewing and editing all AI-generated content before using it. We do not guarantee
             that AI-generated content is accurate, complete, or free from errors. AI outputs should not be used verbatim
             without review.
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
+            When our AI provider experiences sustained outages, the system temporarily pauses AI requests to prevent degraded responses, automatically recovering when service is restored.
           </p>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
             We use Sentry for backend error tracking. No resume content is transmitted to Sentry.
@@ -109,7 +113,9 @@ export default function TermsOfService() {
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
             We strive to maintain high availability but do not guarantee uninterrupted access. The Service may be temporarily
             unavailable due to maintenance, updates, or circumstances beyond our control. We reserve the right to modify,
-            suspend, or discontinue any part of the Service at any time.
+            suspend, or discontinue any part of the Service at any time. Tool endpoints are subject to route-specific request
+            limits, and the backend also enforces a global limit of 200 requests per minute per IP address. Requests that exceed
+            an applicable limit may be temporarily rejected.
           </p>
         </section>
 

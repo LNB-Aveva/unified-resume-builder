@@ -39,12 +39,8 @@ export default function PrivacyPolicy() {
               <p>Text you paste into our tools (job descriptions, resume content, bullet points) is processed in your browser or sent to our backend API for analysis and AI features. We store resume content only when you explicitly use the saved-resume feature. When you use the shareable ATS score feature, we store the matched and missing keyword lists (not your resume text) for up to 30 days so the share link remains accessible.</p>
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Keyword Data</h3>
-              <p>We may use anonymized, aggregated keyword data from tool usage to improve our matching algorithms. This data cannot be linked back to individual users or resumes.</p>
-            </div>
-            <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Usage Data</h3>
-              <p>We use Google Analytics to collect anonymous usage data (pages visited, features used, device type). This helps us improve the product. No personally identifiable information is sent to Google Analytics.</p>
+              <p>After you consent, Google Analytics collects usage data such as pages visited, features used, and device type. For security, reliability, and rate limiting, our backend also processes request metadata including IP address, method, path, response status, and request duration. Resume and job-description content is not included in access logs.</p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Error Data</h3>
@@ -64,9 +60,7 @@ export default function PrivacyPolicy() {
             <li>To authenticate your account and manage sessions</li>
             <li>To process summary generation, bullet rewriting, and cover letter generation through our FastAPI backend using Hugging Face as the AI inference provider</li>
             <li>To analyze resume matches using a curated skill taxonomy with synonym matching and generate PDF exports with fpdf2</li>
-            <li>To improve our matching algorithms using anonymized, aggregated keyword data</li>
             <li>To improve our website and user experience through anonymized analytics</li>
-            <li>To display relevant advertisements through Google AdSense (with your consent)</li>
           </ul>
         </section>
 
@@ -82,6 +76,9 @@ export default function PrivacyPolicy() {
             <li>Transmitted securely over HTTPS</li>
             <li>Processed only for the purpose of generating your requested output</li>
           </ul>
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
+            When our AI provider experiences sustained outages, the system temporarily pauses AI requests to prevent degraded responses, automatically recovering when service is restored.
+          </p>
         </section>
 
         <section>
@@ -92,7 +89,6 @@ export default function PrivacyPolicy() {
             <li><strong>Sentry</strong> &mdash; Backend error tracking; no resume content is transmitted</li>
             <li><strong>Vercel</strong> &mdash; Website hosting and deployment</li>
             <li><strong>Google Analytics</strong> &mdash; Anonymous usage analytics (loaded only with your consent)</li>
-            <li><strong>Google AdSense</strong> &mdash; Advertising (loaded only with your consent)</li>
           </ul>
         </section>
 
@@ -100,7 +96,8 @@ export default function PrivacyPolicy() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Data Security</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
             We implement appropriate security measures including HTTPS encryption, secure authentication via Supabase,
-            Content Security Policy headers, and regular security audits.
+            Content Security Policy headers, and regular security audits. Tool endpoints have route-specific request limits,
+            and the backend also applies a global limit of 200 requests per minute per IP address.
           </p>
         </section>
 
@@ -109,12 +106,10 @@ export default function PrivacyPolicy() {
           <div className="space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed">
             <p>We retain your data according to the following schedule:</p>
             <ul className="list-disc list-inside space-y-2 mt-3">
-              <li><strong>Account data</strong> (email, profile) &mdash; retained while your account is active. Deleted within 30 days of account deletion.</li>
+              <li><strong>Account data</strong> (email, profile) &mdash; retained while your account is active and deleted when account deletion completes.</li>
               <li><strong>Job tracker entries</strong> &mdash; retained while your account is active. Deleted when you delete your account.</li>
               <li><strong>Saved resumes and versions</strong> &mdash; retained until you explicitly delete the resume or delete your account.</li>
-              <li><strong>Shareable ATS score links</strong> &mdash; automatically expire and are deleted after 30 days.</li>
-              <li><strong>Inactive accounts</strong> &mdash; accounts with no sign-in for 12 months may be deleted after notice to your registered email.</li>
-              <li><strong>Anonymized keyword data</strong> &mdash; retained indefinitely for algorithm improvement. This data cannot be linked to individuals.</li>
+              <li><strong>Shareable ATS score links</strong> &mdash; expire 30 days after creation. Expired records are removed by the cleanup process based on their expiration timestamp.</li>
             </ul>
           </div>
         </section>
@@ -144,7 +139,7 @@ export default function PrivacyPolicy() {
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
             <li>Access your account information via the Account page</li>
             <li>Delete your account and all associated data (saved resumes and versions, job tracker entries, profile, and authentication identity) from the Account page</li>
-            <li>Export your data, including all saved resumes and version snapshots, from the Account page</li>
+            <li>Export your account email and creation date, profile, job tracker entries, saved-resume metadata, and every resume version snapshot from the Account page</li>
             <li>Withdraw cookie consent at any time by clicking the cookie settings link in the footer</li>
             <li>Clear your browser localStorage at any time</li>
           </ul>
@@ -156,10 +151,9 @@ export default function PrivacyPolicy() {
             <p>We use the following types of cookies:</p>
             <ul className="list-disc list-inside space-y-2 mt-3">
               <li><strong>Essential cookies</strong> &mdash; required for authentication session management (via Supabase). These cannot be disabled.</li>
-              <li><strong>Analytics cookies</strong> &mdash; Google Analytics (GA4) collects anonymous usage data. Loaded only after you consent.</li>
-              <li><strong>Advertising cookies</strong> &mdash; Google AdSense may set cookies to display relevant ads. Loaded only after you consent.</li>
+              <li><strong>Analytics cookies</strong> &mdash; Google Analytics (GA4) is loaded only after you choose Accept.</li>
             </ul>
-            <p>You can manage your cookie preferences at any time using the cookie consent banner or the cookie settings link in the site footer.</p>
+            <p>We do not currently load advertising cookies. Your accepted or rejected analytics choice is stored in your browser&apos;s localStorage under <code>cookie_consent</code>. You can reset that choice at any time using the cookie settings link in the site footer.</p>
           </div>
         </section>
 
@@ -167,8 +161,8 @@ export default function PrivacyPolicy() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">GDPR (European Users)</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
             If you are in the European Economic Area, you have additional rights under the General Data Protection Regulation, including
-            the right to access, rectify, port, and erase your personal data. Our legal basis for processing is your consent (for analytics
-            and advertising cookies) and legitimate interest (for providing the service). To exercise your rights, use the Account page
+            the right to access, rectify, port, and erase your personal data. Our legal basis for processing is your consent (for analytics)
+            and legitimate interest (for providing and securing the service). To exercise your rights, use the Account page
             or contact us at the email below.
           </p>
         </section>
