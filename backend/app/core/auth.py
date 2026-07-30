@@ -14,7 +14,7 @@ _bearer = HTTPBearer(auto_error=False)
 
 
 async def require_auth(
-    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer),
+    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer),  # noqa: B008
 ) -> str:
     """FastAPI dependency that verifies a Supabase JWT and returns the user ID.
 
