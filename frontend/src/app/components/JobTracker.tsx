@@ -12,7 +12,13 @@ interface TrackedJob {
   url: string;
   status: Status;
   notes: string;
+  resumeId: string | null;
   dateAdded: string;
+}
+
+interface ResumeBrief {
+  id: string;
+  title: string;
 }
 
 const STORAGE_KEY = "resumeai_jobs";
@@ -84,6 +90,7 @@ async function loadJobsSupabase(): Promise<TrackedJob[]> {
     url: row.url ?? "",
     status: row.status as Status,
     notes: row.notes ?? "",
+    resumeId: row.resume_id ?? null,
     dateAdded: row.date_added,
   }));
 }
@@ -103,13 +110,31 @@ async function insertJobSupabase(job: TrackedJob): Promise<boolean> {
     url: job.url || null,
     status: job.status,
     notes: job.notes || null,
+    resume_id: job.resumeId || null,
     date_added: job.dateAdded,
   });
 
   return !error;
 }
 
-async function updateJobSupabase(id: string, fields: Partial<{ status: string; notes: string }>): Promise<boolean> {
+async function loadResumesSupabase(): Promise<ResumeBrief[]> {
+  const sb = getSupabase();
+  if (!sb) return [];
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user?.id || session.user.is_anonymous) return [];
+
+  const { data, error } = await sb
+    .from("resumes")
+    .select("id, title")
+    .eq("user_id", session.user.id)
+    .order("updated_at", { ascending: false });
+
+  if (error || !data) return [];
+  return data;
+}
+
+async function updateJobSupabase(id: string, fields: Partial<{ status: string; notes: string; resume_id: string | null }>): Promise<boolean> {
   const sb = getSupabase();
   if (!sb) return false;
 
@@ -138,10 +163,13 @@ export default function JobTracker() {
   const [jobs, setJobs] = useState<TrackedJob[]>([]);
   const [useSupabase, setUseSupabase] = useState(false);
 
+  const [resumes, setResumes] = useState<ResumeBrief[]>([]);
+
   const [company, setCompany] = useState("");
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [notes, setNotes] = useState("");
+  const [selectedResumeId, setSelectedResumeId] = useState<string>("");
   const [showForm, setShowForm] = useState(false);
   const [formError, setFormError] = useState("");
 
@@ -167,6 +195,8 @@ export default function JobTracker() {
             setJobs(sbJobs);
           }
           setUseSupabase(true);
+          const userResumes = await loadResumesSupabase();
+          setResumes(userResumes);
         } else {
           setJobs(loadJobsLocal());
         }
@@ -204,6 +234,7 @@ export default function JobTracker() {
       title: title.trim(),
       url: url.trim(),
       notes: notes.trim(),
+      resumeId: selectedResumeId || null,
       status: "Saved",
       dateAdded: new Date().toISOString(),
     };
@@ -214,7 +245,7 @@ export default function JobTracker() {
 
     if (useSupabase) await insertJobSupabase(newJob);
 
-    setCompany(""); setTitle(""); setUrl(""); setNotes("");
+    setCompany(""); setTitle(""); setUrl(""); setNotes(""); setSelectedResumeId("");
     setFormError("");
     setShowForm(false);
   }
@@ -225,6 +256,14 @@ export default function JobTracker() {
     persistLocal(updated);
 
     if (useSupabase) await updateJobSupabase(id, { status });
+  }
+
+  async function handleResumeChange(id: string, resumeId: string | null) {
+    const updated = jobs.map((j) => j.id === id ? { ...j, resumeId } : j);
+    setJobs(updated);
+    persistLocal(updated);
+
+    if (useSupabase) await updateJobSupabase(id, { resume_id: resumeId });
   }
 
   const notesTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -348,6 +387,21 @@ export default function JobTracker() {
                 className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-none"
               />
             </div>
+            {resumes.length > 0 && (
+              <div className="sm:col-span-2 space-y-1">
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">Link Resume</label>
+                <select
+                  value={selectedResumeId}
+                  onChange={(e) => setSelectedResumeId(e.target.value)}
+                  className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 cursor-pointer"
+                >
+                  <option value="">No resume linked</option>
+                  {resumes.map((r) => (
+                    <option key={r.id} value={r.id}>{r.title}</option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           {formError && (
@@ -469,9 +523,24 @@ export default function JobTracker() {
 
               {/* Footer */}
               <div className="flex items-center justify-between px-5 pb-3 -mt-1">
-                <p className="text-xs text-gray-400 dark:text-gray-500">Saved {formatDate(job.dateAdded)}</p>
+                <div className="flex items-center gap-3 min-w-0">
+                  <p className="text-xs text-gray-400 dark:text-gray-500 shrink-0">Saved {formatDate(job.dateAdded)}</p>
+                  {resumes.length > 0 && (
+                    <select
+                      value={job.resumeId ?? ""}
+                      onChange={(e) => handleResumeChange(job.id, e.target.value || null)}
+                      className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs text-gray-500 dark:text-gray-400 outline-none focus:border-indigo-400 cursor-pointer truncate max-w-[160px]"
+                      title={job.resumeId ? resumes.find((r) => r.id === job.resumeId)?.title ?? "Unknown resume" : "Link a resume"}
+                    >
+                      <option value="">No resume</option>
+                      {resumes.map((r) => (
+                        <option key={r.id} value={r.id}>{r.title}</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 shrink-0">
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : job.id)}
                     className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition"

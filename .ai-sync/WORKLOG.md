@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 4 nearly complete (4.4 deferred — needs UI). CI lint fix committed. Pre-commit hook enforces lint checks. RLS isolation tests written (20 tests). Finding F6 RESOLVED.
+- **Status:** Phase 4 COMPLETE (4.4 jobs→resume FK done). All Phase 4 tasks DONE. Codex completed 6.5+6.6+11.1 in parallel.
 
 ---
 
@@ -19,13 +19,28 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-07-30                 |
-| Working On | Phase 4.5 (RLS tests) DONE, Phase 4.6 (cascade verify) DONE, CI lint fix DONE, pre-commit hook DONE. Finding F6 RESOLVED. |
+| Working On | Phase 4.4 (jobs→resume FK + JobTracker UI) DONE. Phase 4 fully COMPLETE. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 79 — 2026-07-30
+- **Agent:** claude
+- **Did:**
+  - **Phase 4.4 DONE:** Added `resume_id` FK on jobs table → resumes with ON DELETE SET NULL; migration helper for existing tables; JobTracker UI updated with resume dropdown in add-job form and inline on each job card; `loadResumesSupabase()` fetches authenticated user's resumes; `handleResumeChange()` for inline linking/unlinking; all Supabase helpers updated to read/write resume_id; backwards-compatible with existing localStorage/Supabase data
+  - Phase 4 is now fully COMPLETE (all 7 tasks: 4.1–4.7 DONE)
+  - Verified Codex Session 78 commits (6.5 load tests, 6.6 HF circuit breaker, 11.1 deploy docs)
+  - Frontend lint clean, build clean, ruff clean
+- **Files Changed:**
+  - `supabase-schema.sql` (resume_id FK on jobs + migration ALTER TABLE)
+  - `frontend/src/app/components/JobTracker.tsx` (resume linking UI + helpers)
+  - `docs/LAUNCH_PROGRAM.md` (4.4 DONE)
+  - `.ai-sync/WORKLOG.md`
+- **Next:** Phase 7.2 (keyboard/screen-reader), 7.3 (responsive audit), 7.4 (Lighthouse accessibility)
+- **Blockers:** Browser extension can't capture localhost screenshots (permission issue); user should verify UI manually
 
 ### Session 78 (Codex) — 2026-07-30
 - **Agent:** codex

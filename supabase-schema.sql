@@ -45,9 +45,15 @@ create table if not exists public.jobs (
   status     text not null default 'Saved'
              check (status in ('Saved', 'Applied', 'Interview', 'Offer', 'Rejected')),
   notes      text,
+  resume_id  uuid references public.resumes(id) on delete set null,
   date_added timestamptz not null default now(),
   created_at timestamptz not null default now()
 );
+
+-- Migration helper: add resume_id to existing jobs table
+-- (safe to run multiple times; skipped if the column already exists)
+alter table public.jobs
+  add column if not exists resume_id uuid references public.resumes(id) on delete set null;
 
 -- Enable Row Level Security
 alter table public.jobs enable row level security;
