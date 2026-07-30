@@ -160,7 +160,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | 6.2 Retry `httpx.ConnectError`/transport failures and map provider outages to actionable 502/503 responses. | `hf_client.py`, `_ai_errors.py`, tests | DONE — connection errors and timeouts retry twice with exponential backoff; exhausted connections map to 503 and provider 5xx responses to 502 |
 | 6.3 Test an actual Render sleep/wake cycle from the browser and record time-to-usable; do not treat GitHub cron as an uptime SLA. | `keepalive.yml`, browser tests, ops log | PARTIAL — API wake took 31.3s; browser path remains TODO |
 | 6.4 Make keepalive failures fail or alert instead of emitting warnings while the workflow stays green. | `.github/workflows/keepalive.yml` | DONE — curl fails the workflow on non-2xx responses or after a 30-second timeout, triggering GitHub owner notifications |
-| 6.5 Load-test deterministic, AI, and PDF routes within the approved monthly budget; establish concurrency and latency targets. | new load-test scripts/docs | TODO |
+| 6.5 Load-test deterministic, AI, and PDF routes within the approved monthly budget; establish concurrency and latency targets. | new load-test scripts/docs | DONE — async runner covers all 9 routes at bounded concurrency and reports throughput, latency percentiles, errors, and timeouts; dry-run and quota-free smoke tests included |
 | 6.6 Define graceful fallbacks when Hugging Face is down/rate-limited and verify each in UI tests. | AI components, backend error mapping | TODO |
 
 **Definition of Done:** Cold starts, provider failures, and concurrent PDF work produce bounded waits and clear recovery paths without hidden data loss.
