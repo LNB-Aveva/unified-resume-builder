@@ -41,9 +41,12 @@ export default function ShareableScoreWidget() {
 
       const id = generateId();
       const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("You must be signed in to share a score.");
       const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
       const { error: dbError } = await supabase.from("shared_scores").insert({
         id,
+        user_id: user.id,
         overall_score: data.overall_score,
         grade: data.grade,
         grade_label: data.grade_label,
@@ -52,7 +55,7 @@ export default function ShareableScoreWidget() {
         total_matched: data.total_matched,
         total_missing: data.total_missing,
         total_job_keywords: data.total_job_keywords,
-        job_role_hint: jobText.slice(0, 120).trim(),
+        job_role_hint: jobText.slice(0, 200).trim(),
         expires_at: expiresAt,
       });
       if (dbError) throw new Error("Could not save your score. " + dbError.message);

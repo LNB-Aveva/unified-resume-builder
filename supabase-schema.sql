@@ -76,38 +76,43 @@ create policy "Users delete own jobs"
 create index if not exists idx_jobs_user_id on public.jobs(user_id);
 
 -- -----------------------------------------------------------------------
--- shared_scores: stores anonymous ATS score snapshots for shareable links
+-- shared_scores: authenticated ATS score snapshots for shareable links
 -- -----------------------------------------------------------------------
 create table if not exists public.shared_scores (
   id                 text primary key,
-  overall_score      numeric(5,2) not null,
-  grade              text not null,
+  user_id            uuid not null references auth.users(id) on delete cascade,
+  overall_score      numeric(5,2) not null check (overall_score >= 0 and overall_score <= 100),
+  grade              text not null check (grade in ('A', 'B', 'C', 'D', 'F')),
   grade_label        text not null,
   matched_keywords   text[] not null default '{}',
   missing_keywords   text[] not null default '{}',
-  total_matched      int not null default 0,
-  total_missing      int not null default 0,
-  total_job_keywords int not null default 0,
-  job_role_hint      text,
+  total_matched      int not null default 0 check (total_matched >= 0),
+  total_missing      int not null default 0 check (total_missing >= 0),
+  total_job_keywords int not null default 0 check (total_job_keywords >= 0),
+  job_role_hint      text check (char_length(job_role_hint) <= 200),
   created_at         timestamptz not null default now(),
   expires_at         timestamptz not null
 );
 
--- Anyone (anon) can read unexpired scores via the public share link
 alter table public.shared_scores enable row level security;
 
+-- Anyone can read unexpired scores via the public share link
 create policy "Anyone can read unexpired shared scores"
   on public.shared_scores for select
   using (expires_at >= now());
 
--- Anyone (anon) can insert a new share (rate-limited at the API layer)
-create policy "Anyone can insert shared scores"
+-- Only authenticated users can insert their own scores
+create policy "Authenticated users insert own shared scores"
   on public.shared_scores for insert
-  with check (true);
+  with check (auth.uid() = user_id);
 
 -- Index so the expiry filter is fast
 create index if not exists idx_shared_scores_expires_at
   on public.shared_scores(expires_at);
+
+-- Index for user-scoped queries
+create index if not exists idx_shared_scores_user_id
+  on public.shared_scores(user_id);
 
 -- -----------------------------------------------------------------------
 -- cleanup_expired_scores: deletes shared_scores rows past their
