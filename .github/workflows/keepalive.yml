@@ -11,13 +11,12 @@ jobs:
     steps:
       - name: Wake up Render backend
         run: |
-          status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 \
-            "${BACKEND_URL}/health" || echo "000")
-          echo "Health check returned: $status"
-          if [ "$status" = "000" ]; then
-            echo "::warning::Backend did not respond within 60s (cold start?)"
-          elif [ "$status" != "200" ]; then
-            echo "::warning::Backend returned $status"
+          # A non-zero exit fails the workflow so GitHub notifies the repository owner.
+          status=$(curl --fail --silent --show-error --output /dev/null \
+            --write-out "%{http_code}" --max-time 30 "${BACKEND_URL}/health")
+          if [ "$status" != "200" ]; then
+            echo "::error::Backend health check returned HTTP $status"
+            exit 1
           fi
         env:
           BACKEND_URL: ${{ vars.BACKEND_URL || 'https://unified-resume-builder-api.onrender.com' }}
