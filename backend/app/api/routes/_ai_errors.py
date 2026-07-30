@@ -16,6 +16,11 @@ async def call_ai_service(coro: Awaitable[Any]) -> Any:
             status_code=503,
             detail="AI service is not configured. Please contact support.",
         ) from None
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail="AI service is temporarily unreachable. Please try again shortly.",
+        ) from None
     except httpx.TimeoutException:
         raise HTTPException(
             status_code=504,

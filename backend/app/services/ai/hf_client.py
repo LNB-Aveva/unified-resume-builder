@@ -41,7 +41,7 @@ def _get_api_key() -> str:
 
 
 def _is_retryable(exc: Exception) -> bool:
-    if isinstance(exc, httpx.TimeoutException):
+    if isinstance(exc, (httpx.ConnectError, httpx.TimeoutException)):
         return True
     if isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code >= 500:
         return True
