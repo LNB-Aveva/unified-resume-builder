@@ -60,12 +60,25 @@ export default function TermsOfService() {
 
         <section>
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">5. Your Content</h2>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-            You retain ownership of all content you submit to the Service (resume text, job descriptions, bullet points).
-            We do not claim any rights to your content. Your resume content is stored only when you explicitly use the
-            saved-resume feature. When you create a shareable ATS score link, the matched and missing keyword lists are stored
-            for up to 30 days. We may use anonymized, aggregated keyword data to improve our matching algorithms.
-          </p>
+          <div className="space-y-3 text-gray-600 dark:text-gray-300 leading-relaxed">
+            <p>
+              You retain ownership of all content you submit to the Service (resume text, job descriptions, bullet points).
+              We do not claim any rights to your content. You are responsible for the accuracy of resume content you store
+              or use through the Service.
+            </p>
+            <p>
+              Your resume content is stored only when you explicitly use the saved-resume feature. Saved content may include
+              personal information, work history, education, and skills, and is stored in Supabase&apos;s PostgreSQL database on
+              the same infrastructure as your other account data. Each save creates an immutable, timestamped version snapshot;
+              older versions remain available until you delete the resume or your account.
+            </p>
+            <p>
+              Deleting a resume removes it and all of its versions. Account deletion removes all resumes, all version snapshots,
+              jobs, profile data, and your authentication identity. Your JSON data export includes all resumes and version
+              snapshots. When you create a shareable ATS score link, the matched and missing keyword lists are stored for up to
+              30 days. We may use anonymized, aggregated keyword data to improve our matching algorithms.
+            </p>
+          </div>
         </section>
 
         <section>

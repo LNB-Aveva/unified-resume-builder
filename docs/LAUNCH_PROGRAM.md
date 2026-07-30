@@ -111,7 +111,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 |---|---|---|
 | 3.1 Require and verify Supabase JWTs on authenticated backend tools; retain only explicitly public routes. | `backend/app/core/auth.py`, 7 route files, `frontend/src/app/lib/authFetch.ts`, 7 components | DONE — PyJWT HS256 verification; 7 routes gated; analyze + preview-rewrite stay public; 76 new auth tests (401 without token, 401 expired/invalid/wrong-secret/wrong-audience/missing-sub, 200 with valid token) |
 | 3.2 Move `shared_scores` creation behind a rate-limited trusted endpoint or authenticated RLS policy; validate every stored field. | `supabase-schema.sql`, `ShareableScoreWidget.tsx` | DONE — RLS insert requires `auth.uid() = user_id`; CHECK constraints on score range, grade values, hint length; user_id FK with cascade delete |
-| 3.3 Preserve per-route limits and add a shared/edge limiter if multiple backend workers or distributed abuse become possible. | `backend/app/core/rate_limit.py`, Render/Cloudflare config | TODO |
+| 3.3 Preserve per-route limits and add a shared/edge limiter if multiple backend workers or distributed abuse become possible. | `backend/app/core/rate_limit.py`, `backend/app/main.py`, tests | DONE — global in-memory sliding window limits each trusted client IP to 200 requests/minute; `/health` exempt; 429 includes `Retry-After` |
 | 3.4 Keep strict CORS and security headers; add CSP sources only for explicitly adopted Google services. | `backend/app/main.py`, `frontend/next.config.ts` | PARTIAL (CORS live test passed) |
 | 3.5 Keep Pydantic field/list limits and add a total request-body cap before JSON parsing. | `backend/app/main.py` (`BodySizeLimitMiddleware`) | DONE — 1 MB body cap via Content-Length check before JSON parsing |
 | 3.6 Preserve fpdf2 text sanitization and adversarial PDF tests; delete the unused HTML template or document that it is non-runtime. | `pdf_generator.py`, `templates/resume.html`, security tests | DONE — audited all fpdf2 `cell`/`multi_cell` inputs through `_s`; legacy HTML template documented as non-runtime |
@@ -159,7 +159,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | 6.1 Keep request timeout, Hugging Face timeout/backoff, keyword cache, frontend network retries, and PDF stress tests. | backend middleware/services, `fetchWithRetry.ts`, tests | DONE |
 | 6.2 Retry `httpx.ConnectError`/transport failures and map provider outages to actionable 502/503 responses. | `hf_client.py`, `_ai_errors.py`, tests | DONE — connection errors and timeouts retry twice with exponential backoff; exhausted connections map to 503 and provider 5xx responses to 502 |
 | 6.3 Test an actual Render sleep/wake cycle from the browser and record time-to-usable; do not treat GitHub cron as an uptime SLA. | `keepalive.yml`, browser tests, ops log | PARTIAL — API wake took 31.3s; browser path remains TODO |
-| 6.4 Make keepalive failures fail or alert instead of emitting warnings while the workflow stays green. | `.github/workflows/keepalive.yml` | TODO |
+| 6.4 Make keepalive failures fail or alert instead of emitting warnings while the workflow stays green. | `.github/workflows/keepalive.yml` | DONE — curl fails the workflow on non-2xx responses or after a 30-second timeout, triggering GitHub owner notifications |
 | 6.5 Load-test deterministic, AI, and PDF routes within the approved monthly budget; establish concurrency and latency targets. | new load-test scripts/docs | TODO |
 | 6.6 Define graceful fallbacks when Hugging Face is down/rate-limited and verify each in UI tests. | AI components, backend error mapping | TODO |
 
@@ -202,7 +202,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | Task | File(s) | Status |
 |---|---|---|
 | 9.1 Keep privacy, terms, AI-processing disclosure, cookie categories, rights, and 30-day shared-score retention accurate. | privacy/terms pages | PARTIAL |
-| 9.2 Update policy and retention schedule for saved resumes/versions before persistence ships. | privacy page, retention docs | TODO after Phase 4 design |
+| 9.2 Update policy and retention schedule for saved resumes/versions before persistence ships. | privacy and terms pages | DONE — documents stored fields, Supabase PostgreSQL, immutable timestamped versions, retention, cascade deletion, and complete JSON export |
 | 9.3 Replace inaccurate vendor/technology claims and document Hugging Face processing and telemetry controls precisely. | legal pages, public copy | DONE — privacy and terms describe taxonomy synonym matching, fpdf2, Hugging Face AI processing, saved-resume storage, and Sentry error tracking without resume content |
 | 9.4 Keep a reachable support email; `lnbingi.work@gmail.com` currently appears in privacy and terms. Add a dedicated contact route if that is the launch identity. | privacy/terms/footer/contact | VERIFY owner acceptance |
 | 9.5 Verify account deletion and export in production, including all new resume data. | auth actions, Supabase, E2E | TODO after Phase 4 |

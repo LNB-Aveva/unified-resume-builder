@@ -111,6 +111,7 @@ export default function PrivacyPolicy() {
             <ul className="list-disc list-inside space-y-2 mt-3">
               <li><strong>Account data</strong> (email, profile) &mdash; retained while your account is active. Deleted within 30 days of account deletion.</li>
               <li><strong>Job tracker entries</strong> &mdash; retained while your account is active. Deleted when you delete your account.</li>
+              <li><strong>Saved resumes and versions</strong> &mdash; retained until you explicitly delete the resume or delete your account.</li>
               <li><strong>Shareable ATS score links</strong> &mdash; automatically expire and are deleted after 30 days.</li>
               <li><strong>Inactive accounts</strong> &mdash; accounts with no sign-in for 12 months may be deleted after notice to your registered email.</li>
               <li><strong>Anonymized keyword data</strong> &mdash; retained indefinitely for algorithm improvement. This data cannot be linked to individuals.</li>
@@ -119,12 +120,31 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
+          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Saved Resumes and Version History</h2>
+          <div className="space-y-3 text-gray-600 dark:text-gray-300 leading-relaxed">
+            <p>
+              When you save a resume, we store its content, including personal information, work history, education,
+              and skills, in Supabase&apos;s PostgreSQL database on the same infrastructure used for your other account data.
+            </p>
+            <p>
+              Each save creates a new, immutable version snapshot with a timestamp. Previous versions cannot be changed
+              and remain available to you until you delete the resume or your account. Deleting a resume removes that
+              resume and all of its version snapshots.
+            </p>
+            <p>
+              Deleting your account removes all saved resumes, all version snapshots, job tracker entries, profile data,
+              and your authentication identity. Your JSON data export includes every saved resume and every version snapshot.
+            </p>
+          </div>
+        </section>
+
+        <section>
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Your Rights</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">You have the right to:</p>
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
             <li>Access your account information via the Account page</li>
-            <li>Delete your account and all associated data (profile, job tracker entries) from the Account page</li>
-            <li>Export your data from the Account page</li>
+            <li>Delete your account and all associated data (saved resumes and versions, job tracker entries, profile, and authentication identity) from the Account page</li>
+            <li>Export your data, including all saved resumes and version snapshots, from the Account page</li>
             <li>Withdraw cookie consent at any time by clicking the cookie settings link in the footer</li>
             <li>Clear your browser localStorage at any time</li>
           </ul>

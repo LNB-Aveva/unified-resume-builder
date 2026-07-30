@@ -27,6 +27,21 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 77 (Codex) — 2026-07-30
+- **Agent:** codex
+- **Did:**
+  - **Phase 3.3:** Added a middleware-level, per-IP sliding-window limit of 200 requests/minute; `/health` is exempt and rejected requests return 429 with `Retry-After`; added four behavior tests (8 AnyIO variants)
+  - **Phase 6.4:** Made the keepalive workflow fail unless `/health` returns HTTP 200 within 30 seconds, enabling GitHub failure notifications
+  - **Phase 9.2:** Documented saved resume fields, Supabase PostgreSQL storage, immutable timestamped versions, retention, cascade deletion, full JSON export, and user responsibility for resume accuracy
+  - Verified 385 backend tests pass with 20 credential-dependent RLS tests skipped, Ruff passes, frontend lint passes, workflow YAML parses, and `git diff --check` passes
+- **Files Changed:**
+  - `backend/app/core/rate_limit.py`, `backend/app/main.py`, `backend/tests/integration/test_global_rate_limit.py`
+  - `.github/workflows/keepalive.yml`
+  - `frontend/src/app/privacy/page.tsx`, `frontend/src/app/terms/page.tsx`
+  - `docs/LAUNCH_PROGRAM.md`, `.ai-sync/DECISIONS.md`, `.ai-sync/WORKLOG.md`
+- **Next:** User localhost review, then create the three assigned commits
+- **Blockers:** None
+
 ### Session 77 — 2026-07-30
 - **Agent:** claude
 - **Did:**
