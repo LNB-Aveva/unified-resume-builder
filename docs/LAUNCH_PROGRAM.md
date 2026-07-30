@@ -114,7 +114,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | 3.3 Preserve per-route limits and add a shared/edge limiter if multiple backend workers or distributed abuse become possible. | `backend/app/core/rate_limit.py`, Render/Cloudflare config | TODO |
 | 3.4 Keep strict CORS and security headers; add CSP sources only for explicitly adopted Google services. | `backend/app/main.py`, `frontend/next.config.ts` | PARTIAL (CORS live test passed) |
 | 3.5 Keep Pydantic field/list limits and add a total request-body cap before JSON parsing. | `backend/app/main.py` (`BodySizeLimitMiddleware`) | DONE — 1 MB body cap via Content-Length check before JSON parsing |
-| 3.6 Preserve fpdf2 text sanitization and adversarial PDF tests; delete the unused HTML template or document that it is non-runtime. | `pdf_generator.py`, `templates/resume.html`, security tests | PARTIAL |
+| 3.6 Preserve fpdf2 text sanitization and adversarial PDF tests; delete the unused HTML template or document that it is non-runtime. | `pdf_generator.py`, `templates/resume.html`, security tests | DONE — audited all fpdf2 `cell`/`multi_cell` inputs through `_s`; legacy HTML template documented as non-runtime |
 | 3.7 Configure Sentry and all logs to exclude request bodies, auth headers, resume/job text, AI prompts, and generated content. | `backend/app/main.py` (`_strip_pii` + `send_default_pii=False`) | DONE — before_send strips request data/body, authorization/cookie headers |
 | 3.8 Re-run Bandit, secret scan, npm audit, and requirements-only pip-audit with zero unaccepted runtime High/Critical findings. | CI and manifests | DONE — Bandit 0 high, pip-audit runtime+dev 0 vulns, npm audit production 0, detect-secrets clean (only tsbuildinfo false positive) |
 
