@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-019: Separate Runtime and Development Python Dependencies
+- **Date:** 2026-07-29
+- **Agent:** codex
+- **Context:** Render installed the full test/security toolchain from `requirements.txt`, and the unused Semgrep package introduced vulnerable `mcp` and `click` dependencies. CI carried a growing permanent vulnerability ignore list.
+- **Decision:** Keep deployable packages in `backend/requirements.txt`, put test/lint/audit tools in `backend/requirements-dev.txt`, remove unused Semgrep, and make CI audit both manifests without ignored advisories.
+- **Alternatives Considered:** Keep one manifest with documented ignores — rejected because it deploys unnecessary tools and turns accepted advisories into permanent CI policy. Retain Semgrep in the dev manifest — rejected because neither CI nor pre-commit invokes it.
+- **Files Affected:** `backend/requirements.txt`, `backend/requirements-dev.txt`, `.github/workflows/ci.yml`, deployment/security documentation
+
 ### DEC-018: Restore Twelve Separate Launch Gates
 - **Date:** 2026-07-29
 - **Agent:** codex

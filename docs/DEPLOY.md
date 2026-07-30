@@ -20,9 +20,11 @@ User --> resumeai.cv (Vercel) --> API (Render free tier)
 
 Before pushing to main:
 
-- [ ] `cd backend && python -m pytest -x -q` — all tests pass
-- [ ] `cd frontend && npm run lint` — 0 errors, 0 warnings
-- [ ] `cd frontend && npm run build` — clean build, no type errors
+- [ ] `Set-Location backend; python -m pip install -r requirements-dev.txt` — development tools match CI
+- [ ] `python -m ruff check app/ --config ruff.toml` and `python -m mypy app/ --config-file mypy.ini` — lint and types pass
+- [ ] `python -m pytest -x -q` — all tests pass
+- [ ] `Set-Location ..\frontend; npm run lint` — 0 errors, 0 warnings
+- [ ] `npm run build` — clean build, no type errors
 - [ ] No secrets in committed files (`.env`, API keys, etc.)
 
 ## Rollback

@@ -186,31 +186,24 @@ Utility endpoints (no rate limit):
 **Threat**: Known CVEs in third-party packages exploited in production.
 
 **Mitigations in place**:
-- 29/31 CVEs fixed in Session 21; 3 more fixed in Session 26 (click, mcp, pytest)
-- `pip-audit` now runs in CI (auto-fails on new CVEs, ignores PYSEC-2026-597)
+- Production and development dependencies are separated into `requirements.txt` and `requirements-dev.txt`
+- CI audits both manifests independently and has no permanent vulnerability ignore list
+- The unused Semgrep dependency was removed with its vulnerable `mcp` and `click` transitive chain
 - `bandit` security linting in pre-commit hooks and CI
 - `ruff` with security rules (S prefix) enforced
 - CI runs `bandit -r app/` on every push
 
-**Remaining CVEs (ignored in CI, documented here)**:
-| Package | CVE | Why Ignored |
-|---------|-----|-------------|
-| nltk 3.9.4 | PYSEC-2026-597 | No upstream patch; corpus download feature not used (we use stopwords only) |
-| click 8.1.8 | PYSEC-2026-2132 | Pinned by semgrep~=8.1.8; semgrep is dev-only, never deployed to prod |
-| mcp 1.23.3 | CVE-2026-52870, CVE-2026-52869, CVE-2026-59950 | Transitive via semgrep; dev-only, never deployed to prod |
-
-**Fixed in Session 26**:
-| Package | CVE | Fixed Version |
-|---------|-----|---------------|
-| pytest 8.4.1 | PYSEC-2026-1845 | 9.0.3 (upgraded in requirements.txt) |
-| postcss 8.4.31 | GHSA-qx2v-qp2m-jg93 | 8.5.15 (npm override in frontend/package.json) |
+**Current audit result**:
+- Production Python manifest: no known vulnerabilities
+- Development Python manifest: no known vulnerabilities
+- Production npm dependencies: no known High-or-higher vulnerabilities
 
 **Residual risk**:
-- nltk CVE: corpus download vulnerability, feature not used in ResumeAI
-- click/mcp CVEs: only reachable via semgrep CLI tool, never in production runtime
-- All ignored CVEs are re-evaluated when semgrep releases a new version
+- Advisory databases can lag newly disclosed vulnerabilities
+- Development-only npm advisories still require separate triage, even though they are not deployed
+- CI must remain fail-closed when a new manifest vulnerability is reported
 
-**Severity**: Very Low (all remaining CVEs are non-exploitable in production context)
+**Severity**: Low (no known Python or production npm vulnerability at the latest audit)
 
 ---
 
@@ -222,7 +215,7 @@ Utility endpoints (no rate limit):
 - Pre-commit hooks run ruff + bandit + detect-secrets + mypy + pytest before every commit
 - CI workflow validates lint, types, tests, security scan, secret scan, and dependency CVEs (pip-audit)
 - SSH-based git push (no token scope vulnerabilities)
-- Pinned dependency versions in `requirements.txt`
+- Explicit dependency versions and security floors in `requirements.txt` and `requirements-dev.txt`
 - Vercel builds from main branch only
 
 **Residual risk**:

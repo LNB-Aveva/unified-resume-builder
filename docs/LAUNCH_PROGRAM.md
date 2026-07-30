@@ -1,7 +1,7 @@
 # LAUNCH_PROGRAM.md — Hardening and Launch Roadmap
 
 > Every session reads this file first and updates it before exit.
-> Last verified: 2026-07-29 (Codex audit after Session 70, commit `e8671bb`)
+> Last verified: 2026-07-29 (Codex recheck after audit commit `c0c2f65`)
 
 ## Launch policy
 
@@ -20,14 +20,14 @@ Verified on 2026-07-29; older session-log claims are not authoritative.
 |---|---|---|
 | Production frontend | **LIVE** | `https://resumeai.cv` and `https://unified-resume-builder.vercel.app` returned 200 with the ResumeAI title. |
 | Production frontend → backend | **WIRED** | Deployed JS contains `https://unified-resume-builder-api.onrender.com`; production CORS allows `https://resumeai.cv` and rejects `https://evil.example`. |
-| Production backend | **LIVE during audit** | Render `/health` returned 200 in 0.39s. A sleep/cold-start cycle was not observed, so cold-start behavior remains `VERIFY`. |
-| Local backend | **WORKS** | A fresh Uvicorn process on port 8766 returned 200 from all nine API routes; all four Hugging Face routes generated content and PDF export returned 1,504 bytes. |
+| Production backend | **LIVE; cold start observed** | Render `/health` returned 200 after 31.3s on the first recheck and was fast once warm. This is too slow for an unprimed first-user request and requires a measured browser-path mitigation. |
+| Local backend | **WORKS** | Fresh Uvicorn processes on ports 8767/8768 returned 200 from all nine API routes; all four Hugging Face routes generated content and PDF export returned 1,519 bytes. |
 | Backend tests | **GREEN** | 291 passed; measured services/routes coverage 82.44%, above the 80% floor. |
 | Frontend lint/build | **GREEN locally** | ESLint passed. `next build` compiled 26 routes/pages after Google Fonts network access was allowed. |
 | Browser tests | **GREEN but shallow** | Six Playwright smoke tests passed; they only check page rendering, not sign-up, auth, tools, persistence, or error recovery. |
-| CI | **RED — BLOCKER** | Current `main` and the preceding two commits failed. Run 30488009367 stops at Ruff E402 errors in `backend/app/main.py:29-32`. Local mypy also reports two errors. |
-| Python dependency audit | **RED** | Requirements audit found four advisories: three in `mcp 1.23.3` and one in `click 8.1.8`. Render installs dev/security tooling because runtime and dev dependencies share one file. |
-| Frontend dependency audit | **GREEN** | `npm audit` and `npm audit --omit=dev --audit-level=high` both found zero vulnerabilities after install. |
+| CI | **REMOTE RED; LOCAL FIX GREEN** | Current deployed `main` remains red at run 30488009367. The candidate fixes Ruff/mypy, splits dependency scopes, and passes the complete backend gate locally; a pushed GitHub Actions run is still required for closure. |
+| Python dependency audit | **GREEN LOCALLY** | Runtime and development manifests are separate and both resolve with no known vulnerabilities. The unused Semgrep dependency and its vulnerable `mcp`/`click` chain were removed. |
+| Frontend dependency audit | **PRODUCTION GREEN; DEV RED** | `npm audit --omit=dev --audit-level=high` found zero production vulnerabilities. The full installed tree reported nine High advisories in development tooling and needs triage without weakening the production gate. |
 | Supabase production | **PARTIALLY VERIFIED** | Anonymous read-only REST checks returned 200/zero rows for `profiles` and `jobs`, and 200 for `shared_scores`, consistent with deployed tables and RLS. Cross-user isolation and RPC deployment remain unproven. |
 | Saved resumes | **MISSING — BLOCKER** | Production REST returned 404 for both `resumes` and `resume_versions`; neither table nor UI persistence exists in the repo. |
 | Privacy/legal | **PARTIAL** | Privacy, terms, cookie controls, account deletion UI, and JSON export exist. The current custom cookie banner is not a Google-certified TCF CMP. |
@@ -42,7 +42,7 @@ Severity assumes an unknown user expects every advertised feature to work, even 
 | # | Severity | Area | File:line | What breaks | Fix effort |
 |---|---|---|---|---|---|
 | F1 | **Blocker** | Persistence | `supabase-schema.sql:5-110`; `README.md:14` | The product promises saved resumes and linked versions, but production and source contain no `resumes` or `resume_versions` table and no save/load UI. The settled product requirement is not implemented. | L |
-| F2 | **Blocker** | CI/release | `backend/app/main.py:29-32`; `.github/workflows/ci.yml:34-42` | Current `main` is red in GitHub Actions. Ruff blocks the pipeline before tests/security checks; local mypy also fails at `main.py:43,45`. A broken main branch cannot be a release candidate. | S |
+| F2 | **Blocker** | CI/release | `backend/app/main.py`; `.github/workflows/ci.yml` | Current remote `main` is red. The candidate passes Ruff, mypy, tests, security scans, and dependency audits locally, but this Blocker remains open until GitHub Actions passes the committed revision. | S |
 | F3 | **Blocker** | Auth/cost abuse | `backend/app/api/routes/rewrite.py:11-23`; `backend/app/api/routes/summary.py:11-22`; `frontend/src/proxy.ts:4-18` | UI routes are auth-gated, but the backend verifies no Supabase JWT. Anyone can call all AI endpoints directly and consume Hugging Face quota. CORS is not authentication. | M |
 | F4 | **Blocker** | AdSense | `frontend/src/app/components/CookieConsent.tsx:6-54`; `frontend/public/ads.txt` (missing) | Monetization is absent. The custom banner is not a Google-certified TCF CMP, which Google requires for personalized AdSense traffic in the EEA/UK/Switzerland. Publisher ID, ads.txt, script, placements, and policy validation remain. | L |
 | F5 | **High** | Database abuse/PII | `supabase-schema.sql:96-106`; `frontend/src/app/components/ShareableScoreWidget.tsx:42-57` | Anonymous clients insert directly into `shared_scores` under `with check (true)`. The comment claims API rate limiting, but no API mediates the write. Attackers can fill the table and store arbitrary derived resume/job keyword data. | M |
@@ -51,13 +51,14 @@ Severity assumes an unknown user expects every advertised feature to work, even 
 | F8 | **High** | Product truth | `README.md:23-26`; `frontend/src/app/keyword-analyzer/page.tsx:36`; `frontend/src/app/page.tsx:1260-1270` | Public copy claims spaCy NLP and old docs claim NLTK/scikit-learn/WeasyPrint. The app actually uses regex/taxonomy and fpdf2. False technical claims damage trust and can weaken AdSense review. | S |
 | F9 | **High** | Analytics/AdSense CSP | `frontend/next.config.ts:16-24`; `frontend/src/app/components/CookieConsent.tsx:17-29` | Production CSP allows scripts only from self, so the dynamically injected Google Tag Manager script is blocked. The same CSP will block AdSense until Google script/connect/frame domains are intentionally added. | M |
 | F10 | **High** | AI degradation | `backend/app/services/ai/hf_client.py:43-48`; `backend/app/api/routes/_ai_errors.py:19-38` | Connect failures are neither retryable nor mapped to 502/503; a sandboxed outage produced generic 500s on all four AI routes. Users receive an internal-error response instead of a service-unavailable path. | S |
-| F11 | **Med** | Dependency hygiene | `backend/requirements.txt:47-79`; `render.yaml:25` | Runtime deploy installs test/security tools and their vulnerable transitive packages. Audit found current `mcp` and `click` advisories, and CI’s ignore list is already stale. | M |
-| F12 | **Med** | Observability/privacy | `backend/app/main.py:20-27`; `docs/ENV_VARS.md:20` | Only backend Sentry wiring exists; DSN delivery is unverified and request-body exclusion is not explicit for resume PII. Browser errors and failed client flows remain invisible. | M |
-| F13 | **Med** | Release engineering | `supabase-schema.sql:1`; `docs/DEPLOY.md:42-47` | Database changes are a mutable SQL file pasted manually into production. There are no ordered migrations, automated RLS tests, backend staging service, or verified backup restore. | L |
-| F14 | **Med** | Build reliability | `frontend/src/app/layout.tsx:2-22` | The production build fetches three Google fonts. It failed in restricted networking and only passed with outbound access, making reproducibility dependent on Google availability. | S |
-| F15 | **Med** | Content/launch | `frontend/src/app/lib/blog-posts.ts`; `frontend/src/app/blog/` | Only three articles exist. AdSense values original substantive content; approval odds are weaker until more genuinely useful content and author/contact trust signals exist. | M |
-| F16 | **Low** | Schema consistency | `backend/app/schemas/resume.py`; `backend/app/schemas/export.py` | Duplicate resume models use different field names, forcing frontend remapping and increasing save/version migration risk. | M |
-| F17 | **Low** | Repository hygiene | `.gitignore:60-67`; `frontend/test-results/` | Playwright output is untracked and not ignored. It adds worktree noise and can be accidentally committed. | S |
+| F11 | **High** | Cold start | `.github/workflows/keepalive.yml:1-24`; `frontend/src/app/lib/fetchWithRetry.ts:1-27` | A production `/health` request took 31.3s from cold. The client has no explicit request timeout and a successful-but-slow response is not retried, so the first tool user can sit on a spinner long enough to abandon the product. | M |
+| F12 | **Med** | Dependency hygiene | `backend/requirements.txt`; `backend/requirements-dev.txt`; `frontend/package-lock.json` | Python runtime/dev separation and audits are fixed locally. The full frontend development tree still reports nine High advisories and needs safe tooling upgrades without weakening the production gate. | M |
+| F13 | **Med** | Observability/privacy | `backend/app/main.py:20-27`; `docs/ENV_VARS.md:20` | Only backend Sentry wiring exists; DSN delivery is unverified and request-body exclusion is not explicit for resume PII. Browser errors and failed client flows remain invisible. | M |
+| F14 | **Med** | Release engineering | `supabase-schema.sql:1`; `docs/DEPLOY.md:42-47` | Database changes are a mutable SQL file pasted manually into production. There are no ordered migrations, automated RLS tests, backend staging service, or verified backup restore. | L |
+| F15 | **Med** | Build reliability | `frontend/src/app/layout.tsx:2-22` | The production build fetches three Google fonts. It failed in restricted networking and only passed with outbound access, making reproducibility dependent on Google availability. | S |
+| F16 | **Med** | Content/launch | `frontend/src/app/lib/blog-posts.ts`; `frontend/src/app/blog/` | Only three articles exist. AdSense values original substantive content; approval odds are weaker until more genuinely useful content and author/contact trust signals exist. | M |
+| F17 | **Low** | Schema consistency | `backend/app/schemas/resume.py`; `backend/app/schemas/export.py` | Duplicate resume models use different field names, forcing frontend remapping and increasing save/version migration risk. | M |
+| F18 | **Low** | Repository hygiene | `.gitignore:60-67`; `frontend/test-results/` | Playwright output is untracked and not ignored. It adds worktree noise and can be accidentally committed. | S |
 
 ## Original suspicions — current verdict
 
@@ -68,7 +69,7 @@ Severity assumes an unknown user expects every advertised feature to work, even 
 | Rate limiting covers only 3 of 8 routes | **Wrong.** There are nine routes and all nine have slowapi limits. Direct Supabase score writes bypass the API limiter. |
 | No privacy, terms, consent, or deletion | **Outdated.** All exist in code. Production deletion RPC and complete deletion of future resume data remain `VERIFY`. |
 | No monitoring or structured logging | **Outdated.** Backend Sentry wiring and JSON access logs exist; production delivery and frontend coverage are incomplete. |
-| Render cold starts will hurt first use | **Risk remains.** Keepalive and frontend retries exist, and production was warm during this audit; an actual sleep/wake test is still required. |
+| Render cold starts will hurt first use | **Confirmed.** The first production `/health` recheck took 31.3s; the service was fast after waking. The full browser tool path and abandonment-safe UX still require testing. |
 | Hardcoded skill list and exact matching ruin scores | **Mostly fixed.** A 220+ JSON taxonomy, 65+ synonym groups, explainable scores, and a 25-case evaluation harness exist. Public spaCy claims are false. |
 
 ## Phase order decision
@@ -80,7 +81,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | Task | File(s) | Status |
 |---|---|---|
 | 1.1 Install Python and Node dependencies from the checked-in manifests on Windows. | `backend/requirements.txt`, `frontend/package-lock.json` | DONE (current machine) |
-| 1.2 Start FastAPI and exercise `/health` plus all nine POST routes with valid payloads. | `backend/app/main.py`, `backend/app/api/routes/` | DONE (all 200 on fresh port 8766) |
+| 1.2 Start FastAPI and exercise `/health` plus all nine POST routes with valid payloads. | `backend/app/main.py`, `backend/app/api/routes/` | DONE (all 200 on fresh ports 8767/8768) |
 | 1.3 Run frontend lint and production build with production-shaped environment values. | `frontend/package.json`, `frontend/next.config.ts` | DONE (build requires font network) |
 | 1.4 Keep reproducible PowerShell setup and complete environment matrix current. | `README.md`, `docs/ENV_VARS.md` | TODO (README stack is stale) |
 | 1.5 Remove build-time network dependence by self-hosting fonts or checking assets in. | `frontend/src/app/layout.tsx`, `frontend/src/app/globals.css` | TODO |
@@ -95,8 +96,8 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 |---|---|---|
 | 2.1 Maintain unit, integration, adversarial, property, parsing, PDF, and evaluation suites. | `backend/tests/` | DONE (291 pass) |
 | 2.2 Keep combined services/routes coverage at 80%; this is close enough to actual 82.44% to prevent regression without incentivizing trivial tests. | `.github/workflows/ci.yml`, `backend/pyproject.toml` | DONE |
-| 2.3 Fix Ruff E402 and mypy errors introduced by conditional Sentry setup. | `backend/app/main.py` | TODO — BLOCKER |
-| 2.4 Update the CVE gate for current advisories and split runtime from dev dependencies. | `backend/requirements.txt`, `.github/workflows/ci.yml`, `render.yaml` | TODO |
+| 2.3 Fix Ruff E402 and mypy errors introduced by conditional Sentry setup. | `backend/app/main.py` | DONE locally — remote CI confirmation pending |
+| 2.4 Update the CVE gate for current advisories and split runtime from dev dependencies. | `backend/requirements.txt`, `backend/requirements-dev.txt`, `.github/workflows/ci.yml`, `render.yaml` | DONE locally — both Python manifests audit clean |
 | 2.5 Replace smoke-only Playwright coverage with a real happy path: sign up/sign in fixture → protected tools → run analyzer → save/load resume version → PDF/export/delete. | `frontend/tests/e2e/`, `frontend/playwright.config.ts` | TODO |
 | 2.6 Add failure-path browser tests for 429, backend outage, Hugging Face outage, and validation errors. | `frontend/tests/e2e/`, tool components | TODO |
 
@@ -157,7 +158,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 |---|---|---|
 | 6.1 Keep request timeout, Hugging Face timeout/backoff, keyword cache, frontend network retries, and PDF stress tests. | backend middleware/services, `fetchWithRetry.ts`, tests | DONE |
 | 6.2 Retry `httpx.ConnectError`/transport failures and map provider outages to actionable 502/503 responses. | `hf_client.py`, `_ai_errors.py`, tests | TODO |
-| 6.3 Test an actual Render sleep/wake cycle from the browser and record time-to-usable; do not treat GitHub cron as an uptime SLA. | `keepalive.yml`, browser tests, ops log | VERIFY |
+| 6.3 Test an actual Render sleep/wake cycle from the browser and record time-to-usable; do not treat GitHub cron as an uptime SLA. | `keepalive.yml`, browser tests, ops log | PARTIAL — API wake took 31.3s; browser path remains TODO |
 | 6.4 Make keepalive failures fail or alert instead of emitting warnings while the workflow stays green. | `.github/workflows/keepalive.yml` | TODO |
 | 6.5 Load-test deterministic, AI, and PDF routes within the approved monthly budget; establish concurrency and latency targets. | new load-test scripts/docs | TODO |
 | 6.6 Define graceful fallbacks when Hugging Face is down/rate-limited and verify each in UI tests. | AI components, backend error mapping | TODO |

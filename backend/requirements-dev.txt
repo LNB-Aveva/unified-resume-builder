@@ -1,0 +1,15 @@
+# Install the exact production dependency set before development tools.
+-r requirements.txt
+
+# Testing
+pytest==9.0.3
+pytest-cov==7.1.0
+hypothesis==6.156.9
+
+# Formatting, linting, typing, and security checks
+black==26.3.1
+ruff==0.12.2
+bandit==1.8.3
+detect-secrets==1.5.0
+mypy==2.3.0
+pip-audit==2.10.1

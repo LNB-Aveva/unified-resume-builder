@@ -9,6 +9,7 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 import anyio
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -17,19 +18,18 @@ from slowapi.errors import RateLimitExceeded
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
+from app.api.routes import analyze, compliance, cover_letter, export, gap, preview, rewrite, score, summary
+from app.core.config import settings  # noqa: F401
+from app.core.rate_limit import limiter
+from app.services.ai.hf_client import close_client
+
 _sentry_dsn = os.environ.get("SENTRY_DSN", "")
 if _sentry_dsn:
-    import sentry_sdk
     sentry_sdk.init(
         dsn=_sentry_dsn,
         traces_sample_rate=0.1,
         environment=os.environ.get("ENV", "production"),
     )
-
-from app.api.routes import analyze, compliance, cover_letter, export, gap, preview, rewrite, score, summary
-from app.core.config import settings  # noqa: F401
-from app.core.rate_limit import limiter
-from app.services.ai.hf_client import close_client
 
 
 class _JSONFormatter(logging.Formatter):
@@ -39,10 +39,12 @@ class _JSONFormatter(logging.Formatter):
             "level": record.levelname,
             "msg": record.getMessage(),
         }
-        if hasattr(record, "request_id"):
-            log["request_id"] = record.request_id  # type: ignore[attr-defined]
-        if hasattr(record, "extra_data"):
-            log.update(record.extra_data)  # type: ignore[attr-defined]
+        request_id = getattr(record, "request_id", None)
+        if request_id is not None:
+            log["request_id"] = request_id
+        extra_data = getattr(record, "extra_data", None)
+        if isinstance(extra_data, dict):
+            log.update(extra_data)
         return json.dumps(log, default=str)
 
 
@@ -93,7 +95,10 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
         }
         _logger.info(
             "%s %s %s %dms",
-            request.method, request.url.path, response.status_code, duration_ms,
+            request.method,
+            request.url.path,
+            response.status_code,
+            duration_ms,
             extra=extra,
         )
         response.headers["X-Request-ID"] = request_id
@@ -109,6 +114,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         if _is_production:
             response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
         return response
+
 
 _is_production = os.environ.get("RENDER", "") != "" or os.environ.get("ENV", "").lower() == "production"
 
@@ -175,4 +181,5 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

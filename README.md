@@ -28,21 +28,19 @@ An all-in-one platform for ATS scoring, keyword gap analysis, AI-powered resume 
 
 ## Quick Start
 
-```bash
-# Clone the repo
+```powershell
+# Clone the repository
 git clone https://github.com/YOUR_USERNAME/unified-resume-builder.git
-cd unified-resume-builder
+Set-Location unified-resume-builder
 
-# Set up backend
-cd backend
+# Set up the backend for development
+Set-Location backend
 python -m venv venv
-venv\Scripts\activate        # Windows
-# source venv/bin/activate   # Mac/Linux
-pip install -r requirements.txt
+& .\venv\Scripts\Activate.ps1
+python -m pip install -r requirements-dev.txt
 
 # Run the API server
-cd app
-uvicorn main:app --reload
+python -m uvicorn app.main:app --reload
 # Visit http://localhost:8000/docs for API documentation
 ```
 

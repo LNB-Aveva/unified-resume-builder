@@ -19,13 +19,43 @@
 |------------|----------------------------|
 | Agent      | codex                      |
 | Started    | 2026-07-29                 |
-| Working On | Audit and launch-program refresh complete; awaiting localhost review/approval before any implementation or commit. |
+| Working On | CI-restoration candidate complete and green locally; awaiting user approval before commit/push. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 73 — 2026-07-29
+- **Agent:** codex
+- **Did:**
+  - Fixed all Ruff and mypy failures in conditional Sentry initialization and structured log formatting
+  - Split production and development Python manifests; removed unused Semgrep and the vulnerable `mcp`/`click` chain
+  - Replaced CI's permanent vulnerability ignore list with fail-closed audits of both manifests
+  - Updated PowerShell setup/deployment instructions and dependency threat-model evidence
+  - Verified 291 tests at 82.44% coverage, Ruff, mypy, Bandit, secret scanning, both Python audits, CI YAML parsing, all route registration, and a fresh localhost server on port 8770
+- **Files Changed:**
+  - `backend/app/main.py`, `backend/requirements.txt`, `backend/requirements-dev.txt`
+  - `.github/workflows/ci.yml`, `README.md`
+  - `docs/DEPLOY.md`, `docs/THREAT-MODEL.md`, `docs/LAUNCH_PROGRAM.md`
+  - `.ai-sync/WORKLOG.md`, `.ai-sync/DECISIONS.md`
+- **Next:** User reviews localhost-verified candidate; after approval, commit with `[codex]` prefix and push, then confirm GitHub Actions is green
+- **Blockers:** Remote CI cannot be proven until the approved commit is pushed
+
+### Session 72 — 2026-07-29
+- **Agent:** codex
+- **Did:**
+  - Revalidated the Session 71 audit without feature-code changes
+  - Confirmed 291 backend tests at 82.44% coverage, frontend lint/build, six Playwright smoke tests, all nine local POST routes, and four live Hugging Face calls
+  - Reconfirmed Ruff/mypy failures, four Python advisories, zero production npm advisories but nine High dev-tree advisories, live Vercel/Render wiring, production CORS, missing ads.txt, CSP blockers, and red GitHub Actions
+  - Observed a 31.3-second Render cold start and updated `docs/LAUNCH_PROGRAM.md` from `VERIFY` to confirmed risk
+  - Reconfirmed production Supabase has `profiles`, `jobs`, and `shared_scores`, but no `resumes` or `resume_versions`; RPC exposure could not be rechecked because the schema root now requires a service-role key
+- **Files Changed:**
+  - `docs/LAUNCH_PROGRAM.md`
+  - `.ai-sync/WORKLOG.md`
+- **Next:** Restore green CI first; then authenticate cost-bearing routes and implement saved resume/version persistence with two-user RLS tests
+- **Blockers:** Monthly budget ceiling, AdSense publisher/CMP setup, Sentry/uptime/cost dashboards, support contact, backup plan, and production RPC/RLS proof require owner or privileged environment access
 
 ### Session 71 — 2026-07-29
 - **Agent:** codex
@@ -220,38 +250,6 @@
   - Add the coordination files to source control when ready
 - **Blockers:**
   - None
-
-### Session 63 — 2026-07-28
-- **Agent:** codex
-- **Did:**
-  - Verified the Claude Code and Codex CLI coordination setup
-  - Removed remaining references to the excluded third agent
-  - Validated both handoff targets and invalid-target rejection
-- **Files Changed:**
-  - `.ai-sync/WORKLOG.md`
-  - `.ai-sync/DECISIONS.md`
-- **Next Steps:**
-  - Add the coordination files to source control when ready
-- **Blockers:**
-  - None
-
-### Session 62 — 2026-07-28
-- **Agent:** claude
-- **Did:**
-  - Set up 2-agent coordination system (CLAUDE.md, AGENTS.md, .ai-sync/)
-  - Adapted all files for this project's stack (Next.js 16 + FastAPI, not Angular)
-  - Configured coordination for Claude Code and Codex CLI only
-- **Files Changed:**
-  - `CLAUDE.md` (new)
-  - `AGENTS.md` (new)
-  - `.ai-sync/README.md` (new)
-  - `.ai-sync/WORKLOG.md` (new)
-  - `.ai-sync/DECISIONS.md` (new)
-  - `.ai-sync/handoff.ps1` (new)
-- **Next Steps:**
-  - Pick up next item from master backlog (see DECISIONS.md for current state)
-- **Blockers:**
-  - Footer email address needed from user (B1 in backlog)
 
 ---
 

@@ -6,6 +6,8 @@
 fastapi==0.139.2
 # Uvicorn = The server that actually RUNS FastAPI (FastAPI is the app, Uvicorn is the engine)
 uvicorn==0.32.0
+# Security floor for Uvicorn's CLI dependency; forces cached installs off vulnerable 8.1.8.
+click>=8.3.3
 # python-multipart = Lets users upload files (like their resume PDF)
 python-multipart==0.0.31
 
@@ -25,12 +27,7 @@ python-dotenv==1.2.2
 # extra system packages. Replaced with fpdf2 (pure Python, no system deps).
 fpdf2==2.8.7
 
-# ============================
-# Testing
-# ============================
-# pytest = The testing framework - lets you write and run automated tests
-pytest==9.0.3
-# httpx = Makes HTTP requests in tests (simulates a user calling your API)
+# HTTP client used by the Hugging Face integration
 httpx==0.28.0
 
 # ============================
@@ -42,38 +39,3 @@ sentry-sdk[fastapi]==2.66.1
 # Rate Limiting
 # ============================
 slowapi==0.1.9
-
-# ============================
-# Development Tools
-# ============================
-# black = Automatically formats your Python code to look clean and consistent
-black==26.3.1
-# ruff = Fast linter that catches bugs and style issues before they become problems
-ruff==0.12.2
-# bandit = Security linter that finds common vulnerabilities in Python code
-bandit==1.8.3
-# detect-secrets = Scans for accidentally committed credentials/API keys
-detect-secrets==1.5.0
-# pytest-cov = Test coverage reporting (shows which lines are tested)
-pytest-cov==7.1.0
-# hypothesis = Property-based testing (generates random inputs to find edge cases)
-hypothesis==6.156.9
-# mypy = Static type checker for Python
-mypy==2.3.0
-# semgrep = Advanced pattern-based security scanner
-semgrep==1.170.0
-# pip-audit = Scans installed packages for known CVEs (vulnerability checker)
-pip-audit==2.10.1
-
-# ============================
-# Security: pin transitive deps to patched versions
-# ============================
-# Semgrep and other tools pull in these packages; pin to versions that clear pip-audit.
-# Unfixable CVEs (pip itself, scapy via semgrep, cryptography 48.x jump) are
-# --ignore-vuln'd in ci.yml instead.
-requests>=2.33.0
-urllib3>=2.7.0
-idna>=3.15
-pygments>=2.20.0
-filelock>=3.20.3
-cryptography>=46.0.7
