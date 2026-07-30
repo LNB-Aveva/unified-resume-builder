@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ComplianceReport, API_URL, connectionError } from "../types";
-import { fetchWithRetry } from "../lib/fetchWithRetry";
+import { authFetch } from "../lib/authFetch";
 import Spinner from "./Spinner";
 import { DEMO_RESUME_TEXT } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
@@ -29,7 +29,7 @@ export default function ComplianceChecker() {
     setResult(null);
 
     try {
-      const res = await fetchWithRetry(`${API_URL}/api/v1/compliance`, {
+      const res = await authFetch(`${API_URL}/api/v1/compliance`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ resume_text: resumeText }),

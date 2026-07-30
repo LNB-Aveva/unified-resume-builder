@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { RewriteResponse, API_URL, connectionError } from "../types";
 import { useLoadingMessages } from "../hooks/useLoadingMessages";
-import { fetchWithRetry } from "../lib/fetchWithRetry";
+import { authFetch } from "../lib/authFetch";
 import Spinner from "./Spinner";
 import { DEMO_JOB_TITLE, DEMO_MISSING_KEYWORDS, DEMO_WEAK_BULLETS } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
@@ -67,7 +67,7 @@ export default function BulletRewriter() {
     startLoading();
 
     try {
-      const res = await fetchWithRetry(`${API_URL}/api/v1/rewrite`, {
+      const res = await authFetch(`${API_URL}/api/v1/rewrite`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -33,7 +33,7 @@ const faqItems = [
   },
   {
     q: "How does the keyword extraction work?",
-    a: "Our engine uses NLP (Natural Language Processing) via spaCy to analyse the job description at a linguistic level — not just simple word counting. It identifies named entities, noun phrases, and domain-specific terminology to extract the keywords that matter. This catches terms that simple regex-based tools miss, like multi-word skills and abbreviation variants.",
+    a: "Our engine uses a curated skill taxonomy of 220+ skills with 65+ synonym groups to analyse the job description — not just simple word counting. It recognises abbreviation variants (e.g., 'JS' matches 'JavaScript'), multi-word skills, and domain-specific terminology to extract the keywords that matter. This catches terms that simple keyword-matching tools miss.",
   },
   {
     q: "Should I add every extracted keyword to my resume?",

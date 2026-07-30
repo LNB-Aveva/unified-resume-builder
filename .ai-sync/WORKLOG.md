@@ -17,15 +17,61 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | codex                      |
+| Agent      | claude                     |
 | Started    | 2026-07-29                 |
-| Working On | CI restored and verified green remotely; next priority is backend JWT enforcement and closing anonymous score writes. |
+| Working On | Completed Phase 1 (1.4, 1.5), Phase 2 (2.5, 2.6), Phase 5 (5.4), Phase 3 (3.1, 3.5, 3.7). Blocker F3 RESOLVED. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 75 — 2026-07-29
+- **Agent:** claude
+- **Did:**
+  - **Phase 1.4:** Updated README.md — accurate tech stack, PowerShell Quick Start, links to docs
+  - **Phase 1.5:** Self-hosted all fonts — `geist` npm package + local Playfair Display woff2; build no longer needs Google Fonts
+  - **Phase 2.5:** 18 happy-path Playwright tests (landing, keyword analyzer w/ mocked API, ATS checker, blog, legal, auth redirect, sign-in/sign-up, SEO pages)
+  - **Phase 2.6:** 6 failure-path Playwright tests (validation, 429, 500, network failure, slow response, 404)
+  - **Phase 5.4:** Fixed all false spaCy/NLTK/scikit-learn/WeasyPrint claims in 5 public files
+  - **Phase 3.1 (BLOCKER F3 RESOLVED):** Full Supabase JWT auth on backend — PyJWT HS256 verification in `backend/app/core/auth.py`, 7 routes gated with `require_auth` dependency, `authFetch.ts` utility on frontend sends session token, 76 new auth tests (401 without/expired/invalid/wrong-secret token, 200 with valid). Public routes (analyze, preview-rewrite) verified to remain open.
+  - **Phase 3.5:** 1 MB request body size cap via `BodySizeLimitMiddleware`
+  - **Phase 3.7:** Sentry PII exclusion — `before_send` strips request data/body and auth/cookie headers; `send_default_pii=False`
+  - **Test counts:** 367 backend (from 291), 30 Playwright, build+lint clean
+  - **Findings resolved:** F3 (auth/cost abuse), F8 (false tech claims), F15 (build fonts)
+- **Files Changed:**
+  - `README.md`, `docs/ENV_VARS.md`, `docs/LAUNCH_PROGRAM.md`
+  - `backend/app/core/auth.py` (new), `backend/conftest.py` (new)
+  - `backend/app/core/config.py` (SUPABASE_JWT_SECRET)
+  - `backend/app/main.py` (BodySizeLimitMiddleware, Sentry PII filter)
+  - `backend/requirements.txt` (PyJWT)
+  - `backend/.env.example` (SUPABASE_JWT_SECRET)
+  - `backend/app/api/routes/{score,gap,compliance,rewrite,summary,cover_letter,export}.py` (require_auth)
+  - `backend/tests/integration/test_auth.py` (new — 76 tests)
+  - `backend/tests/integration/test_endpoints.py` (auth headers added)
+  - `frontend/src/app/lib/authFetch.ts` (new)
+  - `frontend/src/app/components/{BulletRewriter,GapAnalysis,SummaryGenerator,CoverLetterGenerator,ComplianceChecker,ResumeExporter,ShareableScoreWidget}.tsx` (fetchWithRetry → authFetch)
+  - `frontend/src/app/layout.tsx`, `frontend/src/fonts/PlayfairDisplay-Bold.woff2` (new)
+  - `frontend/tests/e2e/happy-path.spec.ts` (new), `frontend/tests/e2e/failure-paths.spec.ts` (new)
+  - `frontend/package.json` (geist, @fontsource/playfair-display)
+- **Next:** Set SUPABASE_JWT_SECRET in Render dashboard; then Phase 3.2 (shared_scores), Phase 4 (resume persistence)
+- **Blockers:** SUPABASE_JWT_SECRET must be set in Render for production auth to work
+
+### Session 74 — 2026-07-29
+- **Agent:** codex
+- **Did:**
+  - Added a repository-local Codex launcher with Auto, Plan, Edit, Normal/read-only, and unattended workspace modes
+  - Mapped every choice to supported Codex 0.146.0 sandbox and approval flags
+  - Kept Plan mode read-only and documented the native `/plan` or Shift+Tab toggle because the CLI has no supported Plan launch flag
+  - Added `-DryRun` command inspection and documented the chooser in `.ai-sync/README.md`
+- **Files Changed:**
+  - `.ai-sync/codex-mode.ps1`
+  - `.ai-sync/README.md`
+  - `.ai-sync/WORKLOG.md`
+  - `.ai-sync/DECISIONS.md`
+- **Next:** User review; then commit if approved. Launch hardening work remains queued.
+- **Blockers:** None
 
 ### Session 73 — 2026-07-29
 - **Agent:** codex
@@ -236,21 +282,6 @@
   - `docs/ENV_VARS.md` (new — env var matrix)
 - **Next Steps:**
   - Phase 2: Security, Privacy & Legal (account deletion, cookie consent, RLS verification)
-- **Blockers:**
-  - None
-
-### Session 64 — 2026-07-28
-- **Agent:** codex
-- **Did:**
-  - Added an optional Claude account-switching guide to the handoff script
-  - Documented the new `-To claude -SwitchAccount` workflow
-  - Added validation preventing account switching on a Codex handoff
-- **Files Changed:**
-  - `.ai-sync/handoff.ps1`
-  - `.ai-sync/README.md`
-  - `.ai-sync/WORKLOG.md`
-- **Next Steps:**
-  - Add the coordination files to source control when ready
 - **Blockers:**
   - None
 

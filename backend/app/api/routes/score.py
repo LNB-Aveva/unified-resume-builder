@@ -1,7 +1,8 @@
 """POST /api/v1/score -- score a resume against a job description."""
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
+from app.core.auth import require_auth
 from app.core.rate_limit import limiter
 from app.schemas.score import ATSScore, ScoreRequest
 from app.services.nlp.keyword_extractor import extract_keywords
@@ -20,7 +21,7 @@ router = APIRouter()
     ),
 )
 @limiter.limit("30/minute")
-async def score_resume_endpoint(request: Request, score_req: ScoreRequest) -> ATSScore:
+async def score_resume_endpoint(request: Request, score_req: ScoreRequest, _user_id: str = Depends(require_auth)) -> ATSScore:
     if not score_req.job.raw_text or not score_req.job.raw_text.strip():
         raise HTTPException(
             status_code=422,

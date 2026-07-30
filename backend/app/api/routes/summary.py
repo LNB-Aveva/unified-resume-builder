@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.api.routes._ai_errors import call_ai_service
+from app.core.auth import require_auth
 from app.core.rate_limit import limiter
 from app.schemas.summary import SummaryRequest, SummaryResponse
 from app.services.ai.summarizer import generate_summary
@@ -19,7 +20,7 @@ router = APIRouter()
     ),
 )
 @limiter.limit("10/minute")
-async def create_summary(request: Request, request_body: SummaryRequest) -> SummaryResponse:
+async def create_summary(request: Request, request_body: SummaryRequest, _user_id: str = Depends(require_auth)) -> SummaryResponse:
     if not request_body.job_title.strip():
         raise HTTPException(status_code=422, detail="job_title cannot be empty.")
     if not request_body.job_description.strip():

@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-020: Repository-Local Codex Mode Launcher
+- **Date:** 2026-07-29
+- **Agent:** codex
+- **Context:** Codex has a native Plan interaction mode, while day-to-day autonomy is controlled separately through sandbox and approval settings. The team wanted a Claude/Copilot-style mode chooser without repeatedly typing launch flags or changing personal global configuration.
+- **Decision:** Provide `.ai-sync/codex-mode.ps1` with Auto, Plan, Edit, Normal/read-only, and unattended workspace choices. Use only documented Codex 0.146.0 flags. Plan launches read-only and directs the user to the native `/plan` or Shift+Tab toggle because the CLI has no supported Plan-mode launch flag. Do not expose unsandboxed `--yolo` in the chooser.
+- **Alternatives Considered:** Write global profile files under `~/.codex` — rejected because repository tooling should not mutate personal configuration. Treat Plan as an approval preset — rejected because Plan is an interaction mode, not a sandbox policy. Include `--yolo` — rejected because it disables both safeguards and is inappropriate as a routine project mode.
+- **Files Affected:** `.ai-sync/codex-mode.ps1`, `.ai-sync/README.md`
+
 ### DEC-019: Separate Runtime and Development Python Dependencies
 - **Date:** 2026-07-29
 - **Agent:** codex

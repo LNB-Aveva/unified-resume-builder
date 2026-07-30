@@ -1,7 +1,8 @@
 """POST /api/v1/gap -- gap analysis from raw job + resume text."""
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
+from app.core.auth import require_auth
 from app.core.rate_limit import limiter
 from app.schemas.gap import GapRequest
 from app.schemas.job import JobDescription
@@ -22,7 +23,7 @@ router = APIRouter()
     ),
 )
 @limiter.limit("30/minute")
-async def analyze_gap(request: Request, gap_req: GapRequest) -> ATSScore:
+async def analyze_gap(request: Request, gap_req: GapRequest, _user_id: str = Depends(require_auth)) -> ATSScore:
     if not gap_req.job_text.strip():
         raise HTTPException(status_code=422, detail="job_text cannot be empty.")
     if not gap_req.resume_text.strip():

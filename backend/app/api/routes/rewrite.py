@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.api.routes._ai_errors import call_ai_service
+from app.core.auth import require_auth
 from app.core.rate_limit import limiter
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse
 from app.services.ai.rewriter import rewrite_bullets
@@ -20,7 +21,7 @@ router = APIRouter()
     ),
 )
 @limiter.limit("10/minute")
-async def rewrite_bullets_route(request: Request, request_body: BulletRewriteRequest) -> BulletRewriteResponse:
+async def rewrite_bullets_route(request: Request, request_body: BulletRewriteRequest, _user_id: str = Depends(require_auth)) -> BulletRewriteResponse:
     if not request_body.job_title.strip():
         raise HTTPException(status_code=422, detail="job_title cannot be empty.")
     if not request_body.bullets.strip():

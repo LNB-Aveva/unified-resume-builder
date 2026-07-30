@@ -1,9 +1,23 @@
 """Security Pass 2: Integration tests — hit actual API endpoints via httpx TestClient."""
 
+import time
+import uuid
+
+import jwt
 import pytest
 from httpx import ASGITransport, AsyncClient
 
 from app.main import app
+
+TEST_JWT_SECRET = "test-jwt-secret-for-unit-tests-only-must-be-32-bytes-minimum"
+
+
+def _make_token() -> str:
+    return jwt.encode(
+        {"sub": str(uuid.uuid4()), "aud": "authenticated", "role": "authenticated",
+         "iat": time.time(), "exp": time.time() + 3600},
+        TEST_JWT_SECRET, algorithm="HS256",
+    )
 
 
 @pytest.fixture
@@ -15,6 +29,11 @@ def transport():
 async def client(transport):
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
+
+
+@pytest.fixture
+def auth_headers() -> dict:
+    return {"Authorization": f"Bearer {_make_token()}"}
 
 
 VALID_PERSONAL = {"full_name": "Test User", "email": "test@example.com"}
@@ -77,61 +96,61 @@ class TestAnalyzeEndpoint:
 
 class TestScoreEndpoint:
     @pytest.mark.anyio
-    async def test_valid_payload(self, client):
+    async def test_valid_payload(self, client, auth_headers):
         r = await client.post("/api/v1/score", json={
             "job": {"raw_text": VALID_JOB_TEXT},
             "resume": VALID_RESUME,
-        })
+        }, headers=auth_headers)
         assert r.status_code == 200
         data = r.json()
         assert "overall_score" in data
         assert 0 <= data["overall_score"] <= 100
 
     @pytest.mark.anyio
-    async def test_empty_job_text(self, client):
+    async def test_empty_job_text(self, client, auth_headers):
         r = await client.post("/api/v1/score", json={
             "job": {"raw_text": "   "},
             "resume": VALID_RESUME,
-        })
+        }, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_missing_resume(self, client):
-        r = await client.post("/api/v1/score", json={"job": {"raw_text": "test"}})
+    async def test_missing_resume(self, client, auth_headers):
+        r = await client.post("/api/v1/score", json={"job": {"raw_text": "test"}}, headers=auth_headers)
         assert r.status_code == 422
 
 
 class TestGapEndpoint:
     @pytest.mark.anyio
-    async def test_valid_payload(self, client):
+    async def test_valid_payload(self, client, auth_headers):
         r = await client.post("/api/v1/gap", json={
             "job_text": VALID_JOB_TEXT,
             "resume_text": "Python developer with 5 years experience building REST APIs with React",
-        })
+        }, headers=auth_headers)
         assert r.status_code == 200
         assert "overall_score" in r.json()
 
     @pytest.mark.anyio
-    async def test_empty_job_text(self, client):
-        r = await client.post("/api/v1/gap", json={"job_text": "  ", "resume_text": "valid"})
+    async def test_empty_job_text(self, client, auth_headers):
+        r = await client.post("/api/v1/gap", json={"job_text": "  ", "resume_text": "valid"}, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_empty_resume_text(self, client):
-        r = await client.post("/api/v1/gap", json={"job_text": "valid", "resume_text": "  "})
+    async def test_empty_resume_text(self, client, auth_headers):
+        r = await client.post("/api/v1/gap", json={"job_text": "valid", "resume_text": "  "}, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_oversized_fields(self, client):
+    async def test_oversized_fields(self, client, auth_headers):
         r = await client.post("/api/v1/gap", json={
             "job_text": "x" * 50_001, "resume_text": "valid",
-        })
+        }, headers=auth_headers)
         assert r.status_code == 422
 
 
 class TestComplianceEndpoint:
     @pytest.mark.anyio
-    async def test_valid_payload(self, client):
+    async def test_valid_payload(self, client, auth_headers):
         resume = (
             "John Doe\njohn@example.com\n555-123-4567\nlinkedin.com/in/johndoe\n\n"
             "Professional Summary\nExperienced developer.\n\n"
@@ -141,27 +160,27 @@ class TestComplianceEndpoint:
             "Education\nBS Computer Science, MIT, May 2019\n\n"
             "Skills\nPython, React, AWS, Docker"
         )
-        r = await client.post("/api/v1/compliance", json={"resume_text": resume})
+        r = await client.post("/api/v1/compliance", json={"resume_text": resume}, headers=auth_headers)
         assert r.status_code == 200
         data = r.json()
         assert data["total_checks"] == 15
         assert 0 <= data["overall_score"] <= 100
 
     @pytest.mark.anyio
-    async def test_empty_text(self, client):
-        r = await client.post("/api/v1/compliance", json={"resume_text": "  "})
+    async def test_empty_text(self, client, auth_headers):
+        r = await client.post("/api/v1/compliance", json={"resume_text": "  "}, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_minimal_text_returns_low_score(self, client):
-        r = await client.post("/api/v1/compliance", json={"resume_text": "hello"})
+    async def test_minimal_text_returns_low_score(self, client, auth_headers):
+        r = await client.post("/api/v1/compliance", json={"resume_text": "hello"}, headers=auth_headers)
         assert r.status_code == 200
         assert r.json()["overall_score"] < 50
 
 
 class TestExportEndpoint:
     @pytest.mark.anyio
-    async def test_valid_pdf_export(self, client):
+    async def test_valid_pdf_export(self, client, auth_headers):
         r = await client.post("/api/v1/export/pdf", json={
             "personal": {"full_name": "John Doe", "email": "john@test.com"},
             "summary": "Experienced developer",
@@ -172,39 +191,39 @@ class TestExportEndpoint:
             }],
             "education": [{"institution": "MIT", "degree": "BS", "year": "2019"}],
             "skills": "Python, React, AWS",
-        })
+        }, headers=auth_headers)
         assert r.status_code == 200
         assert r.headers["content-type"] == "application/pdf"
         assert len(r.content) > 100
 
     @pytest.mark.anyio
-    async def test_empty_name_rejected(self, client):
+    async def test_empty_name_rejected(self, client, auth_headers):
         r = await client.post("/api/v1/export/pdf", json={
             "personal": {"full_name": "   ", "email": "t@t.com"},
-        })
+        }, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_empty_email_rejected(self, client):
+    async def test_empty_email_rejected(self, client, auth_headers):
         r = await client.post("/api/v1/export/pdf", json={
             "personal": {"full_name": "Test", "email": "   "},
-        })
+        }, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_invalid_template_rejected(self, client):
+    async def test_invalid_template_rejected(self, client, auth_headers):
         r = await client.post("/api/v1/export/pdf", json={
             "personal": {"full_name": "Test", "email": "t@t.com"},
             "template": "evil",
-        })
+        }, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_content_disposition_header(self, client):
+    async def test_content_disposition_header(self, client, auth_headers):
         r = await client.post("/api/v1/export/pdf", json={
             "personal": {"full_name": "Jane Smith", "email": "j@t.com"},
             "filename": "my_resume",
-        })
+        }, headers=auth_headers)
         assert r.status_code == 200
         assert "my_resume.pdf" in r.headers.get("content-disposition", "")
 
@@ -213,40 +232,40 @@ class TestAIEndpointValidation:
     """Test schema validation for AI endpoints (no HF API key needed)."""
 
     @pytest.mark.anyio
-    async def test_summary_missing_required_fields(self, client):
-        r = await client.post("/api/v1/summary", json={"job_title": "Dev"})
+    async def test_summary_missing_required_fields(self, client, auth_headers):
+        r = await client.post("/api/v1/summary", json={"job_title": "Dev"}, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_summary_empty_title(self, client):
+    async def test_summary_empty_title(self, client, auth_headers):
         r = await client.post("/api/v1/summary", json={
             "job_title": "   ", "job_description": "desc",
             "experience_bullets": "bullets",
-        })
+        }, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_rewrite_missing_bullets(self, client):
+    async def test_rewrite_missing_bullets(self, client, auth_headers):
         r = await client.post("/api/v1/rewrite", json={
             "job_title": "Dev", "missing_keywords": "python",
-        })
+        }, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_cover_letter_invalid_tone(self, client):
+    async def test_cover_letter_invalid_tone(self, client, auth_headers):
         r = await client.post("/api/v1/cover-letter", json={
             "job_title": "Dev", "company_name": "Co",
             "job_description": "desc", "experience_summary": "exp",
             "tone": "evil",
-        })
+        }, headers=auth_headers)
         assert r.status_code == 422
 
     @pytest.mark.anyio
-    async def test_cover_letter_missing_company(self, client):
+    async def test_cover_letter_missing_company(self, client, auth_headers):
         r = await client.post("/api/v1/cover-letter", json={
             "job_title": "Dev", "job_description": "desc",
             "experience_summary": "exp",
-        })
+        }, headers=auth_headers)
         assert r.status_code == 422
 
 

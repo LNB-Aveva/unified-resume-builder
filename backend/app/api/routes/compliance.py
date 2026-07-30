@@ -1,7 +1,8 @@
 """POST /api/v1/compliance -- ATS compliance formatting checks."""
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
+from app.core.auth import require_auth
 from app.core.rate_limit import limiter
 from app.schemas.compliance import ComplianceReport, ComplianceRequest
 from app.services.compliance.checker import check_resume
@@ -19,7 +20,7 @@ router = APIRouter()
     ),
 )
 @limiter.limit("30/minute")
-async def check_compliance(request: Request, comp_req: ComplianceRequest) -> ComplianceReport:
+async def check_compliance(request: Request, comp_req: ComplianceRequest, _user_id: str = Depends(require_auth)) -> ComplianceReport:
     if not comp_req.resume_text.strip():
         raise HTTPException(status_code=422, detail="resume_text cannot be empty.")
 

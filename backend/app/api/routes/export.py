@@ -4,9 +4,10 @@ import io
 import logging
 import re
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
+from app.core.auth import require_auth
 from app.core.rate_limit import limiter
 from app.schemas.export import ResumeExportRequest
 from app.services.export.pdf_generator import generate_pdf
@@ -38,7 +39,7 @@ def _safe_filename(name: str) -> str:
     },
 )
 @limiter.limit("15/minute")
-async def export_pdf(request: Request, export_req: ResumeExportRequest) -> StreamingResponse:
+async def export_pdf(request: Request, export_req: ResumeExportRequest, _user_id: str = Depends(require_auth)) -> StreamingResponse:
     if not export_req.personal.full_name.strip():
         raise HTTPException(status_code=422, detail="personal.full_name cannot be empty.")
     if not export_req.personal.email.strip():

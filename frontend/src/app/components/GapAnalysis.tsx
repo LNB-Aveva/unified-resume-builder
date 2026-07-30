@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { ATSScore, API_URL, connectionError } from "../types";
-import { fetchWithRetry } from "../lib/fetchWithRetry";
+import { authFetch } from "../lib/authFetch";
 import Spinner from "./Spinner";
 import { DEMO_JOB_DESCRIPTION, DEMO_RESUME_TEXT } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
@@ -34,7 +34,7 @@ export default function GapAnalysis() {
     setResult(null);
 
     try {
-      const res = await fetchWithRetry(`${API_URL}/api/v1/gap`, {
+      const res = await authFetch(`${API_URL}/api/v1/gap`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ job_text: jobText, resume_text: resumeText }),

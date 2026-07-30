@@ -1,24 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import localFont from "next/font/local";
 import "./globals.css";
 import CookieConsent from "@/app/components/CookieConsent";
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const playfair = Playfair_Display({
+const playfair = localFont({
+  src: "../fonts/PlayfairDisplay-Bold.woff2",
   variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["700"],
+  weight: "700",
+  display: "swap",
 });
 
 // NEXT_PUBLIC_SITE_URL must be set in Vercel → Project Settings → Environment Variables.
@@ -131,7 +124,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${playfair.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

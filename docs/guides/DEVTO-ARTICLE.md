@@ -26,7 +26,7 @@ Here's how I built it.
 | Frontend | Next.js 16 (App Router) | SEO-first, server components |
 | Backend | FastAPI + Python 3.13 | Fast async API, Pydantic validation |
 | AI | HuggingFace Inference API | Free tier, Qwen2.5-7B model |
-| NLP | NLTK + scikit-learn | TF-IDF scoring, keyword extraction |
+| NLP | JSON skill taxonomy + regex/synonym matching | 220+ skills, 65+ synonym groups |
 | PDF | fpdf2 | Pure Python, no system deps |
 | Hosting | Vercel + Render | Both free tier |
 

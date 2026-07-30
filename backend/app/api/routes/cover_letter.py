@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.api.routes._ai_errors import call_ai_service
+from app.core.auth import require_auth
 from app.core.rate_limit import limiter
 from app.schemas.cover_letter import CoverLetterRequest, CoverLetterResponse
 from app.services.ai.cover_letter import generate_cover_letter
@@ -19,7 +20,7 @@ router = APIRouter()
     ),
 )
 @limiter.limit("10/minute")
-async def create_cover_letter(request: Request, request_body: CoverLetterRequest) -> CoverLetterResponse:
+async def create_cover_letter(request: Request, request_body: CoverLetterRequest, _user_id: str = Depends(require_auth)) -> CoverLetterResponse:
     if not request_body.job_title.strip():
         raise HTTPException(status_code=422, detail="job_title cannot be empty.")
     if not request_body.company_name.strip():

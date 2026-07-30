@@ -25,10 +25,22 @@ from app.services.ai.hf_client import close_client
 
 _sentry_dsn = os.environ.get("SENTRY_DSN", "")
 if _sentry_dsn:
+
+    def _strip_pii(event: dict, hint: dict) -> dict:
+        request = event.get("request", {})
+        request.pop("data", None)
+        request.pop("body", None)
+        headers = request.get("headers", {})
+        for key in ("authorization", "cookie", "set-cookie"):
+            headers.pop(key, None)
+        return event
+
     sentry_sdk.init(
         dsn=_sentry_dsn,
         traces_sample_rate=0.1,
         environment=os.environ.get("ENV", "production"),
+        before_send=_strip_pii,
+        send_default_pii=False,
     )
 
 
@@ -60,6 +72,20 @@ _logger.propagate = False
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     yield
     await close_client()
+
+
+_MAX_BODY_BYTES = 1_048_576  # 1 MB
+
+
+class BodySizeLimitMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        content_length = request.headers.get("content-length")
+        if content_length and int(content_length) > _MAX_BODY_BYTES:
+            return JSONResponse(
+                status_code=413,
+                content={"detail": "Request body too large. Maximum size is 1 MB."},
+            )
+        return await call_next(request)
 
 
 _REQUEST_TIMEOUT = 60.0
@@ -152,6 +178,7 @@ app.add_middleware(
 app.add_middleware(AccessLogMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RequestTimeoutMiddleware)
+app.add_middleware(BodySizeLimitMiddleware)
 
 app.include_router(analyze.router, prefix="/api/v1", tags=["Analysis"])
 app.include_router(score.router, prefix="/api/v1", tags=["Scoring"])
