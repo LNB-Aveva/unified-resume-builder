@@ -58,7 +58,7 @@ Severity assumes an unknown user expects every advertised feature to work, even 
 | F15 | **Med** | Build reliability | `frontend/src/app/layout.tsx:2-22` | The production build fetches three Google fonts. It failed in restricted networking and only passed with outbound access, making reproducibility dependent on Google availability. | S |
 | F16 | **Med** | Content/launch | `frontend/src/app/lib/blog-posts.ts`; `frontend/src/app/blog/` | Only three articles exist. AdSense values original substantive content; approval odds are weaker until more genuinely useful content and author/contact trust signals exist. | M |
 | F17 | **Low** | Schema consistency | `backend/app/schemas/resume.py`; `backend/app/schemas/export.py` | Duplicate resume models use different field names, forcing frontend remapping and increasing save/version migration risk. | M |
-| F18 | **Low** | Repository hygiene | `.gitignore:60-67`; `frontend/test-results/` | Playwright output is untracked and not ignored. It adds worktree noise and can be accidentally committed. | S |
+| F18 | **Resolved** | Repository hygiene | `.gitignore`; `frontend/test-results/` | Generated Playwright results are ignored and no longer create worktree noise or accidental commit risk. | S |
 
 ## Original suspicions — current verdict
 

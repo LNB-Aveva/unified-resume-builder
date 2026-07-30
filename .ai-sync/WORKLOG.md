@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Re-audit found launch Blockers despite prior phase labels: current CI is red, saved resume/version persistence is missing, backend AI routes lack token verification, anonymous score writes bypass API limits, and AdSense is not ready. Follow the refreshed 12-phase program.
+- **Status:** CI is green. Remaining launch Blockers are saved resume/version persistence, backend token verification, anonymous score writes bypassing API limits, and AdSense readiness. Follow the refreshed 12-phase program.
 
 ---
 
@@ -36,11 +36,13 @@
   - Updated PowerShell setup/deployment instructions and dependency threat-model evidence
   - Verified 291 tests at 82.44% coverage, Ruff, mypy, Bandit, secret scanning, both Python audits, CI YAML parsing, all route registration, and a fresh localhost server on port 8770
   - Committed and pushed `c07d905`; GitHub Actions run 30508092537 passed both backend and frontend jobs
+  - Ignored generated Playwright `frontend/test-results/` output and closed repository-hygiene finding F18
 - **Files Changed:**
   - `backend/app/main.py`, `backend/requirements.txt`, `backend/requirements-dev.txt`
   - `.github/workflows/ci.yml`, `README.md`
   - `docs/DEPLOY.md`, `docs/THREAT-MODEL.md`, `docs/LAUNCH_PROGRAM.md`
   - `.ai-sync/WORKLOG.md`, `.ai-sync/DECISIONS.md`
+  - `.gitignore`
 - **Next:** Authenticate cost-bearing backend routes and close anonymous `shared_scores` writes
 - **Blockers:** None for CI restoration
 
