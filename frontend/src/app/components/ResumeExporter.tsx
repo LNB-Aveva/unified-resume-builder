@@ -211,7 +211,9 @@ export default function ResumeExporter({
 
   useEffect(() => {
     if (initialData) {
-      setOpen({ personal: true, summary: true, experience: true, education: true, skills: true });
+      requestAnimationFrame(() => {
+        setOpen({ personal: true, summary: true, experience: true, education: true, skills: true });
+      });
     }
   }, [initialData]);
 
