@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-021: Per-Process Global IP Sliding-Window Limit
+- **Date:** 2026-07-30
+- **Agent:** codex
+- **Context:** Existing slowapi limits protect individual routes, but the API lacked a middleware-level safety net across all routes.
+- **Decision:** Apply a lock-protected in-memory sliding window of 200 requests per 60 seconds per trusted client IP before routing. Exempt `/health`, return 429 with `Retry-After`, and periodically discard expired IP buckets.
+- **Alternatives Considered:** Redis or an edge-wide limiter — rejected for this phase because it adds infrastructure; the per-process limiter is appropriate for the current single-worker deployment and can be replaced if the service scales horizontally. Token bucket — rejected because a sliding window gives direct, deterministic minute-boundary behavior.
+- **Files Affected:** `backend/app/core/rate_limit.py`, `backend/app/main.py`, `backend/tests/integration/test_global_rate_limit.py`
+
 ### DEC-020: Repository-Local Codex Mode Launcher
 - **Date:** 2026-07-29
 - **Agent:** codex

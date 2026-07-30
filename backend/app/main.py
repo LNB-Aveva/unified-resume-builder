@@ -20,7 +20,7 @@ from starlette.requests import Request
 
 from app.api.routes import analyze, compliance, cover_letter, export, gap, preview, rewrite, score, summary
 from app.core.config import settings  # noqa: F401
-from app.core.rate_limit import limiter
+from app.core.rate_limit import SlidingWindowRateLimiter, get_client_ip, global_ip_limiter, limiter
 from app.services.ai.hf_client import close_client
 
 _sentry_dsn = os.environ.get("SENTRY_DSN", "")
@@ -84,6 +84,25 @@ class BodySizeLimitMiddleware(BaseHTTPMiddleware):
             return JSONResponse(
                 status_code=413,
                 content={"detail": "Request body too large. Maximum size is 1 MB."},
+            )
+        return await call_next(request)
+
+
+class GlobalIPRateLimitMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, rate_limiter: SlidingWindowRateLimiter) -> None:
+        super().__init__(app)
+        self.rate_limiter = rate_limiter
+
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path == "/health":
+            return await call_next(request)
+
+        allowed, retry_after = self.rate_limiter.check(get_client_ip(request))
+        if not allowed:
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Global rate limit exceeded. Please try again later."},
+                headers={"Retry-After": str(retry_after)},
             )
         return await call_next(request)
 
@@ -175,6 +194,7 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization"],
 )
 
+app.add_middleware(GlobalIPRateLimitMiddleware, rate_limiter=global_ip_limiter)
 app.add_middleware(AccessLogMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RequestTimeoutMiddleware)
