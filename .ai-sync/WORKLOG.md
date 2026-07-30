@@ -27,6 +27,17 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 80 — 2026-07-30
+- **Agent:** manual (production-readiness review)
+- **Did:**
+  - Full-stack review; delivered findings (1 Critical, 3 High, 9 Medium, 6 Low). Verdict: NOT READY until blockers fixed.
+  - Fixed **H1** (Render `--proxy-headers --forwarded-allow-ips="*"` → per-user rate limiting), **H3** (`shared_scores` anon bulk-read removed; `get_shared_score` SECURITY DEFINER RPC + owner SELECT/DELETE policies), **M1** (Sentry `include_local_variables=False` + scrub exception vars/extra), **M2** (ASGI body cap enforced on chunked/no-Content-Length), **M3** (render.yaml env vars), **M6** (data export includes shared_scores), **M8** (CI `--cov=app`), **L4** (Python 3.13).
+  - Added `SECRETS_BACKUP.txt` to `.gitignore` (untracked live-key file; key still needs rotation — it exists in git history).
+  - Validated: ruff clean, 313 backend tests pass (20 skipped) @ 87% coverage, eslint clean, Next build OK.
+- **Files Changed:** `render.yaml`, `backend/app/main.py`, `supabase-schema.sql`, `scripts/2026-07-30_shared_scores_rls_patch.sql`, `.github/workflows/ci.yml`, `frontend/src/app/score/[id]/page.tsx`, `frontend/src/app/actions/auth.ts`, `.gitignore`, `.ai-sync/DECISIONS.md`
+- **Next / manual actions:** ROTATE HuggingFace key; run `scripts/2026-07-30_shared_scores_rls_patch.sql` in Supabase; set `SUPABASE_JWT_SECRET`/`SENTRY_DSN`/`ENV` in Render; purge key from git history (git filter-repo) as final step. Remaining findings: M5 (F17 schema drift), M7 (migrations system), L1 (PDF Unicode font).
+- **Blockers:** None (code); manual prod actions pending.
+
 ### Session 79 — 2026-07-30
 - **Agent:** claude
 - **Did:**

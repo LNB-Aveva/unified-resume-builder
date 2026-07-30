@@ -117,10 +117,11 @@ export async function exportUserData(): Promise<{ json?: string; error?: string 
     return { error: "Not authenticated." };
   }
 
-  const [profileResult, jobsResult, resumesResult] = await Promise.all([
+  const [profileResult, jobsResult, resumesResult, sharedScoresResult] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase.from("jobs").select("*").eq("user_id", user.id).order("date_added", { ascending: false }),
     supabase.from("resumes").select("id, title, created_at, updated_at").eq("user_id", user.id).order("updated_at", { ascending: false }),
+    supabase.from("shared_scores").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
   ]);
 
   const resumes = resumesResult.data ?? [];
@@ -144,6 +145,7 @@ export async function exportUserData(): Promise<{ json?: string; error?: string 
     profile: profileResult.data ?? null,
     jobs: jobsResult.data ?? [],
     resumes: resumesWithVersions,
+    shared_scores: sharedScoresResult.data ?? [],
   };
 
   return { json: JSON.stringify(exportData, null, 2) };

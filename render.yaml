@@ -32,7 +32,10 @@ services:
     # START COMMAND — runs the live server
     # $PORT is injected by Render — never hardcode a port in production.
     # Render's load balancer routes external traffic to whatever port this process listens on.
-    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    # --proxy-headers + --forwarded-allow-ips="*" make uvicorn honor Render's
+    # X-Forwarded-For so request.client.host is the REAL client IP (not Render's
+    # proxy IP). Without this, every visitor shares one rate-limit bucket.
+    startCommand: 'uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips="*"'
 
     plan: free
 
@@ -52,5 +55,18 @@ services:
       - key: FRONTEND_URL
         sync: false
 
+      # Supabase HS256 JWT secret — REQUIRED. Without it every authenticated
+      # route returns 503 "Authentication is not configured on this server."
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+
+      # Sentry error reporting DSN (optional but recommended).
+      - key: SENTRY_DSN
+        sync: false
+
+      # Marks the deployment as production (enables HSTS, hides /docs).
+      - key: ENV
+        value: "production"
+
       - key: PYTHON_VERSION
-        value: "3.11.0"
+        value: "3.13.0"

@@ -26,11 +26,8 @@ async function getScore(id: string): Promise<SharedScore | null> {
 
   const supabase = createClient(url, key);
   const { data, error } = await supabase
-    .from("shared_scores")
-    .select("*")
-    .eq("id", id)
-    .gte("expires_at", new Date().toISOString())
-    .single();
+    .rpc("get_shared_score", { p_id: id })
+    .maybeSingle();
 
   if (error || !data) return null;
   return data as SharedScore;

@@ -20,6 +20,20 @@
 
 ## Decisions
 
+### DEC-023: Production-Readiness Review Fixes (H1/H3/M1/M2/M3/M6/M8)
+- **Date:** 2026-07-30
+- **Agent:** manual
+- **Context:** Full-stack production-readiness review surfaced launch blockers: rate limiting collapsed to a single bucket on Render, `shared_scores` was anon-bulk-readable, Sentry could leak resume text via exception locals, and the 1 MB body cap was bypassable via chunked encoding.
+- **Decision:**
+  - Run uvicorn with `--proxy-headers --forwarded-allow-ips="*"` so `request.client.host` is the real client IP (rate limiter keys per user, not per Render proxy).
+  - Lock down `shared_scores`: remove the anon `SELECT` policy; public share pages read one row via `SECURITY DEFINER` RPC `get_shared_score(id)` that omits `user_id`; add owner `SELECT`/`DELETE` policies.
+  - Sentry `include_local_variables=False` and scrub exception frame `vars`/`extra` in `before_send`.
+  - Enforce the 1 MB body cap at the ASGI layer (buffer + replay) so a missing `Content-Length` cannot bypass it.
+  - Declare `SUPABASE_JWT_SECRET`, `SENTRY_DSN`, `ENV` in `render.yaml`; bump `PYTHON_VERSION` to 3.13.
+  - Widen CI coverage to `--cov=app` (includes `app/core`); still ≥80% (87%).
+- **Alternatives Considered:** Keeping the broad `shared_scores` SELECT policy with a longer share id — rejected because the anon key is public and PostgREST would still allow bulk listing. Trusting `X-Forwarded-For` inside `get_client_ip` regardless of proxy — rejected in favor of uvicorn's vetted proxy-header handling.
+- **Files Affected:** `render.yaml`, `backend/app/main.py`, `supabase-schema.sql`, `scripts/2026-07-30_shared_scores_rls_patch.sql`, `.github/workflows/ci.yml`, `frontend/src/app/score/[id]/page.tsx`, `frontend/src/app/actions/auth.ts`
+
 ### DEC-022: Process-Local Hugging Face Circuit Breaker
 - **Date:** 2026-07-30
 - **Agent:** codex

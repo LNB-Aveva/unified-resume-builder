@@ -181,15 +181,60 @@ create table if not exists public.shared_scores (
 
 alter table public.shared_scores enable row level security;
 
--- Anyone can read unexpired scores via the public share link
-create policy "Anyone can read unexpired shared scores"
+-- IMPORTANT: there is intentionally NO public/anon SELECT policy on this table.
+-- A blanket "using (expires_at >= now())" policy would let anyone with the public
+-- anon key run `GET /rest/v1/shared_scores?select=*` and bulk-dump every user's
+-- rows (including user_id and keyword lists). Public share pages instead read a
+-- single row through the SECURITY DEFINER function public.get_shared_score(id),
+-- which returns only non-identifying fields and only while unexpired.
+
+-- Owners can read their own scores (e.g. to list/manage their shares)
+create policy "Users read own shared scores"
   on public.shared_scores for select
-  using (expires_at >= now());
+  using (auth.uid() = user_id);
 
 -- Only authenticated users can insert their own scores
 create policy "Authenticated users insert own shared scores"
   on public.shared_scores for insert
   with check (auth.uid() = user_id);
+
+-- Owners can delete their own shared scores (revoke a share link)
+create policy "Users delete own shared scores"
+  on public.shared_scores for delete
+  using (auth.uid() = user_id);
+
+-- Public single-row read for share links. SECURITY DEFINER bypasses RLS but the
+-- function only ever returns ONE row matched by id, only while unexpired, and
+-- deliberately omits user_id so shared links cannot enumerate accounts.
+create or replace function public.get_shared_score(p_id text)
+returns table (
+  id                 text,
+  overall_score      numeric,
+  grade              text,
+  grade_label        text,
+  matched_keywords   text[],
+  missing_keywords   text[],
+  total_matched      int,
+  total_missing      int,
+  total_job_keywords int,
+  job_role_hint      text,
+  created_at         timestamptz,
+  expires_at         timestamptz
+)
+language sql
+security definer
+set search_path = ''
+as $$
+  select s.id, s.overall_score, s.grade, s.grade_label,
+         s.matched_keywords, s.missing_keywords,
+         s.total_matched, s.total_missing, s.total_job_keywords,
+         s.job_role_hint, s.created_at, s.expires_at
+  from public.shared_scores s
+  where s.id = p_id
+    and s.expires_at >= now();
+$$;
+
+grant execute on function public.get_shared_score(text) to anon, authenticated;
 
 -- Index so the expiry filter is fast
 create index if not exists idx_shared_scores_expires_at

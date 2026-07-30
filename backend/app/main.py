@@ -33,6 +33,12 @@ if _sentry_dsn:
         headers = request.get("headers", {})
         for key in ("authorization", "cookie", "set-cookie"):
             headers.pop(key, None)
+        # Exception stack frames carry local variables (resume text, AI prompts,
+        # job descriptions). Strip them so PII never reaches Sentry.
+        for exc in event.get("exception", {}).get("values", []):
+            for frame in exc.get("stacktrace", {}).get("frames", []):
+                frame.pop("vars", None)
+        event.pop("extra", None)
         return event
 
     sentry_sdk.init(
@@ -41,6 +47,7 @@ if _sentry_dsn:
         environment=os.environ.get("ENV", "production"),
         before_send=_strip_pii,
         send_default_pii=False,
+        include_local_variables=False,
     )
 
 
@@ -77,15 +84,78 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
 _MAX_BODY_BYTES = 1_048_576  # 1 MB
 
 
-class BodySizeLimitMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        content_length = request.headers.get("content-length")
-        if content_length and int(content_length) > _MAX_BODY_BYTES:
-            return JSONResponse(
-                status_code=413,
-                content={"detail": "Request body too large. Maximum size is 1 MB."},
-            )
-        return await call_next(request)
+async def _send_413(scope, send) -> None:
+    response = JSONResponse(
+        status_code=413,
+        content={"detail": "Request body too large. Maximum size is 1 MB."},
+    )
+    await response(scope, _noop_receive, send)
+
+
+async def _noop_receive() -> dict:
+    return {"type": "http.request", "body": b"", "more_body": False}
+
+
+class BodySizeLimitMiddleware:
+    """Pure-ASGI middleware enforcing the 1 MB body cap.
+
+    Content-Length is checked up front. When it is absent (e.g. chunked
+    transfer-encoding), the body is buffered while enforcing the cap so the
+    limit cannot be bypassed by omitting the header, then replayed downstream.
+    Implemented at the ASGI layer (not BaseHTTPMiddleware) so we control the
+    receive channel and can feed the buffered body to the app.
+    """
+
+    def __init__(self, app) -> None:
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        headers = dict(scope.get("headers") or [])
+        content_length = headers.get(b"content-length")
+        if content_length is not None:
+            try:
+                declared = int(content_length)
+            except ValueError:
+                response = JSONResponse(
+                    status_code=400, content={"detail": "Invalid Content-Length header."}
+                )
+                await response(scope, receive, send)
+                return
+            if declared > _MAX_BODY_BYTES:
+                await _send_413(scope, send)
+                return
+            await self.app(scope, receive, send)
+            return
+
+        body = bytearray()
+        more_body = True
+        while more_body:
+            message = await receive()
+            if message["type"] != "http.request":
+                if message["type"] == "http.disconnect":
+                    return
+                continue
+            body.extend(message.get("body", b""))
+            if len(body) > _MAX_BODY_BYTES:
+                await _send_413(scope, send)
+                return
+            more_body = message.get("more_body", False)
+
+        buffered = bytes(body)
+        replayed = False
+
+        async def replay_receive() -> dict:
+            nonlocal replayed
+            if not replayed:
+                replayed = True
+                return {"type": "http.request", "body": buffered, "more_body": False}
+            return await receive()
+
+        await self.app(scope, replay_receive, send)
 
 
 class GlobalIPRateLimitMiddleware(BaseHTTPMiddleware):
