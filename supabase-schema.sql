@@ -76,6 +76,85 @@ create policy "Users delete own jobs"
 create index if not exists idx_jobs_user_id on public.jobs(user_id);
 
 -- -----------------------------------------------------------------------
+-- resumes: user's named resume documents
+-- -----------------------------------------------------------------------
+create table if not exists public.resumes (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references auth.users(id) on delete cascade,
+  title       text not null check (char_length(title) between 1 and 200),
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.resumes enable row level security;
+
+create policy "Users read own resumes"
+  on public.resumes for select
+  using (auth.uid() = user_id);
+
+create policy "Users insert own resumes"
+  on public.resumes for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users update own resumes"
+  on public.resumes for update
+  using (auth.uid() = user_id);
+
+create policy "Users delete own resumes"
+  on public.resumes for delete
+  using (auth.uid() = user_id);
+
+create index if not exists idx_resumes_user_id on public.resumes(user_id);
+
+-- -----------------------------------------------------------------------
+-- resume_versions: immutable content snapshots tied to a resume
+-- -----------------------------------------------------------------------
+create table if not exists public.resume_versions (
+  id              uuid primary key default gen_random_uuid(),
+  resume_id       uuid not null references public.resumes(id) on delete cascade,
+  version_number  int not null check (version_number >= 1),
+  resume_data     jsonb not null,
+  resume_text     text,
+  created_at      timestamptz not null default now(),
+  unique(resume_id, version_number)
+);
+
+alter table public.resume_versions enable row level security;
+
+create policy "Users read own resume versions"
+  on public.resume_versions for select
+  using (
+    exists (
+      select 1 from public.resumes
+      where resumes.id = resume_versions.resume_id
+        and resumes.user_id = auth.uid()
+    )
+  );
+
+create policy "Users insert own resume versions"
+  on public.resume_versions for insert
+  with check (
+    exists (
+      select 1 from public.resumes
+      where resumes.id = resume_versions.resume_id
+        and resumes.user_id = auth.uid()
+    )
+  );
+
+create policy "Users delete own resume versions"
+  on public.resume_versions for delete
+  using (
+    exists (
+      select 1 from public.resumes
+      where resumes.id = resume_versions.resume_id
+        and resumes.user_id = auth.uid()
+    )
+  );
+
+create index if not exists idx_resume_versions_resume_id
+  on public.resume_versions(resume_id);
+
+-- -----------------------------------------------------------------------
 -- shared_scores: authenticated ATS score snapshots for shareable links
 -- -----------------------------------------------------------------------
 create table if not exists public.shared_scores (
