@@ -32,10 +32,12 @@ services:
     # START COMMAND — runs the live server
     # $PORT is injected by Render — never hardcode a port in production.
     # Render's load balancer routes external traffic to whatever port this process listens on.
-    # --proxy-headers + --forwarded-allow-ips="*" make uvicorn honor Render's
-    # X-Forwarded-For so request.client.host is the REAL client IP (not Render's
-    # proxy IP). Without this, every visitor shares one rate-limit bucket.
-    startCommand: 'uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips="*"'
+    # NOTE: we deliberately do NOT pass uvicorn --proxy-headers/--forwarded-allow-ips="*".
+    # That mode trusts the LEFTMOST X-Forwarded-For entry, which is client-supplied and
+    # spoofable, letting an attacker forge a new rate-limit bucket per request. Instead,
+    # app.core.rate_limit.get_client_ip reads the RIGHTMOST (Render-appended) XFF entry.
+    # If Render ever adds more proxy hops, set TRUSTED_PROXY_HOPS accordingly.
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
 
     plan: free
 

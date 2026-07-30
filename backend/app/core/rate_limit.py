@@ -1,6 +1,7 @@
 """Shared rate limiters with real client IP extraction for Render + Cloudflare."""
 
 import math
+import os
 import threading
 import time
 from collections import deque
@@ -9,6 +10,12 @@ from collections.abc import Callable
 from slowapi import Limiter
 from starlette.requests import Request
 
+# Number of trusted reverse-proxy hops in front of the app that append to
+# X-Forwarded-For (Render's edge appends exactly one). The real client IP is the
+# entry this many positions from the RIGHT of X-Forwarded-For; everything to the
+# left of it is client-supplied and spoofable.
+_TRUSTED_PROXY_HOPS = max(1, int(os.getenv("TRUSTED_PROXY_HOPS", "1") or "1"))
+
 
 def get_client_ip(request: Request) -> str:
     # Only trust CF-Connecting-IP when CF-Ray is also present (Cloudflare always
@@ -16,8 +23,19 @@ def get_client_ip(request: Request) -> str:
     cf_ip = request.headers.get("CF-Connecting-IP")
     if cf_ip and request.headers.get("CF-Ray"):
         return cf_ip
-    # X-Forwarded-For leftmost entry is client-supplied and cannot be trusted
-    # when there is no upstream proxy asserting it. Fall back to the socket IP.
+    # Behind Render's proxy the genuine client IP is appended as the RIGHTMOST
+    # X-Forwarded-For entry. We must NOT use the leftmost entry: it is
+    # client-supplied, so keying the rate limiter on it lets an attacker mint a
+    # fresh bucket per request by rotating the header. Skipping _TRUSTED_PROXY_HOPS
+    # entries from the right reaches the value our own proxy asserted. This fails
+    # safe: if the header is missing/short we fall back to the socket peer, which
+    # at worst shares one bucket rather than being attacker-controllable.
+    xff = request.headers.get("X-Forwarded-For")
+    if xff:
+        parts = [p.strip() for p in xff.split(",") if p.strip()]
+        if parts:
+            idx = len(parts) - _TRUSTED_PROXY_HOPS
+            return parts[idx] if idx >= 0 else parts[0]
     return request.client.host if request.client else "unknown"
 
 

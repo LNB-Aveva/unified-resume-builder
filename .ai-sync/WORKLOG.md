@@ -27,6 +27,15 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 81 — 2026-07-30
+- **Agent:** manual (code-review follow-up)
+- **Did:**
+  - Code-review agent flagged a HIGH regression: `--forwarded-allow-ips="*"` made uvicorn trust the spoofable LEFTMOST X-Forwarded-For, letting attackers mint a fresh rate-limit bucket per request.
+  - Fix: removed the uvicorn proxy-header flags from `render.yaml`; `get_client_ip` now reads the RIGHTMOST (Render-appended) XFF entry via `_TRUSTED_PROXY_HOPS` (env `TRUSTED_PROXY_HOPS`, default 1). Fails safe. Added `backend/tests/unit/test_client_ip.py` (6 tests incl. spoof-resistance).
+  - Validated: ruff clean (app/), 319 passed / 20 skipped.
+- **Files Changed:** `backend/app/core/rate_limit.py`, `render.yaml`, `backend/tests/unit/test_client_ip.py`, `.ai-sync/WORKLOG.md`
+- **Blockers:** None.
+
 ### Session 80 — 2026-07-30
 - **Agent:** manual (production-readiness review)
 - **Did:**
