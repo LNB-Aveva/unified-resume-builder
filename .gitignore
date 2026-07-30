@@ -39,6 +39,8 @@ frontend/.next/
 .env.*.local
 *.pem
 secrets/
+SECRETS_BACKUP.txt
+SECRETS_BACKUP*.txt
 
 # ============================
 # IDEs and Editors
