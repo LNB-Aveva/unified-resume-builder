@@ -12,17 +12,40 @@ import ThemeToggle from "@/app/components/ThemeToggle";
 import UserMenu from "@/app/components/UserMenu";
 import InfoTooltip from "@/app/components/InfoTooltip";
 import ToolsSidebar from "@/app/components/ToolsSidebar";
+import { loadResume, type ResumeData } from "@/app/actions/resume";
 
 export const metadata = {
   title: "Tools",
   description: "Access all 9 free ATS resume tools.",
 };
 
-export default async function ToolsPage() {
+export default async function ToolsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const params = await searchParams;
+  const resumeParam = typeof params.resume === "string" ? params.resume : undefined;
+
+  let loadedResumeId: string | undefined;
+  let loadedTitle: string | undefined;
+  let loadedData: ResumeData | undefined;
+  let loadedVersion: number | undefined;
+
+  if (resumeParam) {
+    const result = await loadResume(resumeParam);
+    if (result.resume && result.version) {
+      loadedResumeId = result.resume.id;
+      loadedTitle = result.resume.title;
+      loadedData = result.version.resume_data;
+      loadedVersion = result.version.version_number;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
@@ -36,6 +59,9 @@ export default async function ToolsPage() {
             <span className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white tracking-tight">ResumeAI</span>
           </Link>
           <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+            <Link href="/resumes" className="hover:text-gray-900 dark:hover:text-white transition">
+              My Resumes
+            </Link>
             <Link href="/account" className="hover:text-gray-900 dark:hover:text-white transition">
               Account
             </Link>
@@ -127,7 +153,12 @@ export default async function ToolsPage() {
               PDF Resume Export
               <InfoTooltip tip="Export your resume as an ATS-safe PDF using one of 3 templates." />
             </h2>
-            <ResumeExporter />
+            <ResumeExporter
+              initialResumeId={loadedResumeId}
+              initialTitle={loadedTitle}
+              initialData={loadedData}
+              initialVersion={loadedVersion}
+            />
           </section>
 
           <section id="job-tracker" className="scroll-mt-24">

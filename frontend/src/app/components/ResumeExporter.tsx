@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { API_URL } from "../types";
 import { authFetch } from "../lib/authFetch";
 import Spinner from "./Spinner";
 import { DEMO_PERSONAL, DEMO_SUMMARY, DEMO_EXPERIENCE, DEMO_EDUCATION, DEMO_RESUME_SKILLS } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
+import { createResume, saveVersion, type ResumeData } from "../actions/resume";
 
 interface PersonalInfo {
   full_name: string;
@@ -150,23 +151,120 @@ function SectionHeader({ title, open, onToggle }: { title: string; open: boolean
   );
 }
 
-export default function ResumeExporter() {
+interface ResumeExporterProps {
+  initialResumeId?: string;
+  initialTitle?: string;
+  initialData?: ResumeData;
+  initialVersion?: number;
+}
+
+export default function ResumeExporter({
+  initialResumeId,
+  initialTitle,
+  initialData,
+  initialVersion,
+}: ResumeExporterProps = {}) {
   const [open, setOpen] = useState<Record<SectionKey, boolean>>({
     personal: true, summary: false, experience: false, education: false, skills: false,
   });
 
-  const [template, setTemplate] = useState<TemplateId>("classic");
-  const [personal, setPersonal] = useState<PersonalInfo>({
-    full_name: "", email: "", phone: "", location: "", linkedin: "", website: "",
+  const [template, setTemplate] = useState<TemplateId>(initialData?.template ?? "classic");
+  const [personal, setPersonal] = useState<PersonalInfo>(
+    initialData?.personal ?? { full_name: "", email: "", phone: "", location: "", linkedin: "", website: "" },
+  );
+  const [summary, setSummary] = useState(initialData?.summary ?? "");
+  const [experience, setExperience] = useState<ExperienceEntry[]>(() => {
+    if (initialData?.experience?.length) {
+      return initialData.experience.map((e) => ({
+        id: crypto.randomUUID(),
+        company: e.company,
+        title: e.title,
+        start_date: e.start_date,
+        end_date: e.end_date,
+        bulletsText: e.bullets.join("\n"),
+      }));
+    }
+    return [blankExp()];
   });
-  const [summary, setSummary] = useState("");
-  const [experience, setExperience] = useState<ExperienceEntry[]>([blankExp()]);
-  const [education, setEducation] = useState<EducationEntry[]>([blankEdu()]);
-  const [skills, setSkills] = useState("");
+  const [education, setEducation] = useState<EducationEntry[]>(() => {
+    if (initialData?.education?.length) {
+      return initialData.education.map((e) => ({
+        id: crypto.randomUUID(),
+        ...e,
+      }));
+    }
+    return [blankEdu()];
+  });
+  const [skills, setSkills] = useState(initialData?.skills ?? "");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  const [resumeId, setResumeId] = useState<string | undefined>(initialResumeId);
+  const [resumeTitle, setResumeTitle] = useState(initialTitle ?? "");
+  const [currentVersion, setCurrentVersion] = useState(initialVersion ?? 0);
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [saveAsTitle, setSaveAsTitle] = useState("");
+
+  useEffect(() => {
+    if (initialData) {
+      setOpen({ personal: true, summary: true, experience: true, education: true, skills: true });
+    }
+  }, [initialData]);
+
+  function buildResumeData(): ResumeData {
+    return {
+      personal,
+      summary: summary.trim(),
+      experience: experience
+        .filter((e) => e.company.trim() || e.title.trim())
+        .map(({ bulletsText, id: _eid, ...rest }) => ({
+          ...rest,
+          bullets: bulletsText.split("\n").map((l) => l.trim()).filter(Boolean),
+        })),
+      education: education
+        .filter((e) => e.institution.trim() || e.degree.trim())
+        .map(({ id: _eduid, ...rest }) => rest),
+      skills: skills.trim(),
+      template,
+    };
+  }
+
+  async function handleSave() {
+    if (!personal.full_name.trim()) {
+      setError("Fill in at least your name before saving.");
+      return;
+    }
+    if (resumeId) {
+      setSaving(true);
+      const { version, error: err } = await saveVersion(resumeId, buildResumeData());
+      setSaving(false);
+      if (err) { setError(err); return; }
+      setCurrentVersion(version);
+      setSaveSuccess(`Saved as v${version}`);
+      setTimeout(() => setSaveSuccess(null), 3000);
+    } else {
+      setSaveAsTitle(personal.full_name.trim() + " Resume");
+      setShowSaveDialog(true);
+    }
+  }
+
+  async function handleSaveAs() {
+    if (!saveAsTitle.trim()) return;
+    setSaving(true);
+    const { id, error: err } = await createResume(saveAsTitle.trim(), buildResumeData());
+    setSaving(false);
+    if (err) { setError(err); setShowSaveDialog(false); return; }
+    setResumeId(id);
+    setResumeTitle(saveAsTitle.trim());
+    setCurrentVersion(1);
+    setShowSaveDialog(false);
+    setSaveSuccess("Resume saved!");
+    setTimeout(() => setSaveSuccess(null), 3000);
+  }
 
   function toggle(key: SectionKey) {
     setOpen((p) => ({ ...p, [key]: !p[key] }));
@@ -506,31 +604,66 @@ export default function ResumeExporter() {
         </div>
       )}
 
-      {/* Download button */}
+      {/* Loaded resume indicator */}
+      {resumeId && resumeTitle && (
+        <div className="flex items-center gap-2 rounded-xl bg-indigo-50 dark:bg-indigo-950 border border-indigo-200 dark:border-indigo-800 px-4 py-2.5">
+          <svg className="h-4 w-4 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+          </svg>
+          <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300">{resumeTitle}</span>
+          {currentVersion > 0 && (
+            <span className="text-xs text-indigo-400 dark:text-indigo-500">v{currentVersion}</span>
+          )}
+        </div>
+      )}
+
+      {/* Action buttons */}
       <div className="flex items-center gap-3">
-      <button
-        onClick={handleDownload}
-        disabled={loading}
-        className="flex-1 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
-      >
-        {loading ? (
-          <Spinner>Generating PDF...</Spinner>
-        ) : success ? (
-          <span className="flex items-center justify-center gap-2">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            Downloaded!
-          </span>
-        ) : (
-          <span className="flex items-center justify-center gap-2">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            Download PDF Resume
-          </span>
-        )}
-      </button>
+        <button
+          onClick={handleDownload}
+          disabled={loading}
+          className="flex-1 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? (
+            <Spinner>Generating PDF...</Spinner>
+          ) : success ? (
+            <span className="flex items-center justify-center gap-2">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Downloaded!
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download PDF Resume
+            </span>
+          )}
+        </button>
+
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950 px-5 py-3.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 transition hover:bg-indigo-100 dark:hover:bg-indigo-900 active:scale-[0.98] disabled:opacity-60"
+        >
+          {saving ? (
+            <Spinner>Saving...</Spinner>
+          ) : saveSuccess ? (
+            <span className="flex items-center gap-2">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              {saveSuccess}
+            </span>
+          ) : resumeId ? (
+            "Save Version"
+          ) : (
+            "Save Resume"
+          )}
+        </button>
+
         {!personal.full_name.trim() && !personal.email.trim() && !summary.trim() && experience.length === 0 && (
           <TryDemoButton onClick={() => {
             setPersonal(DEMO_PERSONAL);
@@ -542,6 +675,38 @@ export default function ResumeExporter() {
           }} />
         )}
       </div>
+
+      {/* Save-as dialog */}
+      {showSaveDialog && (
+        <div className="rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950 p-4 space-y-3">
+          <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+            Save Resume As
+          </p>
+          <input
+            autoFocus
+            value={saveAsTitle}
+            onChange={(e) => setSaveAsTitle(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") handleSaveAs(); }}
+            placeholder="e.g. Software Engineer Resume"
+            className="w-full rounded-lg border border-indigo-200 dark:border-indigo-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={handleSaveAs}
+              disabled={saving || !saveAsTitle.trim()}
+              className="rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition"
+            >
+              {saving ? "Saving..." : "Save"}
+            </button>
+            <button
+              onClick={() => setShowSaveDialog(false)}
+              className="rounded-lg px-4 py-2 text-xs font-medium text-gray-500 hover:text-gray-700 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
       <p className="text-center text-xs text-gray-400 dark:text-gray-500">
         3 ATS-safe single-column templates · fpdf2 · No watermarks

@@ -93,6 +93,7 @@ export async function deleteAccount(): Promise<FormState> {
     return { message: "Not authenticated." };
   }
 
+  await supabase.from("resumes").delete().eq("user_id", user.id);
   await supabase.from("jobs").delete().eq("user_id", user.id);
   await supabase.from("profiles").delete().eq("id", user.id);
 
@@ -116,10 +117,23 @@ export async function exportUserData(): Promise<{ json?: string; error?: string 
     return { error: "Not authenticated." };
   }
 
-  const [profileResult, jobsResult] = await Promise.all([
+  const [profileResult, jobsResult, resumesResult] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase.from("jobs").select("*").eq("user_id", user.id).order("date_added", { ascending: false }),
+    supabase.from("resumes").select("id, title, created_at, updated_at").eq("user_id", user.id).order("updated_at", { ascending: false }),
   ]);
+
+  const resumes = resumesResult.data ?? [];
+  const resumesWithVersions = await Promise.all(
+    resumes.map(async (r) => {
+      const { data: versions } = await supabase
+        .from("resume_versions")
+        .select("version_number, resume_data, resume_text, created_at")
+        .eq("resume_id", r.id)
+        .order("version_number", { ascending: true });
+      return { ...r, versions: versions ?? [] };
+    }),
+  );
 
   const exportData = {
     exported_at: new Date().toISOString(),
@@ -129,6 +143,7 @@ export async function exportUserData(): Promise<{ json?: string; error?: string 
     },
     profile: profileResult.data ?? null,
     jobs: jobsResult.data ?? [],
+    resumes: resumesWithVersions,
   };
 
   return { json: JSON.stringify(exportData, null, 2) };
