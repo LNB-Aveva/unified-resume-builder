@@ -34,11 +34,15 @@ Always check shared context before starting any task.
 - **Verify counts:** before changing any numeric claim, grep all instances across the file
 - **Schema sync:** when changing max_length/min_length/Literal in a schema, grep backend/tests/ and update boundary tests in the same commit
 - **proxy.ts IS the middleware** in Next.js 16 — never recreate `middleware.ts`
+- **LINT BEFORE COMMIT (mandatory):** before EVERY `git commit`, run BOTH lint commands below and fix all errors. Never commit with lint failures — CI will reject it and it wastes the GitHub Actions budget. The `.githooks/pre-commit` hook enforces this automatically.
 
 ## Commands
 - Frontend: `cd frontend && npm run dev` (dev), `npm run build` (verify), `npm run lint`
 - Backend: `cd backend && pytest` (tests), `uvicorn main:app --reload` (dev)
-- Pre-commit: `pre-commit run --all-files`
+- **Lint (MUST pass before commit):**
+  - `cd backend && python -m ruff check app/ --config ruff.toml`
+  - `cd frontend && npm run lint`
+- Pre-commit hook: `.githooks/pre-commit` (auto-runs via `git config core.hooksPath .githooks`)
 
 ## Key Files
 - `.ai-sync/WORKLOG.md`   — shared task log (READ + WRITE every session)

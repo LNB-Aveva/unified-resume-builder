@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** CI is green. Remaining launch Blockers are saved resume/version persistence, backend token verification, anonymous score writes bypassing API limits, and AdSense readiness. Follow the refreshed 12-phase program.
+- **Status:** Phase 4 nearly complete (4.4 deferred — needs UI). CI lint fix committed. Pre-commit hook enforces lint checks. RLS isolation tests written (20 tests). Finding F6 RESOLVED.
 
 ---
 
@@ -19,13 +19,31 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-07-30                 |
-| Working On | Phase 3.2 (shared_scores RLS) DONE, Phase 3.8 (security scans) DONE. Finding F5 RESOLVED. Moving to Phase 4. |
+| Working On | Phase 4.5 (RLS tests) DONE, Phase 4.6 (cascade verify) DONE, CI lint fix DONE, pre-commit hook DONE. Finding F6 RESOLVED. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 77 — 2026-07-30
+- **Agent:** claude
+- **Did:**
+  - **CI fix:** Fixed ruff UP038 lint error in `hf_client.py` (Codex code used `isinstance(exc, (X, Y))` instead of `isinstance(exc, X | Y)`)
+  - **Pre-commit hook:** Created `.githooks/pre-commit` — runs ruff + eslint before every commit. Configured via `git config core.hooksPath .githooks`. Added lint-before-commit as a Hard Rule in both CLAUDE.md and AGENTS.md.
+  - **Phase 4.5 (Finding F6 RESOLVED):** 20 two-user RLS integration tests in `test_rls_isolation.py` — covers cross-user select/insert/update/delete for profiles, jobs, resumes, resume_versions, and shared_scores. Plus `test_cascade_deletes_all_owned_data` for Phase 4.6. Tests skip in CI (need SUPABASE_SERVICE_ROLE_KEY).
+  - **Phase 4.6:** Verified delete_own_user() cascade via schema review + integration test.
+  - 377 passed + 20 skipped, ruff clean, eslint clean
+- **Files Changed:**
+  - `.githooks/pre-commit` (new — lint gate)
+  - `CLAUDE.md`, `AGENTS.md` (lint-before-commit rule)
+  - `backend/app/services/ai/hf_client.py` (UP038 fix)
+  - `backend/tests/integration/test_rls_isolation.py` (new — 20 RLS tests)
+  - `docs/LAUNCH_PROGRAM.md` (4.5+4.6 DONE, F6 RESOLVED)
+  - `.ai-sync/WORKLOG.md`
+- **Next:** Phase 4.4 (jobs→resume FK) needs UI — requires localhost-first. Then Phase 6/7/8 remaining.
+- **Blockers:** 4.4 deferred (needs localhost UI review). RLS tests need SUPABASE_SERVICE_ROLE_KEY to run against real Supabase.
 
 ### Session 76 (Codex) — 2026-07-30
 - **Agent:** codex

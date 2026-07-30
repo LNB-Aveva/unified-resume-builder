@@ -1,0 +1,37 @@
+#!/bin/sh
+# Pre-commit hook — blocks commits that fail lint.
+# Installed via: git config core.hooksPath .githooks
+#
+# Checks:
+#   1. Backend: ruff lint (Python)
+#   2. Frontend: eslint (TypeScript/React)
+#
+# If either fails, the commit is rejected.
+
+set -e
+
+echo "=== Pre-commit: running lint checks ==="
+
+# --- Backend: ruff ---
+if [ -d "backend" ]; then
+    echo "[1/2] ruff check (backend)..."
+    cd backend
+    python -m ruff check app/ --config ruff.toml
+    cd ..
+    echo "  ✓ ruff passed"
+else
+    echo "[1/2] skipping ruff (no backend/ directory)"
+fi
+
+# --- Frontend: eslint ---
+if [ -d "frontend" ]; then
+    echo "[2/2] eslint (frontend)..."
+    cd frontend
+    npx eslint --max-warnings 0 2>/dev/null || npm run lint
+    cd ..
+    echo "  ✓ eslint passed"
+else
+    echo "[2/2] skipping eslint (no frontend/ directory)"
+fi
+
+echo "=== Pre-commit: all checks passed ==="
