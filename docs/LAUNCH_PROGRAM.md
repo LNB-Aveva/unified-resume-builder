@@ -29,7 +29,7 @@ Verified on 2026-07-29; older session-log claims are not authoritative.
 | Python dependency audit | **GREEN LOCALLY** | Runtime and development manifests are separate and both resolve with no known vulnerabilities. The unused Semgrep dependency and its vulnerable `mcp`/`click` chain were removed. |
 | Frontend dependency audit | **PRODUCTION GREEN; DEV RED** | `npm audit --omit=dev --audit-level=high` found zero production vulnerabilities. The full installed tree reported nine High advisories in development tooling and needs triage without weakening the production gate. |
 | Supabase production | **PARTIALLY VERIFIED** | Anonymous read-only REST checks returned 200/zero rows for `profiles` and `jobs`, and 200 for `shared_scores`, consistent with deployed tables and RLS. Cross-user isolation and RPC deployment remain unproven. |
-| Saved resumes | **MISSING — BLOCKER** | Production REST returned 404 for both `resumes` and `resume_versions`; neither table nor UI persistence exists in the repo. |
+| Saved resumes | **CODE COMPLETE — DEPLOY PENDING** | Schema, RLS, server actions, save/load/rename/version/delete UI, and My Resumes page exist in source. Tables must be created in production Supabase. |
 | Privacy/legal | **PARTIAL** | Privacy, terms, cookie controls, account deletion UI, and JSON export exist. The current custom cookie banner is not a Google-certified TCF CMP. |
 | AdSense | **NOT READY** | `/ads.txt` returns 404; no publisher script or ad units exist; publisher ID is unavailable. |
 | Observability | **PARTIAL** | Backend has conditional Sentry plus structured access logs. Production DSN behavior, frontend Sentry, uptime alert delivery, and cost alarms are unverified. |
@@ -41,7 +41,7 @@ Severity assumes an unknown user expects every advertised feature to work, even 
 
 | # | Severity | Area | File:line | What breaks | Fix effort |
 |---|---|---|---|---|---|
-| F1 | **Blocker** | Persistence | `supabase-schema.sql:5-110`; `README.md:14` | The product promises saved resumes and linked versions, but production and source contain no `resumes` or `resume_versions` table and no save/load UI. The settled product requirement is not implemented. | L |
+| F1 | **Resolved** | Persistence | `supabase-schema.sql`; `frontend/src/app/actions/resume.ts`; `(protected)/resumes/`; `ResumeExporter.tsx` | resumes + resume_versions tables with RLS, save/load/rename/version/delete UI, My Resumes page, tools page integration via ?resume= param. Production tables must be created in Supabase dashboard. | L |
 | F2 | **Resolved** | CI/release | `backend/app/main.py`; `.github/workflows/ci.yml` | Resolved by commit `c07d905`; GitHub Actions run 30508092537 passed both backend and frontend jobs. | S |
 | F3 | **Resolved** | Auth/cost abuse | `backend/app/core/auth.py`; 7 route files; `frontend/src/app/lib/authFetch.ts` | Backend now verifies Supabase HS256 JWTs on all 7 protected routes. Unauthenticated requests get 401. Public routes (analyze, preview-rewrite) are explicitly retained. 76 auth tests prove enforcement. | M |
 | F4 | **Blocker** | AdSense | `frontend/src/app/components/CookieConsent.tsx:6-54`; `frontend/public/ads.txt` (missing) | Monetization is absent. The custom banner is not a Google-certified TCF CMP, which Google requires for personalized AdSense traffic in the EEA/UK/Switzerland. Publisher ID, ads.txt, script, placements, and policy validation remain. | L |
@@ -127,12 +127,12 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | Task | File(s) | Status |
 |---|---|---|
 | 4.1 Keep Supabase email/password/OAuth session handling and protected Next.js routes. | `frontend/src/proxy.ts`, auth pages/actions | DONE |
-| 4.2 Add `resumes` and immutable `resume_versions` tables with ownership, timestamps, indexes, and cascade behavior. | versioned Supabase migrations | TODO — BLOCKER |
-| 4.3 Add save, list, load, rename, version, and delete flows without silently overwriting prior versions. | `frontend/src/app/(protected)/`, resume components/actions | TODO |
+| 4.2 Add `resumes` and immutable `resume_versions` tables with ownership, timestamps, indexes, and cascade behavior. | `supabase-schema.sql` | DONE — resumes + resume_versions tables with full RLS (select/insert/update/delete for resumes; select/insert/delete for versions — no update = immutable), CHECK constraints, cascade delete, user_id FK |
+| 4.3 Add save, list, load, rename, version, and delete flows without silently overwriting prior versions. | `frontend/src/app/actions/resume.ts`, `(protected)/resumes/`, `ResumeExporter.tsx`, tools page | DONE — server actions (create/saveVersion/list/load/rename/delete/listVersions), My Resumes page with rename/delete, ResumeExporter save/save-version buttons, tools page loads from ?resume= param |
 | 4.4 Link tracked jobs to the selected resume version with an FK and safe deletion semantics. | jobs migration, `JobTracker.tsx` | TODO |
 | 4.5 Add two-user RLS integration tests covering select/insert/update/delete for profiles, jobs, resumes, and versions. | Supabase test harness/CI | TODO — mandatory proof |
 | 4.6 Verify `delete_own_user()` in production and make account deletion remove/cascade all resume versions, jobs, profile, and auth identity. | migrations, `auth.ts`, E2E tests | VERIFY |
-| 4.7 Extend data export to include resumes and versions, with an automated completeness test. | `auth.ts`, `ExportDataButton.tsx` | TODO after 4.2 |
+| 4.7 Extend data export to include resumes and versions, with an automated completeness test. | `auth.ts`, `ExportDataButton.tsx` | DONE — exportUserData now fetches resumes + all versions; deleteAccount deletes resumes before profiles |
 
 **Definition of Done:** Authenticated users can manage versioned resumes; every table has least-privilege RLS; deletion/export cover all owned data.
 
@@ -203,7 +203,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 |---|---|---|
 | 9.1 Keep privacy, terms, AI-processing disclosure, cookie categories, rights, and 30-day shared-score retention accurate. | privacy/terms pages | PARTIAL |
 | 9.2 Update policy and retention schedule for saved resumes/versions before persistence ships. | privacy page, retention docs | TODO after Phase 4 design |
-| 9.3 Replace inaccurate vendor/technology claims and document Hugging Face processing and telemetry controls precisely. | legal pages, public copy | TODO |
+| 9.3 Replace inaccurate vendor/technology claims and document Hugging Face processing and telemetry controls precisely. | legal pages, public copy | DONE — privacy and terms describe taxonomy synonym matching, fpdf2, Hugging Face AI processing, saved-resume storage, and Sentry error tracking without resume content |
 | 9.4 Keep a reachable support email; `lnbingi.work@gmail.com` currently appears in privacy and terms. Add a dedicated contact route if that is the launch identity. | privacy/terms/footer/contact | VERIFY owner acceptance |
 | 9.5 Verify account deletion and export in production, including all new resume data. | auth actions, Supabase, E2E | TODO after Phase 4 |
 

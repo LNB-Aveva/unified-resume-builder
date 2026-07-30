@@ -14,7 +14,7 @@ export default function PrivacyPolicy() {
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">
           Privacy Policy
         </h1>
-        <p className="text-sm text-gray-400 dark:text-gray-500">Last updated: July 29, 2026</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">Last updated: July 30, 2026</p>
       </div>
 
       <div className="prose prose-gray dark:prose-invert prose-sm max-w-none space-y-8">
@@ -36,7 +36,7 @@ export default function PrivacyPolicy() {
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Resume Content</h3>
-              <p>Text you paste into our tools (job descriptions, resume content, bullet points) is processed in your browser or sent to our backend API for analysis and AI features. We do not store your full resume text on our servers. However, when you use the shareable ATS score feature, we store the matched and missing keyword lists (not your resume text) for up to 30 days so the share link remains accessible.</p>
+              <p>Text you paste into our tools (job descriptions, resume content, bullet points) is processed in your browser or sent to our backend API for analysis and AI features. We store resume content only when you explicitly use the saved-resume feature. When you use the shareable ATS score feature, we store the matched and missing keyword lists (not your resume text) for up to 30 days so the share link remains accessible.</p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Keyword Data</h3>
@@ -45,6 +45,10 @@ export default function PrivacyPolicy() {
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Usage Data</h3>
               <p>We use Google Analytics to collect anonymous usage data (pages visited, features used, device type). This helps us improve the product. No personally identifiable information is sent to Google Analytics.</p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Error Data</h3>
+              <p>We use Sentry for backend error tracking. No resume content is transmitted to Sentry.</p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Local Storage</h3>
@@ -58,7 +62,8 @@ export default function PrivacyPolicy() {
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed">
             <li>To provide and maintain our ATS resume tools</li>
             <li>To authenticate your account and manage sessions</li>
-            <li>To process AI-powered features (summary generation, cover letter generation, bullet rewriting) via our FastAPI backend and HuggingFace inference API</li>
+            <li>To process summary generation, bullet rewriting, and cover letter generation through our FastAPI backend using Hugging Face as the AI inference provider</li>
+            <li>To analyze resume matches using a curated skill taxonomy with synonym matching and generate PDF exports with fpdf2</li>
             <li>To improve our matching algorithms using anonymized, aggregated keyword data</li>
             <li>To improve our website and user experience through anonymized analytics</li>
             <li>To display relevant advertisements through Google AdSense (with your consent)</li>
@@ -69,7 +74,7 @@ export default function PrivacyPolicy() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Data Processing &amp; AI Features</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
             When you use AI-powered tools (Summary Generator, Cover Letter Generator, Bullet Rewriter), your text is sent
-            to our FastAPI backend and forwarded to HuggingFace&apos;s inference API for processing. This data is:
+            to our FastAPI backend and forwarded to Hugging Face&apos;s inference API for processing. This data is:
           </p>
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
             <li>Not stored or logged on our servers beyond the duration of the request</li>
@@ -82,8 +87,9 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Third-Party Services</h2>
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed">
-            <li><strong>Supabase</strong> &mdash; Authentication and user management</li>
-            <li><strong>HuggingFace</strong> &mdash; AI inference for text generation features</li>
+            <li><strong>Supabase</strong> &mdash; Authentication and storage for account data, saved resumes, and job tracking</li>
+            <li><strong>Hugging Face</strong> &mdash; AI inference for summary generation, bullet rewriting, and cover letter generation</li>
+            <li><strong>Sentry</strong> &mdash; Backend error tracking; no resume content is transmitted</li>
             <li><strong>Vercel</strong> &mdash; Website hosting and deployment</li>
             <li><strong>Google Analytics</strong> &mdash; Anonymous usage analytics (loaded only with your consent)</li>
             <li><strong>Google AdSense</strong> &mdash; Advertising (loaded only with your consent)</li>

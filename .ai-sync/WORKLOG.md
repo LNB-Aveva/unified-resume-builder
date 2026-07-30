@@ -27,6 +27,46 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 76 (Codex) — 2026-07-30
+- **Agent:** codex
+- **Did:**
+  - **Phase 3.6:** Audited every fpdf2 `cell`/`multi_cell` user-text path through `_s`; documented the HTML template as legacy/non-runtime
+  - **Phase 6.2:** Added two retries with 1s/2s exponential backoff for `httpx.ConnectError`; mapped exhausted connection failures to 503 and provider 5xx responses to 502; added 10 async test cases
+  - **Phase 9.3:** Corrected Privacy/Terms vendor and technology descriptions for the curated taxonomy, fpdf2, Hugging Face, saved resumes, and Sentry PII exclusion
+  - Verified 377 backend tests pass, frontend lint passes, and localhost Privacy page returns HTTP 200
+- **Files Changed:**
+  - `backend/app/services/export/templates/resume.html`
+  - `backend/app/services/ai/hf_client.py`, `backend/app/api/routes/_ai_errors.py`
+  - `backend/tests/unit/test_hf_client.py`
+  - `frontend/src/app/privacy/page.tsx`, `frontend/src/app/terms/page.tsx`
+  - `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Apply pending Supabase schema changes; continue remaining launch-program tasks
+- **Blockers:** Browser UI was unavailable for a localhost screenshot; localhost HTTP verification and frontend lint passed
+
+### Session 76 — 2026-07-30
+- **Agent:** claude
+- **Did:**
+  - **Phase 3.2 (Finding F5 RESOLVED):** shared_scores RLS hardened — insert requires `auth.uid() = user_id`; added `user_id` FK column, CHECK constraints (score range, grade values, hint length), user_id index; updated ShareableScoreWidget to include user_id from session
+  - **Phase 3.8:** Full security scan pass — Bandit 0 high, pip-audit runtime+dev 0 vulns, npm audit production 0, detect-secrets clean
+  - **Phase 4.2 (Blocker F1 RESOLVED):** Created `resumes` + `resume_versions` tables with full RLS (user-scoped CRUD for resumes, user-scoped read/insert/delete for versions — no update = immutable), CHECK constraints, cascade delete, indexes
+  - **Phase 4.3:** Full save/list/load/rename/version/delete implementation — server actions in `resume.ts`, My Resumes page (`/resumes`), ResumeExporter save/save-version buttons, tools page loads from `?resume=` query param
+  - **Phase 4.7:** Data export updated to include resumes + all versions; account deletion now cascades through resumes
+  - Account page updated: "My Resumes" nav link, danger zone + data export text updated to mention resumes
+  - Frontend lint clean, build clean, 367 backend tests passing
+- **Files Changed:**
+  - `supabase-schema.sql` (resumes + resume_versions tables, shared_scores RLS + user_id + constraints)
+  - `frontend/src/app/actions/resume.ts` (new — 7 server actions)
+  - `frontend/src/app/(protected)/resumes/page.tsx` (new — My Resumes page)
+  - `frontend/src/app/(protected)/resumes/ResumeList.tsx` (new — client list component)
+  - `frontend/src/app/components/ResumeExporter.tsx` (save/load props, save-as dialog)
+  - `frontend/src/app/(protected)/tools/page.tsx` (?resume= loading, My Resumes nav link)
+  - `frontend/src/app/(protected)/account/page.tsx` (My Resumes nav, updated text)
+  - `frontend/src/app/actions/auth.ts` (export includes resumes, delete cascades resumes)
+  - `frontend/src/app/components/ShareableScoreWidget.tsx` (user_id in insert)
+  - `docs/LAUNCH_PROGRAM.md` (F1+F5 resolved, 3.2+3.8+4.2+4.3+4.7 marked DONE)
+- **Next:** Run tables SQL in Supabase dashboard. Phase 4.4 (jobs→resume FK), 4.5 (two-user RLS tests), 4.6 (production delete verification). Then localhost demo for user approval.
+- **Blockers:** Supabase dashboard access needed to create resumes + resume_versions tables and update shared_scores
+
 ### Session 75 — 2026-07-29
 - **Agent:** claude
 - **Did:**

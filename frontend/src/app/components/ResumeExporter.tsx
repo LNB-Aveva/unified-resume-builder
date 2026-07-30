@@ -223,12 +223,14 @@ export default function ResumeExporter({
       summary: summary.trim(),
       experience: experience
         .filter((e) => e.company.trim() || e.title.trim())
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .map(({ bulletsText, id: _eid, ...rest }) => ({
           ...rest,
           bullets: bulletsText.split("\n").map((l) => l.trim()).filter(Boolean),
         })),
       education: education
         .filter((e) => e.institution.trim() || e.degree.trim())
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .map(({ id: _eduid, ...rest }) => rest),
       skills: skills.trim(),
       template,

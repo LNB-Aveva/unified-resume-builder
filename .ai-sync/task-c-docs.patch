@@ -1,0 +1,26 @@
+diff --git a/docs/LAUNCH_PROGRAM.md b/docs/LAUNCH_PROGRAM.md
+--- a/docs/LAUNCH_PROGRAM.md
++++ b/docs/LAUNCH_PROGRAM.md
+@@ -206 +206 @@
+-| 9.3 Replace inaccurate vendor/technology claims and document Hugging Face processing and telemetry controls precisely. | legal pages, public copy | TODO |
++| 9.3 Replace inaccurate vendor/technology claims and document Hugging Face processing and telemetry controls precisely. | legal pages, public copy | DONE — privacy and terms describe taxonomy synonym matching, fpdf2, Hugging Face AI processing, saved-resume storage, and Sentry error tracking without resume content |
+diff --git a/.ai-sync/WORKLOG.md b/.ai-sync/WORKLOG.md
+--- a/.ai-sync/WORKLOG.md
++++ b/.ai-sync/WORKLOG.md
+@@ -23,0 +24,16 @@
++### Session 76 (Codex) — 2026-07-30
++- **Agent:** codex
++- **Did:**
++  - **Phase 3.6:** Audited every fpdf2 `cell`/`multi_cell` user-text path through `_s`; documented the HTML template as legacy/non-runtime
++  - **Phase 6.2:** Added two retries with 1s/2s exponential backoff for `httpx.ConnectError`; mapped exhausted connection failures to 503 and provider 5xx responses to 502; added 10 async test cases
++  - **Phase 9.3:** Corrected Privacy/Terms vendor and technology descriptions for the curated taxonomy, fpdf2, Hugging Face, saved resumes, and Sentry PII exclusion
++  - Verified 377 backend tests pass, frontend lint passes, and localhost Privacy page returns HTTP 200
++- **Files Changed:**
++  - `backend/app/services/export/templates/resume.html`
++  - `backend/app/services/ai/hf_client.py`, `backend/app/api/routes/_ai_errors.py`
++  - `backend/tests/unit/test_hf_client.py`
++  - `frontend/src/app/privacy/page.tsx`, `frontend/src/app/terms/page.tsx`
++  - `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
++- **Next:** Apply pending Supabase schema changes; continue remaining launch-program tasks
++- **Blockers:** Browser UI was unavailable for a localhost screenshot; localhost HTTP verification and frontend lint passed
++

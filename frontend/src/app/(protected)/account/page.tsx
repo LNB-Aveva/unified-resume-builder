@@ -41,6 +41,9 @@ export default async function AccountPage() {
             <Link href="/tools" className="hover:text-gray-900 dark:hover:text-white transition">
               Tools
             </Link>
+            <Link href="/resumes" className="hover:text-gray-900 dark:hover:text-white transition">
+              My Resumes
+            </Link>
             <ThemeToggle />
             <UserMenu email={user.email ?? ""} />
           </div>
@@ -78,7 +81,7 @@ export default async function AccountPage() {
             Your Data
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            Download a copy of your profile and job tracker entries as a JSON file.
+            Download a copy of your profile, resumes, and job tracker entries as a JSON file.
           </p>
           <ExportDataButton />
         </div>
@@ -88,7 +91,7 @@ export default async function AccountPage() {
             Danger Zone
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            Permanently delete your account and all associated data (profile, job tracker entries).
+            Permanently delete your account and all associated data (profile, resumes, job tracker entries).
           </p>
           <DeleteAccountButton />
         </div>
