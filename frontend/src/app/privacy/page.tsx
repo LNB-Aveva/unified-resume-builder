@@ -51,8 +51,8 @@ export default function PrivacyPolicy() {
               <p>We use Sentry for backend error tracking. No resume content is transmitted to Sentry.</p>
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Local Storage</h3>
-              <p>Job tracker data, resume text, and preferences are stored in your browser&apos;s localStorage. This data never leaves your device unless you explicitly use an AI-powered feature.</p>
+              <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Browser Storage</h3>
+              <p>Resume drafts and preferences may be stored in your browser&apos;s localStorage. Job tracker data is stored in Supabase when cloud storage is available, with localStorage as a fallback. Browser-stored content leaves your device only when you explicitly use an AI-powered or saved-resume feature.</p>
             </div>
           </div>
         </section>
