@@ -38,6 +38,17 @@
 - **Next / manual actions:** ROTATE HuggingFace key; run `scripts/2026-07-30_shared_scores_rls_patch.sql` in Supabase; set `SUPABASE_JWT_SECRET`/`SENTRY_DSN`/`ENV` in Render; purge key from git history (git filter-repo) as final step. Remaining findings: M5 (F17 schema drift), M7 (migrations system), L1 (PDF Unicode font).
 - **Blockers:** None (code); manual prod actions pending.
 
+### Session 80 (Codex) — 2026-07-30
+- **Agent:** codex
+- **Did:**
+  - **Phase 3.4 DONE:** Added consent-gated GA4 script, connection, and image origins to the CSP without adding AdSense domains
+  - **Phase 9.1 DONE:** Reconciled legal disclosures with current score expiry/cleanup, consent behavior, exported data, AI circuit breaking, access-log metadata, and layered rate limits
+  - **Phase 10.3 DONE:** Extended structured access logs with matched route patterns, response content length, 429/auth failure flags, and classification for all six listed AI routes; added 10 unit cases
+  - Verified 409 backend tests pass with 20 credential-dependent RLS tests skipped; backend Ruff and frontend lint pass
+- **Files Changed:** `frontend/next.config.ts`, `frontend/src/app/privacy/page.tsx`, `frontend/src/app/terms/page.tsx`, `backend/app/main.py`, `backend/tests/unit/test_access_log.py`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Continue remaining launch-program phases and owner-blocked production verification
+- **Blockers:** None
+
 ### Session 79 — 2026-07-30
 - **Agent:** claude
 - **Did:**

@@ -217,7 +217,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 |---|---|---|
 | 10.1 Fix backend Sentry integration lint/type errors and verify a test event arrives without PII. | `backend/app/main.py`, Sentry dashboard | TODO/BLOCKED on DSN |
 | 10.2 Add frontend error monitoring and release/environment tagging with PII-safe settings. | frontend instrumentation, package manifest | TODO |
-| 10.3 Keep structured request logs and add metrics for route latency, status, provider failures, and rate limits. | backend logging/monitoring | PARTIAL |
+| 10.3 Keep structured request logs and add metrics for route latency, status, provider failures, and rate limits. | backend logging/monitoring | DONE — access logs retain existing fields and add matched route, response length, rate-limit/auth classifications, and AI-route classification with unit coverage |
 | 10.4 Verify UptimeRobot (or equivalent) alerts a monitored channel; GitHub keepalive is not monitoring. | external dashboard | BLOCKED — owner |
 | 10.5 Configure cost/usage alarms for Hugging Face, Vercel, Render, Supabase, Sentry, domain, and AdSense-related services. | external dashboards | BLOCKED — owner and budget ceiling |
 

@@ -179,6 +179,17 @@ class GlobalIPRateLimitMiddleware(BaseHTTPMiddleware):
 
 _REQUEST_TIMEOUT = 60.0
 
+_AI_ROUTES = frozenset(
+    {
+        "/api/v1/score",
+        "/api/v1/gap",
+        "/api/v1/summary",
+        "/api/v1/cover-letter",
+        "/api/v1/rewrite",
+        "/api/v1/compliance",
+    }
+)
+
 
 class RequestTimeoutMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -198,14 +209,23 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
         start = time.monotonic()
         response = await call_next(request)
         duration_ms = round((time.monotonic() - start) * 1000)
+        matched_route = request.scope.get("route")
+        route = getattr(matched_route, "path_format", None) or getattr(matched_route, "path", None)
+        content_length_header = response.headers.get("content-length")
+        content_length = int(content_length_header) if content_length_header and content_length_header.isdigit() else None
         extra = {
             "request_id": request_id,
             "extra_data": {
                 "method": request.method,
                 "path": request.url.path,
+                "route": route,
                 "status": response.status_code,
                 "duration_ms": duration_ms,
                 "client": request.headers.get("x-forwarded-for", request.client.host if request.client else "unknown"),
+                "rate_limited": response.status_code == 429,
+                "auth_failed": response.status_code in {401, 403},
+                "is_ai_route": request.url.path.rstrip("/") in _AI_ROUTES,
+                "content_length": content_length,
             },
         }
         _logger.info(
