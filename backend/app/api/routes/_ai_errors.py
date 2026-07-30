@@ -5,12 +5,23 @@ from typing import Any
 import httpx
 from fastapi import HTTPException
 
+from app.services.ai.hf_client import CircuitBreakerOpenError
+
 logger = logging.getLogger(__name__)
 
 
 async def call_ai_service(coro: Awaitable[Any]) -> Any:
     try:
         return await coro
+    except CircuitBreakerOpenError:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "AI service is temporarily offline. The system will automatically retry "
+                "in about 60 seconds. Please try again shortly."
+            ),
+            headers={"Retry-After": "60"},
+        ) from None
     except ValueError:
         raise HTTPException(
             status_code=503,

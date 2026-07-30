@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-022: Process-Local Hugging Face Circuit Breaker
+- **Date:** 2026-07-30
+- **Agent:** codex
+- **Context:** Retries handle brief Hugging Face transport failures, but sustained outages still made every API request wait through provider timeouts and retries.
+- **Decision:** Count terminal connection, timeout, and provider 5xx failures per process. Open after five consecutive failed logical calls for 60 seconds, reject calls immediately while open, admit one half-open probe after recovery time, close on success, and restart the 60-second interval if the probe fails. Return HTTP 503 with `Retry-After: 60` while unavailable.
+- **Alternatives Considered:** Count each internal retry attempt — rejected because the breaker should represent failed user-level calls. Distributed Redis state — rejected because current deployment is single-worker and adding infrastructure is unnecessary for this recovery guard.
+- **Files Affected:** `backend/app/services/ai/hf_client.py`, `backend/app/api/routes/_ai_errors.py`, `backend/tests/unit/test_hf_client.py`
+
 ### DEC-021: Per-Process Global IP Sliding-Window Limit
 - **Date:** 2026-07-30
 - **Agent:** codex

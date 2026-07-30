@@ -1,6 +1,8 @@
 import asyncio
 import logging
 import os
+import threading
+import time
 
 import httpx
 
@@ -9,10 +11,65 @@ API_URL = "https://router.huggingface.co/v1/chat/completions"
 
 _MAX_RETRIES = 2
 _BACKOFF_BASE = 1.0
+_FAILURE_THRESHOLD = 5
+_RECOVERY_SECONDS = 60.0
 
 logger = logging.getLogger(__name__)
 
 _client: httpx.AsyncClient | None = None
+_circuit_lock = threading.Lock()
+_consecutive_failures = 0
+_opened_at: float | None = None
+_half_open_probe_in_flight = False
+
+
+class CircuitBreakerOpenError(RuntimeError):
+    """Raised when the Hugging Face circuit breaker is not accepting calls."""
+
+
+def _before_request() -> bool:
+    """Return whether this call is the single half-open probe."""
+    global _half_open_probe_in_flight
+
+    with _circuit_lock:
+        if _opened_at is None:
+            return False
+        if time.monotonic() - _opened_at < _RECOVERY_SECONDS:
+            raise CircuitBreakerOpenError("Hugging Face circuit breaker is open")
+        if _half_open_probe_in_flight:
+            raise CircuitBreakerOpenError("Hugging Face circuit breaker probe is already running")
+        _half_open_probe_in_flight = True
+        return True
+
+
+def _record_success() -> None:
+    global _consecutive_failures, _opened_at, _half_open_probe_in_flight
+
+    with _circuit_lock:
+        _consecutive_failures = 0
+        _opened_at = None
+        _half_open_probe_in_flight = False
+
+
+def _record_failure(was_probe: bool) -> None:
+    global _consecutive_failures, _opened_at, _half_open_probe_in_flight
+
+    with _circuit_lock:
+        if was_probe:
+            _consecutive_failures = _FAILURE_THRESHOLD
+            _opened_at = time.monotonic()
+            _half_open_probe_in_flight = False
+            return
+
+        _consecutive_failures += 1
+        if _consecutive_failures >= _FAILURE_THRESHOLD:
+            _opened_at = time.monotonic()
+            _half_open_probe_in_flight = False
+
+
+def _reset_circuit_breaker() -> None:
+    """Reset process-local breaker state for tests and controlled shutdowns."""
+    _record_success()
 
 
 def _get_client() -> httpx.AsyncClient:
@@ -55,6 +112,7 @@ async def call_hf(
     timeout: float = 30.0,
 ) -> str:
     api_key = _get_api_key()
+    was_probe = _before_request()
 
     payload = {
         "model": MODEL,
@@ -78,9 +136,11 @@ async def call_hf(
             data = response.json()
 
             try:
-                return data["choices"][0]["message"]["content"]
+                content = data["choices"][0]["message"]["content"]
             except (KeyError, IndexError, TypeError):
                 raise RuntimeError(f"Unexpected response shape from HuggingFace: {data}") from None
+            _record_success()
+            return content
 
         except Exception as exc:
             last_exc = exc
@@ -89,6 +149,8 @@ async def call_hf(
                 logger.warning("HF call attempt %d failed (%s), retrying in %.1fs", attempt + 1, exc, delay)
                 await asyncio.sleep(delay)
                 continue
+            if _is_retryable(exc):
+                _record_failure(was_probe)
             raise
 
     raise last_exc  # type: ignore[misc]

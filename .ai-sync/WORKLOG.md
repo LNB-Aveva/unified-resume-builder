@@ -29,9 +29,9 @@
 
 ### Session 78 (Codex) — 2026-07-30
 - **Agent:** codex
-- **Did:** Phase 6.5 load-test runner for all nine POST routes, including valid schema-backed payloads, bounded 20/2–3 concurrency, RPS and p50/p95/p99/error/timeout metrics, a no-network dry run, documentation, and a quota-free 45-request pytest smoke test
-- **Files Changed:** `backend/tests/load/load_test.py`, `backend/tests/load/test_load_smoke.py`, `backend/tests/load/README.md`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
-- **Next:** Phase 6.6 HF circuit breaker, then Phase 11.1 deployment documentation
+- **Did:** Phase 6.5 load-test runner for all nine POST routes, including valid schema-backed payloads, bounded 20/2–3 concurrency, RPS and p50/p95/p99/error/timeout metrics, a no-network dry run, documentation, and a quota-free 45-request pytest smoke test; Phase 6.6 process-local Hugging Face circuit breaker with a five-failure threshold, 60-second open interval, single half-open probe, automatic reset, and retryable 503 mapping
+- **Files Changed:** `backend/tests/load/`, `backend/app/services/ai/hf_client.py`, `backend/app/api/routes/_ai_errors.py`, `backend/tests/unit/test_hf_client.py`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/DECISIONS.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Phase 11.1 deployment documentation
 - **Blockers:** None
 
 ### Session 77 (Codex) — 2026-07-30

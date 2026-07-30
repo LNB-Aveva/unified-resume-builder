@@ -10,6 +10,13 @@ from app.api.routes._ai_errors import call_ai_service
 from app.services.ai import hf_client
 
 
+@pytest.fixture(autouse=True)
+def reset_circuit_breaker() -> None:
+    hf_client._reset_circuit_breaker()
+    yield
+    hf_client._reset_circuit_breaker()
+
+
 @pytest.mark.anyio
 @pytest.mark.parametrize("error_type", [httpx.ConnectError, httpx.ReadTimeout])
 async def test_call_hf_retries_transport_failures_twice(monkeypatch, error_type) -> None:
@@ -71,3 +78,125 @@ async def test_provider_timeout_maps_to_504() -> None:
         await call_ai_service(_raise(httpx.ReadTimeout("timed out", request=request)))
 
     assert exc_info.value.status_code == 504
+
+
+def _success_response() -> httpx.Response:
+    request = httpx.Request("POST", hf_client.API_URL)
+    return httpx.Response(
+        200,
+        request=request,
+        json={"choices": [{"message": {"content": "generated text"}}]},
+    )
+
+
+def _server_error_response() -> httpx.Response:
+    request = httpx.Request("POST", hf_client.API_URL)
+    return httpx.Response(503, request=request, text="provider outage")
+
+
+async def _trip_circuit(monkeypatch, post: AsyncMock) -> None:
+    monkeypatch.setattr(hf_client, "_get_api_key", lambda: "test-key")
+    monkeypatch.setattr(hf_client, "_get_client", lambda: type("Client", (), {"post": post})())
+    monkeypatch.setattr(hf_client, "_MAX_RETRIES", 0)
+    for _ in range(5):
+        with pytest.raises(httpx.HTTPStatusError):
+            await hf_client.call_hf([], max_tokens=10, temperature=0.1)
+
+
+@pytest.mark.anyio
+async def test_circuit_opens_after_five_consecutive_failures(monkeypatch) -> None:
+    post = AsyncMock(return_value=_server_error_response())
+    await _trip_circuit(monkeypatch, post)
+
+    with pytest.raises(hf_client.CircuitBreakerOpenError):
+        await hf_client.call_hf([], max_tokens=10, temperature=0.1)
+
+    assert post.await_count == 5
+
+
+@pytest.mark.anyio
+async def test_open_circuit_rejects_without_http_call(monkeypatch) -> None:
+    post = AsyncMock(return_value=_server_error_response())
+    await _trip_circuit(monkeypatch, post)
+    post.reset_mock()
+
+    with pytest.raises(hf_client.CircuitBreakerOpenError):
+        await hf_client.call_hf([], max_tokens=10, temperature=0.1)
+
+    post.assert_not_awaited()
+
+
+@pytest.mark.anyio
+async def test_circuit_allows_half_open_probe_after_timeout(monkeypatch) -> None:
+    now = 1000.0
+    monkeypatch.setattr(hf_client.time, "monotonic", lambda: now)
+    post = AsyncMock(return_value=_server_error_response())
+    await _trip_circuit(monkeypatch, post)
+    post.reset_mock()
+    now += 60.0
+
+    with pytest.raises(httpx.HTTPStatusError):
+        await hf_client.call_hf([], max_tokens=10, temperature=0.1)
+    with pytest.raises(hf_client.CircuitBreakerOpenError):
+        await hf_client.call_hf([], max_tokens=10, temperature=0.1)
+
+    assert post.await_count == 1
+
+
+@pytest.mark.anyio
+async def test_successful_half_open_probe_closes_circuit(monkeypatch) -> None:
+    now = 1000.0
+    monkeypatch.setattr(hf_client.time, "monotonic", lambda: now)
+    post = AsyncMock(return_value=_server_error_response())
+    await _trip_circuit(monkeypatch, post)
+    now += 60.0
+    post.side_effect = [_success_response(), _success_response()]
+
+    first = await hf_client.call_hf([], max_tokens=10, temperature=0.1)
+    second = await hf_client.call_hf([], max_tokens=10, temperature=0.1)
+
+    assert first == second == "generated text"
+    assert post.await_count == 7
+
+
+@pytest.mark.anyio
+async def test_success_resets_consecutive_failure_counter(monkeypatch) -> None:
+    post = AsyncMock(
+        side_effect=[
+            _server_error_response(),
+            _server_error_response(),
+            _server_error_response(),
+            _server_error_response(),
+            _success_response(),
+            _server_error_response(),
+            _server_error_response(),
+            _server_error_response(),
+            _server_error_response(),
+        ]
+    )
+    monkeypatch.setattr(hf_client, "_get_api_key", lambda: "test-key")
+    monkeypatch.setattr(hf_client, "_get_client", lambda: type("Client", (), {"post": post})())
+    monkeypatch.setattr(hf_client, "_MAX_RETRIES", 0)
+
+    for _ in range(4):
+        with pytest.raises(httpx.HTTPStatusError):
+            await hf_client.call_hf([], max_tokens=10, temperature=0.1)
+    assert await hf_client.call_hf([], max_tokens=10, temperature=0.1) == "generated text"
+    for _ in range(4):
+        with pytest.raises(httpx.HTTPStatusError):
+            await hf_client.call_hf([], max_tokens=10, temperature=0.1)
+
+    assert post.await_count == 9
+
+
+@pytest.mark.anyio
+async def test_open_circuit_maps_to_retryable_503() -> None:
+    with pytest.raises(HTTPException) as exc_info:
+        await call_ai_service(_raise(hf_client.CircuitBreakerOpenError("open")))
+
+    assert exc_info.value.status_code == 503
+    assert exc_info.value.detail == (
+        "AI service is temporarily offline. The system will automatically retry "
+        "in about 60 seconds. Please try again shortly."
+    )
+    assert exc_info.value.headers == {"Retry-After": "60"}
