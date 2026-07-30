@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | codex                      |
 | Started    | 2026-07-29                 |
-| Working On | CI-restoration candidate complete and green locally; awaiting user approval before commit/push. |
+| Working On | CI restored and verified green remotely; next priority is backend JWT enforcement and closing anonymous score writes. |
 
 ---
 
@@ -35,13 +35,14 @@
   - Replaced CI's permanent vulnerability ignore list with fail-closed audits of both manifests
   - Updated PowerShell setup/deployment instructions and dependency threat-model evidence
   - Verified 291 tests at 82.44% coverage, Ruff, mypy, Bandit, secret scanning, both Python audits, CI YAML parsing, all route registration, and a fresh localhost server on port 8770
+  - Committed and pushed `c07d905`; GitHub Actions run 30508092537 passed both backend and frontend jobs
 - **Files Changed:**
   - `backend/app/main.py`, `backend/requirements.txt`, `backend/requirements-dev.txt`
   - `.github/workflows/ci.yml`, `README.md`
   - `docs/DEPLOY.md`, `docs/THREAT-MODEL.md`, `docs/LAUNCH_PROGRAM.md`
   - `.ai-sync/WORKLOG.md`, `.ai-sync/DECISIONS.md`
-- **Next:** User reviews localhost-verified candidate; after approval, commit with `[codex]` prefix and push, then confirm GitHub Actions is green
-- **Blockers:** Remote CI cannot be proven until the approved commit is pushed
+- **Next:** Authenticate cost-bearing backend routes and close anonymous `shared_scores` writes
+- **Blockers:** None for CI restoration
 
 ### Session 72 — 2026-07-29
 - **Agent:** codex

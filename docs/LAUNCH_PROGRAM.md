@@ -25,7 +25,7 @@ Verified on 2026-07-29; older session-log claims are not authoritative.
 | Backend tests | **GREEN** | 291 passed; measured services/routes coverage 82.44%, above the 80% floor. |
 | Frontend lint/build | **GREEN locally** | ESLint passed. `next build` compiled 26 routes/pages after Google Fonts network access was allowed. |
 | Browser tests | **GREEN but shallow** | Six Playwright smoke tests passed; they only check page rendering, not sign-up, auth, tools, persistence, or error recovery. |
-| CI | **REMOTE RED; LOCAL FIX GREEN** | Current deployed `main` remains red at run 30488009367. The candidate fixes Ruff/mypy, splits dependency scopes, and passes the complete backend gate locally; a pushed GitHub Actions run is still required for closure. |
+| CI | **GREEN** | Run 30508092537 passed on commit `c07d905`: backend lint, types, tests/coverage, security scans, both Python audits, route startup, frontend lint, npm audit, and production build all succeeded. |
 | Python dependency audit | **GREEN LOCALLY** | Runtime and development manifests are separate and both resolve with no known vulnerabilities. The unused Semgrep dependency and its vulnerable `mcp`/`click` chain were removed. |
 | Frontend dependency audit | **PRODUCTION GREEN; DEV RED** | `npm audit --omit=dev --audit-level=high` found zero production vulnerabilities. The full installed tree reported nine High advisories in development tooling and needs triage without weakening the production gate. |
 | Supabase production | **PARTIALLY VERIFIED** | Anonymous read-only REST checks returned 200/zero rows for `profiles` and `jobs`, and 200 for `shared_scores`, consistent with deployed tables and RLS. Cross-user isolation and RPC deployment remain unproven. |
@@ -42,7 +42,7 @@ Severity assumes an unknown user expects every advertised feature to work, even 
 | # | Severity | Area | File:line | What breaks | Fix effort |
 |---|---|---|---|---|---|
 | F1 | **Blocker** | Persistence | `supabase-schema.sql:5-110`; `README.md:14` | The product promises saved resumes and linked versions, but production and source contain no `resumes` or `resume_versions` table and no save/load UI. The settled product requirement is not implemented. | L |
-| F2 | **Blocker** | CI/release | `backend/app/main.py`; `.github/workflows/ci.yml` | Current remote `main` is red. The candidate passes Ruff, mypy, tests, security scans, and dependency audits locally, but this Blocker remains open until GitHub Actions passes the committed revision. | S |
+| F2 | **Resolved** | CI/release | `backend/app/main.py`; `.github/workflows/ci.yml` | Resolved by commit `c07d905`; GitHub Actions run 30508092537 passed both backend and frontend jobs. | S |
 | F3 | **Blocker** | Auth/cost abuse | `backend/app/api/routes/rewrite.py:11-23`; `backend/app/api/routes/summary.py:11-22`; `frontend/src/proxy.ts:4-18` | UI routes are auth-gated, but the backend verifies no Supabase JWT. Anyone can call all AI endpoints directly and consume Hugging Face quota. CORS is not authentication. | M |
 | F4 | **Blocker** | AdSense | `frontend/src/app/components/CookieConsent.tsx:6-54`; `frontend/public/ads.txt` (missing) | Monetization is absent. The custom banner is not a Google-certified TCF CMP, which Google requires for personalized AdSense traffic in the EEA/UK/Switzerland. Publisher ID, ads.txt, script, placements, and policy validation remain. | L |
 | F5 | **High** | Database abuse/PII | `supabase-schema.sql:96-106`; `frontend/src/app/components/ShareableScoreWidget.tsx:42-57` | Anonymous clients insert directly into `shared_scores` under `with check (true)`. The comment claims API rate limiting, but no API mediates the write. Attackers can fill the table and store arbitrary derived resume/job keyword data. | M |
@@ -96,8 +96,8 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 |---|---|---|
 | 2.1 Maintain unit, integration, adversarial, property, parsing, PDF, and evaluation suites. | `backend/tests/` | DONE (291 pass) |
 | 2.2 Keep combined services/routes coverage at 80%; this is close enough to actual 82.44% to prevent regression without incentivizing trivial tests. | `.github/workflows/ci.yml`, `backend/pyproject.toml` | DONE |
-| 2.3 Fix Ruff E402 and mypy errors introduced by conditional Sentry setup. | `backend/app/main.py` | DONE locally — remote CI confirmation pending |
-| 2.4 Update the CVE gate for current advisories and split runtime from dev dependencies. | `backend/requirements.txt`, `backend/requirements-dev.txt`, `.github/workflows/ci.yml`, `render.yaml` | DONE locally — both Python manifests audit clean |
+| 2.3 Fix Ruff E402 and mypy errors introduced by conditional Sentry setup. | `backend/app/main.py` | DONE — CI run 30508092537 passed |
+| 2.4 Update the CVE gate for current advisories and split runtime from dev dependencies. | `backend/requirements.txt`, `backend/requirements-dev.txt`, `.github/workflows/ci.yml`, `render.yaml` | DONE — both manifests audit clean in CI |
 | 2.5 Replace smoke-only Playwright coverage with a real happy path: sign up/sign in fixture → protected tools → run analyzer → save/load resume version → PDF/export/delete. | `frontend/tests/e2e/`, `frontend/playwright.config.ts` | TODO |
 | 2.6 Add failure-path browser tests for 429, backend outage, Hugging Face outage, and validation errors. | `frontend/tests/e2e/`, tool components | TODO |
 
@@ -257,7 +257,6 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 ## Current priority
 
-1. Restore green CI on `main`.
-2. Authenticate cost-bearing backend routes and close anonymous `shared_scores` writes.
-3. Implement saved resumes/versioning with automated two-user RLS proof.
-4. Complete certified consent, content, observability, and release gates before AdSense submission or launch promotion.
+1. Authenticate cost-bearing backend routes and close anonymous `shared_scores` writes.
+2. Implement saved resumes/versioning with automated two-user RLS proof.
+3. Complete certified consent, content, observability, and release gates before AdSense submission or launch promotion.
