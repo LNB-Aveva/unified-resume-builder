@@ -1,15 +1,23 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import ThemeToggle from "./components/ThemeToggle";
 import MobileNav from "./components/MobileNav";
 import ScrollReveal from "./components/ScrollReveal";
 import StickyBottomCTA from "./components/StickyBottomCTA";
-import AnalyzerDemo from "./components/AnalyzerDemo";
-import BulletPreviewWidget from "./components/BulletPreviewWidget";
-import ShareableScoreWidget from "./components/ShareableScoreWidget";
 import TypewriterHeadline from "./components/TypewriterHeadline";
 import AnimatedCounter from "./components/AnimatedCounter";
 import HeroScoreCard from "./components/HeroScoreCard";
 import { CookieSettingsButton } from "./components/CookieConsent";
+
+const AnalyzerDemo = dynamic(() => import("./components/AnalyzerDemo"), {
+  loading: () => <div className="animate-pulse bg-gray-100 dark:bg-gray-700 rounded-xl h-64" />,
+});
+const BulletPreviewWidget = dynamic(() => import("./components/BulletPreviewWidget"), {
+  loading: () => <div className="animate-pulse bg-gray-100 dark:bg-gray-700 rounded-xl h-48" />,
+});
+const ShareableScoreWidget = dynamic(() => import("./components/ShareableScoreWidget"), {
+  loading: () => <div className="animate-pulse bg-gray-100 dark:bg-gray-700 rounded-xl h-64" />,
+});
 
 const PREVIEW_SKILLS = ["Python", "React", "AWS", "Docker"];
 
@@ -444,7 +452,7 @@ export default function Home() {
       </section>
 
       {/* ── Live Demo ── */}
-      <section id="demo" className="py-20 sm:py-24 scroll-mt-20">
+      <section id="demo" className="py-20 sm:py-24 scroll-mt-20" style={{ contentVisibility: "auto", containIntrinsicSize: "auto 700px" }}>
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800 px-4 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 mb-4">
@@ -481,7 +489,7 @@ export default function Home() {
       </section>
 
       {/* ── Bullet Rewriter Preview ── */}
-      <section className="py-20 sm:py-24 bg-gray-50/50 dark:bg-gray-900/30">
+      <section className="py-20 sm:py-24 bg-gray-50/50 dark:bg-gray-900/30" style={{ contentVisibility: "auto", containIntrinsicSize: "auto 600px" }}>
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 rounded-full bg-violet-50 dark:bg-violet-950/50 border border-violet-100 dark:border-violet-800 px-4 py-1.5 text-xs font-semibold text-violet-700 dark:text-violet-300 mb-4">
@@ -501,7 +509,7 @@ export default function Home() {
       </section>
 
       {/* ── Shareable ATS Score ── */}
-      <section className="py-20 sm:py-24">
+      <section className="py-20 sm:py-24" style={{ contentVisibility: "auto", containIntrinsicSize: "auto 700px" }}>
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-4">

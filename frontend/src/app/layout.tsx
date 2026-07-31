@@ -128,6 +128,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <link rel="preconnect" href="https://unified-resume-builder-api.onrender.com" />
+        <link rel="dns-prefetch" href="https://unified-resume-builder-api.onrender.com" />
+        <link rel="dns-prefetch" href="https://pagdtcttkviglyoeuagy.supabase.co" />
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}` }} />
       </head>
       <body className="min-h-full flex flex-col">

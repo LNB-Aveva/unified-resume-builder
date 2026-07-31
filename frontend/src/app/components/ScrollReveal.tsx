@@ -48,6 +48,8 @@ export default function ScrollReveal({
         opacity: 0,
         transform: "translateY(16px)",
         transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
+        contentVisibility: "auto",
+        containIntrinsicSize: "auto 500px",
       }}
     >
       {children}

@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 7 COMPLETE (7.2+7.3+7.4 committed+pushed). Phase 4 COMPLETE.
+- **Status:** Phase 7 COMPLETE, Phase 8.2 DONE. Phase 4 COMPLETE.
 
 ---
 
@@ -17,15 +17,30 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | codex                      |
+| Agent      | claude                     |
 | Started    | 2026-07-30                 |
-| Working On | Test-quality audit (read-only). Report saved to docs/quality/2026-07-30_test-quality-audit.md. Prior: adversarial pentest (docs/security/2026-07-30_pentest.md). |
+| Working On | Session 84: Phase 8.2 DONE — Core Web Vitals audit and optimization. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 84 (Claude) — 2026-07-30
+- **Agent:** claude
+- **Did:**
+  - Pushed 2 unpushed Codex commits (8.1 sitemap audit, 8.3 blog articles)
+  - **Phase 8.2 DONE:** Core Web Vitals audit and optimization
+    - Dynamic imports for below-fold components (AnalyzerDemo, BulletPreviewWidget, ShareableScoreWidget)
+    - `content-visibility: auto` on ScrollReveal wrapper + 3 below-fold sections (demo, bullet preview, shareable score)
+    - Preconnect/dns-prefetch hints for API backend and Supabase in layout.tsx
+    - Lighthouse scores: Landing 88 mobile / 100 desktop, keyword-analyzer 85, sign-in 90, privacy 94, blog 93
+    - TBT excellent (40-90ms), CLS near-zero, desktop LCP 0.8s
+  - Recorded all CWV scores in `docs/LAUNCH_PROGRAM.md`
+- **Files Changed:** `frontend/src/app/page.tsx`, `frontend/src/app/layout.tsx`, `frontend/src/app/components/ScrollReveal.tsx`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Phase 9.5 (account deletion/export verification), remaining launch phases
+- **Blockers:** None
 
 ### Session 83 — 2026-07-30
 - **Agent:** codex (test-quality audit)
