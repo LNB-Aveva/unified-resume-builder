@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-024: Penetration Test Findings & Remediation Backlog (2026-07-30)
+- **Date:** 2026-07-30
+- **Agent:** manual
+- **Context:** Adversarial pen test (16 vectors) to validate the launch-hardening work by attempting real exploits, not just review.
+- **Decision:** Recorded posture — 10 DEFENDED, 6 EXPLOITABLE (all Low/Medium). Accepted as launch-acceptable; opened a remediation backlog rather than blocking. Priority: (1) lower Supabase access-token TTL (#7 token reuse after logout); (2) add `.eq("user_id", user.id)` to resume server actions (#8 — currently RLS-only defense-in-depth); (3) map raw Supabase errors to generic client strings + confirm email-confirmation on (#15/#14); (4) keep uvicorn behind platform proxy / consider Redis-backed limiter (#11/#12); (5) treat AI I/O as untrusted, sanitizer is UX-only (#1).
+- **Alternatives Considered:** Applying fixes immediately in this session — rejected to respect localhost-first/approval rule; the assessment is read-only and remediation needs review.
+- **Files Affected:** `docs/security/2026-07-30_pentest.md` (full report), `.ai-sync/WORKLOG.md`
+
 ### DEC-023: Production-Readiness Review Fixes (H1/H3/M1/M2/M3/M6/M8)
 - **Date:** 2026-07-30
 - **Agent:** manual

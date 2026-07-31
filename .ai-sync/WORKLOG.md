@@ -17,15 +17,25 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
+| Agent      | manual                     |
 | Started    | 2026-07-30                 |
-| Working On | Phase 7 COMPLETE — all 3 commits pushed (42ee572, a6a91bd, e0ec55d). Session wrap-up. |
+| Working On | Adversarial penetration test (read-only). Report saved to docs/security/2026-07-30_pentest.md. Prior: Phase 7 COMPLETE (claude, commits 42ee572, a6a91bd, e0ec55d). |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 82 — 2026-07-30
+- **Agent:** manual (adversarial penetration test)
+- **Did:**
+  - Full-source exploit assessment across 16 attack vectors (injection, auth, rate-limit, exfil, supply chain). Read-only — NO code changed.
+  - Verdict: 10 DEFENDED, 6 EXPLOITABLE (all Low/Medium; no critical). Recent hardening (rightmost-XFF, shared_scores RLS, body cap, Sentry PII strip) holds.
+  - EXPLOITABLE: #1 prompt-injection (weak sanitizer, low impact), #7 token-reuse-after-logout (JWT not revoked server-side — lower access-token TTL), #11 slowloris (platform-mitigated), #14 signup user-enum (config-dependent), #15 frontend echoes raw Supabase error.message. #8 IDOR defended by RLS ONLY (server actions lack `.eq("user_id", ...)` — add as defense-in-depth).
+  - Full report + exact payloads/fixes: `docs/security/2026-07-30_pentest.md`.
+- **Files Changed:** `docs/security/2026-07-30_pentest.md` (new), `.ai-sync/WORKLOG.md`, `.ai-sync/DECISIONS.md`
+- **Blockers:** None. Remediation (#7 TTL, #8 user_id filters, #15 error mapping) NOT yet applied — awaiting go-ahead.
 
 ### Session 80 (Claude, continued) — 2026-07-30
 - **Agent:** claude
