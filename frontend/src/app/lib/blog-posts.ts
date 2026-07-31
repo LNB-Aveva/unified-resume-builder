@@ -258,6 +258,197 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: "how-ats-systems-parse-resumes-2026",
+    title: "How ATS Systems Actually Parse Your Resume in 2026",
+    description:
+      "A practical look at how applicant tracking systems turn resumes into searchable records, where parsing fails, and why relevant evidence matters more than raw keyword counts.",
+    publishedAt: "2026-07-30",
+    updatedAt: "2026-07-30",
+    readingTime: "9 min read",
+    keywords: [
+      "how ATS parses resumes",
+      "ATS resume parsing 2026",
+      "resume keyword matching",
+      "ATS formatting pitfalls",
+      "applicant tracking system myths",
+    ],
+    sections: [
+      {
+        heading: "What Happens After You Click Submit",
+        content: [
+          "An applicant tracking system is first a record-keeping system. When you apply, it stores your file, application answers, source, and contact details in a searchable candidate record. Parsing is the step that tries to turn the document into fields such as name, employer, job title, dates, education, certifications, and skills. Recruiters can then filter, search, sort, or review that record. The exact workflow varies by employer, so there is no universal score or single rejection algorithm shared by every company.",
+          "A parser usually extracts the text layer from a PDF or DOCX file, identifies likely sections, and associates nearby phrases with known fields. It may infer that a date range beside a company belongs to one role, or that a comma-separated line under Skills contains separate capabilities. If the result is ambiguous, information can land in the wrong field even though it still looks perfect in the original document. That is why machine readability is about structure as much as appearance.",
+        ],
+      },
+      {
+        heading: "How Keyword Matching Really Works",
+        content: [
+          "Recruiters often search for required skills, credentials, job titles, industries, or location. Some systems support exact terms, Boolean combinations, synonyms, and semantic matching; others depend heavily on literal text. A hiring team may also configure screening questions for non-negotiable requirements such as work authorization or a professional license. Those answers can matter more than any phrase in the resume, and they should always be answered accurately.",
+          "Placement and context can affect how useful a match is. A tool named in a recent accomplishment is stronger evidence than the same tool buried in an undifferentiated skills list. Frequency is not the same as relevance: repeating a term does not create experience. A recruiter who opens the result still needs to see what you did, where you used the skill, and what changed because of your work. Think of keywords as labels that help your evidence get found, not as points to collect.",
+        ],
+      },
+      {
+        heading: "Where Resume Formatting Breaks Parsing",
+        content: [
+          "The safest structure is predictable: contact information in the main document body, conventional headings, a clear single-column reading order, and consistent employer-title-date groupings. Problems arise when important text lives in headers, footers, floating text boxes, charts, images, or decorative sidebars. Multi-column designs can interleave unrelated lines. A parser might join a left-column job title to a right-column skill, or read dates before the roles they describe.",
+          "A digitally generated PDF is normally readable because it contains selectable text. A scanned PDF is effectively an image unless optical character recognition succeeds, making it a riskier choice. DOCX can also work well, especially when an employer explicitly requests it. Before uploading, select and copy the document text into a plain editor. If words disappear or the order becomes nonsensical, simplify the source layout and export again.",
+          "Use standard characters and consistent dates. Decorative bullets, icons standing in for phone or email labels, and unusual ligatures can become missing symbols. Write section names such as Work Experience, Education, Skills, and Certifications plainly. Keep dates in one recognizable pattern, such as Mar 2023–Present. A human can interpret a creative timeline instantly; a parser has to infer relationships from text position, and unnecessary ambiguity creates avoidable errors.",
+        ],
+      },
+      {
+        heading: "Three Common ATS Myths",
+        content: [
+          "Myth one is that every ATS automatically rejects resumes below a fixed match percentage. Employers configure different workflows, and many systems simply organize applicants for human review. Myth two is that PDFs are universally unreadable. Modern text-based PDFs are commonly parsed, although a specific posting may request DOCX. Myth three is that hidden keywords can beat the system. White text, microscopic text, and repeated keyword blocks are easy for a recruiter to notice and can undermine credibility without proving a qualification.",
+          "Another persistent myth is that a resume must imitate the job description word for word. Exact terminology helps when it truthfully describes your background, but copying whole phrases produces vague, unnatural writing. Translate your real experience into the employer's vocabulary: if a posting asks for stakeholder management and you regularly coordinated product, sales, and operations leaders, use the requested term while describing the actual scope and outcome. Never add a credential, tool, or responsibility you could not discuss in an interview.",
+        ],
+      },
+      {
+        heading: "A Better Way to Evaluate Relevance",
+        content: [
+          "Simple keyword counting treats every occurrence alike and misses relationships between terms. ResumeAI's scoring instead uses a curated skills taxonomy with recognized categories and synonym mappings. That helps connect common variants while distinguishing relevant skills from ordinary repeated words. The result is still guidance, not a prediction of any employer's proprietary system, but it gives you a more structured view of coverage than a raw word-frequency total.",
+          "Use the ATS Scorer to compare your resume with one specific job description, then use Keyword Analyzer and Gap Analysis to inspect what is present and missing. The Compliance Checker addresses structural risks, while Bullet Rewriter and Summary Generator can help improve truthful phrasing. These tools should support judgment: review every suggestion, keep only claims grounded in your experience, and preserve the details a recruiter will need to verify them.",
+        ],
+      },
+      {
+        heading: "A Practical Pre-Submission Test",
+        content: [
+          "First, confirm the file has selectable text and a logical copy-paste order. Second, check that your name, email, phone, roles, employers, dates, education, and certifications appear as ordinary text in the document body. Third, compare the posting's required qualifications with your resume and address genuine gaps in terminology. Fourth, put the strongest evidence in recent accomplishment bullets, using numbers only when you can defend them. Finally, follow the employer's requested file type and preview the uploaded application fields before submitting.",
+          "No formatting trick can guarantee an interview, and no external checker can reproduce every employer's configuration. The goal is narrower and more useful: remove parsing obstacles, make relevant qualifications easy to retrieve, and give a human reviewer clear evidence once your record is opened. A resume that succeeds at all three stages—extraction, retrieval, and human evaluation—is far more resilient than one engineered around a mythical universal ATS score.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "five-resume-mistakes-instant-rejection",
+    title: "5 Resume Mistakes That Get You Instantly Rejected",
+    description:
+      "Five high-impact resume mistakes that quickly lose recruiter confidence, plus a concrete fix for each one before your next application.",
+    publishedAt: "2026-07-30",
+    updatedAt: "2026-07-30",
+    readingTime: "9 min read",
+    keywords: [
+      "resume mistakes",
+      "why resumes get rejected",
+      "resume summary examples",
+      "resume metrics",
+      "tailor resume to job",
+    ],
+    sections: [
+      {
+        heading: "Why Fast Rejections Happen",
+        content: [
+          "Recruiters rarely reject a qualified person because of one harmless typo. Fast rejections usually happen when the resume creates uncertainty about fit, credibility, or basic readiness. With many applications to review, a recruiter looks for a clear target, relevant evidence, and an easy path through the document. If those signals are missing, the cost of investigating further can feel higher than moving to the next candidate.",
+          "The five mistakes below are damaging because they affect both machine retrieval and human judgment. None requires inventing achievements or redesigning the document from scratch. The fixes are practical: clarify your positioning, quantify the evidence you already have, use a dependable file, incorporate language honestly, and tailor the emphasis for the role. Treat this as a quality-control pass rather than a collection of tricks.",
+        ],
+      },
+      {
+        heading: "Mistake 1: A Generic Summary",
+        content: [
+          "A summary such as 'hardworking professional seeking a challenging opportunity' uses valuable space without answering the employer's question: why this candidate for this role? Generic adjectives are impossible to verify and apply to almost anyone. The same problem appears in summaries overloaded with broad claims—strategic, innovative, results-driven—while omitting function, domain, scope, or a differentiating strength.",
+          "The fix: write two or three lines that identify your professional lane, relevant depth, and strongest evidence. For example, a customer operations lead might foreground years of experience, the type of customer base supported, and a measurable improvement in retention or response time. Mirror the role's truthful terminology, but keep the sentence readable. The Summary Generator can help produce a first draft; you remain responsible for replacing generic language and validating every claim.",
+        ],
+      },
+      {
+        heading: "Mistake 2: Responsibilities Without Results",
+        content: [
+          "Bullets that say 'responsible for reports,' 'helped with projects,' or 'managed social media' describe assignments, not performance. A recruiter cannot tell whether the work was occasional or central, whether it involved ten records or ten thousand, or whether it improved anything. This is especially costly when competing candidates show scope and outcomes for similar responsibilities.",
+          "The fix: add a credible measure of scale, speed, quality, revenue, cost, risk, or adoption. You do not need a dramatic percentage in every line. Team size, portfolio value, monthly volume, delivery frequency, number of locations, or time saved can establish scope. When an exact metric is unavailable, describe a verifiable outcome: shortened a manual handoff, standardized an audit process, launched before a deadline, or reduced recurring errors. Never estimate a number you could not explain.",
+          "A useful structure is action plus object plus context plus result: 'Rebuilt the weekly inventory reconciliation for 14 locations, cutting the close process from two days to one.' The detail shows both responsibility and impact. If a bullet feels weak, ask what changed, who benefited, and how you knew. Bullet Rewriter can tighten the language, but the underlying facts must come from you.",
+        ],
+      },
+      {
+        heading: "Mistake 3: The Wrong File Format",
+        content: [
+          "An elegant resume can fail before review if the uploaded file is unreadable, corrupted, password-protected, or contrary to the posting's instructions. Scanned PDFs may lack a usable text layer. Image-heavy layouts can hide content from parsers. A filename such as final_resume_NEW2.pdf is not disqualifying, but it signals less care than a simple Firstname-Lastname-Resume.pdf and becomes harder to identify after download.",
+          "The fix: follow the requested format exactly. When the employer accepts PDF, export a digital, selectable-text PDF and confirm that copying its contents produces the correct reading order. If DOCX is requested, submit DOCX rather than assuming PDF is superior. Open the final file on another device if possible, check that links work, and upload it early enough to review any fields the application form pre-populates. Resume Exporter can create a clean PDF after you verify the content.",
+        ],
+      },
+      {
+        heading: "Mistake 4: Keyword Stuffing",
+        content: [
+          "Repeating a target phrase in a skills block, hiding extra terms, or appending a list copied from the posting does not demonstrate competence. Even when the text is searchable, the human reader sees unnatural language and has no evidence for the claims. Stuffing can also crowd out the accomplishments that would have made the application persuasive. A resume should contain relevant terminology, but relevance is not measured by how many times one noun appears.",
+          "The fix: map each important requirement to real evidence. Put tools and methods in the bullets where you used them, include a concise skills section for quick scanning, and use both an acronym and full term when that improves clarity. Keyword Analyzer can identify the posting's language, while Gap Analysis shows missing concepts. Add a term only if it accurately represents your experience, and prefer one contextual use over five empty repetitions.",
+        ],
+      },
+      {
+        heading: "Mistake 5: One Resume for Every Job",
+        content: [
+          "A single master resume tries to preserve every past duty and often buries the experience most relevant to a particular opening. The document may be accurate yet appear unfocused: leadership evidence for an individual-contributor role, technical detail for a relationship-focused role, or old experience occupying more space than recent comparable work. Recruiters should not have to reconstruct your fit from a career archive.",
+          "The fix: keep a comprehensive master, then create a tailored version for each role family or serious application. You are changing emphasis, not history. Reorder bullets so the most relevant evidence appears first, adjust the summary, include applicable skills, and trim details that do not support the target. Preserve job titles, employers, dates, and facts. Saved resumes and versions can help keep variations organized, and Job Tracker can record which version supports each application.",
+        ],
+      },
+      {
+        heading: "The Ten-Minute Rejection Check",
+        content: [
+          "Before submitting, read only the top third of the first page and ask whether your target and strongest qualification are obvious. Scan every bullet for an action and evidence of scope or outcome. Confirm the posting's required skills are represented truthfully, then run a formatting check and inspect the final file. Search for placeholders, inconsistent dates, stale contact details, and unexplained abbreviations. Finally, compare the filename and format with the application instructions.",
+          "A strong resume does not need exaggerated language or a perfect score. It needs a coherent argument supported by facts: this is the work you do, this is the scale at which you have done it, and this is why the evidence transfers to the open role. Remove the five mistakes that obscure that argument, and recruiters can spend their limited attention evaluating your qualifications instead of resolving avoidable doubts.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "cover-letters-in-2026-worth-writing",
+    title: "Cover Letters in 2026: Are They Still Worth Writing?",
+    description:
+      "Cover letters are still valuable in specific hiring situations. Learn when to write one, when to skip it, and how to use AI without producing a generic letter.",
+    publishedAt: "2026-07-30",
+    updatedAt: "2026-07-30",
+    readingTime: "9 min read",
+    keywords: [
+      "cover letters 2026",
+      "are cover letters necessary",
+      "when to write a cover letter",
+      "AI cover letter",
+      "career change cover letter",
+    ],
+    sections: [
+      {
+        heading: "The Short Answer: Sometimes, Decisively",
+        content: [
+          "A cover letter is not automatically useful because an application form offers an upload box. It earns its place when it adds context the resume cannot communicate efficiently. A generic letter that repeats job history creates more reading without more evidence. A focused letter can explain motivation, connect an unusual background to the role, address an obvious question, or demonstrate written judgment. In those situations, it may influence whether a reviewer advances the application.",
+          "Hiring practices vary by company, team, and role, so absolute rules are unreliable. Treat the letter as an optional business document with a specific audience and purpose. If the posting requires one, write it. If a recruiter or referral contact asks for one, write it. When it is optional, estimate whether your application needs a bridge between the facts on the resume and the decision the hiring team must make.",
+        ],
+      },
+      {
+        heading: "When a Cover Letter Is Worth the Time",
+        content: [
+          "Small companies often benefit from letters because applicants may be reviewed directly by a founder or hiring manager. The reader may care deeply about why this particular mission, customer, or stage of growth appeals to you. A concise explanation grounded in the company's actual work can distinguish genuine interest from a high-volume application. Avoid flattery; show that you understand a current challenge and can contribute relevant experience.",
+          "Career changers have an even stronger reason to write. A resume documents what you have done, but it may not make the transition logic obvious. The letter can connect transferable evidence to the new function: a teacher moving into enablement can discuss curriculum design, stakeholder facilitation, and learning outcomes; an operations analyst moving into product can connect process discovery, user needs, and prioritization. The key is a credible bridge, not an apology for lacking the old title.",
+          "Competitive roles can also justify a tailored letter when many applicants share similar qualifications. Use it to develop one or two pieces of evidence that the resume compresses: a complex decision, a meaningful customer insight, or a project closely related to the team's needs. Writing-heavy roles provide an additional test—the letter itself demonstrates clarity, editing, and audience awareness. A referral can make a brief letter useful as well, especially when it explains the professional connection without implying an endorsement the contact did not make.",
+        ],
+      },
+      {
+        heading: "When It Is Reasonable to Skip",
+        content: [
+          "Skip the letter when the employer explicitly says not to include one, when the system provides no place for it, or when speed matters for a high-volume role and you have no meaningful additional context. Do not paste a letter into an unrelated application field. If a recruiter is already working with you and requests only an updated resume, follow that direction. Instructions are evidence about the process; ignoring them to appear thorough can have the opposite effect.",
+          "It is also reasonable to skip an optional letter when your resume is an unusually direct match and the only draft you can produce is generic. Ten sentences restating the same roles do not strengthen the application. Spend the time tailoring the summary and bullets, verifying keywords and format, or preparing a short outreach note to a relevant contact. The choice is not between a letter and doing nothing—it is between competing uses of limited application time.",
+        ],
+      },
+      {
+        heading: "What a Useful Cover Letter Contains",
+        content: [
+          "Open with the role and a specific reason for interest that could not be pasted into every application. Then make one central claim about fit and support it with one or two examples. The examples should add interpretation, not merely reproduce bullets. Explain the problem, your action, and why the result matters for this employer. Close with a direct expression of interest in discussing the work. For most applications, roughly 250 to 400 carefully edited words are enough.",
+          "Address the hiring manager by name only when you can identify the person confidently. Otherwise, 'Dear Hiring Team' is accurate and professional. Do not guess titles, manufacture personal connections, or summarize the company's website back to its employees. Avoid discussing salary, benefits, or remote-work preferences unless the application requests them. If you need to address a gap or relocation, keep it factual, brief, and forward-looking, then return to evidence of fit.",
+        ],
+      },
+      {
+        heading: "How AI Can Help Without Flattening Your Voice",
+        content: [
+          "AI is most useful for reducing blank-page time. Provide the job description, a factual resume, the reason the role interests you, and two accomplishments you want emphasized. Ask for a structure or first draft, not invented research or missing experience. ResumeAI's Cover Letter Generator can create that starting point faster, but it cannot know which detail is personally meaningful or verify every claim unless you supply and review the source material.",
+          "Edit the draft in three passes. First, fact-check names, numbers, technologies, and responsibilities; delete anything unsupported. Second, replace broad enthusiasm with a concrete connection to the role and remove sentences that could fit any company. Third, read it aloud and simplify language you would never use in conversation. AI-generated text often becomes longer and more formal than necessary. Your edits should make it shorter, more specific, and recognizably yours.",
+          "Protect sensitive information when using any drafting service. A cover letter rarely needs private addresses, reference contact details, confidential client data, or internal financial figures. Generalize proprietary information while keeping legitimate scale—for example, describe a regulated enterprise customer rather than naming one under a nondisclosure agreement. The finished letter should be safe to share with every person involved in the hiring process.",
+        ],
+      },
+      {
+        heading: "A Fast Decision Framework",
+        content: [
+          "Write the letter if it is required, if you are changing careers, if a smaller organization is likely to value motivation, if the role is highly competitive or writing-intensive, or if you need to explain a material point the resume cannot. Skip it when prohibited, unavailable, redundant, or lower-value than improving a weak resume. If uncertain, draft three bullet points first: why this role, what evidence proves fit, and what context is missing. If those bullets are specific, a letter is probably worthwhile.",
+          "The cover letter is not dead, and it is not mandatory by default. In 2026 it works best as selective context: a brief, credible argument that connects your evidence to one employer's need. Use AI to accelerate organization and phrasing, not to outsource judgment or authenticity. When the letter has a real job to do, write it well. When it does not, submit a stronger, better-tailored resume and move on to the next high-value step in your search.",
+        ],
+      },
+    ],
+  },
 ];
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
