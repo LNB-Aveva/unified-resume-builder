@@ -1,0 +1,3 @@
+# Google AdSense — uncomment and replace ca-pub-XXXXXXXXXXXXXXXX with your publisher ID.
+# Get your publisher ID from: https://www.google.com/adsense/
+# google.com, ca-pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

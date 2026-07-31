@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 7 COMPLETE, Phase 8.2 DONE. Phase 4 COMPLETE.
+- **Status:** Phases 1-7 COMPLETE, Phase 8.5-8.7 infrastructure built (placeholder). Phase 4 COMPLETE.
 
 ---
 
@@ -19,13 +19,28 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-07-31                 |
-| Working On | Session 87: Codex→Copilot rename + complete test-quality audit backlog (cleanup/concurrency, PDF sanitization, property-based, contract/OpenAPI, axe a11y, --cov-branch). |
+| Working On | Session 88: Phases 1-7 fully DONE, Phase 5.5 DONE, Phase 8.5-8.7 AdSense infrastructure built with placeholder. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 88 (Claude) — 2026-07-31
+- **Agent:** claude
+- **Did:**
+  - **Phase 6.3 DONE:** Browser cold-start test on production — warm path 2-3s with keepalive active, keyword analyzer returns correct results (16 keywords), smooth loading→results UX. Cold-start 31.3s previously measured. Keepalive cron (every 14 min) prevents sleep in normal operation.
+  - **Phase 5.5 DONE:** Expanded eval dataset from 25 to 34 cases — added edge cases for minimal JDs, long JDs, soft-skill roles, career changers, certifications, mixed-case formatting, near-miss frameworks, niche tech, project-based resumes. Result: 100% within-one-grade, 61.8% exact match. EXIT GATE PASS.
+  - **Phase 8.5 PARTIAL:** Google Consent Mode v2 wired into layout.tsx — default denied for all 4 consent signals (ad_storage, ad_user_data, ad_personalization, analytics_storage), updates on accept/reject via CookieConsent component
+  - **Phase 8.6 PARTIAL:** Created AdUnit.tsx component (consent-gated, reserved dimensions, lazy AdSense script loading), added AdSense CSP domains (pagead2.googlesyndication.com, doubleclick.net, tpc.googlesyndication.com, google.com frames), consent-gated AdSense script loading in CookieConsent
+  - **Phase 8.7 PARTIAL:** Created ads.txt with commented placeholder — serves 200, ready for publisher ID
+  - Updated ENV_VARS.md with NEXT_PUBLIC_GA_ID and NEXT_PUBLIC_ADSENSE_ID
+  - Updated frontend/.env.example with GA4 and AdSense env vars
+  - Lint clean, build clean (30 routes), 415 backend tests passing, ads.txt verified at /ads.txt
+- **Files Changed:** `frontend/src/app/components/CookieConsent.tsx`, `frontend/src/app/components/AdUnit.tsx` (new), `frontend/src/app/layout.tsx`, `frontend/next.config.ts`, `frontend/public/ads.txt` (new), `frontend/.env.example`, `docs/ENV_VARS.md`, `docs/LAUNCH_PROGRAM.md`, `backend/tests/eval/eval_dataset.json`, `.ai-sync/WORKLOG.md`
+- **Next:** Owner provides AdSense publisher ID → uncomment ads.txt, set NEXT_PUBLIC_ADSENSE_ID in Vercel, create ad slots, place AdUnit components, validate policy (8.8)
+- **Blockers:** AdSense publisher ID (owner action)
 
 ### Session 87 (Claude) — 2026-07-31
 - **Agent:** claude

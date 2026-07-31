@@ -173,5 +173,68 @@
     "expected_grade": "A",
     "job_description": "ML Engineer\n\nRequirements:\n- NLP experience\n- LLM development\n- CI/CD pipelines\n- AWS infrastructure\n- TDD practices\n- Python\n- Teamwork and leadership",
     "resume_text": "Engineer focused on natural language processing and machine learning. Built large language model applications. Set up continuous integration and continuous deployment pipelines. Managed Amazon Web Services infrastructure. Wrote Python code with test-driven development methodology. Strong teamwork and leadership skills."
+  },
+  {
+    "id": "very-short-jd",
+    "description": "Minimal JD with only 3 requirements — resume covers all",
+    "expected_grade": "A",
+    "job_description": "Software Developer\n\nRequirements:\n- Python\n- SQL\n- Communication skills",
+    "resume_text": "Developer with 4 years of Python experience. Built reporting dashboards backed by SQL queries. Strong communicator who presents technical findings to non-technical stakeholders."
+  },
+  {
+    "id": "long-jd-many-requirements",
+    "description": "JD with 15+ distinct requirements — resume covers about half",
+    "expected_grade": "C",
+    "job_description": "Staff Software Engineer\n\nRequirements:\n- Java and Kotlin\n- Spring Boot framework\n- React for frontend\n- PostgreSQL and Redis\n- Kubernetes and Docker\n- Terraform for IaC\n- CI/CD with Jenkins\n- GraphQL API design\n- Apache Kafka for messaging\n- Elasticsearch for search\n- Datadog for observability\n- AWS cloud services\n- System design and architecture\n- Mentoring junior engineers\n- Agile methodology\n- Communication and leadership",
+    "resume_text": "Senior engineer with Java and Kotlin experience. Built Spring Boot microservices. Used PostgreSQL for data persistence. Containerized applications with Docker and Kubernetes. Set up CI/CD pipelines with Jenkins. Worked in agile teams. Strong communication skills."
+  },
+  {
+    "id": "soft-skill-heavy-role",
+    "description": "HR/people role — taxonomy gap: Workday, Google Sheets, presentation not in tech-focused taxonomy",
+    "expected_grade": "D",
+    "job_description": "People Operations Manager\n\nRequirements:\n- Employee engagement and retention strategies\n- Conflict resolution and mediation\n- Leadership development programs\n- Communication across all organizational levels\n- Excel and Google Sheets for HR metrics\n- BambooHR or Workday HRIS\n- Diversity, equity, and inclusion initiatives\n- Presentation skills",
+    "resume_text": "HR manager with 6 years of experience. Designed employee engagement programs that improved retention by 30%. Expert in conflict resolution and workplace mediation. Built leadership development curriculum. Excellent communicator from C-suite to individual contributors. Advanced Excel skills for workforce analytics. Managed BambooHR implementation. Championed DEI initiatives. Regular presenter at company town halls."
+  },
+  {
+    "id": "career-changer-teacher-to-tech",
+    "description": "Teacher transitioning to software — only transferable skills match",
+    "expected_grade": "F",
+    "job_description": "Full Stack Developer\n\nRequirements:\n- React and TypeScript\n- Node.js backend\n- PostgreSQL\n- Docker\n- Git version control\n- REST API design\n- CI/CD pipelines\n- Agile methodology\n- Problem-solving and teamwork",
+    "resume_text": "High school science teacher with 8 years of experience. Created curriculum and lesson plans. Managed classrooms of 30 students. Completed an online Python bootcamp. Good problem-solving skills and teamwork with other teachers."
+  },
+  {
+    "id": "certification-focused",
+    "description": "Role requiring specific certifications — resume has them",
+    "expected_grade": "B",
+    "job_description": "Cloud Security Architect\n\nRequirements:\n- AWS Certified Solutions Architect Professional\n- CISSP certification\n- AWS security services (IAM, KMS, GuardDuty)\n- Terraform\n- Python scripting\n- Zero trust architecture\n- SOC 2 compliance experience\n- Risk assessment and threat modeling",
+    "resume_text": "Cloud security architect, AWS Certified Solutions Architect Professional. CISSP certified. Implemented AWS IAM policies and KMS encryption. Used GuardDuty for threat detection. Infrastructure as code with Terraform. Python scripts for security automation. Designed zero trust network segments. Led SOC 2 audit preparation and achieved compliance."
+  },
+  {
+    "id": "mixed-case-formatting",
+    "description": "JD uses unusual casing and formatting — tests case-insensitive matching",
+    "expected_grade": "A",
+    "job_description": "SENIOR BACKEND ENGINEER\n\nREQUIREMENTS:\n* python Development\n* POSTGRESQL Database\n* docker & KUBERNETES\n* REST api Design\n* git Version Control\n* AGILE methodology\n* TEAMWORK",
+    "resume_text": "Backend engineer with 5 years of experience. Expert Python developer. Managed PostgreSQL databases. Deployed with Docker and Kubernetes. Designed RESTful APIs. Git for version control. Agile practitioner. Strong team player."
+  },
+  {
+    "id": "near-miss-different-framework",
+    "description": "Resume has Angular but JD requires React — similar domain, wrong framework",
+    "expected_grade": "D",
+    "job_description": "React Frontend Developer\n\nRequirements:\n- React and Redux\n- TypeScript\n- Next.js for SSR\n- Tailwind CSS\n- REST API integration\n- Git version control\n- Jest for unit testing\n- Agile methodology\n- Communication skills",
+    "resume_text": "Frontend developer specializing in Angular and RxJS. Built enterprise dashboards with TypeScript. Styled with Bootstrap and SCSS. Integrated REST APIs. Version control with Git. Wrote Jasmine tests. Worked in agile teams. Good communicator."
+  },
+  {
+    "id": "niche-emerging-tech",
+    "description": "JD with niche/emerging tools not in taxonomy — tests graceful degradation",
+    "expected_grade": "F",
+    "job_description": "Blockchain Developer\n\nRequirements:\n- Solidity smart contract development\n- Ethereum and EVM-compatible chains\n- Web3.js or Ethers.js\n- DeFi protocol design\n- Hardhat or Truffle for testing\n- IPFS for decentralized storage\n- Rust for high-performance chains\n- Cryptography fundamentals",
+    "resume_text": "Web developer with JavaScript and React experience. Built REST APIs with Node.js. Some exposure to blockchain concepts through personal projects."
+  },
+  {
+    "id": "resume-with-projects-not-experience",
+    "description": "Bootcamp grad listing projects instead of work experience",
+    "expected_grade": "C",
+    "job_description": "Junior Python Developer\n\nRequirements:\n- Python programming\n- SQL and database basics\n- Git version control\n- REST API understanding\n- HTML and CSS\n- Problem-solving skills\n- Teamwork and adaptability",
+    "resume_text": "Coding bootcamp graduate. Built a Python Flask e-commerce site with SQL database. Created a personal portfolio with HTML and CSS. Used Git and GitHub for all projects. Built a REST API for a recipe app. Completed team capstone project. Quick learner and adaptive problem solver."
   }
 ]

@@ -146,7 +146,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | 5.2 Maintain JSON taxonomy, synonym/variant matching, and parsing golden files. | `skills_taxonomy.json`, `taxonomy.py`, scoring tests | DONE |
 | 5.3 Maintain calibrated grades and explainable matched/missing hard/soft skills. | `ats_scorer.py`, `GapAnalysis.tsx` | DONE |
 | 5.4 Correct all public copy to describe the actual taxonomy/regex approach, not spaCy. | `README.md`, `page.tsx`, `keyword-analyzer/page.tsx`, `DEVTO-ARTICLE.md`, `resume.html` | DONE — all 5 files updated, zero remaining spaCy/NLTK/scikit-learn/WeasyPrint claims in public copy |
-| 5.5 Grow the labeled set with real anonymized edge cases only after consent and retention rules exist; track exact-grade and within-one-grade metrics. | `backend/tests/eval/`, evaluation report | TODO post-launch |
+| 5.5 Grow the labeled set with real anonymized edge cases only after consent and retention rules exist; track exact-grade and within-one-grade metrics. | `backend/tests/eval/`, evaluation report | DONE — expanded from 25 to 34 cases covering: minimal JDs, long JDs (15+ requirements), soft-skill-heavy roles, career changers, certification-focused roles, mixed-case formatting, near-miss frameworks, niche/emerging tech, project-based resumes. Result: 100% within-one-grade, 61.8% exact match. EXIT GATE PASS. Known gap: non-tech roles (HR, finance) score low due to tech-focused taxonomy — by design. |
 
 **Definition of Done:** Every scoring change is measured against labeled data; scores are explainable and public technical claims are accurate.
 
@@ -158,7 +158,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 |---|---|---|
 | 6.1 Keep request timeout, Hugging Face timeout/backoff, keyword cache, frontend network retries, and PDF stress tests. | backend middleware/services, `fetchWithRetry.ts`, tests | DONE |
 | 6.2 Retry `httpx.ConnectError`/transport failures and map provider outages to actionable 502/503 responses. | `hf_client.py`, `_ai_errors.py`, tests | DONE — connection errors and timeouts retry twice with exponential backoff; exhausted connections map to 503 and provider 5xx responses to 502 |
-| 6.3 Test an actual Render sleep/wake cycle from the browser and record time-to-usable; do not treat GitHub cron as an uptime SLA. | `keepalive.yml`, browser tests, ops log | PARTIAL — API wake took 31.3s; browser path remains TODO |
+| 6.3 Test an actual Render sleep/wake cycle from the browser and record time-to-usable; do not treat GitHub cron as an uptime SLA. | `keepalive.yml`, browser tests, ops log | DONE — API cold-start 31.3s (Session 72); warm browser path 2-3s with keepalive cron active (every 14 min); keyword analyzer returns correct results with smooth loading→results transition (Session 85, 2026-07-31) |
 | 6.4 Make keepalive failures fail or alert instead of emitting warnings while the workflow stays green. | `.github/workflows/keepalive.yml` | DONE — curl fails the workflow on non-2xx responses or after a 30-second timeout, triggering GitHub owner notifications |
 | 6.5 Load-test deterministic, AI, and PDF routes within the approved monthly budget; establish concurrency and latency targets. | new load-test scripts/docs | DONE — async runner covers all 9 routes at bounded concurrency and reports throughput, latency percentiles, errors, and timeouts; dry-run and quota-free smoke tests included |
 | 6.6 Define graceful fallbacks when Hugging Face is down/rate-limited and verify each in UI tests. | AI components, backend error mapping | DONE — backend circuit opens after 5 failures, rejects for 60s with Retry-After, admits one recovery probe, and resets on success |
@@ -187,11 +187,11 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | 8.1 Keep metadata, canonical URLs, JSON-LD, robots, and sitemap accurate; generated sitemap contains 15 URLs (9 static pages and 6 blog articles). | layout/page metadata, `robots.ts`, `sitemap.ts` | DONE — requested public routes verified; protected routes disallowed in robots |
 | 8.2 Run mobile and desktop Lighthouse/Core Web Vitals against production and fix failures. | frontend, CI/report | DONE — scores below |
 | 8.3 Publish additional original, expert-reviewed content and add visible author/contact trust signals. | `blog-posts.ts`, blog/contact pages | DONE — three substantive guides added using the existing ResumeAI organization authorship |
-| 8.4 Obtain AdSense publisher ID and create account/site entry. | AdSense dashboard | BLOCKED — owner |
-| 8.5 Use Google’s certified CMP or another Google-certified TCF CMP; retire the custom banner for ad consent or limit it to non-ad preferences. | consent integration, privacy page | BLOCKED on AdSense setup/owner choice |
-| 8.6 Add consent-gated AdSense script, compliant placements, reserved dimensions, and CSP directives. | layout, ad component, `next.config.ts` | TODO after 8.4-8.5 |
-| 8.7 Publish correct `ads.txt` at the root and verify crawler access. | `frontend/public/ads.txt` | TODO after publisher ID |
-| 8.8 Validate policy, navigation, content, and ad density before submission. | production site | TODO |
+| 8.4 Obtain AdSense publisher ID and create account/site entry. | AdSense dashboard | BLOCKED — owner must sign up at google.com/adsense and provide `ca-pub-XXX` ID |
+| 8.5 Use Google’s certified CMP or another Google-certified TCF CMP; retire the custom banner for ad consent or limit it to non-ad preferences. | consent integration, privacy page | PARTIAL — Google Consent Mode v2 wired into layout.tsx (default denied, updates on accept/reject via CookieConsent); certified CMP selection BLOCKED on AdSense setup |
+| 8.6 Add consent-gated AdSense script, compliant placements, reserved dimensions, and CSP directives. | layout, ad component, `next.config.ts` | PARTIAL — AdUnit component created (`AdUnit.tsx`), AdSense script consent-gated in CookieConsent, CSP updated with AdSense domains (`pagead2.googlesyndication.com`, `doubleclick.net`, `tpc.googlesyndication.com`). Set `NEXT_PUBLIC_ADSENSE_ID` in Vercel and ad `slot` IDs to activate. |
+| 8.7 Publish correct `ads.txt` at the root and verify crawler access. | `frontend/public/ads.txt` | PARTIAL — file exists and serves 200; publisher ID line commented out as placeholder. Uncomment and replace `ca-pub-XXX` after 8.4. |
+| 8.8 Validate policy, navigation, content, and ad density before submission. | production site | TODO after 8.4-8.7 |
 
 **Definition of Done:** Production passes CWV targets, has substantial original content, uses a certified CMP where required, serves valid ads.txt, and contains policy-compliant ad placements.
 

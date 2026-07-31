@@ -32,6 +32,8 @@ For local dev, copy `frontend/.env.example` to `frontend/.env.local`.
 | `NEXT_PUBLIC_SITE_URL` | Yes (production) | Vercel dashboard / `.env.local` | `http://localhost:3000` | Canonical URL for SEO, OG tags, auth redirects | Auth callbacks redirect to localhost; SEO canonical wrong |
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Vercel dashboard / `.env.local` | — | Supabase project URL | Auth, profile, job tracker all broken |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Vercel dashboard / `.env.local` | — | Supabase anonymous API key | Same as above |
+| `NEXT_PUBLIC_GA_ID` | No | Vercel dashboard / `.env.local` | `""` | GA4 measurement ID (consent-gated) | Analytics disabled |
+| `NEXT_PUBLIC_ADSENSE_ID` | No | Vercel dashboard / `.env.local` | `""` | AdSense publisher ID `ca-pub-XXX` (consent-gated) | Ads disabled; AdUnit component renders nothing |
 
 ## Production Values (Secrets Redacted)
 

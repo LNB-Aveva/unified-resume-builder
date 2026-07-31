@@ -6,6 +6,7 @@ import "./globals.css";
 import CookieConsent from "@/app/components/CookieConsent";
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
+const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
 
 const playfair = localFont({
   src: "../fonts/PlayfairDisplay-Bold.woff2",
@@ -131,6 +132,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://unified-resume-builder-api.onrender.com" />
         <link rel="dns-prefetch" href="https://unified-resume-builder-api.onrender.com" />
         <link rel="dns-prefetch" href="https://pagdtcttkviglyoeuagy.supabase.co" />
+        <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied'});try{if(localStorage.getItem('cookie_consent')==='accepted'){gtag('consent','update',{'ad_storage':'granted','ad_user_data':'granted','ad_personalization':'granted','analytics_storage':'granted'})}}catch(e){}` }} />
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}` }} />
       </head>
       <body className="min-h-full flex flex-col">
@@ -138,7 +140,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         {children}
-        <CookieConsent gaId={gaId} />
+        <CookieConsent gaId={gaId} adsenseId={adsenseId} />
       </body>
     </html>
   );

@@ -14,6 +14,18 @@ function getConsent(): ConsentValue {
   return null;
 }
 
+function updateConsentMode(granted: boolean) {
+  const state = granted ? "granted" : "denied";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const gtag = (window as any).gtag;
+  gtag?.("consent", "update", {
+    ad_storage: state,
+    ad_user_data: state,
+    ad_personalization: state,
+    analytics_storage: state,
+  });
+}
+
 function loadGA4(gaId: string) {
   if (document.getElementById("ga4-script")) return;
 
@@ -29,7 +41,18 @@ function loadGA4(gaId: string) {
   document.head.appendChild(inline);
 }
 
-export default function CookieConsent({ gaId }: { gaId?: string }) {
+function loadAdSense(adsenseId: string) {
+  if (document.getElementById("adsense-script")) return;
+
+  const script = document.createElement("script");
+  script.id = "adsense-script";
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`;
+  script.async = true;
+  script.crossOrigin = "anonymous";
+  document.head.appendChild(script);
+}
+
+export default function CookieConsent({ gaId, adsenseId }: { gaId?: string; adsenseId?: string }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -37,20 +60,24 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
     if (consent === null) {
       const timer = window.setTimeout(() => setVisible(true), 0);
       return () => window.clearTimeout(timer);
-    } else if (consent === "accepted" && gaId) {
-      loadGA4(gaId);
+    } else if (consent === "accepted") {
+      if (gaId) loadGA4(gaId);
+      if (adsenseId) loadAdSense(adsenseId);
     }
-  }, [gaId]);
+  }, [gaId, adsenseId]);
 
   const handleAccept = useCallback(() => {
     localStorage.setItem(CONSENT_KEY, "accepted");
     setVisible(false);
+    updateConsentMode(true);
     if (gaId) loadGA4(gaId);
-  }, [gaId]);
+    if (adsenseId) loadAdSense(adsenseId);
+  }, [gaId, adsenseId]);
 
   const handleReject = useCallback(() => {
     localStorage.setItem(CONSENT_KEY, "rejected");
     setVisible(false);
+    updateConsentMode(false);
   }, []);
 
   if (!visible) return null;
