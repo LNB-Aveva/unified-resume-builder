@@ -1,12 +1,12 @@
-# handoff.ps1 — Quick handoff between Claude Code and OpenAI Codex
+# handoff.ps1 — Quick handoff between Claude Code and GitHub Copilot
 # Usage:
 #   .\.ai-sync\handoff.ps1 -To claude
 #   .\.ai-sync\handoff.ps1 -To claude -SwitchAccount
-#   .\.ai-sync\handoff.ps1 -To codex
+#   .\.ai-sync\handoff.ps1 -To copilot
 
 param(
     [Parameter(Mandatory=$true)]
-    [ValidateSet("claude", "codex")]
+    [ValidateSet("claude", "copilot")]
     [string]$To,
 
     [switch]$SwitchAccount
@@ -19,18 +19,18 @@ if ($SwitchAccount -and $To -ne "claude") {
 }
 
 $others = @{
-    "claude" = "Codex"
-    "codex"  = "Claude Code"
+    "claude"  = "Copilot"
+    "copilot" = "Claude Code"
 }
 
 $colors = @{
-    "claude" = "Cyan"
-    "codex"  = "Magenta"
+    "claude"  = "Cyan"
+    "copilot" = "Magenta"
 }
 
 $agentName = switch ($To) {
-    "claude" { "CLAUDE CODE" }
-    "codex"  { "OPENAI CODEX" }
+    "claude"  { "CLAUDE CODE" }
+    "copilot" { "GITHUB COPILOT" }
 }
 
 Write-Host ""

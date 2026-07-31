@@ -1,4 +1,4 @@
-# AGENTS.md — Project Instructions for OpenAI Codex CLI
+# AGENTS.md — Project Instructions for GitHub Copilot
 
 ## Identity
 You are working on **resumeai.cv** — an AI-powered resume builder SaaS.
@@ -14,12 +14,12 @@ Always check shared context before starting any task.
 ## After Completing Work
 1. Update `.ai-sync/WORKLOG.md` with what you completed, what's remaining, any blockers
 2. Update `.ai-sync/DECISIONS.md` if you made architectural or design choices
-3. Commit prefix: `[codex] <message>` — NO "Co-Authored-By" lines ever
+3. Commit prefix: `[copilot] <message>` — NO "Co-Authored-By" lines ever
 
 ## Commit Convention
-- `[claude]`  — work done by Claude Code
-- `[codex]`   — work done by OpenAI Codex
-- `[manual]`  — manual human edits
+- `[claude]`   — work done by Claude Code
+- `[copilot]`  — work done by GitHub Copilot
+- `[manual]`   — manual human edits
 
 ## Tech Stack
 - **Frontend:** Next.js 16, TypeScript, Tailwind CSS — in `frontend/`

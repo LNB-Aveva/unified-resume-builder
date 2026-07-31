@@ -65,7 +65,7 @@ jobs:
 
       - name: Run tests with coverage
         working-directory: backend
-        run: python -m pytest -x -q --cov=app --cov-fail-under=80
+        run: python -m pytest -x -q --cov=app --cov-branch --cov-fail-under=80
 
       - name: Security scan with bandit
         working-directory: backend

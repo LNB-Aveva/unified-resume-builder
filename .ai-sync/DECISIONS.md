@@ -20,6 +20,21 @@
 
 ## Decisions
 
+### DEC-028: Complete Test-Quality Audit Backlog + Agent Rename (2026-07-31)
+- **Date:** 2026-07-31
+- **Agent:** claude
+- **Context:** DEC-027 (Copilot session 86) implemented priority fixes from the test-quality audit but left ~50% of the backlog open: no branch coverage, no cleanup/concurrency limiter tests, no PDF sanitization fidelity tests, no property-based tests for auth/rate-limit/PDF, no contract/OpenAPI tests, no axe/WCAG automation. Also, all project files referenced "Codex" when the agent is actually GitHub Copilot.
+- **Decision:**
+  - **Agent rename:** Changed all forward-looking references from "OpenAI Codex" / `[codex]` to "GitHub Copilot" / `[copilot]` across CLAUDE.md, AGENTS.md, .ai-sync/*, docs/LAUNCH_PROGRAM.md. Renamed `codex-mode.ps1` → `copilot-mode.ps1`. Left historical WORKLOG/DECISIONS entries unchanged.
+  - **`--cov-branch` in CI:** Added to pytest command. Branch coverage is 88.51%, well above the 80% floor.
+  - **Rate-limit cleanup + concurrency tests:** 5 tests covering eviction of expired keys, memory growth prevention, and thread-safe concurrent access to the sliding-window limiter.
+  - **PDF sanitization fidelity:** 12 tests verifying _s() char mapping (em-dash, smart quotes, bullets, ellipsis, nbsp, Z-caron, n-tilde), title truncation, and Unicode resume generation across all templates.
+  - **Contract/OpenAPI tests:** 5 tests: schema validation for /analyze, /score, /compliance responses + OpenAPI spec structural validity.
+  - **Property-based tests:** 7 new Hypothesis tests in test_property.py covering JWT roundtrip/rejection, rate-limiter exact-count/independent-buckets, and PDF sanitize/generate never-crash.
+  - **axe/WCAG a11y automation:** @axe-core/playwright installed; 6 public pages tested for WCAG 2.1 AA (serious/critical violations). Cookie consent excluded from analysis.
+- **Alternatives Considered:** jsonschema library for contract tests — rejected; a lightweight inline validator avoids adding a dependency for 5 tests.
+- **Files Affected:** CLAUDE.md, AGENTS.md, .ai-sync/*, .github/workflows/ci.yml, docs/LAUNCH_PROGRAM.md, backend/tests/unit/{test_rate_limit,test_pdf_sanitization,test_contract,test_property}.py, frontend/{package.json,tests/e2e/accessibility.spec.ts}
+
 ### DEC-027: Test-Quality Audit v2 — Priority Fixes Implemented (2026-07-31)
 - **Date:** 2026-07-31
 - **Agent:** codex

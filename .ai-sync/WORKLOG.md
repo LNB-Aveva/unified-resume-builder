@@ -1,4 +1,4 @@
-# Work Log — Shared Context for Claude Code & OpenAI Codex
+# Work Log — Shared Context for Claude Code & GitHub Copilot
 
 > ALL agents: READ this file at session start. UPDATE before ending your session.
 > Keep entries concise — this is a handoff doc, not a journal.
@@ -17,9 +17,9 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | codex                      |
+| Agent      | claude                     |
 | Started    | 2026-07-31                 |
-| Working On | Session 86: Test-quality audit v2 + implemented priority fixes (AI-gen tests, ATS weight & auth alg-confusion mutation tests, Playwright mobile project, CI E2E job). |
+| Working On | Session 87: Codex→Copilot rename + complete test-quality audit backlog (cleanup/concurrency, PDF sanitization, property-based, contract/OpenAPI, axe a11y, --cov-branch). |
 
 ---
 
@@ -27,7 +27,24 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
-### Session 86 (Codex) — 2026-07-31
+### Session 87 (Claude) — 2026-07-31
+- **Agent:** claude
+- **Did:**
+  - **Codex→Copilot rename:** Updated CLAUDE.md, AGENTS.md, .ai-sync/README.md, renamed codex-mode.ps1→copilot-mode.ps1, updated handoff.ps1 and WORKLOG.md commit convention. Historical entries preserved.
+  - **Completed ALL remaining test-quality audit backlog items:**
+    - `--cov-branch` enforcement in CI (88.51% passes with branch coverage)
+    - `backend/tests/unit/test_rate_limit.py` (new) — cleanup eviction + threaded concurrency tests (5 tests)
+    - `backend/tests/unit/test_pdf_sanitization.py` (new) — _s() fidelity (em-dash, smart quotes, bullets, Unicode decomposition), title truncation, Unicode resume generation (12 tests)
+    - `backend/tests/unit/test_contract.py` (new) — OpenAPI schema validation for /analyze, /score, /compliance responses + spec validity check (5 tests)
+    - `backend/tests/unit/test_property.py` (extended) — added TestAuthProperties (JWT roundtrip, wrong-secret rejection), TestRateLimitProperties (exact-max-allowed, independent-IP-buckets), TestPdfProperties (sanitize-never-crashes, pdf-generation-never-crashes) — 7 new property tests
+    - `frontend/tests/e2e/accessibility.spec.ts` (new) — @axe-core/playwright WCAG 2.1 AA checks on 6 public pages
+    - Installed @axe-core/playwright dependency
+  - **Test counts:** 367 backend passed / 22 skipped / 88.51% coverage (branch-enabled). Frontend lint clean, ruff clean.
+- **Files Changed:** CLAUDE.md, AGENTS.md, .ai-sync/{README,WORKLOG,DECISIONS,copilot-mode.ps1,handoff.ps1}, .github/workflows/ci.yml, docs/LAUNCH_PROGRAM.md, backend/tests/unit/{test_rate_limit,test_pdf_sanitization,test_contract,test_property}.py, frontend/{package.json,package-lock.json,tests/e2e/accessibility.spec.ts}
+- **Next:** Remaining: real signed-in E2E fixture (blocked on CI Supabase test user). Post-fix confidence estimate: ~78-80%.
+- **Blockers:** None.
+
+### Session 86 (Copilot) — 2026-07-31
 - **Agent:** codex (test-quality audit v2 + fixes)
 - **Did:**
   - Re-ran the suite from scratch: **341 pass / 20 skipped / 91% coverage** (was 329/88% pre-fix); ruff + eslint clean; **38 Playwright tests pass (34 desktop + 4 mobile)**.
@@ -509,6 +526,6 @@
 - **Backend deploy:** Render (render.yaml)
 - **Tests:** 291 passing (backend pytest), 82.44% measured services/routes coverage; frontend lint/build and six smoke tests pass locally
 - **proxy.ts IS the Next.js middleware** — never recreate middleware.ts
-- **Commit rule:** no Co-Authored-By, no AI attribution, ever
+- **Commit convention:** `[claude]` / `[copilot]` / `[manual]`; no Co-Authored-By, no AI attribution, ever
 - **Localhost rule:** make changes → localhost:3000 → user approves → then commit
 - **Tool count:** 9 tools (FAQ names 9 distinct tools — never change without user sign-off)

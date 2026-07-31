@@ -1,11 +1,17 @@
-"""Property-based tests using Hypothesis for core scoring and NLP logic."""
+"""Property-based tests using Hypothesis for core scoring, NLP, auth, rate-limit, and PDF logic."""
 
+import time
+
+import jwt
 from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
 
+from app.core.rate_limit import SlidingWindowRateLimiter
+from app.schemas.export import Education as ExportEdu, PersonalInfo as ExportPI, ResumeExportRequest, WorkExperience as ExportWE
 from app.schemas.job import JobAnalysis, JobDescription
 from app.schemas.resume import PersonalInfo, ResumeData, WorkExperience
 from app.services.compliance.checker import check_resume
+from app.services.export.pdf_generator import _s, generate_pdf
 from app.services.nlp.keyword_extractor import extract_keywords
 from app.services.scoring.ats_scorer import _compute_grade, _skill_present, score_from_text, score_resume
 
@@ -115,3 +121,93 @@ class TestComplianceProperties:
     def test_empty_string_handled(self, text):
         result = check_resume(text)
         assert result.total_checks > 0
+
+
+TEST_JWT_SECRET = "test-jwt-secret-for-unit-tests-only-must-be-32-bytes-minimum"
+
+jwt_sub = st.from_regex(r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", fullmatch=True)
+
+latin1_safe_text = st.text(
+    alphabet=st.characters(whitelist_categories=("L", "N", "Zs"), max_codepoint=0xFF),
+    min_size=1,
+    max_size=200,
+)
+
+
+class TestAuthProperties:
+
+    @given(sub=jwt_sub)
+    @settings(max_examples=20)
+    def test_valid_token_roundtrips(self, sub):
+        payload = {
+            "sub": sub,
+            "aud": "authenticated",
+            "role": "authenticated",
+            "iat": time.time(),
+            "exp": time.time() + 3600,
+        }
+        token = jwt.encode(payload, TEST_JWT_SECRET, algorithm="HS256")
+        decoded = jwt.decode(token, TEST_JWT_SECRET, algorithms=["HS256"], audience="authenticated")
+        assert decoded["sub"] == sub
+
+    @given(secret=st.binary(min_size=1, max_size=64))
+    @settings(max_examples=20)
+    def test_wrong_secret_always_fails(self, secret):
+        assume(secret != TEST_JWT_SECRET.encode())
+        payload = {
+            "sub": "user-1",
+            "aud": "authenticated",
+            "exp": time.time() + 3600,
+        }
+        token = jwt.encode(payload, TEST_JWT_SECRET, algorithm="HS256")
+        try:
+            jwt.decode(token, secret.decode("latin-1", errors="replace"), algorithms=["HS256"], audience="authenticated")
+            assert False, "Should have raised"
+        except (jwt.InvalidSignatureError, jwt.DecodeError):
+            pass
+
+
+class TestRateLimitProperties:
+
+    @given(max_req=st.integers(min_value=1, max_value=100))
+    @settings(max_examples=20)
+    def test_exactly_max_requests_allowed(self, max_req):
+        limiter = SlidingWindowRateLimiter(max_requests=max_req, window_seconds=60.0)
+        allowed = 0
+        for _ in range(max_req + 10):
+            ok, _ = limiter.check("ip")
+            if ok:
+                allowed += 1
+        assert allowed == max_req
+
+    @given(n_ips=st.integers(min_value=1, max_value=20))
+    @settings(max_examples=10)
+    def test_independent_ip_buckets(self, n_ips):
+        limiter = SlidingWindowRateLimiter(max_requests=3, window_seconds=60.0)
+        for i in range(n_ips):
+            for _ in range(3):
+                ok, _ = limiter.check(f"ip-{i}")
+                assert ok
+            ok, _ = limiter.check(f"ip-{i}")
+            assert not ok
+
+
+class TestPdfProperties:
+
+    @given(text=st.text(min_size=0, max_size=500))
+    @settings(max_examples=30)
+    def test_sanitize_never_crashes(self, text):
+        result = _s(text)
+        assert isinstance(result, str)
+        result.encode("latin-1")
+
+    @given(name=latin1_safe_text, email=st.emails())
+    @settings(max_examples=10, deadline=5000)
+    def test_pdf_generation_never_crashes(self, name, email):
+        assume(len(name.strip()) >= 1)
+        req = ResumeExportRequest(
+            personal=ExportPI(full_name=name, email=email),
+            template="classic",
+        )
+        pdf_bytes = generate_pdf(req)
+        assert pdf_bytes[:5] == b"%PDF-"

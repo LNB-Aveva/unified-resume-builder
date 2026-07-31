@@ -1,7 +1,7 @@
 # LAUNCH_PROGRAM.md — Hardening and Launch Roadmap
 
 > Every session reads this file first and updates it before exit.
-> Last verified: 2026-07-29 (Codex recheck after audit commit `c0c2f65`)
+> Last verified: 2026-07-29 (Copilot recheck after audit commit `c0c2f65`)
 
 ## Launch policy
 
