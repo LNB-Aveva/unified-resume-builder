@@ -249,7 +249,7 @@ function SourceBadge({ source }: { source: string }) {
           {m.label}
         </span>
       )}
-      <span className="text-xs font-medium text-gray-400 dark:text-gray-500">via {source}</span>
+      <span className="text-xs font-medium text-gray-500 dark:text-gray-500">via {source}</span>
     </div>
   );
 }
@@ -379,25 +379,25 @@ export default function Home() {
                   <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
                     <AnimatedCounter target={2400} suffix="+" locale />
                   </div>
-                  <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">resumes optimized</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">resumes optimized</div>
                 </div>
                 <div className="group">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
                     <AnimatedCounter target={9} />
                   </div>
-                  <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">AI-powered tools</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">AI-powered tools</div>
                 </div>
                 <div className="group">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
                     <AnimatedCounter target={15} />
                   </div>
-                  <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">ATS format checks</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">ATS format checks</div>
                 </div>
                 <div className="group">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
                     <AnimatedCounter target={100} suffix="%" />
                   </div>
-                  <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">free forever</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">free forever</div>
                 </div>
               </div>
             </div>
@@ -520,7 +520,7 @@ export default function Home() {
             <ShareableScoreWidget />
           </div>
 
-          <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-5">
+          <p className="text-center text-xs text-gray-500 dark:text-gray-500 mt-5">
             Your resume text is never stored &mdash; only the score and keyword lists are saved. Links expire after 30 days.
           </p>
         </div>
@@ -824,7 +824,7 @@ export default function Home() {
                       </th>
                       <th className="px-6 py-4 text-center">
                         <div className="text-sm font-semibold text-gray-500 dark:text-gray-400">Paid Tools</div>
-                        <div className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">$24&ndash;49/mo</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">$24&ndash;49/mo</div>
                       </th>
                     </tr>
                   </thead>
@@ -1365,7 +1365,7 @@ export default function Home() {
                 Everything you need to know about ATS filters and how ResumeAI works.
               </p>
             </div>
-            <dl className="divide-y divide-gray-200 dark:divide-gray-700 space-y-1">
+            <div className="divide-y divide-gray-200 dark:divide-gray-700 space-y-1">
               {faqItems.map(({ q, a }) => (
                 <details key={q} className="group py-5 cursor-pointer list-none">
                   <summary className="flex items-center justify-between gap-4 font-medium text-gray-900 dark:text-gray-100 text-sm select-none list-none marker:hidden hover:text-indigo-700 dark:hover:text-indigo-400 transition-colors duration-150">
@@ -1379,7 +1379,7 @@ export default function Home() {
                   <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-7">{a}</p>
                 </details>
               ))}
-            </dl>
+            </div>
           </div>
         </section>
       </ScrollReveal>
@@ -1439,7 +1439,7 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Product</h4>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Product</h3>
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">ATS Tools</a></li>
                 <li><Link href="/keyword-analyzer" className="hover:text-gray-900 dark:hover:text-white transition">Keyword Analyzer</Link></li>
@@ -1451,7 +1451,7 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Resources</h4>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Resources</h3>
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><Link href="/blog" className="hover:text-gray-900 dark:hover:text-white transition">Blog</Link></li>
                 <li><a href="#faq" className="hover:text-gray-900 dark:hover:text-white transition">FAQ</a></li>
@@ -1462,7 +1462,7 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Legal</h4>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Legal</h3>
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><Link href="/privacy" className="hover:text-gray-900 dark:hover:text-white transition">Privacy Policy</Link></li>
                 <li><Link href="/terms" className="hover:text-gray-900 dark:hover:text-white transition">Terms of Service</Link></li>
@@ -1470,7 +1470,7 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Compare</h4>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Compare</h3>
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><a href="#compare" className="hover:text-gray-900 dark:hover:text-white transition">Free vs Paid Tools</a></li>
                 <li><a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">All 9 AI Tools</a></li>
@@ -1479,10 +1479,10 @@ export default function Home() {
           </div>
 
           <div className="border-t border-gray-200 dark:border-gray-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-gray-400 dark:text-gray-400">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               &copy; {new Date().getFullYear()} ResumeAI. 100% free.
             </p>
-            <div className="flex items-center gap-4 text-xs text-gray-400 dark:text-gray-400">
+            <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
               <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Privacy</Link>
               <span>&middot;</span>
               <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Terms</Link>

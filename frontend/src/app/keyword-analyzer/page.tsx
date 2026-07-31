@@ -259,7 +259,7 @@ export default function KeywordAnalyzerPage() {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
             Keyword Analyzer FAQ
           </h2>
-          <dl className="divide-y divide-gray-200 dark:divide-gray-700">
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {faqItems.map(({ q, a }) => (
               <details
                 key={q}
@@ -278,7 +278,7 @@ export default function KeywordAnalyzerPage() {
                 </p>
               </details>
             ))}
-          </dl>
+          </div>
         </div>
       </section>
 

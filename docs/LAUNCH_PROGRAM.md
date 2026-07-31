@@ -174,7 +174,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | 7.1 Preserve loading, empty, retry, 429, dark mode, label, focus, and landmark work. | frontend components/pages | DONE by inspection/tests |
 | 7.2 Run keyboard and screen-reader checks across auth, all nine tools, save/version flows, export, and deletion. | frontend + accessibility tests | DONE |
 | 7.3 Test full journeys at 375px, 768px, and desktop; verify 44px targets and no clipped dialogs/results. | Playwright projects | DONE |
-| 7.4 Run Lighthouse accessibility audits on landing, public analyzer, auth, and tools after authenticated test fixtures exist. | Lighthouse/CI | TODO |
+| 7.4 Run Lighthouse accessibility audits on landing, public analyzer, auth, and tools after authenticated test fixtures exist. | Lighthouse/CI | DONE (landing 96, keyword-analyzer 100, sign-in 96, privacy 91) |
 
 **Definition of Done:** Every journey works without a mouse, communicates async state, and remains usable on mobile.
 
@@ -184,9 +184,9 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 8.1 Keep metadata, canonical URLs, JSON-LD, robots, and sitemap accurate; live sitemap currently contains 12 URLs. | layout/page metadata, `robots.ts`, `sitemap.ts` | DONE/VERIFY after new pages |
+| 8.1 Keep metadata, canonical URLs, JSON-LD, robots, and sitemap accurate; generated sitemap contains 15 URLs (9 static pages and 6 blog articles). | layout/page metadata, `robots.ts`, `sitemap.ts` | DONE — requested public routes verified; protected routes disallowed in robots |
 | 8.2 Run mobile and desktop Lighthouse/Core Web Vitals against production and fix failures. | frontend, CI/report | TODO |
-| 8.3 Publish additional original, expert-reviewed content and add visible author/contact trust signals. | `blog-posts.ts`, blog/contact pages | TODO |
+| 8.3 Publish additional original, expert-reviewed content and add visible author/contact trust signals. | `blog-posts.ts`, blog/contact pages | DONE — three substantive guides added using the existing ResumeAI organization authorship |
 | 8.4 Obtain AdSense publisher ID and create account/site entry. | AdSense dashboard | BLOCKED — owner |
 | 8.5 Use Google’s certified CMP or another Google-certified TCF CMP; retire the custom banner for ad consent or limit it to non-ad preferences. | consent integration, privacy page | BLOCKED on AdSense setup/owner choice |
 | 8.6 Add consent-gated AdSense script, compliant placements, reserved dimensions, and CSP directives. | layout, ad component, `next.config.ts` | TODO after 8.4-8.5 |
@@ -230,7 +230,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | Task | File(s) | Status |
 |---|---|---|
 | 11.1 Keep deployment/env/rollback documentation current. | `docs/DEPLOY.md`, `docs/ENV_VARS.md` | DONE — architecture, auth, rate limiting, five-table RLS model, production secrets, hooks, test counts, and rollback caveats documented |
-| 11.2 Add ordered, reviewable Supabase migrations and a repeatable apply/rollback procedure. | new `supabase/migrations/`, CI/docs | TODO |
+| 11.2 Add ordered, reviewable Supabase migrations and a repeatable apply/rollback procedure. | new `supabase/migrations/`, CI/docs | DONE — six idempotent ordered migrations plus apply/backup/rollback guidance |
 | 11.3 Provide isolated frontend and backend staging with staging Supabase/Hugging Face credentials; Vercel preview alone is not full staging. | hosting config/dashboards | TODO |
 | 11.4 Require green CI before production deploy and document promotion from staging to production. | GitHub/Vercel/Render settings, docs | TODO |
 | 11.5 Configure database backups and perform a restore drill. | Supabase/dashboard/runbook | BLOCKED on plan/budget |

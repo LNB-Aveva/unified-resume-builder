@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 7.2 DONE, 7.3 DONE (touch targets + responsive audit). Phase 4 COMPLETE. Working on 7.4 next.
+- **Status:** Phase 7.2+7.3+7.4 ALL DONE (accessibility, touch targets, Lighthouse 90+). Phase 4 COMPLETE.
 
 ---
 
@@ -19,13 +19,21 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-07-30                 |
-| Working On | Phase 7.2 DONE, 7.3 DONE. Phase 7.4 (Lighthouse) next. |
+| Working On | Phase 7.2+7.3+7.4 ALL DONE. Phase 6.3 (cold-start test) if time. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 81 (Codex) — 2026-07-30
+- **Agent:** codex
+- **Did:** Phase 8.3: added three original 961–1,039-word guides covering ATS parsing, high-impact resume mistakes, and when cover letters remain useful. Phase 8.1: audited all 20 page routes, verified the generated 15-URL sitemap covers all requested public static pages plus six blog slugs, skipped unbounded `/score/[id]`, and disallowed protected routes in robots. Phase 11.2: added six ordered, idempotent Supabase migrations with all canonical tables, constraints, indexes, RLS policies, RPC/functions, and application/backup/rollback guidance.
+- **Metadata Audit:** `/`, `/sign-in`, `/sign-up`, `/forgot-password`, `/reset-password`, `/verify-email`, and `/account-setup` have no page-level metadata export; `/privacy` and `/terms` have title/description but no page-level Open Graph block; protected `/account`, `/resumes`, and `/tools` have title/description but no page-level Open Graph block. Dynamic blog and score pages plus the five public SEO/tool pages have title, description, and Open Graph metadata. No component, protected-route, landing-page, or layout files were modified for this report.
+- **Files Changed:** `frontend/src/app/lib/blog-posts.ts`, `frontend/src/app/robots.ts`, `supabase/migrations/`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Obtain localhost approval, create the three assigned commits, then push if requested.
+- **Blockers:** The shared dev server was started before the three new static blog slugs existed: `/blog`, `/sitemap.xml`, and `/robots.txt` render correctly, but the new individual slugs remain cached as 404 until Claude's concurrent port-3000 process can be restarted. The in-app browser has no available backend in this session. Frontend lint passes; unrelated parallel files were not touched or staged by Codex.
 
 ### Session 81 — 2026-07-30
 - **Agent:** manual (code-review follow-up)

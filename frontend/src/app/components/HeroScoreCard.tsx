@@ -167,7 +167,7 @@ function ScorePanel() {
       </div>
 
       <div>
-        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide mb-2">
           Matched Keywords
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -190,7 +190,7 @@ function ScorePanel() {
       </div>
 
       <div>
-        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide mb-2">
           Missing — Add These
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -270,7 +270,7 @@ function GapPanel() {
 
       <div>
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide">
             Keywords to Add
           </p>
           <span className="text-xs text-red-500 dark:text-red-400 font-semibold">
@@ -300,7 +300,7 @@ function GapPanel() {
       </div>
 
       <div>
-        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide mb-2">
           Already Matched
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -367,7 +367,7 @@ function RewriterPanel() {
   return (
     <div className="space-y-3">
       <div>
-        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide mb-2">
           Before
         </p>
         <div className="rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-3">
@@ -407,7 +407,7 @@ function RewriterPanel() {
       </div>
 
       <div>
-        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide mb-2">
           After
         </p>
         <div

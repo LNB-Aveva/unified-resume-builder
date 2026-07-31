@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function TermsOfService() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-16">
+    <main id="main-content" className="mx-auto max-w-3xl px-4 py-16">
       <div className="mb-12">
         <Link href="/" className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition mb-6 inline-block">&larr; Back to home</Link>
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">

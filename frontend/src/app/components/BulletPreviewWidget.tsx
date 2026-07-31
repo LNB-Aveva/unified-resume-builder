@@ -61,7 +61,7 @@ export default function BulletPreviewWidget() {
     <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 sm:p-8">
       {/* Example chips */}
       <div className="mb-4">
-        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2.5">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wider mb-2.5">
           Try an example
         </p>
         <div className="flex flex-wrap gap-2">

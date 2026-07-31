@@ -336,7 +336,7 @@ export default function ATSCheckerPage() {
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
           ATS Score Checker FAQ
         </h2>
-        <dl className="divide-y divide-gray-100 dark:divide-gray-700">
+        <div className="divide-y divide-gray-100 dark:divide-gray-700">
           {faqItems.map(({ q, a }) => (
             <details
               key={q}
@@ -353,7 +353,7 @@ export default function ATSCheckerPage() {
               <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{a}</p>
             </details>
           ))}
-        </dl>
+        </div>
       </section>
 
       {/* Final CTA */}
