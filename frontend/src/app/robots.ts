@@ -12,7 +12,8 @@
  *   as /robots.txt with the correct Content-Type header. No routing needed.
  *
  * WHAT WE TELL CRAWLERS:
- *   - Allow all bots to crawl everything (no private routes to hide)
+ *   - Allow bots to crawl public pages
+ *   - Keep authenticated account, resume, and tool routes out of crawlers
  *   - Point them at the sitemap so they find all indexable pages
  */
 
@@ -24,6 +25,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/account", "/account-setup", "/resumes", "/tools"],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
   };
