@@ -17,15 +17,32 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
+| Agent      | codex                      |
 | Started    | 2026-07-31                 |
-| Working On | Session 85: Pentest remediation — all 6 exploitable findings + circuit breaker wedge bug fixed. |
+| Working On | Session 86: Test-quality audit v2 + implemented priority fixes (AI-gen tests, ATS weight & auth alg-confusion mutation tests, Playwright mobile project, CI E2E job). |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 86 (Codex) — 2026-07-31
+- **Agent:** codex (test-quality audit v2 + fixes)
+- **Did:**
+  - Re-ran the suite from scratch: **341 pass / 20 skipped / 91% coverage** (was 329/88% pre-fix); ruff + eslint clean; **38 Playwright tests pass (34 desktop + 4 mobile)**.
+  - **Closed the top audit gaps with real tests/config:**
+    - `backend/tests/unit/test_ai_generation.py` (new) — mocks ONLY `call_hf` and exercises the real parse/assemble paths in `rewriter`, `summarizer`, `cover_letter` (the routes previously only asserted 401/422). Raised AI-service coverage substantially.
+    - `test_ats_scorer.py` — added `test_hard_skills_weighted_more_than_soft` (asymmetric case that actually catches a 0.70/0.30 hard↔soft weight swap; the old symmetric 50/50 test could not).
+    - `test_auth.py` — added `alg=none` and `HS384` algorithm-confusion rejection tests.
+    - `frontend/playwright.config.ts` — added a **mobile (Pixel 7) project** scoped to the new `mobile.spec.ts`; desktop specs stay chromium-only (they use `sm:`-hidden nav CTAs).
+    - `frontend/tests/e2e/mobile.spec.ts` (new) — no-horizontal-overflow, 44px touch-target, mobile analyzer flow, mobile auth-redirect.
+    - `.github/workflows/ci.yml` — added an **`e2e` job** that installs Playwright and runs `test:e2e` with dummy public env (Playwright was never gating merges before).
+    - `frontend/package.json` — `test:e2e` script.
+  - Full report: `docs/quality/2026-07-31_test-quality-audit.md`.
+- **Files Changed:** `backend/tests/unit/test_ai_generation.py` (new), `backend/tests/unit/test_ats_scorer.py`, `backend/tests/integration/test_auth.py`, `frontend/playwright.config.ts`, `frontend/tests/e2e/mobile.spec.ts` (new), `frontend/package.json`, `.github/workflows/ci.yml`, `docs/quality/2026-07-31_test-quality-audit.md` (new), `.ai-sync/WORKLOG.md`, `.ai-sync/DECISIONS.md`
+- **Next:** Remaining audit gaps not yet closed — real authenticated E2E fixture (save/load/delete), contract/OpenAPI tests, axe a11y automation, `--cov-branch` enforcement, concurrency test for the threaded limiter/global breaker.
+- **Blockers:** Playwright browser download needed a corporate-TLS workaround locally; CI uses clean network + `--with-deps`.
 
 ### Session 85 (Claude) — 2026-07-31
 - **Agent:** claude

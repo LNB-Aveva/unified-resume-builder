@@ -104,6 +104,20 @@ class TestScoreResume:
         assert result.matched_hard_skills == ["python"]
         assert result.missing_hard_skills == ["docker"]
 
+    def test_hard_skills_weighted_more_than_soft(self):
+        # Asymmetric match rates make the 0.70/0.30 split observable: matching
+        # only hard skills must outscore matching only soft skills. A symmetric
+        # 50/50 case cannot catch a hard<->soft weight swap; this one can.
+        job = _job(hard=["python", "docker"], soft=["leadership", "teamwork"])
+
+        only_hard = score_resume(job, _resume(skills=["python", "docker"]))
+        only_soft = score_resume(job, _resume(skills=["leadership", "teamwork"]))
+
+        # hard 100% -> 100*0.70 = 70.0 ; soft 100% -> 100*0.30 = 30.0
+        assert only_hard.overall_score == 70.0
+        assert only_soft.overall_score == 30.0
+        assert only_hard.overall_score > only_soft.overall_score
+
     def test_only_hard_skills_in_job(self):
         job = _job(hard=["python", "docker"], soft=[])
         resume = _resume(skills=["python"])

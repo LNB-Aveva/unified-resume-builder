@@ -20,6 +20,19 @@
 
 ## Decisions
 
+### DEC-027: Test-Quality Audit v2 — Priority Fixes Implemented (2026-07-31)
+- **Date:** 2026-07-31
+- **Agent:** codex
+- **Context:** Follow-up to DEC-025 (read-only audit). Re-ran the suite (329→**341 pass**, 88%→**91% coverage**) and implemented the highest-impact items from that backlog. Playwright previously never ran in CI, so its E2E tests gated nothing.
+- **Decision:**
+  - AI success path (DEC-025 #1): added `backend/tests/unit/test_ai_generation.py` — mocks ONLY the `call_hf` network boundary and exercises the real prompt-assembly/parse/response-model code in `rewriter`, `summarizer`, `cover_letter`. Chose service-level unit tests (mock `call_hf`) over route-level integration to test the parse logic directly without asserting on nondeterministic model output.
+  - ATS weight-swap (DEC-025 #5): added `test_hard_skills_weighted_more_than_soft` — an asymmetric hard-only vs soft-only case (70.0 vs 30.0) that fails if the 0.70/0.30 weights are swapped. The pre-existing symmetric 50/50 test cannot detect this.
+  - JWT algorithm confusion (DEC-025 #3): added `alg=none` and `HS384` rejection tests to `test_auth.py`.
+  - Mobile E2E (DEC-025 #6): added a Playwright **mobile (Pixel 7) project** in `playwright.config.ts`, scoped via `testMatch` to a new mobile-safe `mobile.spec.ts`. Desktop specs stay chromium-only because they assert on nav CTAs that are intentionally `sm:`-hidden on mobile — rewriting them to be viewport-agnostic was rejected as out-of-scope churn.
+  - **CI E2E job:** added an `e2e` job to `.github/workflows/ci.yml` (installs Playwright + runs `test:e2e` with dummy public env). The app boots without real secrets because Supabase `getUser()` resolves to "no user" and all API calls are `page.route`-mocked.
+- **Alternatives Considered:** Signed-in save/load/delete E2E fixture — deferred (needs a real Supabase test user + service-role key in CI, same blocker as the skipped RLS suite). Contract/OpenAPI, axe a11y, `--cov-branch`, and a threaded-limiter concurrency test remain open in the backlog.
+- **Files Affected:** `backend/tests/unit/test_ai_generation.py`, `backend/tests/unit/test_ats_scorer.py`, `backend/tests/integration/test_auth.py`, `frontend/playwright.config.ts`, `frontend/tests/e2e/mobile.spec.ts`, `frontend/package.json`, `.github/workflows/ci.yml`, `docs/quality/2026-07-31_test-quality-audit.md`
+
 ### DEC-026: Pentest Remediation — 7 Fixes Applied (2026-07-31)
 - **Date:** 2026-07-31
 - **Agent:** claude

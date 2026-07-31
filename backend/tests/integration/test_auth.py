@@ -125,6 +125,44 @@ class TestProtectedRoutesReject401:
         )
         assert r.status_code == 401
 
+    @pytest.mark.anyio
+    async def test_alg_none_unsigned_token_returns_401(self, client):
+        # A forged "alg: none" token carries no signature. If the server ever
+        # accepted algorithms beyond HS256, this would authenticate for free.
+        payload = {
+            "sub": str(uuid.uuid4()),
+            "aud": "authenticated",
+            "role": "authenticated",
+            "iat": time.time(),
+            "exp": time.time() + 3600,
+        }
+        token = jwt.encode(payload, "", algorithm="none")
+        r = await client.post(
+            "/api/v1/compliance",
+            json={"resume_text": "Test resume"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert r.status_code == 401
+
+    @pytest.mark.anyio
+    async def test_wrong_algorithm_same_secret_returns_401(self, client):
+        # Correct secret but HS384 instead of HS256 — an algorithm-confusion
+        # mutation that broadened the accepted algorithm list would pass this.
+        payload = {
+            "sub": str(uuid.uuid4()),
+            "aud": "authenticated",
+            "role": "authenticated",
+            "iat": time.time(),
+            "exp": time.time() + 3600,
+        }
+        token = jwt.encode(payload, TEST_JWT_SECRET, algorithm="HS384")
+        r = await client.post(
+            "/api/v1/compliance",
+            json={"resume_text": "Test resume"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert r.status_code == 401
+
 
 class TestProtectedRoutesAcceptValidToken:
     @pytest.mark.anyio

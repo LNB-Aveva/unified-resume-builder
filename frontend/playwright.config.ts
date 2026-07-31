@@ -1,4 +1,4 @@
-import { defineConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -7,7 +7,18 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
     headless: true,
   },
-  projects: [{ name: "chromium", use: { browserName: "chromium" } }],
+  projects: [
+    // Desktop project runs the full suite (including the mobile spec, which is
+    // also valid at desktop width as a regression guard).
+    { name: "chromium", use: { browserName: "chromium" } },
+    // Mobile project runs only the purpose-built, mobile-safe spec. The other
+    // specs encode desktop-only assumptions (e.g. nav CTAs hidden below `sm`).
+    {
+      name: "mobile",
+      testMatch: /mobile\.spec\.ts/,
+      use: { ...devices["Pixel 7"] },
+    },
+  ],
   webServer: {
     command: "npm run dev",
     port: 3000,
