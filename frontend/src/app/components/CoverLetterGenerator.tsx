@@ -111,7 +111,7 @@ export default function CoverLetterGenerator() {
               key={t}
               onClick={() => setTone(t)}
               aria-pressed={tone === t}
-              className={`rounded-lg px-4 py-1.5 text-sm font-semibold capitalize transition
+              className={`rounded-lg px-4 py-2.5 text-sm font-semibold capitalize transition min-h-[44px]
                 ${tone === t
                   ? "bg-indigo-600 text-white shadow-sm"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
