@@ -17,15 +17,27 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | manual                     |
+| Agent      | codex                      |
 | Started    | 2026-07-30                 |
-| Working On | Adversarial penetration test (read-only). Report saved to docs/security/2026-07-30_pentest.md. Prior: Phase 7 COMPLETE (claude, commits 42ee572, a6a91bd, e0ec55d). |
+| Working On | Test-quality audit (read-only). Report saved to docs/quality/2026-07-30_test-quality-audit.md. Prior: adversarial pentest (docs/security/2026-07-30_pentest.md). |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 83 — 2026-07-30
+- **Agent:** codex (test-quality audit)
+- **Did:**
+  - Audited whether the ~319 backend tests + Playwright E2E actually catch bugs. Read-only — NO code changed. 18 backend test files + 3 specs + 5 critical modules read line-by-line.
+  - Verdict: mock-abuse STRONG (~95% real, minimal theater); mutation resistance ADEQUATE (auth strong; rate-limit `_cleanup`, ats weight-swap, pdf `_s()` fidelity leak); coverage WEAK (no `--cov-branch`; AI success path route→call_hf→200 untested — endpoints only assert 422); E2E WEAK (mocked backend, no real auth/save-load/mobile; chromium-only).
+  - Found a real bug: in `hf_client.call_hf`, a non-retryable exception during a half-open probe leaves `_half_open_probe_in_flight=True` forever, wedging the circuit breaker. Untested.
+  - Flagged FALSE `docs/LAUNCH_PROGRAM.md` claims: 7.3 mobile (375/768/desktop) + a11y "DONE" but no viewport projects / axe tests exist; specs = 30 blocks, not 24.
+  - Overall confidence ~55% of catching a real regression. Top-5 fixes with skeletons in the report.
+  - Full report: `docs/quality/2026-07-30_test-quality-audit.md`.
+- **Files Changed:** `docs/quality/2026-07-30_test-quality-audit.md` (new), `.ai-sync/WORKLOG.md`, `.ai-sync/DECISIONS.md`
+- **Blockers:** None. Remediation (AI success-path test, alg:none test, `--cov-branch`, limiter reset, mobile Playwright projects, breaker-probe bug fix) NOT yet applied — awaiting go-ahead.
 
 ### Session 82 — 2026-07-30
 - **Agent:** manual (adversarial penetration test)

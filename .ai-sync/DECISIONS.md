@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-025: Test-Quality Audit Findings & Backlog (2026-07-30)
+- **Date:** 2026-07-30
+- **Agent:** codex
+- **Context:** Independent audit of whether the ~319 backend tests + Playwright E2E actually catch bugs (mock abuse, mutation resistance, coverage gaps, E2E depth, flake, missing categories).
+- **Decision:** Recorded posture — suite is genuinely good on pure logic (~85% mutation-caught) but happy-path-shaped overall (~55% confidence). Accepted as launch-acceptable read-only assessment; opened a backlog rather than changing tests now. Priority: (1) add AI success-path integration test (route→call_hf→200 is fully untested; endpoints only assert 422); (2) fix `hf_client` half-open-probe breaker-wedge bug on non-retryable exceptions; (3) add JWT `alg:none`/RS256-confusion rejection test; (4) enable `--cov-branch` + reset `global_ip_limiter` between tests (inflated coverage + order-dependent 429 flake); (5) de-tautologize `test_weighted_scoring` (symmetric weights hide a hard/soft swap); (6) add mobile + signed-in Playwright projects. Correct FALSE `LAUNCH_PROGRAM.md` claims (7.3 mobile/viewport + a11y "DONE" — no such tests exist; specs = 30 blocks not 24).
+- **Alternatives Considered:** Applying test fixes immediately — rejected to respect read-only scope + localhost-first/approval rule.
+- **Files Affected:** `docs/quality/2026-07-30_test-quality-audit.md` (full report), `.ai-sync/WORKLOG.md`
+
 ### DEC-024: Penetration Test Findings & Remediation Backlog (2026-07-30)
 - **Date:** 2026-07-30
 - **Agent:** manual
