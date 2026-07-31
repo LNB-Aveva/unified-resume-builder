@@ -45,7 +45,7 @@ export async function signUp(
   });
 
   if (error) {
-    return { message: error.message };
+    return { message: "Something went wrong. Please try again." };
   }
 
   redirect("/verify-email");
@@ -71,7 +71,7 @@ export async function signIn(
   });
 
   if (error) {
-    return { message: error.message };
+    return { message: "Invalid email or password." };
   }
 
   redirect("/tools");
@@ -170,7 +170,7 @@ export async function forgotPassword(
   );
 
   if (error) {
-    return { message: error.message };
+    return { message: "Something went wrong. Please try again." };
   }
 
   return { success: true, message: "Check your email for a password reset link." };
@@ -195,7 +195,7 @@ export async function resetPassword(
   });
 
   if (error) {
-    return { message: error.message };
+    return { message: "Failed to reset password. Please try again." };
   }
 
   redirect("/tools");
@@ -244,7 +244,7 @@ export async function setupAccount(
   });
 
   if (error) {
-    return { message: error.message };
+    return { message: "Failed to save profile. Please try again." };
   }
 
   redirect("/tools");
@@ -285,7 +285,7 @@ export async function updateProfile(
     .eq("id", user.id);
 
   if (error) {
-    return { message: error.message };
+    return { message: "Failed to update profile. Please try again." };
   }
 
   return { success: true, message: "Profile updated." };

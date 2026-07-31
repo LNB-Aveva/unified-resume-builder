@@ -67,7 +67,7 @@ export async function createResume(
     .single();
 
   if (insertErr || !resume)
-    return { id: "", error: insertErr?.message ?? "Failed to create resume" };
+    return { id: "", error: "Failed to create resume." };
 
   const { error: versionErr } = await supabase
     .from("resume_versions")
@@ -79,7 +79,7 @@ export async function createResume(
     });
 
   if (versionErr)
-    return { id: "", error: versionErr.message };
+    return { id: "", error: "Failed to save version." };
 
   return { id: resume.id };
 }
@@ -94,6 +94,15 @@ export async function saveVersion(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { version: 0, error: "Not authenticated" };
+
+  const { data: resume } = await supabase
+    .from("resumes")
+    .select("id")
+    .eq("id", resumeId)
+    .eq("user_id", user.id)
+    .single();
+
+  if (!resume) return { version: 0, error: "Resume not found." };
 
   const { data: latest } = await supabase
     .from("resume_versions")
@@ -114,12 +123,13 @@ export async function saveVersion(
       resume_text: resumeText ?? null,
     });
 
-  if (versionErr) return { version: 0, error: versionErr.message };
+  if (versionErr) return { version: 0, error: "Failed to save version." };
 
   await supabase
     .from("resumes")
     .update({ updated_at: new Date().toISOString() })
-    .eq("id", resumeId);
+    .eq("id", resumeId)
+    .eq("user_id", user.id);
 
   return { version: nextVersion };
 }
@@ -172,9 +182,10 @@ export async function loadResume(
     .from("resumes")
     .select("id, title")
     .eq("id", resumeId)
+    .eq("user_id", user.id)
     .single();
 
-  if (!resume) return { resume: null, version: null, error: "Resume not found" };
+  if (!resume) return { resume: null, version: null, error: "Resume not found." };
 
   let query = supabase
     .from("resume_versions")
@@ -201,6 +212,20 @@ export async function listVersions(
   resumeId: string,
 ): Promise<{ version_number: number; created_at: string }[]> {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data: resume } = await supabase
+    .from("resumes")
+    .select("id")
+    .eq("id", resumeId)
+    .eq("user_id", user.id)
+    .single();
+
+  if (!resume) return [];
+
   const { data } = await supabase
     .from("resume_versions")
     .select("version_number, created_at")
@@ -219,22 +244,34 @@ export async function renameResume(
     return { error: "Title must be 1-200 characters" };
 
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated." };
+
   const { error } = await supabase
     .from("resumes")
     .update({ title: trimmed, updated_at: new Date().toISOString() })
-    .eq("id", resumeId);
+    .eq("id", resumeId)
+    .eq("user_id", user.id);
 
-  return error ? { error: error.message } : {};
+  return error ? { error: "Failed to rename resume." } : {};
 }
 
 export async function deleteResume(
   resumeId: string,
 ): Promise<{ error?: string }> {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated." };
+
   const { error } = await supabase
     .from("resumes")
     .delete()
-    .eq("id", resumeId);
+    .eq("id", resumeId)
+    .eq("user_id", user.id);
 
-  return error ? { error: error.message } : {};
+  return error ? { error: "Failed to delete resume." } : {};
 }

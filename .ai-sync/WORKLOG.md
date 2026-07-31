@@ -18,14 +18,30 @@
 | Field      | Value                      |
 |------------|----------------------------|
 | Agent      | claude                     |
-| Started    | 2026-07-30                 |
-| Working On | Session 84: Phase 8.2 DONE — Core Web Vitals audit and optimization. |
+| Started    | 2026-07-31                 |
+| Working On | Session 85: Pentest remediation — all 6 exploitable findings + circuit breaker wedge bug fixed. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 85 (Claude) — 2026-07-31
+- **Agent:** claude
+- **Did:**
+  - Cross-validated all 16 pentest findings from Session 82; confirmed all verdicts, found additional issues
+  - **Implemented all 7 pentest remediation fixes:**
+    - **#1 Prompt injection:** Added `<<<`/`>>>` data delimiters to all 4 AI services (preview, rewriter, summarizer, cover_letter) + system prompt instruction to treat delimited content as data only. Sanitizer now strips delimiter markers to prevent breakout.
+    - **#8 IDOR defense-in-depth:** Added `.eq("user_id", user.id)` to `loadResume`, `saveVersion`, `renameResume`, `deleteResume` in resume.ts. Added `getUser()` auth check + resume ownership verification to `listVersions` (had zero app-layer auth). Added auth checks to `renameResume`/`deleteResume` (were missing `getUser()` entirely).
+    - **#11 Slowloris:** Added `anyio.fail_after(15)` to `BodySizeLimitMiddleware` body buffering loop, returns 408 on timeout.
+    - **#14 User enumeration:** signUp now returns generic "Something went wrong" instead of raw Supabase error.
+    - **#15 Error message leaks:** Replaced raw `error.message` with generic strings across 11 locations: `resume.ts` (5), `auth.ts` (6), `ShareableScoreWidget.tsx` (1).
+    - **Circuit breaker wedge:** Fixed `hf_client.py` so non-retryable exceptions during half-open probe still call `_record_failure(was_probe)`, preventing permanent wedge.
+  - 329 tests pass, 20 skipped, ruff clean, eslint clean, build clean
+- **Files Changed:** `backend/app/main.py`, `backend/app/services/ai/{sanitizer,preview,rewriter,summarizer,cover_letter,hf_client}.py`, `frontend/src/app/actions/{auth,resume}.ts`, `frontend/src/app/components/ShareableScoreWidget.tsx`, `.ai-sync/WORKLOG.md`, `.ai-sync/DECISIONS.md`
+- **Next:** #7 (Supabase access-token TTL) is a dashboard setting — owner must apply manually. Remaining launch phases.
+- **Blockers:** #7 requires Supabase dashboard access.
 
 ### Session 84 (Claude) — 2026-07-30
 - **Agent:** claude

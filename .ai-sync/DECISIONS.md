@@ -20,6 +20,21 @@
 
 ## Decisions
 
+### DEC-026: Pentest Remediation — 7 Fixes Applied (2026-07-31)
+- **Date:** 2026-07-31
+- **Agent:** claude
+- **Context:** Session 82 (Copilot) ran a 16-vector adversarial pen test but applied zero fixes (read-only report only). Cross-validation confirmed all 6 EXPLOITABLE findings + discovered a circuit breaker wedge bug. Implemented all 7 fixes.
+- **Decision:**
+  - AI prompt injection (#1): Data delimiters (`<<<`/`>>>`) on all user input in AI prompts + system instruction to treat delimited content as data only. Sanitizer strips delimiter markers to prevent breakout. Regex sanitizer kept for UX, not security.
+  - IDOR defense-in-depth (#8): All resume server actions now filter by `user_id` in addition to RLS. `listVersions`/`renameResume`/`deleteResume` gained explicit auth checks they were missing.
+  - Slowloris (#11): Body buffering loop has a 15-second `anyio.fail_after` timeout, returns HTTP 408.
+  - User enumeration (#14): signUp returns generic error message instead of raw Supabase error.
+  - Error message leaks (#15): All 11 locations that echoed raw Supabase/PostgREST `error.message` now return generic client-facing strings.
+  - Circuit breaker wedge: Non-retryable exceptions during half-open probe now correctly call `_record_failure(was_probe)` instead of leaving `_half_open_probe_in_flight=True` permanently.
+  - Token TTL (#7): NOT applied — requires Supabase dashboard. Recommended: set access token TTL to 900s (15 min).
+- **Alternatives Considered:** Server-side token blacklist for #7 — rejected; adds complexity when lowering TTL to 15 min is sufficient. Redis-backed rate limiter for #12 — deferred; current single-worker deployment doesn't need it.
+- **Files Affected:** `backend/app/main.py`, `backend/app/services/ai/{sanitizer,preview,rewriter,summarizer,cover_letter,hf_client}.py`, `frontend/src/app/actions/{auth,resume}.ts`, `frontend/src/app/components/ShareableScoreWidget.tsx`
+
 ### DEC-025: Test-Quality Audit Findings & Backlog (2026-07-30)
 - **Date:** 2026-07-30
 - **Agent:** codex

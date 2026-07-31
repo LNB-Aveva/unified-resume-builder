@@ -9,4 +9,5 @@ def sanitize_for_prompt(text: str) -> str:
         text,
     )
     text = re.sub(r'(?im)^\s*(system|assistant|user)\s*:', '', text)
+    text = text.replace('<<<', '').replace('>>>', '')
     return text.strip()

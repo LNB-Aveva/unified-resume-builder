@@ -133,17 +133,26 @@ class BodySizeLimitMiddleware:
 
         body = bytearray()
         more_body = True
-        while more_body:
-            message = await receive()
-            if message["type"] != "http.request":
-                if message["type"] == "http.disconnect":
-                    return
-                continue
-            body.extend(message.get("body", b""))
-            if len(body) > _MAX_BODY_BYTES:
-                await _send_413(scope, send)
-                return
-            more_body = message.get("more_body", False)
+        try:
+            with anyio.fail_after(15):
+                while more_body:
+                    message = await receive()
+                    if message["type"] != "http.request":
+                        if message["type"] == "http.disconnect":
+                            return
+                        continue
+                    body.extend(message.get("body", b""))
+                    if len(body) > _MAX_BODY_BYTES:
+                        await _send_413(scope, send)
+                        return
+                    more_body = message.get("more_body", False)
+        except TimeoutError:
+            response = JSONResponse(
+                status_code=408,
+                content={"detail": "Request body read timed out."},
+            )
+            await response(scope, _noop_receive, send)
+            return
 
         buffered = bytes(body)
         replayed = False

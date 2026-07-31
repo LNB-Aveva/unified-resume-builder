@@ -58,7 +58,7 @@ export default function ShareableScoreWidget() {
         job_role_hint: jobText.slice(0, 200).trim(),
         expires_at: expiresAt,
       });
-      if (dbError) throw new Error("Could not save your score. " + dbError.message);
+      if (dbError) throw new Error("Could not save your score. Please try again.");
 
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv";
       setShareUrl(`${siteUrl}/score/${id}`);
