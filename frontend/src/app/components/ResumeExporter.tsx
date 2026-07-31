@@ -138,12 +138,14 @@ function SectionHeader({ title, open, onToggle }: { title: string; open: boolean
     <button
       type="button"
       onClick={onToggle}
+      aria-expanded={open}
       className="flex w-full items-center justify-between rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
     >
       {title}
       <svg
         className={`h-4 w-4 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
         fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+        aria-hidden="true"
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
       </svg>
@@ -353,13 +355,15 @@ export default function ResumeExporter({
         <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
           Choose a template
         </p>
-        <div className="grid grid-cols-3 gap-3">
+        <div role="radiogroup" aria-label="Resume template" className="grid grid-cols-3 gap-3">
           {TEMPLATES.map((t) => {
             const selected = template === t.id;
             return (
               <button
                 key={t.id}
                 type="button"
+                role="radio"
+                aria-checked={selected}
                 onClick={() => setTemplate(t.id)}
                 className={`
                   relative flex flex-col items-stretch rounded-xl border-2 transition
@@ -407,38 +411,38 @@ export default function ResumeExporter({
           <div className="rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 space-y-3">
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
-                <label className={labelCls}>Full Name <span className="text-red-400">*</span></label>
-                <input className={inputCls} value={personal.full_name}
+                <label htmlFor="re-fullname" className={labelCls}>Full Name <span className="text-red-400">*</span></label>
+                <input id="re-fullname" className={inputCls} value={personal.full_name}
                   onChange={(e) => setPersonal({ ...personal, full_name: e.target.value })}
                   placeholder="Jane Smith" />
               </div>
               <div>
-                <label className={labelCls}>Email <span className="text-red-400">*</span></label>
-                <input className={inputCls} type="email" value={personal.email}
+                <label htmlFor="re-email" className={labelCls}>Email <span className="text-red-400">*</span></label>
+                <input id="re-email" className={inputCls} type="email" value={personal.email}
                   onChange={(e) => setPersonal({ ...personal, email: e.target.value })}
                   placeholder="jane@example.com" />
               </div>
               <div>
-                <label className={labelCls}>Phone</label>
-                <input className={inputCls} value={personal.phone}
+                <label htmlFor="re-phone" className={labelCls}>Phone</label>
+                <input id="re-phone" className={inputCls} value={personal.phone}
                   onChange={(e) => setPersonal({ ...personal, phone: e.target.value })}
                   placeholder="+44 7700 000000" />
               </div>
               <div>
-                <label className={labelCls}>Location</label>
-                <input className={inputCls} value={personal.location}
+                <label htmlFor="re-location" className={labelCls}>Location</label>
+                <input id="re-location" className={inputCls} value={personal.location}
                   onChange={(e) => setPersonal({ ...personal, location: e.target.value })}
                   placeholder="London, UK" />
               </div>
               <div>
-                <label className={labelCls}>LinkedIn</label>
-                <input className={inputCls} value={personal.linkedin}
+                <label htmlFor="re-linkedin" className={labelCls}>LinkedIn</label>
+                <input id="re-linkedin" className={inputCls} value={personal.linkedin}
                   onChange={(e) => setPersonal({ ...personal, linkedin: e.target.value })}
                   placeholder="linkedin.com/in/janesmith" />
               </div>
               <div>
-                <label className={labelCls}>Website</label>
-                <input className={inputCls} value={personal.website}
+                <label htmlFor="re-website" className={labelCls}>Website</label>
+                <input id="re-website" className={inputCls} value={personal.website}
                   onChange={(e) => setPersonal({ ...personal, website: e.target.value })}
                   placeholder="janesmith.dev" />
               </div>
@@ -603,7 +607,7 @@ export default function ResumeExporter({
 
       {/* Error */}
       {error && (
-        <div className="rounded-xl bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 px-4 py-3 text-sm text-red-700 dark:text-red-400">
+        <div role="alert" className="rounded-xl bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 px-4 py-3 text-sm text-red-700 dark:text-red-400">
           {error}
         </div>
       )}
@@ -682,7 +686,7 @@ export default function ResumeExporter({
 
       {/* Save-as dialog */}
       {showSaveDialog && (
-        <div className="rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950 p-4 space-y-3">
+        <div role="dialog" aria-label="Save resume as" className="rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950 p-4 space-y-3">
           <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
             Save Resume As
           </p>

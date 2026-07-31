@@ -110,6 +110,7 @@ export default function CoverLetterGenerator() {
             <button
               key={t}
               onClick={() => setTone(t)}
+              aria-pressed={tone === t}
               className={`rounded-lg px-4 py-1.5 text-sm font-semibold capitalize transition
                 ${tone === t
                   ? "bg-indigo-600 text-white shadow-sm"
@@ -221,7 +222,7 @@ export default function CoverLetterGenerator() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+        <div role="alert" className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
           {error.includes("HUGGINGFACE_API_KEY") ? (
             <>
               <p className="font-semibold mb-1">API key not configured</p>

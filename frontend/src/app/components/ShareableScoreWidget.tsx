@@ -84,10 +84,11 @@ export default function ShareableScoreWidget() {
     <div className="space-y-5">
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+          <label htmlFor="ssw-jd" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
             Job Description
           </label>
           <textarea
+            id="ssw-jd"
             value={jobText}
             onChange={(e) => setJobText(e.target.value)}
             placeholder="Paste the full job description — title, requirements, responsibilities..."
@@ -96,10 +97,11 @@ export default function ShareableScoreWidget() {
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+          <label htmlFor="ssw-resume" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
             Your Resume (plain text)
           </label>
           <textarea
+            id="ssw-resume"
             value={resumeText}
             onChange={(e) => setResumeText(e.target.value)}
             placeholder="Paste your resume as plain text — copy from Word, Google Docs, or a PDF text layer..."
@@ -110,7 +112,7 @@ export default function ShareableScoreWidget() {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg px-4 py-3">
+        <p role="alert" className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg px-4 py-3">
           {error}
         </p>
       )}

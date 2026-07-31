@@ -43,7 +43,7 @@ export default async function ResumesPage() {
         </div>
       </nav>
 
-      <main className="mx-auto max-w-3xl px-4 py-12">
+      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white">
             My Resumes

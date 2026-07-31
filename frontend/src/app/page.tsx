@@ -302,6 +302,7 @@ export default function Home() {
 
       <StickyBottomCTA />
 
+      <main id="main-content">
       {/* ── Hero ── */}
       <section id="hero" className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
@@ -1404,6 +1405,8 @@ export default function Home() {
           </a>
         </div>
       </section>
+
+      </main>
 
       {/* ── Footer ── */}
       <footer className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 py-16">

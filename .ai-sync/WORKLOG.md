@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phase 4 COMPLETE (4.4 jobs→resume FK done). All Phase 4 tasks DONE. Codex completed 6.5+6.6+11.1 in parallel.
+- **Status:** Phase 7.2 DONE (keyboard/screen-reader accessibility). Phase 4 COMPLETE. Working on 7.3/7.4 next.
 
 ---
 
@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-07-30                 |
-| Working On | Phase 4.4 (jobs→resume FK + JobTracker UI) DONE. Phase 4 fully COMPLETE. |
+| Working On | Phase 7.2 DONE. Phase 7.3 (responsive audit) next. |
 
 ---
 

@@ -103,7 +103,7 @@ export default async function SharedScorePage({
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16 space-y-10">
+      <main id="main-content" className="mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16 space-y-10">
         {/* Score card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-8 sm:p-10">
           <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">

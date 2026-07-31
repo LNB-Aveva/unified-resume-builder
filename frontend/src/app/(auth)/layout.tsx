@@ -23,7 +23,7 @@ export default async function AuthLayout({
         <ThemeToggle />
       </div>
 
-      <div className="w-full max-w-md">
+      <main id="main-content" className="w-full max-w-md">
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
@@ -44,7 +44,7 @@ export default async function AuthLayout({
             &larr; Back to home
           </Link>
         </p>
-      </div>
+      </main>
     </div>
   );
 }

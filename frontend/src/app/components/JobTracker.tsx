@@ -347,10 +347,11 @@ export default function JobTracker() {
 
           <div className="grid sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">
+              <label htmlFor="jt-company" className="block text-xs font-semibold text-gray-600 dark:text-gray-300">
                 Company <span className="text-red-400">*</span>
               </label>
               <input
+                id="jt-company"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="e.g. Accenture"
@@ -358,10 +359,11 @@ export default function JobTracker() {
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">
+              <label htmlFor="jt-title" className="block text-xs font-semibold text-gray-600 dark:text-gray-300">
                 Job Title <span className="text-red-400">*</span>
               </label>
               <input
+                id="jt-title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Senior Software Engineer"
@@ -369,8 +371,9 @@ export default function JobTracker() {
               />
             </div>
             <div className="sm:col-span-2 space-y-1">
-              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">Job URL</label>
+              <label htmlFor="jt-url" className="block text-xs font-semibold text-gray-600 dark:text-gray-300">Job URL</label>
               <input
+                id="jt-url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://..."
@@ -378,8 +381,9 @@ export default function JobTracker() {
               />
             </div>
             <div className="sm:col-span-2 space-y-1">
-              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">Notes</label>
+              <label htmlFor="jt-notes" className="block text-xs font-semibold text-gray-600 dark:text-gray-300">Notes</label>
               <textarea
+                id="jt-notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="e.g. Referral from John, $65k range, hybrid 2 days..."
@@ -389,8 +393,9 @@ export default function JobTracker() {
             </div>
             {resumes.length > 0 && (
               <div className="sm:col-span-2 space-y-1">
-                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300">Link Resume</label>
+                <label htmlFor="jt-resume" className="block text-xs font-semibold text-gray-600 dark:text-gray-300">Link Resume</label>
                 <select
+                  id="jt-resume"
                   value={selectedResumeId}
                   onChange={(e) => setSelectedResumeId(e.target.value)}
                   className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 cursor-pointer"
@@ -405,7 +410,7 @@ export default function JobTracker() {
           </div>
 
           {formError && (
-            <p className="text-xs text-red-600">{formError}</p>
+            <p role="alert" className="text-xs text-red-600">{formError}</p>
           )}
 
           <div className="flex gap-2 justify-end">
@@ -512,6 +517,7 @@ export default function JobTracker() {
                   <select
                     value={job.status}
                     onChange={(e) => handleStatusChange(job.id, e.target.value as Status)}
+                    aria-label={`Status for ${job.title} at ${job.company}`}
                     className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 outline-none focus:border-indigo-400 cursor-pointer"
                   >
                     {STATUS_ORDER.map((s) => (
@@ -529,6 +535,7 @@ export default function JobTracker() {
                     <select
                       value={job.resumeId ?? ""}
                       onChange={(e) => handleResumeChange(job.id, e.target.value || null)}
+                      aria-label={`Linked resume for ${job.title}`}
                       className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs text-gray-500 dark:text-gray-400 outline-none focus:border-indigo-400 cursor-pointer truncate max-w-[160px]"
                       title={job.resumeId ? resumes.find((r) => r.id === job.resumeId)?.title ?? "Unknown resume" : "Link a resume"}
                     >
@@ -543,6 +550,8 @@ export default function JobTracker() {
                 <div className="flex items-center gap-1 shrink-0">
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : job.id)}
+                    aria-expanded={isExpanded}
+                    aria-label={`Notes for ${job.title}`}
                     className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                   >
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -556,8 +565,8 @@ export default function JobTracker() {
 
                   <button
                     onClick={() => handleDelete(job.id)}
+                    aria-label={`Delete ${job.title} at ${job.company}`}
                     className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition"
-                    title="Remove"
                   >
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

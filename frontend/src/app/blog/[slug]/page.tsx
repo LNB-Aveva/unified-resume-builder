@@ -79,7 +79,7 @@ export default async function BlogArticle({ params }: Props) {
         }}
       />
 
-      <main className="mx-auto max-w-3xl px-4 py-12">
+      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
         {/* Breadcrumb */}
         <nav className="text-xs text-gray-400 mb-8">
           <Link href="/" className="hover:text-gray-600 transition">

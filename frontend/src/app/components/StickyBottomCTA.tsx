@@ -20,6 +20,7 @@ export default function StickyBottomCTA() {
 
   return (
     <div
+      aria-hidden={!visible}
       className={`fixed bottom-0 inset-x-0 z-40 transition-transform duration-300 ${
         visible ? "translate-y-0" : "translate-y-full"
       }`}

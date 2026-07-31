@@ -36,7 +36,7 @@ export default function ToolsSidebar() {
   }, []);
 
   return (
-    <nav className="hidden xl:block sticky top-24 self-start w-56 shrink-0">
+    <nav aria-label="Tool navigation" className="hidden xl:block sticky top-24 self-start w-56 shrink-0">
       <div className="rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 space-y-0.5">
         <p className="px-3 py-2 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
           Tools
@@ -45,6 +45,7 @@ export default function ToolsSidebar() {
           <a
             key={id}
             href={`#${id}`}
+            aria-current={active === id ? "true" : undefined}
             className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
               active === id
                 ? "bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-medium"
@@ -52,6 +53,7 @@ export default function ToolsSidebar() {
             }`}
           >
             <span
+              aria-hidden="true"
               className={`h-5 w-5 rounded-md flex items-center justify-center text-xs font-bold shrink-0 ${
                 active === id
                   ? "bg-indigo-600 text-white"

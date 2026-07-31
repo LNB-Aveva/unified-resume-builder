@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function BlogIndex() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-16">
+    <main id="main-content" className="mx-auto max-w-3xl px-4 py-16">
       <div className="mb-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-3">
           ATS Resume Tips & Guides

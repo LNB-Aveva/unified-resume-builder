@@ -50,7 +50,7 @@ export default async function AccountPage() {
         </div>
       </nav>
 
-      <main className="mx-auto max-w-2xl px-4 py-12">
+      <main id="main-content" className="mx-auto max-w-2xl px-4 py-12">
         <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white mb-8">
           Account Settings
         </h1>

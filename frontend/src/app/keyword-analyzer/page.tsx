@@ -111,6 +111,7 @@ export default function KeywordAnalyzerPage() {
         </div>
       </nav>
 
+      <main id="main-content">
       {/* Hero */}
       <section className="mx-auto max-w-3xl px-4 pt-14 pb-10 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
@@ -305,6 +306,8 @@ export default function KeywordAnalyzerPage() {
           </div>
         </div>
       </section>
+
+      </main>
 
       {/* Footer */}
       <footer className="border-t border-gray-100 dark:border-gray-800 py-10">

@@ -168,7 +168,7 @@ export default function BulletRewriter() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+        <div role="alert" className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
           {error.includes("HUGGINGFACE_API_KEY") ? (
             <>
               <p className="font-semibold mb-1">API key not configured</p>
