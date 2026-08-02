@@ -25,7 +25,7 @@ export default function DeleteAccountButton() {
         <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
       <p className="text-sm text-red-600 dark:text-red-400 font-medium">
-        This will permanently delete your account, profile, and all saved job tracker entries. This cannot be undone.
+        This will permanently delete your account, profile, resumes, job tracker entries, and shared scores. This cannot be undone.
       </p>
       <div className="flex gap-3">
         <button

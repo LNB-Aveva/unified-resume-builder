@@ -93,6 +93,7 @@ export async function deleteAccount(): Promise<FormState> {
     return { message: "Not authenticated." };
   }
 
+  await supabase.from("shared_scores").delete().eq("user_id", user.id);
   await supabase.from("resumes").delete().eq("user_id", user.id);
   await supabase.from("jobs").delete().eq("user_id", user.id);
   await supabase.from("profiles").delete().eq("id", user.id);

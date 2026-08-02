@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phases 1-7 COMPLETE. Phase 8 SEO metadata DONE, AdSense blocked on pub ID. 5 owner blockers resolved. Phase 9.4 DONE.
+- **Status:** Phases 1-7 COMPLETE. Phase 8 SEO metadata DONE, AdSense blocked on pub ID. Phase 9 COMPLETE (all 5 tasks DONE).
 
 ---
 
@@ -17,9 +17,9 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | —                          |
-| Started    | —                          |
-| Working On | Idle. Session 90 complete. Phase 8 SEO metadata done (d59c604). AdSense pub ID only remaining Phase 8 blocker. Next: Phase 9.5, 10, 11, 12. |
+| Agent      | claude                     |
+| Started    | 2026-08-02                 |
+| Working On | Session 91. Phase 9.5 DONE — export + deletion verified on localhost, shared_scores explicit deletion added. Phase 9 COMPLETE. Next: Phase 10, 11, 12. |
 
 ---
 
