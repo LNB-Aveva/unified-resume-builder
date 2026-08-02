@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phases 1-7 COMPLETE, Phase 8.5-8.7 infrastructure built (placeholder). Phase 4 COMPLETE.
+- **Status:** Phases 1-7 COMPLETE. Phase 8 SEO metadata DONE, AdSense blocked on pub ID. 5 owner blockers resolved. Phase 9.4 DONE.
 
 ---
 
@@ -19,13 +19,32 @@
 |------------|----------------------------|
 | Agent      | —                          |
 | Started    | —                          |
-| Working On | Idle. Session 88 complete. Phases 1-7 DONE. Phase 8 infra built (blocked on AdSense pub ID). Phases 9-12 blocked on owner actions. |
+| Working On | Idle. Session 90 complete. Phase 8 SEO metadata done (d59c604). AdSense pub ID only remaining Phase 8 blocker. Next: Phase 9.5, 10, 11, 12. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 89 (Claude) — 2026-08-01
+- **Agent:** claude
+- **Did:**
+  - Full project status audit — confirmed Phases 1-7 complete end-to-end
+  - **Resolved all 6 owner blockers:**
+    1. Supabase migration SQL — `resumes` + `resume_versions` tables + RLS created in production
+    2. `SUPABASE_JWT_SECRET` set in Render environment
+    3. Sentry account created (org: ResumeAI), project created, `SENTRY_DSN` set in Render
+    4. Budget ceiling set: $0/mo additional, stay on free tiers, revenue-first upgrades
+    5. `support@resumeai.cv` live via Zoho Mail free tier — updated privacy + terms pages
+    6. HuggingFace API key rotated (`resumeai-production-v2`), old key revoked, Render + local .env updated
+  - Updated LAUNCH_PROGRAM.md: budget ceiling, saved resumes status, task 9.4 DONE
+  - Noted dual-laptop setup (personal: Claude+Copilot, office: Claude+Copilot)
+  - Merged Phase 8 SEO metadata changes from parallel terminal (auth page client component extraction, sitemap, OG metadata)
+- **Files Changed:** `privacy/page.tsx`, `terms/page.tsx`, `docs/LAUNCH_PROGRAM.md`, auth pages (5 new form components), `sitemap.ts`, `page.tsx`, `next-env.d.ts`
+- **Commit:** d59c604 (pushed)
+- **Next:** Phase 8 SEO metadata continues in other terminal. Remaining: AdSense publisher ID (owner action), Phase 9.5 (prod delete test), Phase 10 (observability), Phase 11 (release eng), Phase 12 (launch).
+- **Blockers:** AdSense publisher ID only remaining external blocker.
 
 ### Session 88 (Claude) — 2026-07-31
 - **Agent:** claude
