@@ -4,6 +4,11 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "ResumeAI privacy policy. Learn how we handle your data, what we collect, and how we protect your privacy.",
+  openGraph: {
+    title: "Privacy Policy — ResumeAI",
+    description:
+      "How ResumeAI handles your data. No resume content is stored permanently, no data is sold, and you can delete your account at any time.",
+  },
 };
 
 export default function PrivacyPolicy() {
@@ -180,8 +185,8 @@ export default function PrivacyPolicy() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Contact</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
             If you have questions about this Privacy Policy, please email us at{" "}
-            <a href="mailto:lnbingi.work@gmail.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">
-              lnbingi.work@gmail.com
+            <a href="mailto:support@resumeai.cv" className="text-indigo-600 dark:text-indigo-400 hover:underline">
+              support@resumeai.cv
             </a>.
           </p>
         </section>

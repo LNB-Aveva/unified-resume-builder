@@ -4,6 +4,11 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "ResumeAI terms of service. Understand the rules and guidelines for using our free ATS resume tools.",
+  openGraph: {
+    title: "Terms of Service — ResumeAI",
+    description:
+      "Terms and conditions for using ResumeAI's free ATS resume checker and optimization tools.",
+  },
 };
 
 export default function TermsOfService() {
@@ -148,8 +153,8 @@ export default function TermsOfService() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">12. Contact</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
             If you have questions about these Terms, please email us at{" "}
-            <a href="mailto:lnbingi.work@gmail.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">
-              lnbingi.work@gmail.com
+            <a href="mailto:support@resumeai.cv" className="text-indigo-600 dark:text-indigo-400 hover:underline">
+              support@resumeai.cv
             </a>.
           </p>
         </section>

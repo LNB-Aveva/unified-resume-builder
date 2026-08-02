@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Verify Your Email",
+  description:
+    "Check your inbox for a confirmation link to activate your ResumeAI account.",
+};
 
 export default function VerifyEmailPage() {
   return (

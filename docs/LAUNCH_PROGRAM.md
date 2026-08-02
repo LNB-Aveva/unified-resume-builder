@@ -9,7 +9,7 @@
 - Auth/data: Supabase Auth, saved resume versions per user, and proven RLS are mandatory.
 - Launch monetization: Google AdSense.
 - Operator environment: Windows, PowerShell, VS Code.
-- Monthly budget ceiling: **BLOCKED — owner must supply `$___/month` before paid infrastructure is approved.**
+- Monthly budget ceiling: **$0/month additional** — stay on free tiers (Render, Supabase, Vercel, Sentry). Revisit when monthly revenue > $0.
 - Status vocabulary: `DONE` means executed or directly inspected; `VERIFY` means code exists but production behavior is not proven; `BLOCKED` requires an owner/external action; `TODO` is code or documentation work.
 
 ## Ground truth
@@ -29,7 +29,7 @@ Verified on 2026-07-29; older session-log claims are not authoritative.
 | Python dependency audit | **GREEN LOCALLY** | Runtime and development manifests are separate and both resolve with no known vulnerabilities. The unused Semgrep dependency and its vulnerable `mcp`/`click` chain were removed. |
 | Frontend dependency audit | **PRODUCTION GREEN; DEV RED** | `npm audit --omit=dev --audit-level=high` found zero production vulnerabilities. The full installed tree reported nine High advisories in development tooling and needs triage without weakening the production gate. |
 | Supabase production | **PARTIALLY VERIFIED** | Anonymous read-only REST checks returned 200/zero rows for `profiles` and `jobs`, and 200 for `shared_scores`, consistent with deployed tables and RLS. Cross-user isolation and RPC deployment remain unproven. |
-| Saved resumes | **CODE COMPLETE — DEPLOY PENDING** | Schema, RLS, server actions, save/load/rename/version/delete UI, and My Resumes page exist in source. Tables must be created in production Supabase. |
+| Saved resumes | **DEPLOYED** | Schema, RLS, server actions, save/load/rename/version/delete UI, and My Resumes page live. Migration SQL applied to production Supabase (2026-08-01). |
 | Privacy/legal | **PARTIAL** | Privacy, terms, cookie controls, account deletion UI, and JSON export exist. The current custom cookie banner is not a Google-certified TCF CMP. |
 | AdSense | **NOT READY** | `/ads.txt` returns 404; no publisher script or ad units exist; publisher ID is unavailable. |
 | Observability | **PARTIAL** | Backend has conditional Sentry plus structured access logs. Production DSN behavior, frontend Sentry, uptime alert delivery, and cost alarms are unverified. |
@@ -184,7 +184,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 8.1 Keep metadata, canonical URLs, JSON-LD, robots, and sitemap accurate; generated sitemap contains 15 URLs (9 static pages and 6 blog articles). | layout/page metadata, `robots.ts`, `sitemap.ts` | DONE — requested public routes verified; protected routes disallowed in robots |
+| 8.1 Keep metadata, canonical URLs, JSON-LD, robots, and sitemap accurate; generated sitemap contains 17 URLs (11 static pages and 6 blog articles). | layout/page metadata, `robots.ts`, `sitemap.ts` | DONE — all public pages have metadata+OG; sign-in/sign-up added to sitemap; protected routes disallowed in robots |
 | 8.2 Run mobile and desktop Lighthouse/Core Web Vitals against production and fix failures. | frontend, CI/report | DONE — scores below |
 | 8.3 Publish additional original, expert-reviewed content and add visible author/contact trust signals. | `blog-posts.ts`, blog/contact pages | DONE — three substantive guides added using the existing ResumeAI organization authorship |
 | 8.4 Obtain AdSense publisher ID and create account/site entry. | AdSense dashboard | BLOCKED — owner must sign up at google.com/adsense and provide `ca-pub-XXX` ID |
@@ -226,7 +226,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 | 9.1 Keep privacy, terms, AI-processing disclosure, cookie categories, rights, and 30-day shared-score retention accurate. | privacy/terms pages | DONE — reconciled export fields, consent behavior, 30-day score expiry/cleanup, AI circuit breaking, access-log metadata, and layered rate limits with current code |
 | 9.2 Update policy and retention schedule for saved resumes/versions before persistence ships. | privacy and terms pages | DONE — documents stored fields, Supabase PostgreSQL, immutable timestamped versions, retention, cascade deletion, and complete JSON export |
 | 9.3 Replace inaccurate vendor/technology claims and document Hugging Face processing and telemetry controls precisely. | legal pages, public copy | DONE — privacy and terms describe taxonomy synonym matching, fpdf2, Hugging Face AI processing, saved-resume storage, and Sentry error tracking without resume content |
-| 9.4 Keep a reachable support email; `lnbingi.work@gmail.com` currently appears in privacy and terms. Add a dedicated contact route if that is the launch identity. | privacy/terms/footer/contact | VERIFY owner acceptance |
+| 9.4 Keep a reachable support email; `support@resumeai.cv` is now live via Zoho Mail (free). Updated in privacy and terms pages. | privacy/terms/footer/contact | DONE — support@resumeai.cv set up via Zoho Mail free tier (2026-08-01) |
 | 9.5 Verify account deletion and export in production, including all new resume data. | auth actions, Supabase, E2E | TODO after Phase 4 |
 
 **Definition of Done:** Policy matches actual data flows, vendors, retention, ads, AI processing, export, and deletion; contact details are monitored.
@@ -237,11 +237,11 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 10.1 Fix backend Sentry integration lint/type errors and verify a test event arrives without PII. | `backend/app/main.py`, Sentry dashboard | TODO/BLOCKED on DSN |
+| 10.1 Fix backend Sentry integration lint/type errors and verify a test event arrives without PII. | `backend/app/main.py`, Sentry dashboard | VERIFY — Sentry DSN set in Render (2026-08-01); test event delivery not yet confirmed |
 | 10.2 Add frontend error monitoring and release/environment tagging with PII-safe settings. | frontend instrumentation, package manifest | TODO |
 | 10.3 Keep structured request logs and add metrics for route latency, status, provider failures, and rate limits. | backend logging/monitoring | DONE — access logs retain existing fields and add matched route, response length, rate-limit/auth classifications, and AI-route classification with unit coverage |
 | 10.4 Verify UptimeRobot (or equivalent) alerts a monitored channel; GitHub keepalive is not monitoring. | external dashboard | BLOCKED — owner |
-| 10.5 Configure cost/usage alarms for Hugging Face, Vercel, Render, Supabase, Sentry, domain, and AdSense-related services. | external dashboards | BLOCKED — owner and budget ceiling |
+| 10.5 Configure cost/usage alarms for Hugging Face, Vercel, Render, Supabase, Sentry, domain, and AdSense-related services. | external dashboards | BLOCKED — owner must set up alerts on free-tier dashboards |
 
 **Definition of Done:** Client and server failures, downtime, latency, and spend are visible without collecting resume content.
 
@@ -255,7 +255,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 | 11.2 Add ordered, reviewable Supabase migrations and a repeatable apply/rollback procedure. | new `supabase/migrations/`, CI/docs | DONE — six idempotent ordered migrations plus apply/backup/rollback guidance |
 | 11.3 Provide isolated frontend and backend staging with staging Supabase/Hugging Face credentials; Vercel preview alone is not full staging. | hosting config/dashboards | TODO |
 | 11.4 Require green CI before production deploy and document promotion from staging to production. | GitHub/Vercel/Render settings, docs | TODO |
-| 11.5 Configure database backups and perform a restore drill. | Supabase/dashboard/runbook | BLOCKED on plan/budget |
+| 11.5 Configure database backups and perform a restore drill. | Supabase/dashboard/runbook | BLOCKED — Supabase free tier has daily backups but no point-in-time restore; acceptable for $0 budget |
 | 11.6 Verify DNS, SSL, environment values, production CORS, and rollback after the final release candidate. | Vercel/Render/DNS/docs | PARTIAL (live DNS/SSL/CORS verified) |
 
 **Definition of Done:** A green, immutable release candidate moves through staging to production with versioned DB changes, backups, and rehearsed rollback.
