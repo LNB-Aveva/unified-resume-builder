@@ -4,6 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import localFont from "next/font/local";
 import "./globals.css";
 import CookieConsent from "@/app/components/CookieConsent";
+import EnvironmentBanner from "@/app/components/EnvironmentBanner";
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
 const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
@@ -136,6 +137,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}` }} />
       </head>
       <body className="min-h-full flex flex-col">
+        <EnvironmentBanner />
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-indigo-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg">
           Skip to main content
         </a>

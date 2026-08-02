@@ -129,6 +129,60 @@ git config core.hooksPath .githooks
 every commit. A lint failure rejects the commit; fix the errors and retry rather than
 bypassing the hook.
 
+## Staging environment
+
+Staging isolates changes from production so deploys can be validated before going live.
+
+### Frontend staging (Vercel preview deployments)
+
+Every PR automatically gets a Vercel preview deployment. Configure Preview-scoped
+env vars in Vercel dashboard (Project Settings → Environment Variables → Preview):
+
+| Variable | Preview value |
+|---|---|
+| `NEXT_PUBLIC_SENTRY_ENV` | `staging` |
+| `NEXT_PUBLIC_SITE_URL` | (leave empty — Vercel uses the preview URL) |
+
+All other `NEXT_PUBLIC_*` variables inherit from Production unless overridden.
+Preview deployments show a yellow "STAGING ENVIRONMENT" banner at the top.
+
+### Backend staging ($0 constraint)
+
+Render free tier allows one web service. A true staging backend requires a paid plan
+($7/mo starter) or a second free-tier account. Until revenue justifies the cost:
+
+- Use local backend (`uvicorn app.main:app --reload`) as the staging backend
+- Preview deployments that need a live backend must use the production API URL
+- Never test destructive operations (account deletion, schema changes) against
+  production — use local backend + local Supabase for those
+
+### Staging Supabase
+
+Supabase free tier allows 2 active projects. When ready:
+
+1. Create a second project (e.g. `resumeai-staging`)
+2. Apply migrations from `supabase/migrations/`
+3. Set the staging project's URL and anon key as Preview env vars in Vercel
+4. Set the staging JWT secret in the staging Render service (when created)
+
+## Branch protection
+
+GitHub branch protection prevents broken code from reaching `main`. Set up once:
+
+```powershell
+# Via GitHub web UI: Settings → Branches → Add rule for "main"
+# Or via gh CLI (requires admin access):
+gh api repos/LNB-Aveva/unified-resume-builder/branches/main/protection `
+  --method PUT `
+  --field required_status_checks='{"strict":true,"checks":[{"context":"Backend (Python)"},{"context":"Frontend (Next.js)"},{"context":"E2E (Playwright)"}]}' `
+  --field enforce_admins=false `
+  --field required_pull_request_reviews=null `
+  --field restrictions=null
+```
+
+This requires all three CI jobs to pass before any merge to `main`. Direct pushes
+still work (solo developer workflow) but CI runs on every push and flags failures.
+
 ## Cold start
 
 Render free tier sleeps after 15 min of inactivity. First request after sleep takes 30-60 seconds.
@@ -138,7 +192,8 @@ Mitigations:
 
 ## Monitoring
 
-- **Errors:** Sentry (when `SENTRY_DSN` is set)
+- **Backend errors:** Sentry via `SENTRY_DSN` in Render (PII-stripped: no request bodies, auth headers, or stack locals)
+- **Frontend errors:** Sentry via `NEXT_PUBLIC_SENTRY_DSN` in Vercel (PII-stripped: same policy as backend)
 - **Uptime:** UptimeRobot pings `/health`
 - **Logs:** JSON-structured access logs with `X-Request-ID` header
 - **CI:** GitHub Actions — check status at the repo's Actions tab
