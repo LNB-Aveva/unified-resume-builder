@@ -2,7 +2,9 @@ name: Keepalive
 
 on:
   schedule:
-    - cron: "*/14 * * * *"
+    # Every 13 minutes — keeps Render free-tier awake (sleeps after 15 min idle).
+    # UptimeRobot handles uptime alerting; this workflow only prevents cold starts.
+    - cron: "*/13 * * * *"
 
 jobs:
   ping:
@@ -11,12 +13,19 @@ jobs:
     steps:
       - name: Wake up Render backend
         run: |
-          # A non-zero exit fails the workflow so GitHub notifies the repository owner.
-          status=$(curl --fail --silent --show-error --output /dev/null \
-            --write-out "%{http_code}" --max-time 30 "${BACKEND_URL}/health")
-          if [ "$status" != "200" ]; then
-            echo "::error::Backend health check returned HTTP $status"
-            exit 1
-          fi
+          # Render free-tier cold starts can take 50-90s.
+          # Retry up to 3 times with increasing timeouts before failing.
+          for attempt in 1 2 3; do
+            status=$(curl --silent --output /dev/null \
+              --write-out "%{http_code}" --max-time 90 "${BACKEND_URL}/health" || true)
+            if [ "$status" = "200" ]; then
+              echo "Health check passed on attempt $attempt"
+              exit 0
+            fi
+            echo "Attempt $attempt: HTTP $status — retrying in 10s..."
+            sleep 10
+          done
+          echo "::error::Backend health check failed after 3 attempts (last HTTP $status)"
+          exit 1
         env:
           BACKEND_URL: ${{ vars.BACKEND_URL || 'https://unified-resume-builder-api.onrender.com' }}
