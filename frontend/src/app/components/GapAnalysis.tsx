@@ -70,7 +70,7 @@ export default function GapAnalysis() {
             rows={12}
             className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
           />
-          <p className="text-xs text-gray-400 dark:text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
             {jobWordCount} words
           </p>
         </div>
@@ -87,7 +87,7 @@ export default function GapAnalysis() {
             rows={12}
             className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
           />
-          <p className="text-xs text-gray-400 dark:text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
             {resumeWordCount} words
           </p>
         </div>
@@ -137,7 +137,7 @@ export default function GapAnalysis() {
               <div className="flex items-end justify-between mb-1">
                 <p className="text-lg font-bold text-gray-900 dark:text-white">
                   {result.overall_score}
-                  <span className="text-sm font-normal text-gray-400 dark:text-gray-500">/100</span>
+                  <span className="text-sm font-normal text-gray-500 dark:text-gray-400">/100</span>
                 </p>
                 <p className={`text-sm font-semibold ${gradeStyle.text}`}>
                   {result.grade_label}
@@ -159,10 +159,10 @@ export default function GapAnalysis() {
                 />
               </div>
               <div className="flex justify-between mt-1">
-                <p className="text-xs text-gray-400 dark:text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Hard skills: {result.hard_skills_score}%
                 </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Soft skills: {result.soft_skills_score}%
                 </p>
               </div>
@@ -276,7 +276,7 @@ export default function GapAnalysis() {
           {/* Action hint */}
           {result.missing_keywords.length > 0 && (
             <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
                 What to do next
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-300">

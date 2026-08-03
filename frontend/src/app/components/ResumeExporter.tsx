@@ -456,7 +456,7 @@ export default function ResumeExporter({
         <SectionHeader title="2 · Professional Summary" open={open.summary} onToggle={() => toggle("summary")} />
         {open.summary && (
           <div className="rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
-            <p className="text-xs text-gray-400 dark:text-gray-500 mb-2">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
               Tip: paste the AI summary you generated in Step 4 above.
             </p>
             <textarea className={`${inputCls} resize-y`} rows={4}
@@ -716,7 +716,7 @@ export default function ResumeExporter({
         </div>
       )}
 
-      <p className="text-center text-xs text-gray-400 dark:text-gray-500">
+      <p className="text-center text-xs text-gray-500 dark:text-gray-400">
         3 ATS-safe single-column templates · fpdf2 · No watermarks
       </p>
     </div>

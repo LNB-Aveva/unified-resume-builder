@@ -159,7 +159,7 @@ function ScorePanel() {
                 d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
               />
             </svg>
-            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+            <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">
               15/15 ATS checks passed
             </span>
           </div>
@@ -167,7 +167,7 @@ function ScorePanel() {
       </div>
 
       <div>
-        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
           Matched Keywords
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -190,7 +190,7 @@ function ScorePanel() {
       </div>
 
       <div>
-        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
           Missing — Add These
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -263,14 +263,14 @@ function GapPanel() {
             style={{ width: `${barW}%`, transition: "none" }}
           />
         </div>
-        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
           Target: 85%+ to pass ATS filter
         </p>
       </div>
 
       <div>
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
             Keywords to Add
           </p>
           <span className="text-xs text-red-500 dark:text-red-400 font-semibold">
@@ -300,7 +300,7 @@ function GapPanel() {
       </div>
 
       <div>
-        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
           Already Matched
         </p>
         <div className="flex flex-wrap gap-1.5">
@@ -367,11 +367,11 @@ function RewriterPanel() {
   return (
     <div className="space-y-3">
       <div>
-        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
           Before
         </p>
         <div className="rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-3">
-          <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed italic">
+          <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed italic">
             &ldquo;{WEAK}&rdquo;
           </p>
         </div>
@@ -385,7 +385,7 @@ function RewriterPanel() {
               ? "border-violet-200 dark:border-violet-700 bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400"
               : showStrong
                 ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400"
-                : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-400 dark:text-gray-500"
+                : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400"
           }`}
         >
           <svg
@@ -407,7 +407,7 @@ function RewriterPanel() {
       </div>
 
       <div>
-        <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wide mb-2">
+        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
           After
         </p>
         <div
@@ -440,7 +440,7 @@ function RewriterPanel() {
       </div>
 
       {showStrong && typed.length === STRONG.length && (
-        <p className="text-xs text-center text-gray-400 dark:text-gray-500">
+        <p className="text-xs text-center text-gray-500 dark:text-gray-400">
           <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
             3 ATS keywords
           </span>{" "}
@@ -511,7 +511,7 @@ export default function HeroScoreCard() {
           <div className="h-2.5 w-2.5 rounded-full bg-red-400" />
           <div className="h-2.5 w-2.5 rounded-full bg-amber-400" />
           <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-          <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">
+          <span className="ml-2 text-xs text-gray-600 dark:text-gray-400">
             ResumeAI — Live Preview
           </span>
         </div>
@@ -526,7 +526,7 @@ export default function HeroScoreCard() {
               className={`relative flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition-all duration-200 overflow-hidden ${
                 phase === i
                   ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
-                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
               }`}
             >
               {label}

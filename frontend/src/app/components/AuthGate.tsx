@@ -15,7 +15,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
 
   if (authed === null) {
     return (
-      <div className="h-40 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500">
+      <div className="h-40 flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
         Loading...
       </div>
     );

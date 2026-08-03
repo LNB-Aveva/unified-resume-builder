@@ -106,7 +106,7 @@ export default async function SharedScorePage({
       <main id="main-content" className="mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16 space-y-10">
         {/* Score card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-8 sm:p-10">
-          <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-6">
             ATS Resume Score Report
           </p>
 
@@ -126,7 +126,7 @@ export default async function SharedScorePage({
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className={`text-4xl font-bold ${labelColor}`}>{pct}%</span>
-                <span className="text-xs font-semibold text-gray-400 dark:text-gray-500 mt-0.5">{score.grade}</span>
+                <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 mt-0.5">{score.grade}</span>
               </div>
             </div>
 
@@ -141,17 +141,17 @@ export default async function SharedScorePage({
               <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{score.total_matched}</div>
-                  <div className="text-xs text-gray-400 dark:text-gray-500">matched</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">matched</div>
                 </div>
                 <div className="w-px bg-gray-200 dark:bg-gray-700 self-stretch" />
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{score.total_missing}</div>
-                  <div className="text-xs text-gray-400 dark:text-gray-500">missing</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">missing</div>
                 </div>
                 <div className="w-px bg-gray-200 dark:bg-gray-700 self-stretch" />
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white">{score.total_job_keywords}</div>
-                  <div className="text-xs text-gray-400 dark:text-gray-500">total keywords</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">total keywords</div>
                 </div>
               </div>
             </div>
@@ -215,7 +215,7 @@ export default async function SharedScorePage({
         </div>
 
         {/* Footer attribution */}
-        <p className="text-center text-xs text-gray-400 dark:text-gray-500">
+        <p className="text-center text-xs text-gray-500 dark:text-gray-400">
           Score generated with{" "}
           <Link href="/" className="text-indigo-500 hover:text-indigo-600 transition">
             ResumeAI

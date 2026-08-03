@@ -150,7 +150,7 @@ export default function ShareableScoreWidget() {
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {score.total_matched} of {score.total_job_keywords} keywords matched
               </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                 {score.total_missing} keywords missing from your resume
               </p>
             </div>
@@ -172,7 +172,7 @@ export default function ShareableScoreWidget() {
                 {copied ? "Copied!" : "Copy"}
               </button>
             </div>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
               Anyone with this link can view your ATS score. Link expires in 30 days.
               Your resume text is never stored — only the score and keyword lists.
             </p>

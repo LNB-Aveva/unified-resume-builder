@@ -19,7 +19,7 @@ export default function PrivacyPolicy() {
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">
           Privacy Policy
         </h1>
-        <p className="text-sm text-gray-400 dark:text-gray-500">Last updated: July 30, 2026</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Last updated: July 30, 2026</p>
       </div>
 
       <div className="prose prose-gray dark:prose-invert prose-sm max-w-none space-y-8">
@@ -185,7 +185,7 @@ export default function PrivacyPolicy() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Contact</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
             If you have questions about this Privacy Policy, please email us at{" "}
-            <a href="mailto:support@resumeai.cv" className="text-indigo-600 dark:text-indigo-400 hover:underline">
+            <a href="mailto:support@resumeai.cv" className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2">
               support@resumeai.cv
             </a>.
           </p>

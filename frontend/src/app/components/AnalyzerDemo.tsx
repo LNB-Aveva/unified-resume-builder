@@ -84,7 +84,7 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
         <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-6 space-y-5 animate-in fade-in duration-300">
           {/* Header */}
           <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">
+            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">
               Detected role
             </p>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -127,7 +127,7 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
             />
           )}
 
-          <p className="text-xs text-gray-400 dark:text-gray-500 pt-2">
+          <p className="text-xs text-gray-500 dark:text-gray-400 pt-2">
             These {result.keywords.length} keywords are what ATS systems scan for.
             Next step: compare your resume against them.
           </p>
@@ -154,7 +154,7 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
           </a>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">No credit card &middot; Sign up in 10 seconds</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">No credit card &middot; Sign up in 10 seconds</p>
         </div>
       )}
     </div>
@@ -194,7 +194,7 @@ function SkillGroup({
 }) {
   return (
     <div>
-      <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-2">
+      <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
         {title}
       </p>
       <div className="flex flex-wrap gap-2">

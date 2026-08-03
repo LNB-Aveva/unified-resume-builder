@@ -303,10 +303,10 @@ export default function ATSCheckerPage() {
                     <td className="py-2.5 px-4 text-center text-indigo-600 dark:text-indigo-400 font-bold">
                       {us ? "✓" : "✗"}
                     </td>
-                    <td className="py-2.5 px-4 text-center text-gray-400 dark:text-gray-500">
+                    <td className="py-2.5 px-4 text-center text-gray-500 dark:text-gray-400">
                       {jobscan ? "✓" : "✗"}
                     </td>
-                    <td className="py-2.5 px-4 text-center text-gray-400 dark:text-gray-500">
+                    <td className="py-2.5 px-4 text-center text-gray-500 dark:text-gray-400">
                       {others ? "✓" : "✗"}
                     </td>
                   </tr>

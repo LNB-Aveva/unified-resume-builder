@@ -103,7 +103,7 @@ export default function ResumeList({ initial }: { initial: ResumeSummary[] }) {
                 >
                   {r.title}
                 </Link>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   v{r.latest_version} &middot; Updated {formatDate(r.updated_at)}
                 </p>
               </>

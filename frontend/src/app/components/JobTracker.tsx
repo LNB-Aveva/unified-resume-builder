@@ -292,7 +292,7 @@ export default function JobTracker() {
 
   if (!isHydrated) {
     return (
-      <div className="h-40 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500">
+      <div className="h-40 flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
         Loading tracker...
       </div>
     );
@@ -435,7 +435,7 @@ export default function JobTracker() {
         <div className="rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 p-6 space-y-4">
           <div className="text-center mb-2">
             <div className="mx-auto mb-3 h-10 w-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-              <svg className="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg className="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
             </div>
@@ -443,7 +443,7 @@ export default function JobTracker() {
               {filterStatus === "All" ? "No jobs saved yet" : `No jobs with status "${filterStatus}"`}
             </p>
             {filterStatus === "All" && (
-              <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Click &ldquo;Save a Job&rdquo; above — your dashboard will look like this:
               </p>
             )}
@@ -530,7 +530,7 @@ export default function JobTracker() {
               {/* Footer */}
               <div className="flex items-center justify-between px-5 pb-3 -mt-1">
                 <div className="flex items-center gap-3 min-w-0">
-                  <p className="text-xs text-gray-400 dark:text-gray-500 shrink-0">Saved {formatDate(job.dateAdded)}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 shrink-0">Saved {formatDate(job.dateAdded)}</p>
                   {resumes.length > 0 && (
                     <select
                       value={job.resumeId ?? ""}
@@ -585,7 +585,7 @@ export default function JobTracker() {
                     rows={3}
                     className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-none"
                   />
-                  <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">Notes auto-save as you type.</p>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Notes auto-save as you type.</p>
                 </div>
               )}
             </div>
@@ -595,7 +595,7 @@ export default function JobTracker() {
 
       {/* Storage notice */}
       {jobs.length > 0 && (
-        <p className="text-center text-xs text-gray-400 dark:text-gray-500">
+        <p className="text-center text-xs text-gray-500 dark:text-gray-400">
           {jobs.length} job{jobs.length !== 1 ? "s" : ""} tracked
           {useSupabase ? " · Synced to cloud" : " · Saved in your browser · Clears if you clear browser data"}
         </p>

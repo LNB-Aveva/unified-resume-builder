@@ -96,7 +96,7 @@ export default function ComplianceChecker() {
               <span className={`text-3xl font-black ${result.overall_score >= 65 ? "text-emerald-600" : result.overall_score >= 50 ? "text-amber-600" : "text-red-600"}`}>
                 {result.overall_score}
               </span>
-              <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">/ 100</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">/ 100</span>
             </div>
 
             <div className="flex-1 space-y-1">
@@ -132,7 +132,7 @@ export default function ComplianceChecker() {
           {/* Issues to fix */}
           {failed.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Issues to fix
               </p>
               <div className="space-y-2">
@@ -167,7 +167,7 @@ export default function ComplianceChecker() {
           {/* Passing checks (collapsible feel — show as compact list) */}
           {passed.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Passing checks ({passed.length})
               </p>
               <div className="flex flex-wrap gap-2">

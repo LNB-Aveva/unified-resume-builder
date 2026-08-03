@@ -144,7 +144,7 @@ export default function AccountSetupForm() {
             </button>
           </form>
 
-          <p className="mt-4 text-center text-sm text-gray-400 dark:text-gray-500">
+          <p className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
             <Link href="/tools" className="hover:text-gray-600 dark:hover:text-gray-300 transition">
               Skip for now &rarr;
             </Link>

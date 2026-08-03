@@ -302,7 +302,7 @@ export default function KeywordAnalyzerPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
               </svg>
             </Link>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">No credit card &middot; 10 seconds to sign up</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">No credit card &middot; 10 seconds to sign up</p>
           </div>
         </div>
       </section>
@@ -320,10 +320,10 @@ export default function KeywordAnalyzerPage() {
               ResumeAI
             </span>
           </Link>
-          <p className="text-xs text-gray-400 text-center">
+          <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
             Free ATS resume checker &mdash; 9 AI tools, no sign-up required.
           </p>
-          <div className="flex items-center gap-4 text-xs text-gray-400">
+          <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
             <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
               Home
             </Link>

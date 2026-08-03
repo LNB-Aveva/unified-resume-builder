@@ -36,7 +36,7 @@ export default function BlogIndex() {
             className="block group"
           >
             <article className="rounded-2xl border border-gray-100 p-6 hover:border-indigo-200 hover:shadow-sm transition">
-              <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+              <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400 mb-3">
                 <time dateTime={post.publishedAt}>
                   {new Date(post.publishedAt).toLocaleDateString("en-US", {
                     year: "numeric",
@@ -65,7 +65,7 @@ export default function BlogIndex() {
         <h2 className="text-xl font-bold text-gray-900 mb-2">
           Ready to check your resume?
         </h2>
-        <p className="text-sm text-gray-500 mb-4 max-w-md mx-auto">
+          <p className="text-sm text-gray-600 mb-4 max-w-md mx-auto">
           Use our free ATS keyword extractor and compliance checker to see
           exactly why your resume is getting filtered out.
         </p>
