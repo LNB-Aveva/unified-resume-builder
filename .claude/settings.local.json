@@ -18,7 +18,8 @@
       "Workflow(code-review)",
       "Bash(xargs grep -l \"callback\\\\|next=\")",
       "Bash(xargs grep -l \"signUp\\\\|sign-up\\\\|signup\\\\|accountSetup\\\\|account-setup\")",
-      "Bash(git -C \"C:\\\\My-Work-Space\\\\AI-Resume-Generator\" log --all --oneline -- \"*.sql\" \"supabase*\")"
+      "Bash(git -C \"C:\\\\My-Work-Space\\\\AI-Resume-Generator\" log --all --oneline -- \"*.sql\" \"supabase*\")",
+      "Bash(git fetch *)"
     ]
   }
 }

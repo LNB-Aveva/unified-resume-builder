@@ -17,15 +17,27 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
+| Agent      | copilot                    |
 | Started    | 2026-08-02                 |
-| Working On | Session 92. Phase 10.2 DONE (frontend Sentry), 11.3 DONE (staging env), 11.4 DONE (branch protection). |
+| Working On | Session 93. Phase 11.5 accepted limitation; Phase 11.6 public verification passed, dashboard env-scope check and rollback rehearsal remain. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 93 (Copilot) — 2026-08-02
+- **Agent:** copilot
+- **Did:**
+  - Reconfirmed Phase 11.5 as an accepted Supabase free-tier limitation; no restore drill was claimed.
+  - Ran a fresh public Phase 11.6 verification: apex and `www` DNS resolve to Vercel; API DNS resolves to Render; HTTP redirects to HTTPS; `www` redirects to the apex; all tested TLS chains validate; HSTS is present.
+  - Verified frontend and API return 200, backend production docs are disabled, request IDs are emitted, and configured JWT auth is inferred from a protected endpoint returning 401 rather than the missing-secret 503 response.
+  - Verified the deployed frontend canonical is `https://resumeai.cv`, its bundles use the production Render API and Supabase project, no localhost API URL is bundled, and no staging banner appears in production.
+  - Verified CORS accepts `https://resumeai.cv` and the Vercel production hostname, while rejecting `https://evil.example`.
+  - Found the current release candidate is not green: CI run `30761181418` has Backend and Frontend passing, but E2E fails 6 axe accessibility checks (contrast/link styling) across landing, keyword analyzer, sign-in, privacy, terms, and blog; 38 other E2E tests pass.
+- **Next:** Fix the accessibility CI failures and obtain a green release candidate. Owner then completes dashboard-only Vercel/Render environment scope review and rehearses Vercel + Render rollback; rerun smoke checks and mark 11.6 DONE.
+- **Blockers:** Red E2E CI; no controllable signed-in browser session was available; rollback actions require owner dashboard access and deliberate production coordination.
 
 ### Session 89 (Claude) — 2026-08-01
 - **Agent:** claude
