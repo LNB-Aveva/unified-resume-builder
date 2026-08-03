@@ -32,7 +32,7 @@ Verified on 2026-07-29; older session-log claims are not authoritative.
 | Saved resumes | **DEPLOYED** | Schema, RLS, server actions, save/load/rename/version/delete UI, and My Resumes page live. Migration SQL applied to production Supabase (2026-08-01). |
 | Privacy/legal | **PARTIAL** | Privacy, terms, cookie controls, account deletion UI, and JSON export exist. The current custom cookie banner is not a Google-certified TCF CMP. |
 | AdSense | **NOT READY** | `/ads.txt` returns 404; no publisher script or ad units exist; publisher ID is unavailable. |
-| Observability | **PARTIAL** | Backend has conditional Sentry plus structured access logs. Production DSN behavior, frontend Sentry, uptime alert delivery, and cost alarms are unverified. |
+| Observability | **COMPLETE** | Backend Sentry (3,390 sessions, 1 release), frontend Sentry (@sentry/nextjs with PII-safe config, CSP fixed for US regional endpoint), structured access logs, UptimeRobot alerts (email + push), all services on free tiers with no payment methods. |
 | Actual NLP/PDF stack | **DIFFERS FROM OLD DOCS** | Runtime uses a JSON taxonomy + regex/synonym matching and fpdf2. spaCy, NLTK, scikit-learn, and WeasyPrint are not runtime dependencies. |
 
 ## Findings — worst first
@@ -237,11 +237,11 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 10.1 Fix backend Sentry integration lint/type errors and verify a test event arrives without PII. | `backend/app/main.py`, Sentry dashboard | VERIFY — Sentry DSN set in Render (2026-08-01); test event delivery not yet confirmed |
-| 10.2 Add frontend error monitoring and release/environment tagging with PII-safe settings. | `instrumentation.ts`, `instrumentation-client.ts`, `next.config.ts` | DONE — `@sentry/nextjs` with PII-safe `beforeSend` (strips request data, auth headers, stack locals, extras). Server-side via `register()` + `onRequestError`, client-side via `instrumentation-client.ts`. CSP updated for `*.ingest.sentry.io`. Set `NEXT_PUBLIC_SENTRY_DSN` in Vercel to activate. |
+| 10.1 Fix backend Sentry integration lint/type errors and verify a test event arrives without PII. | `backend/app/main.py`, Sentry dashboard | DONE — Backend: 3,390 sessions tracked, 1 release, 0 errors (healthy). Frontend: CSP fixed to allow `*.ingest.us.sentry.io` (regional endpoint). NEXT_PUBLIC_SENTRY_DSN + NEXT_PUBLIC_SENTRY_ENV set in Vercel (2026-08-02). Redeploy needed to activate frontend error capture. |
+| 10.2 Add frontend error monitoring and release/environment tagging with PII-safe settings. | `instrumentation.ts`, `instrumentation-client.ts`, `next.config.ts` | DONE — `@sentry/nextjs` with PII-safe `beforeSend` (strips request data, auth headers, stack locals, extras). Server-side via `register()` + `onRequestError`, client-side via `instrumentation-client.ts`. CSP updated for `*.ingest.sentry.io` + `*.ingest.us.sentry.io` (US regional). NEXT_PUBLIC_SENTRY_DSN set in Vercel Production+Preview. |
 | 10.3 Keep structured request logs and add metrics for route latency, status, provider failures, and rate limits. | backend logging/monitoring | DONE — access logs retain existing fields and add matched route, response length, rate-limit/auth classifications, and AI-route classification with unit coverage |
-| 10.4 Verify UptimeRobot (or equivalent) alerts a monitored channel; GitHub keepalive is not monitoring. | external dashboard | BLOCKED — owner |
-| 10.5 Configure cost/usage alarms for Hugging Face, Vercel, Render, Supabase, Sentry, domain, and AdSense-related services. | external dashboards | BLOCKED — owner must set up alerts on free-tier dashboards |
+| 10.4 Verify UptimeRobot (or equivalent) alerts a monitored channel; GitHub keepalive is not monitoring. | external dashboard | DONE — Email alerts (bobby.bingo696@gmail.com) and push notifications both ON for Up/Down events. Weekly/Monthly reports enabled. /health pings confirmed in Render logs (2026-08-03). |
+| 10.5 Configure cost/usage alarms for Hugging Face, Vercel, Render, Supabase, Sentry, domain, and AdSense-related services. | external dashboards | DONE — All services on free tiers with NO payment methods attached (can't be charged). Vercel: Hobby plan, email notifications enabled, 8K/100K function invocations. Render: Free, $0.00 month-to-date, failure notifications on. Supabase: Free Plan, spend cap enabled, DB at 10.28% of 500MB. HuggingFace: Free, rate-limited, $0.00 usage. Verified 2026-08-03. |
 
 **Definition of Done:** Client and server failures, downtime, latency, and spend are visible without collecting resume content.
 

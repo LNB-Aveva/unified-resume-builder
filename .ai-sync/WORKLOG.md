@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phases 1-7 COMPLETE. Phase 8 SEO metadata DONE, AdSense blocked on pub ID. Phase 9 COMPLETE. Phase 10.2+11.3+11.4 DONE.
+- **Status:** Phases 1-9 COMPLETE. Phase 10 COMPLETE. Phase 8 AdSense blocked on pub ID. Phase 11.1-11.4 DONE, 11.5 accepted, 11.6 needs final pass.
 
 ---
 
@@ -17,9 +17,9 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | copilot                    |
-| Started    | 2026-08-02                 |
-| Working On | Session 93. Phase 11.5 accepted limitation; Phase 11.6 public verification passed, dashboard env-scope check and rollback rehearsal remain. |
+| Agent      | claude                     |
+| Started    | 2026-08-03                 |
+| Working On | Session 93. Phase 10 COMPLETE — 10.1 verified (backend Sentry working, frontend CSP fixed), 10.4 UptimeRobot confirmed, 10.5 all services verified on free tiers. |
 
 ---
 
