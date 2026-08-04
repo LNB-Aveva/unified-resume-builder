@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phases 1-9 COMPLETE. Phase 10 COMPLETE. Phase 8 AdSense blocked on pub ID. Phase 11.1-11.4 DONE, 11.5 accepted, 11.6 needs final pass.
+- **Status:** Phases 1-7, 9, and 10 COMPLETE. Phase 8 AdSense remains blocked on publisher ID/CMP/placements. Phase 11.1-11.4 DONE, 11.5 accepted, 11.6 public technical checks green with owner dashboard/rollback steps remaining.
 
 ---
 
@@ -19,13 +19,35 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-03                 |
-| Working On | Session 93. Phase 10 COMPLETE — 10.1 verified (backend Sentry working, frontend CSP fixed), 10.4 UptimeRobot confirmed, 10.5 all services verified on free tiers. |
+| Working On | Session 94 (Claude). CI fix session — brace-expansion CVE, keepalive retry, WCAG contrast. CI Health Monitor routine created. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 94 (Claude) — 2026-08-03
+- **Agent:** claude
+- **Did:**
+  - Diagnosed CI failures: brace-expansion CVE (GHSA-rgw5-rvv9-x895) blocking Frontend job, WCAG color-contrast violations blocking E2E job, Keepalive timeout causing repeated red runs.
+  - Fixed brace-expansion CVE via `npm audit fix` (5.0.8→5.0.9). Commit `d14e0e0`.
+  - Improved keepalive workflow: 3 retries with 90s timeout (was 1 attempt, 30s). Commit `d14e0e0`.
+  - Fixed WCAG color-contrast across 27 files: replaced `text-gray-400`/`text-gray-500` dark mode patterns for AA compliance (4.5:1 ratio). Commit `f4ce007`.
+  - Created "CI Health Monitor" scheduled cloud routine — runs every hour, checks GitHub Actions, sends push notification on failure with diagnosis and fix command. Silent on success.
+- **Next:** Verify CI goes fully green. Owner to monitor CI Health Monitor notifications.
+- **Blockers:** None.
+
+### Session 94 (Copilot) — 2026-08-03
+- **Agent:** copilot
+- **Did:**
+  - Reproduced the six WCAG failures and verified the concurrent Claude fix (`f4ce007`) cleared them; remote CI run `30854065886` is green across Backend, Frontend, and E2E.
+  - Ran the local release suite: Ruff and ESLint pass, production build succeeds (30 routes), all 44 Playwright tests pass, and backend tests pass (467 passed / 24 skipped).
+  - Fixed a newly exposed async-backend defect in the bullet-rewriter fallback: replaced `asyncio.gather` with an AnyIO task group so concurrent fallbacks work under both asyncio and Trio while preserving result order. Change is uncommitted pending localhost approval.
+  - Completed the Phase 8.8 pre-validation. Public navigation/content/legal routes and consent-default-denied behavior pass, but final sign-off is blocked by the publisher ID, certified CMP, correct live `ads.txt`, AdSense privacy disclosures, and real placements/ad-density review. Found the placeholder must use `pub-...`, not `ca-pub-...`, in the seller record.
+  - Re-ran Phase 11.6 public verification: DNS/TLS/redirects/HSTS, frontend and API health, disabled production docs, request IDs, auth enforcement, production bundle wiring, canonical URL, and allow/reject CORS behavior all pass.
+- **Next:** Owner reviews localhost and approves the AnyIO change for commit. Owner completes AdSense account/CMP setup, dashboard environment-scope review, and coordinated Vercel/Render rollback rehearsal.
+- **Blockers:** Phase 8 requires owner AdSense setup. Phase 11.6 requires owner dashboard access and a deliberate production rollback rehearsal.
 
 ### Session 93 (Copilot) — 2026-08-02
 - **Agent:** copilot

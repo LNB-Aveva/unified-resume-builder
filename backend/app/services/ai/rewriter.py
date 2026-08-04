@@ -1,5 +1,6 @@
-import asyncio
 import re
+
+import anyio
 
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse, RewrittenBullet
 from app.services.ai.hf_client import call_hf
@@ -172,6 +173,23 @@ async def _rewrite_single(req: BulletRewriteRequest, bullet: str) -> RewrittenBu
     )
 
 
+async def _rewrite_missing(
+    req: BulletRewriteRequest,
+    bullets: list[str],
+) -> list[RewrittenBullet]:
+    """Rewrite fallback bullets concurrently on any supported async backend."""
+    results: list[RewrittenBullet | None] = [None] * len(bullets)
+
+    async def rewrite_at(index: int, bullet: str) -> None:
+        results[index] = await _rewrite_single(req, bullet)
+
+    async with anyio.create_task_group() as task_group:
+        for index, bullet in enumerate(bullets):
+            task_group.start_soon(rewrite_at, index, bullet)
+
+    return [result for result in results if result is not None]
+
+
 async def rewrite_bullets(req: BulletRewriteRequest) -> BulletRewriteResponse:
     bullets = [b.strip() for b in req.bullets.strip().splitlines() if b.strip()]
     bullets = bullets[:5]
@@ -189,7 +207,7 @@ async def rewrite_bullets(req: BulletRewriteRequest) -> BulletRewriteResponse:
         rewritten_originals = {r.original.lower().strip() for r in rewrites}
         missing = [b for b in bullets if b.lstrip("- ").lstrip("* ").lower().strip() not in rewritten_originals]
         if missing:
-            fallbacks = await asyncio.gather(*[_rewrite_single(req, b) for b in missing])
+            fallbacks = await _rewrite_missing(req, missing)
             rewrites.extend(fallbacks)
 
     if not rewrites:

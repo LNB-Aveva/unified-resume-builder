@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-029: AnyIO Task Group for AI Rewrite Fallbacks (2026-08-03)
+- **Date:** 2026-08-03
+- **Agent:** copilot
+- **Context:** The full backend release suite exposed that `asyncio.gather` in the partial bullet-rewrite fallback fails when the AnyIO test matrix runs under Trio, leaving an unawaited coroutine and failing an otherwise valid fallback request.
+- **Decision:** Run per-bullet fallback rewrites in an AnyIO task group and store each result by input index. This retains concurrency and deterministic response ordering while supporting both asyncio and Trio backends.
+- **Alternatives Considered:** Sequential fallback requests — rejected because up to four provider calls would add avoidable latency. Keeping `asyncio.gather` and limiting tests to asyncio — rejected because the service is already built on AnyIO-compatible FastAPI primitives and the portability failure was real.
+- **Files Affected:** `backend/app/services/ai/rewriter.py`
+
 ### DEC-028: Complete Test-Quality Audit Backlog + Agent Rename (2026-07-31)
 - **Date:** 2026-07-31
 - **Agent:** claude
