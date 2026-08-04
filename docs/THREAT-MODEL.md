@@ -149,8 +149,9 @@ Utility endpoints (no per-route rate limit, exempt from global limiter):
 - React (Next.js) auto-escapes all rendered content
 - Shared score pages read via SECURITY DEFINER RPC (no raw user_id exposure)
 
-**Residual risk**:
-- `unsafe-inline` for scripts is required by Next.js but slightly weakens CSP
+**Accepted risk — `'unsafe-inline'` in script-src**:
+
+CSP `script-src` includes `'unsafe-inline'` because Next.js requires it for framework inline scripts when nonce-based CSP is not used. The alternative (nonce-based CSP via proxy.ts) forces **all pages to dynamic rendering**, which disables static generation, CDN caching on Vercel, and degrades Core Web Vitals (current desktop Lighthouse: 100). On the $0 Vercel Hobby plan this also risks hitting function invocation limits. Given that React auto-escapes all rendered content and no user data is rendered via `dangerouslySetInnerHTML` (only hardcoded consent/theme initialization scripts), the practical XSS risk from `unsafe-inline` is negligible. Nonce-based CSP should be revisited when the project scales past free tier. Evaluated 2026-08-04.
 
 **Severity**: Very Low
 

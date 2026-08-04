@@ -31,23 +31,14 @@
 - **Agent:** claude
 - **Did:**
   - **Phase 3 full reverification** — all 8 tasks independently verified from scratch
-  - **Security fix:** Removed user data (`job_title`, `company_name`) from cover_letter.py system prompt where it lacked `<<<`/`>>>` data delimiters. Model reads these from the properly delimited user message instead. Per DEC-026: "Regex sanitizer kept for UX, not security" — the delimiters are the real defense.
-  - **Threat model rewrite:** `docs/THREAT-MODEL.md` was stale since Session 26 (2026-07-19). Fully rewritten to match deployed architecture: 9 endpoints with JWT auth status, 5-table RLS model, global IP rate limiter, body size cap, request/body timeouts, circuit breaker, Sentry PII filtering, data delimiters on AI prompts, 467 tests. Risk summary and controls matrix updated.
-  - **Verification results:**
-    - Auth tests: 80 passed (JWT enforcement on 7 routes, public access on 2)
-    - Rate limiter tests: 8 passed (global sliding window + client IP spoof resistance)
-    - PDF sanitization + rate limit + client IP: 23 passed
-    - Property + contract tests: 21 passed
-    - Bandit: 0 High (2 Medium B104 — expected 0.0.0.0 binding for Render)
-    - pip-audit runtime: 0 known vulnerabilities
-    - npm audit production: 0 vulnerabilities
-    - detect-secrets: clean
-    - Ruff: clean. ESLint: clean.
-    - Full suite: 467 passed, 24 skipped (unchanged from baseline)
-- **Files Changed:** `backend/app/services/ai/cover_letter.py`, `docs/THREAT-MODEL.md`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
-- **Commit:** pending
-- **Next:** Commit and PR.
-- **Blockers:** None.
+  - **Security fix:** Removed user data (`job_title`, `company_name`) from cover_letter.py system prompt where it lacked `<<<`/`>>>` data delimiters. Model reads these from the properly delimited user message instead.
+  - **Threat model rewrite:** `docs/THREAT-MODEL.md` fully rewritten to match deployed architecture: 9 endpoints, 5-table RLS, global IP rate limiter, body size cap, timeouts, circuit breaker, Sentry PII filtering, data delimiters, 467 tests.
+  - **X1 fix:** Auth test count corrected from 76 to 80 (40 cases × 2 backends) in task 3.1 and finding F3
+  - **X2 disposition:** CSP `'unsafe-inline'` for script-src — accepted risk. Documented in THREAT-MODEL.md.
+  - Full suite: 467 passed, 24 skipped
+- **Commits:** `e01de5b` (security fix + threat model rewrite), cherry-picked X1+X2 doc fixes
+- **Next:** None — Phase 3 reverification complete.
+- **Blockers:** None
 
 ### Session 97 (Claude) — 2026-08-04
 - **Agent:** claude
