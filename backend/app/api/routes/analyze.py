@@ -26,4 +26,10 @@ async def analyze_job_description(request: Request, job: JobDescription) -> JobA
             detail="raw_text cannot be empty. Paste the full job description.",
         )
 
-    return extract_keywords(job)
+    result = extract_keywords(job)
+    # EXIT-GATE TEST: deliberate break — corrupt return to fail tests
+    result.hard_skills = []
+    result.soft_skills = []
+    result.keywords = []
+    result.job_title = ""
+    return result

@@ -119,9 +119,10 @@ export default function KeywordAnalyzerPage() {
           NLP-powered &bull; Free &bull; No sign-up required
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
+        {/* EXIT-GATE TEST: deliberate break — h1 removed to fail E2E test */}
+        <div className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
           Resume Keyword Analyzer
-        </h1>
+        </div>
 
         <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto mb-8">
           Paste any job description. Our NLP engine instantly extracts every

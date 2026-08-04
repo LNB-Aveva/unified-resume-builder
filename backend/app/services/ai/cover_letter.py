@@ -46,7 +46,7 @@ def _build_messages(req: CoverLetterRequest) -> list[dict]:
 
     system = (
         "You are an expert career coach and cover letter writer. "
-        f"Write a tailored cover letter for the role of {sanitize_for_prompt(req.job_title)} at {sanitize_for_prompt(req.company_name)}. "
+        "Write a tailored cover letter for the role and company specified in the user data below. "
         "Structure: exactly 4 paragraphs.\n"
         "  Para 1 (Hook): Open with why THIS company and THIS specific role appeal to you. "
         "Reference something specific about the company from the job description. "
