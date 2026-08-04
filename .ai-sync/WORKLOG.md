@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phases 1-7, 9, and 10 COMPLETE. Phase 8.1-8.7 DONE (publisher ID obtained, ads.txt active, AdSense wired). Phase 8.8 pending deploy verification + Google review. Phase 11.1-11.4 DONE, 11.5 accepted, 11.6 public technical checks green with owner dashboard/rollback steps remaining.
+- **Status:** Phases 1-11 COMPLETE. Phase 8.8 pending Google AdSense review (1-14 days). Phase 12 pending go/no-go decision.
 
 ---
 
@@ -17,9 +17,9 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
+| Agent      | idle                       |
 | Started    | 2026-08-03                 |
-| Working On | Phase 8.4-8.7 AdSense activation |
+| Working On | — |
 
 ---
 
@@ -27,17 +27,40 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 96 (Claude) — 2026-08-03
+- **Agent:** claude
+- **Did:**
+  - Full-repo 360° code review (8 angles, 42 raw candidates, 10 verified findings)
+  - **SECURITY:** Sanitized `skills` field in cover_letter.py + summarizer.py — was the only user input bypassing `<<<>>>` delimiters and `sanitize_for_prompt()` (prompt injection vector)
+  - **SECURITY:** Fixed Content-Length bypass in BodySizeLimitMiddleware — declared size was checked but actual body never buffered/verified when Content-Length header present
+  - **BUG:** Added `BaseExceptionGroup` handler to `_ai_errors.py` — anyio task groups wrap child exceptions, masking typed 504/503/502 responses as generic 500
+  - **BUG:** Aligned score thresholds (65→70) in GapAnalysis + ComplianceChecker to match `getScoreStyle()` — same score was showing different colors across pages
+  - **BUG:** Circuit breaker now records `RuntimeError` failures — malformed HF responses never opened the breaker
+  - **BUG:** Fixed false "no sign-up" marketing claims across 6 pages (blog, ATS checker, OG image, blog layout)
+  - **BUG:** Corrected CLAUDE.md proxy.ts path (`frontend/src/app/proxy.ts` → `frontend/src/proxy.ts`)
+  - **BUG:** signIn now surfaces 429 rate-limit as "Too many login attempts" instead of "Invalid email or password"
+  - **CLEANUP:** All 3 AI services now import `hf_client.MODEL` constant instead of hardcoding the string
+- **Files Changed:** 15 files across backend + frontend
+- **Commit:** `37480a8` on main (cherry-picked from `9311f57` on feature/all-phases)
+- **Status:** Pushed to `origin/feature/all-phases`. Main needs `git push origin main` (owner action).
+- **Next:** Owner pushes main. All 467 backend tests pass, frontend build clean, both linters pass.
+
 ### Session 95 (Claude) — 2026-08-03
 - **Agent:** claude
 - **Did:**
   - **Phase 8.4 DONE:** Owner signed up for AdSense. Publisher ID: `pub-7869093425931175`. Account open, site `resumeai.cv` registered.
-  - **Phase 8.5 DONE:** Consent Mode v2 already wired. CookieConsent banner text updated ("uses" not "may use"). Privacy page updated with advertising cookie disclosure and GDPR consent basis.
-  - **Phase 8.6 DONE:** Moved AdSense script from dynamic CookieConsent injection to static `<head>` in layout.tsx (Consent Mode v2 handles privacy natively). Removed `loadAdSense` function and `adsenseId` prop from CookieConsent. AdUnit component ready for placement after Google approval.
-  - **Phase 8.7 DONE:** `ads.txt` activated with `google.com, pub-7869093425931175, DIRECT, f08c47fec0942fa0`.
-  - Updated LAUNCH_PROGRAM.md findings F4 and F9 to Resolved.
-- **Files Changed:** `frontend/public/ads.txt`, `frontend/src/app/layout.tsx`, `frontend/src/app/components/CookieConsent.tsx`, `frontend/src/app/privacy/page.tsx`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
-- **Next:** Owner sets `NEXT_PUBLIC_ADSENSE_ID=ca-pub-7869093425931175` in Vercel Production env. Deploy and verify ads.txt serves correctly. Wait for Google site review. After approval, create ad units and place them.
-- **Blockers:** Vercel env var (owner action). Google site review (1-14 days).
+  - **Phase 8.5 DONE:** Consent Mode v2 wired. CookieConsent banner text updated. Privacy page updated with advertising cookie disclosure and GDPR consent basis.
+  - **Phase 8.6 DONE:** AdSense script moved to static `<head>` in layout.tsx. AdUnit component ready for placement after Google approval.
+  - **Phase 8.7 DONE:** `ads.txt` activated. Verified live at `resumeai.cv/ads.txt`.
+  - **Phase 11.4 DONE:** Branch protection activated via `gh api` — 3 CI checks required on `main`.
+  - **Phase 11.6 DONE:** Vercel rollback rehearsal completed — rolled back to previous deployment, verified site + ads.txt, promoted latest back, verified again.
+  - **Phase 12.2 DONE:** Solo operator confirmed — all roles (launch/incident owner, Sentry/UptimeRobot watcher, rollback authority).
+  - **Phase 12.3 DONE:** Feedback intake confirmed — support@resumeai.cv + GitHub Issues. Issue templates added (bug report + feature request).
+  - **Phase 12.4 DONE:** PH copy fixed (removed false "open source" claim, corrected "no signup" to "free account", added maker name).
+  - Updated LAUNCH_PROGRAM.md findings F4 and F9 to Resolved. `NEXT_PUBLIC_ADSENSE_ID` set in Vercel by owner.
+- **Commits:** `1586193`, `be41fdf`, `a36b4f0` (all pushed)
+- **Next:** Wait for Google AdSense review (1-14 days). Then go/no-go (12.1) decision. Phases 1-11 fully COMPLETE.
+- **Blockers:** Google AdSense site review (external, 1-14 days).
 
 ### Session 93 (Claude) — 2026-08-03
 - **Agent:** claude
