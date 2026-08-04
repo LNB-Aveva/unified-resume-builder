@@ -9,7 +9,7 @@
 
 - **Feature:** Adversarial launch re-audit and repository-side remediation
 - **Branch:** feature/all-phases (isolated worktree: `.copilot-worktrees/all-phases`)
-- **Status:** Local candidate green; owner approved localhost on 2026-08-04. Commit/push/PR handoff is in progress. Launch remains NO-GO pending production/manual gates.
+- **Status:** Local candidate green, committed, and pushed. PR #31 is open; CI is pending. Launch remains NO-GO pending production/manual gates.
 
 ---
 
@@ -36,11 +36,12 @@
   - Removed fabricated testimonials/social proof, unsupported 75% rejection statistics, stale competitor prices, “every keyword,” “free forever/no limits,” false file-layout checks, and false data-retention claims across public pages, metadata, legal pages, and launch copy.
   - Wrote `docs/LAUNCH_READINESS_AUDIT.md` with adversarial findings, checklist, cost model, failure drills, exact PowerShell rollback commands, NO-GO verdict, and manual gates. Corrected `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, and `docs/ENV_VARS.md`.
   - Integrated concurrent remote commits `647c7c0` and `9311f57` without force-pushing. Preserved their issue templates and code-review fixes while resolving five conflicts in favor of verified backup facts, the current NO-GO decision, and non-deceptive product copy.
+  - Owner approved localhost. Created commits `4fa5aaa` and `1b969e3`, pushed `feature/all-phases`, and opened PR #31: `https://github.com/LNB-Aveva/unified-resume-builder/pull/31`.
   - **Evidence:** Ruff passed; backend `472 passed, 24 skipped`; ESLint passed; Next production build generated 31 routes; isolated Playwright on port 3010 `44 passed`; npm and both Python dependency audits found 0 known vulnerabilities.
   - **Post-merge evidence:** Ruff passed; backend `472 passed, 24 skipped`; ESLint passed; production build generated 31 routes; isolated Playwright on port 3012 `44 passed`.
   - **Reproducibility finding:** the first isolated Playwright run failed because required Supabase public variables were absent. After loading the existing documented public URL/anon values without copying or printing them, the same unedited 44 tests passed. The earlier port-3000 result remains invalid evidence because it reused another process.
 - **Remaining:**
-  1. Commit the isolated candidate, push `feature/all-phases`, and open one PR; CI must pass.
+  1. Confirm every PR #31 CI check passes; merge only while green.
   2. Owner decides/funds the production baseline, then runs production RLS/export/deletion/backup and certified-CMP gates.
   3. Deploy only after every NO-GO production gate has command-backed evidence.
 - **Blockers:** Vercel commercial plan, always-on Render, Supabase backup/restore, certified CMP, production RLS/deletion/export evidence, and measured provider-side LLM spend cap.
