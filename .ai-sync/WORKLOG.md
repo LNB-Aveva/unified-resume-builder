@@ -19,13 +19,29 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-04                 |
-| Working On | Session 99: merging verification branches |
+| Working On | Session 99: Backlog R1+R2+R3 |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 99 (Claude) — 2026-08-04
+- **Agent:** claude
+- **Did:**
+  - **R1 DONE:** Wired GitHub footer icon to `https://github.com/LNB-Aveva` profile link (was a non-linking `<span>`). LinkedIn/X remain spans (blocked on user creating accounts).
+  - **R2 DONE:** ATS Ghosting Visualization section — "What ATS Actually Sees" two-column layout (parsed vs ghosted) with red pill badge, diagonal stripe overlay, strikethrough text, CTA to #demo. Placed after trust strip, before live demo.
+  - **R3 DONE:** Floating help button — fixed bottom-right `?` circle linking to #faq, indigo with hover scale/shadow.
+  - Cleaned up root `.env.example` (was stale with DEBUG=True) → now redirects to `backend/.env.example` and `frontend/.env.example`.
+  - Updated `README.md` project status from "In active hardening toward launch" to "Launched and live at resumeai.cv".
+  - Fixed `docs/guides/DEVTO-ARTICLE.md` dead repo link → profile link.
+  - Added formal backlog table to `docs/LAUNCH_PROGRAM.md` with all R/B/D items.
+  - Phase 1 re-verified from scratch: all 5 tasks pass independently.
+- **Files Changed:** `frontend/src/app/page.tsx`, `docs/LAUNCH_PROGRAM.md`, `.env.example`, `README.md`, `docs/guides/DEVTO-ARTICLE.md`, `.ai-sync/WORKLOG.md`
+- **Commits:** `1f28d3b` (R2+R3 feat), pending (docs update)
+- **Next:** Push branch, create PR.
+- **Blockers:** None.
 
 ### Session 98 (Claude) — 2026-08-04
 - **Agent:** claude
