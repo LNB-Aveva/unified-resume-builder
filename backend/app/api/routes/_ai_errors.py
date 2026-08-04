@@ -13,6 +13,9 @@ logger = logging.getLogger(__name__)
 async def call_ai_service(coro: Awaitable[Any]) -> Any:
     try:
         return await coro
+    except BaseExceptionGroup as eg:
+        first = eg.exceptions[0]
+        await _raise_for_ai_exception(first)
     except CircuitBreakerOpenError:
         raise HTTPException(
             status_code=503,
@@ -52,3 +55,12 @@ async def call_ai_service(coro: Awaitable[Any]) -> Any:
     except Exception as e:
         logger.error("Unexpected AI error: %s: %s", type(e).__name__, e)
         raise HTTPException(status_code=500, detail="An internal error occurred.") from None
+
+
+async def _raise_for_ai_exception(exc: BaseException) -> None:
+    """Re-dispatch a single exception from an ExceptionGroup through typed handlers."""
+    await call_ai_service(_raise(exc))
+
+
+async def _raise(exc: BaseException) -> Any:
+    raise exc

@@ -4,9 +4,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Free ATS Score Checker — Check Your Resume Score Instantly",
   description:
-    "Free ATS score checker with no sign-up. Upload your resume and job description " +
+    "Free ATS score checker. Upload your resume and job description " +
     "to get an instant ATS match score, find missing keywords, and run 15 formatting " +
-    "compliance checks. 100% free.",
+    "compliance checks. 100% free with a free account.",
   keywords: [
     "ATS score checker free",
     "free ATS resume checker",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "Free ATS Score Checker | ResumeAI",
     description:
       "Get your ATS match score instantly. Find missing keywords and fix formatting " +
-      "issues that get your resume rejected. No sign-up, 100% free.",
+      "issues that get your resume rejected. 100% free with a free account.",
   },
   alternates: {
     canonical: "/ats-checker",
@@ -40,7 +40,7 @@ const faqItems = [
   },
   {
     q: "Can I check my resume for free?",
-    a: "Yes, completely free with no limits. Unlike other tools that restrict you to 2 free scans per month, ResumeAI lets you check your resume against as many job descriptions as you want. No sign-up, no credit card, no paywall.",
+    a: "Yes, completely free with no limits. Unlike other tools that restrict you to 2 free scans per month, ResumeAI lets you check your resume against as many job descriptions as you want. Free account, no credit card, no paywall.",
   },
   {
     q: "Does ATS check formatting too?",
@@ -119,7 +119,7 @@ export default function ATSCheckerPage() {
       <section className="mx-auto max-w-3xl px-4 pt-16 pb-12 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
           <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
-          Free &bull; No sign-up &bull; Unlimited scans
+          Free &bull; Free account &bull; Unlimited scans
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
@@ -294,7 +294,7 @@ export default function ATSCheckerPage() {
                   ["AI cover letter generator", true, false, false],
                   ["PDF export (3 templates)", true, false, false],
                   ["Unlimited free scans", true, false, false],
-                  ["No sign-up required", true, false, false],
+                  ["Free account (no credit card)", true, false, false],
                 ].map(([feature, us, jobscan, others]) => (
                   <tr key={feature as string}>
                     <td className="py-2.5 px-4 text-gray-700 dark:text-gray-300">
@@ -389,7 +389,7 @@ export default function ATSCheckerPage() {
             </span>
           </Link>
           <p className="text-xs text-gray-400 text-center">
-            Free ATS resume checker &mdash; 9 AI tools, no sign-up required.
+            Free ATS resume checker &mdash; 9 AI tools, free account required.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-400">
             <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">

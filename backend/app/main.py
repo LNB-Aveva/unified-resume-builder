@@ -128,8 +128,6 @@ class BodySizeLimitMiddleware:
             if declared > _MAX_BODY_BYTES:
                 await _send_413(scope, send)
                 return
-            await self.app(scope, receive, send)
-            return
 
         body = bytearray()
         more_body = True

@@ -159,7 +159,7 @@ export default async function BlogArticle({ params }: Props) {
           </h2>
           <p className="text-sm text-gray-500 mb-4 max-w-md mx-auto">
             Use our free ATS keyword extractor, gap analysis, and 15-rule
-            compliance checker. No sign-up required.
+            compliance checker. Try the keyword extractor free — no sign-up needed.
           </p>
           <Link
             href="/#demo"

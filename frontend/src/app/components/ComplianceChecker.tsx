@@ -93,7 +93,7 @@ export default function ComplianceChecker() {
           {/* Score row */}
           <div className="flex items-center gap-4">
             <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-2xl bg-white dark:bg-gray-800 ring-2 ring-gray-200 dark:ring-gray-700">
-              <span className={`text-3xl font-black ${result.overall_score >= 65 ? "text-emerald-600" : result.overall_score >= 50 ? "text-amber-600" : "text-red-600"}`}>
+              <span className={`text-3xl font-black ${result.overall_score >= 70 ? "text-emerald-600" : result.overall_score >= 50 ? "text-amber-600" : "text-red-600"}`}>
                 {result.overall_score}
               </span>
               <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">/ 100</span>

@@ -1,7 +1,7 @@
 import re
 
 from app.schemas.cover_letter import CoverLetterRequest, CoverLetterResponse
-from app.services.ai.hf_client import call_hf
+from app.services.ai.hf_client import MODEL, call_hf
 from app.services.ai.sanitizer import sanitize_for_prompt
 
 _MAX_TOKENS = 650
@@ -24,7 +24,7 @@ _TIPS_CONVERSATIONAL = [
 
 
 def _build_messages(req: CoverLetterRequest) -> list[dict]:
-    skills_line = f"Key skills: {req.skills.strip()}" if req.skills.strip() else ""
+    skills_line = f"Key skills: <<<{sanitize_for_prompt(req.skills.strip())}>>>" if req.skills.strip() else ""
 
     if req.tone == "conversational":
         tone_instructions = (
@@ -105,6 +105,6 @@ async def generate_cover_letter(req: CoverLetterRequest) -> CoverLetterResponse:
     return CoverLetterResponse(
         cover_letter=letter,
         word_count=word_count,
-        model_used="Qwen/Qwen2.5-7B-Instruct:fastest",
+        model_used=MODEL,
         tip=tip,
     )

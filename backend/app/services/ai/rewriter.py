@@ -3,7 +3,7 @@ import re
 import anyio
 
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse, RewrittenBullet
-from app.services.ai.hf_client import call_hf
+from app.services.ai.hf_client import MODEL, call_hf
 from app.services.ai.sanitizer import sanitize_for_prompt
 
 _MAX_TOKENS = 1200
@@ -218,6 +218,6 @@ async def rewrite_bullets(req: BulletRewriteRequest) -> BulletRewriteResponse:
 
     return BulletRewriteResponse(
         rewrites=rewrites,
-        model_used="Qwen/Qwen2.5-7B-Instruct:fastest",
+        model_used=MODEL,
         tip=tip,
     )

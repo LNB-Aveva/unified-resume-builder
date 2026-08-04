@@ -149,7 +149,7 @@ async def call_hf(
                 logger.warning("HF call attempt %d failed (%s), retrying in %.1fs", attempt + 1, exc, delay)
                 await asyncio.sleep(delay)
                 continue
-            if _is_retryable(exc) or was_probe:
+            if _is_retryable(exc) or isinstance(exc, RuntimeError) or was_probe:
                 _record_failure(was_probe)
             raise
 

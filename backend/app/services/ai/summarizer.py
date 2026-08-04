@@ -1,7 +1,7 @@
 import re
 
 from app.schemas.summary import SummaryRequest, SummaryResponse
-from app.services.ai.hf_client import call_hf
+from app.services.ai.hf_client import MODEL, call_hf
 from app.services.ai.sanitizer import sanitize_for_prompt
 
 _MAX_TOKENS = 200
@@ -16,7 +16,7 @@ _TIPS = [
 
 
 def _build_messages(req: SummaryRequest) -> list[dict]:
-    skills_line = f"Key skills: {req.skills.strip()}" if req.skills.strip() else ""
+    skills_line = f"Key skills: <<<{sanitize_for_prompt(req.skills.strip())}>>>" if req.skills.strip() else ""
     years_line = f"{req.years_experience}+ years of experience." if req.years_experience > 0 else ""
 
     system = (
@@ -67,6 +67,6 @@ async def generate_summary(req: SummaryRequest) -> SummaryResponse:
     return SummaryResponse(
         summary=summary,
         word_count=word_count,
-        model_used="Qwen/Qwen2.5-7B-Instruct:fastest",
+        model_used=MODEL,
         tip=tip,
     )
