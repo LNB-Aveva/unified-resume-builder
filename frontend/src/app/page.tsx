@@ -451,6 +451,94 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── ATS Ghosting Visualization ── */}
+      <ScrollReveal>
+        <section className="py-16 sm:py-20">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 rounded-full bg-red-50 dark:bg-red-950/50 border border-red-100 dark:border-red-800 px-4 py-1.5 text-xs font-semibold text-red-700 dark:text-red-300 mb-4">
+                <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                75% of resumes are rejected
+              </div>
+              <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+                What ATS Actually Sees
+              </h2>
+              <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+                ATS software doesn&apos;t read your resume like a human. It parses text fields and ignores everything else.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* What ATS Parses */}
+              <div className="rounded-2xl border border-emerald-200 dark:border-emerald-900/50 bg-white dark:bg-gray-800 p-6 sm:p-8">
+                <div className="flex items-center gap-2 mb-5">
+                  <svg className="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                  <h3 className="font-semibold text-emerald-700 dark:text-emerald-400 text-sm uppercase tracking-wider">Parsed by ATS</h3>
+                </div>
+                <div className="space-y-3 font-mono text-sm">
+                  <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 p-3">
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-sans font-medium mb-1">Job Title</p>
+                    <p className="text-gray-800 dark:text-gray-200">Senior Software Engineer</p>
+                  </div>
+                  <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 p-3">
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-sans font-medium mb-1">Skills (plain text)</p>
+                    <p className="text-gray-800 dark:text-gray-200">React, TypeScript, Python, AWS, Docker</p>
+                  </div>
+                  <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 p-3">
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-sans font-medium mb-1">Experience bullet</p>
+                    <p className="text-gray-800 dark:text-gray-200">Led migration to React 18, reducing load time by 40%</p>
+                  </div>
+                  <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 p-3">
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-sans font-medium mb-1">Dates</p>
+                    <p className="text-gray-800 dark:text-gray-200">Jan 2021 &ndash; Present</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* What ATS Ghosts */}
+              <div className="rounded-2xl border border-red-200 dark:border-red-900/50 bg-white dark:bg-gray-800 p-6 sm:p-8">
+                <div className="flex items-center gap-2 mb-5">
+                  <svg className="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                  <h3 className="font-semibold text-red-700 dark:text-red-400 text-sm uppercase tracking-wider">Ghosted by ATS</h3>
+                </div>
+                <div className="space-y-3 font-mono text-sm">
+                  <div className="rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50 p-3 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(239,68,68,0.05)_10px,rgba(239,68,68,0.05)_20px)]" />
+                    <p className="text-xs text-red-600 dark:text-red-400 font-sans font-medium mb-1 relative">Header image / logo</p>
+                    <p className="text-gray-400 dark:text-gray-500 line-through relative">Creative professional header with photo</p>
+                  </div>
+                  <div className="rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50 p-3 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(239,68,68,0.05)_10px,rgba(239,68,68,0.05)_20px)]" />
+                    <p className="text-xs text-red-600 dark:text-red-400 font-sans font-medium mb-1 relative">Skills in a table / columns</p>
+                    <p className="text-gray-400 dark:text-gray-500 line-through relative">&#9608;&#9608;&#9608;&#9608; &#9608;&#9608;&#9608; &#9608;&#9608;&#9608;&#9608;&#9608;</p>
+                  </div>
+                  <div className="rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50 p-3 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(239,68,68,0.05)_10px,rgba(239,68,68,0.05)_20px)]" />
+                    <p className="text-xs text-red-600 dark:text-red-400 font-sans font-medium mb-1 relative">Icons / graphics for skills</p>
+                    <p className="text-gray-400 dark:text-gray-500 line-through relative">&#9733;&#9733;&#9733;&#9733;&#9734; JavaScript</p>
+                  </div>
+                  <div className="rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50 p-3 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(239,68,68,0.05)_10px,rgba(239,68,68,0.05)_20px)]" />
+                    <p className="text-xs text-red-600 dark:text-red-400 font-sans font-medium mb-1 relative">Text in text boxes / shapes</p>
+                    <p className="text-gray-400 dark:text-gray-500 line-through relative">[Object] [Object] [Object]</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                ResumeAI checks your resume against these ATS pitfalls and tells you exactly what to fix.
+              </p>
+              <a href="#demo" className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition">
+                Try the free analyzer
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 13.5-7.5 7.5-7.5-7.5m15-7.5-7.5 7.5-7.5-7.5" /></svg>
+              </a>
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
+
       {/* ── Live Demo ── */}
       <section id="demo" className="py-20 sm:py-24 scroll-mt-20" style={{ contentVisibility: "auto", containIntrinsicSize: "auto 700px" }}>
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
@@ -1505,6 +1593,17 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* ── Floating Help Button ── */}
+      <a
+        href="#faq"
+        className="fixed bottom-6 right-6 z-40 h-12 w-12 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 hover:shadow-xl hover:scale-110 transition-all duration-200 flex items-center justify-center group"
+        aria-label="Help — go to FAQ"
+      >
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827m0 3h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+      </a>
     </div>
   );
 }
