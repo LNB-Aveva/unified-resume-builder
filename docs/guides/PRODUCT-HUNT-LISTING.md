@@ -4,7 +4,7 @@
 Free AI-powered ATS resume checker and optimizer
 
 ## Description (260 chars max)
-ResumeAI scans your resume against any job description, scores your ATS match (0-100), identifies missing keywords, rewrites bullets with missing skills, generates cover letters, and exports polished PDFs. 100% free, no signup required.
+ResumeAI scans your resume against any job description, scores your ATS match (0-100), identifies missing keywords, rewrites bullets with missing skills, generates cover letters, and exports polished PDFs. 100% free, no credit card required.
 
 ## Topics
 - Artificial Intelligence
@@ -24,14 +24,14 @@ Here's what it does:
 - Generates tailored cover letters in seconds
 - Exports clean, ATS-friendly PDFs
 
-Tech stack: Next.js + FastAPI + HuggingFace (Qwen2.5-7B). Fully open source.
+Tech stack: Next.js + FastAPI + HuggingFace (Qwen2.5-7B). Built with open-source tools.
 
-No signup, no paywall, no "premium tier" bait-and-switch. Just paste and go.
+Free account, no credit card, no paywall, no "premium tier" bait-and-switch. Sign up and go.
 
 Would love feedback on what features to add next!
 
 ## Maker Profile
-- Name: [Your name]
+- Name: Laxmi Narayana Bingi
 - One-liner: Full-stack developer building free tools for job seekers
 - Website: https://resumeai.cv
 
