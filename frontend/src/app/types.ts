@@ -85,5 +85,14 @@ export function connectionError(err: unknown): string {
       "This usually resolves within a minute — please try again shortly."
     );
   }
+  if (err instanceof SyntaxError || msg.includes("Unexpected token") || msg.includes("not valid JSON")) {
+    return (
+      "The server returned an unexpected response. " +
+      "It may be restarting — please wait 30–60 seconds and try again."
+    );
+  }
+  if (/^Server error:?\s*5\d\d$/.test(msg)) {
+    return "The server encountered a temporary error. Please try again shortly.";
+  }
   return msg || "Something went wrong. Please try again.";
 }
