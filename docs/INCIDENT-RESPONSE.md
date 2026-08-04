@@ -1,6 +1,6 @@
 # Incident Response Plan — ResumeAI
 
-Last updated: 2026-07-19
+Last updated: 2026-08-04
 
 ## Scope
 
@@ -73,8 +73,10 @@ This plan covers security incidents for resumeai.cv (frontend on Vercel, backend
 
 ## Contacts
 
-- Primary responder: Repository owner
+- **Launch owner / incident owner:** Laxmi Narayana Bingi
+- **Email:** support@resumeai.cv (public), bobby.bingo696@gmail.com (alerts)
+- **Monitoring:** UptimeRobot (email + push), Sentry (backend + frontend), GitHub Actions CI
+- **Rollback authority:** Laxmi Narayana Bingi (solo operator)
 - Render support: dashboard.render.com
 - Vercel support: vercel.com/support
-- Cloudflare: dash.cloudflare.com
-- Supabase: app.supabase.com
+- Supabase: supabase.com/dashboard

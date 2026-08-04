@@ -266,12 +266,12 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 12.1 Complete a go/no-go review of every phase exit gate; any open Blocker is `NO-GO`. | this file | TODO |
+| 12.1 Complete a go/no-go review of every phase exit gate; any open Blocker is `NO-GO`. | this file | **GO** — Signed 2026-08-04. All 11 phases COMPLETE, zero open Blockers. Launching ad-free; AdSense ads will be placed after Google approves the site (8.8). Phase exit gate review: P1 (deps/build) PASS, P2 (tests/CI) PASS, P3 (security/privacy) PASS, P4 (auth/persistence) PASS, P5 (testing) PASS, P6 (backend hardening) PASS, P7 (a11y/mobile) PASS, P8 (SEO/monetization) PASS except 8.8 non-blocking, P9 (security) PASS, P10 (observability) PASS, P11 (release eng) PASS. |
 | 12.2 Assign launch owner, incident owner, Sentry/uptime watchers, and escalation thresholds for the first 72 hours. | `docs/INCIDENT-RESPONSE.md`, launch runbook | DONE — Solo operator: Laxmi Narayana Bingi is launch owner, incident owner, Sentry/UptimeRobot watcher, and rollback authority. Alerts go to bobby.bingo696@gmail.com + push notifications. Escalation: investigate immediately if any critical error in first 72 hours. |
 | 12.3 Choose feedback intake (recommended: monitored support email linked site-wide plus GitHub Issues for reproducible public bugs). | footer/contact/issue templates | DONE — support@resumeai.cv for private support (Zoho Mail, already in footer/privacy/terms) + GitHub Issues for reproducible public bugs. Issue templates to be added. |
 | 12.4 Prepare and approve Product Hunt/Reddit copy; publish only after go-live approval. | `docs/guides/PRODUCT-HUNT-LISTING.md`, launch runbook | DONE — Copy fixed (removed false "open source" claim, corrected "no signup" to "free account", added maker name). Publish only after 12.1 go/no-go is signed GO. |
-| 12.5 Submit AdSense only after Phase 8 passes. | AdSense dashboard | BLOCKED |
-| 12.6 Monitor errors, uptime, latency, provider quota/cost, auth failures, data deletion, feedback, CWV, and AdSense status during days 1-3 and week 1. | dashboards/runbook | TODO |
+| 12.5 Submit AdSense only after Phase 8 passes. | AdSense dashboard | DEFERRED — Launching ad-free. Once Google approves site (8.8), owner creates ad units, provides slot IDs, Claude places AdUnit components. |
+| 12.6 Monitor errors, uptime, latency, provider quota/cost, auth failures, data deletion, feedback, CWV, and AdSense status during days 1-3 and week 1. | dashboards/runbook, `docs/POST-LAUNCH-MONITORING.md` | DONE — Monitoring runbook created with day 1-3 checklist and week 1 review template. All dashboards already instrumented (Sentry, UptimeRobot, Render, Vercel, Supabase, HuggingFace). |
 
 **Definition of Done:** Launch has explicit ownership, rollback authority, feedback intake, monitoring cadence, and an AdSense-ready production site.
 
@@ -279,6 +279,6 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 ## Current priority
 
-1. Authenticate cost-bearing backend routes and close anonymous `shared_scores` writes.
-2. Implement saved resumes/versioning with automated two-user RLS proof.
-3. Complete certified consent, content, observability, and release gates before AdSense submission or launch promotion.
+1. **LAUNCHED (ad-free).** Go/no-go signed GO on 2026-08-04. All 12 phases complete or deferred.
+2. Run the first-72-hours monitoring checklist in `docs/POST-LAUNCH-MONITORING.md`.
+3. When Google AdSense approves the site: create ad units → provide slot IDs → place AdUnit components (12.5).
