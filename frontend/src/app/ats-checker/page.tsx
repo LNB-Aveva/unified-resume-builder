@@ -362,7 +362,7 @@ export default function ATSCheckerPage() {
           <h2 className="text-2xl font-bold text-white mb-3">
             Stop getting filtered by ATS
           </h2>
-          <p className="text-indigo-200 text-sm mb-6 max-w-md mx-auto">
+          <p className="text-indigo-100 text-sm mb-6 max-w-md mx-auto">
             Check your resume against any job description. Get your score, find
             missing keywords, and fix formatting issues — all free.
           </p>
@@ -388,10 +388,10 @@ export default function ATSCheckerPage() {
               ResumeAI
             </span>
           </Link>
-          <p className="text-xs text-gray-400 text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
             Free ATS resume checker &mdash; 9 AI tools, free account required.
           </p>
-          <div className="flex items-center gap-4 text-xs text-gray-400">
+          <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
             <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">
               Home
             </Link>

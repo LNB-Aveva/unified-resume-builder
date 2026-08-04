@@ -123,7 +123,7 @@ const tools = [
 const colorMap: Record<string, { bg: string; text: string; border: string; btnBg: string }> = {
   indigo: { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-100", btnBg: "bg-indigo-600 hover:bg-indigo-700" },
   violet: { bg: "bg-violet-50", text: "text-violet-700", border: "border-violet-100", btnBg: "bg-violet-600 hover:bg-violet-700" },
-  emerald: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-100", btnBg: "bg-emerald-600 hover:bg-emerald-700" },
+  emerald: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-100", btnBg: "bg-emerald-700 hover:bg-emerald-800" },
 };
 
 export default function NewGradsPage() {
@@ -196,7 +196,7 @@ export default function NewGradsPage() {
             </a>
           </div>
 
-          <p className="mt-5 text-sm text-gray-400">9 free AI tools &mdash; keyword extractor requires no account</p>
+          <p className="mt-5 text-sm text-gray-500">9 free AI tools &mdash; keyword extractor requires no account</p>
         </div>
       </section>
 
@@ -239,7 +239,7 @@ export default function NewGradsPage() {
                 <div key={step} className={`rounded-2xl border ${c.border} ${c.bg} p-6 flex flex-col`}>
                   <div className={`text-xs font-bold ${c.text} uppercase tracking-widest mb-3`}>Step {step}</div>
                   <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed flex-1 mb-5">{body}</p>
+                  <p className="text-sm text-gray-600 leading-relaxed flex-1 mb-5">{body}</p>
                   <a
                     href={href}
                     className={`inline-flex items-center justify-center gap-1.5 rounded-xl ${c.btnBg} px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200`}
@@ -295,7 +295,7 @@ export default function NewGradsPage() {
 
       {/* Footer */}
       <footer className="border-t border-gray-100 py-8">
-        <div className="mx-auto max-w-4xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
+        <div className="mx-auto max-w-4xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
           <Link href="/" className="font-semibold text-gray-700 hover:text-indigo-600 transition">ResumeAI</Link>
           <div className="flex items-center gap-6">
             <Link href="/resume-checker-for-career-changers" className="hover:text-gray-700 transition">Career Changers</Link>

@@ -193,7 +193,7 @@ export default async function SharedScorePage({
         <div className="rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-indigo-700 p-8 sm:p-10 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.12),transparent_60%)]" />
           <div className="relative">
-            <p className="text-indigo-200 text-sm font-medium mb-3">Get your own score</p>
+            <p className="text-indigo-100 text-sm font-medium mb-3">Get your own score</p>
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
               How well does your resume match?
             </h2>
@@ -210,7 +210,7 @@ export default async function SharedScorePage({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
               </svg>
             </Link>
-            <p className="text-indigo-200 text-xs mt-4">9 free AI tools &middot; No credit card &middot; Sign up in 10 seconds</p>
+            <p className="text-indigo-100 text-xs mt-4">9 free AI tools &middot; No credit card &middot; Sign up in 10 seconds</p>
           </div>
         </div>
 

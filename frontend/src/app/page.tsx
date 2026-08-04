@@ -696,7 +696,7 @@ export default function Home() {
                         </svg>
                       ))}
                     </div>
-                    <span className="text-xs text-gray-400 dark:text-gray-400">{date}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{date}</span>
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                     &ldquo;{text}&rdquo;
