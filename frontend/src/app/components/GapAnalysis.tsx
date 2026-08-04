@@ -209,7 +209,7 @@ export default function GapAnalysis() {
                       </span>
                     ))
                   ) : (
-                    <p className="text-xs text-gray-400 italic">None matched</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 italic">None matched</p>
                   )}
                 </div>
               </div>
@@ -250,7 +250,7 @@ export default function GapAnalysis() {
                       </span>
                     ))
                   ) : (
-                    <p className="text-xs text-gray-400 italic">None matched</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 italic">None matched</p>
                   )}
                 </div>
               </div>

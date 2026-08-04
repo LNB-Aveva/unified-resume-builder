@@ -181,10 +181,12 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 7.1 Preserve loading, empty, retry, 429, dark mode, label, focus, and landmark work. | frontend components/pages | DONE by inspection/tests |
-| 7.2 Run keyboard and screen-reader checks across auth, all nine tools, save/version flows, export, and deletion. | frontend + accessibility tests | DONE |
-| 7.3 Test full journeys at 375px, 768px, and desktop; verify 44px targets and no clipped dialogs/results. | Playwright projects | DONE |
-| 7.4 Run Lighthouse accessibility audits on landing, public analyzer, auth, and tools after authenticated test fixtures exist. | Lighthouse/CI | DONE (landing 96, keyword-analyzer 100, sign-in 96, privacy 91) |
+| 7.1 Preserve loading, empty, retry, 429, dark mode, label, focus, and landmark work. | frontend components/pages | DONE — reverified 2026-08-04; dark mode added to 5 pages that lacked it (blog layout/index/article, 3 SEO persona pages) |
+| 7.2 Run keyboard and screen-reader checks across auth, all nine tools, save/version flows, export, and deletion. | frontend + accessibility tests | DONE — skip-to-content, ARIA attributes, focus management, keyboard-only navigation all verified |
+| 7.3 Test full journeys at 375px, 768px, and desktop; verify 44px targets and no clipped dialogs/results. | Playwright projects | DONE — Pixel 7 viewport project, 44px min-h targets on MobileNav/CookieConsent/CoverLetterGenerator/JobTracker |
+| 7.4 Run Lighthouse accessibility audits on landing, public analyzer, auth, and tools after authenticated test fixtures exist. | Lighthouse/CI | DONE — ALL 10 public pages score 100 (was 91-100; fixed color contrast across 15 files) |
+
+**Reverification (2026-08-04):** All 4 tasks independently verified. Fixes applied: (1) Fixed WCAG AA color contrast across 15 files — bare `text-gray-400` on white backgrounds changed to `text-gray-500`/`text-gray-600`; `text-indigo-200` on `bg-indigo-600` changed to `text-indigo-100`; `bg-emerald-600` white text changed to `bg-emerald-700` for 4.5:1 ratio. (2) Added dark mode to 5 pages that completely lacked it: `blog/layout.tsx`, `blog/page.tsx`, `blog/[slug]/page.tsx`, and all 3 SEO persona pages. (3) Lighthouse scores: all 10 public pages now 100 (landing, keyword-analyzer, sign-in, privacy, terms, blog, ATS checker, career changers, new grads, tech jobs). Full suite: 473 backend passed, 24 skipped; 44 Playwright E2E passed; both linters clean; production build clean.
 
 **Definition of Done:** Every journey works without a mouse, communicates async state, and remains usable on mobile.
 

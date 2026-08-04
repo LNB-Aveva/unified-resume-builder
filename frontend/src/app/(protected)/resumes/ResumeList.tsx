@@ -90,7 +90,7 @@ export default function ResumeList({ initial }: { initial: ResumeSummary[] }) {
                 </button>
                 <button
                   onClick={() => setEditingId(null)}
-                  className="text-xs text-gray-400 hover:text-gray-600 transition"
+                  className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
                 >
                   Cancel
                 </button>
