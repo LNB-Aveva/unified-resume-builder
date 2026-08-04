@@ -1,8 +1,9 @@
 """Tests for rate limiter cleanup, eviction, and concurrency."""
 
 import threading
+from datetime import UTC, datetime, timedelta
 
-from app.core.rate_limit import SlidingWindowRateLimiter
+from app.core.rate_limit import DailyQuotaLimiter, SlidingWindowRateLimiter
 
 
 class TestCleanupEviction:
@@ -96,3 +97,45 @@ class TestConcurrency:
         for ip, results in ip_results.items():
             allowed = sum(1 for r in results if r)
             assert allowed == 5, f"{ip} got {allowed} allowed, expected 5"
+
+
+class TestDailyQuotaLimiter:
+    def test_multiple_scopes_are_consumed_atomically(self):
+        now = datetime(2026, 8, 4, 12, tzinfo=UTC)
+        limiter = DailyQuotaLimiter(now_func=lambda: now)
+
+        assert limiter.check_many([("global", 10), ("user:a", 1)])[0] is True
+        allowed, blocked, retry_after = limiter.check_many([("global", 10), ("user:a", 1)])
+
+        assert allowed is False
+        assert blocked == "user:a"
+        assert retry_after == 12 * 60 * 60
+        assert limiter._counts["global"] == 1
+
+    def test_counters_reset_on_next_utc_day(self):
+        now = datetime(2026, 8, 4, 23, 59, tzinfo=UTC)
+        limiter = DailyQuotaLimiter(now_func=lambda: now)
+        assert limiter.check_many([("user:a", 1)])[0] is True
+        assert limiter.check_many([("user:a", 1)])[0] is False
+
+        now += timedelta(minutes=2)
+
+        assert limiter.check_many([("user:a", 1)])[0] is True
+
+    def test_concurrent_requests_respect_daily_limit(self):
+        limiter = DailyQuotaLimiter()
+        results: list[bool] = []
+        lock = threading.Lock()
+
+        def hammer():
+            allowed, _blocked, _retry = limiter.check_many([("global", 25), ("user:a", 25)])
+            with lock:
+                results.append(allowed)
+
+        threads = [threading.Thread(target=hammer) for _ in range(100)]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+
+        assert sum(results) == 25

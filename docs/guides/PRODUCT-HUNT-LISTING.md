@@ -4,7 +4,7 @@
 Free AI-powered ATS resume checker and optimizer
 
 ## Description (260 chars max)
-ResumeAI scans your resume against any job description, scores your ATS match (0-100), identifies missing keywords, rewrites bullets with missing skills, generates cover letters, and exports polished PDFs. 100% free, no credit card required.
+ResumeAI compares pasted resume text with an English job description, explains its taxonomy match score, identifies recognized keyword gaps, assists with rewrites and cover letters, and exports simple PDFs. No subscription fee today; fair-use limits apply.
 
 ## Topics
 - Artificial Intelligence

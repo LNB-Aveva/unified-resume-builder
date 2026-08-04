@@ -4,9 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "ATS Checker for New Grads — Get Your Entry-Level Resume Past ATS",
   description:
-    "75% of entry-level resumes are rejected before a human reads them. Our free ATS " +
-    "checker helps new grads find missing keywords, fix college resume formatting mistakes, " +
-    "and compete with experienced candidates. 100% free, no sign-up to try.",
+    "Our ATS-oriented checker helps new grads find recognized keyword gaps and review college resume text issues. No sign-up is needed for the public demo.",
   keywords: [
     "ATS checker for new grads",
     "ATS resume checker for college students",
@@ -52,7 +50,7 @@ const jsonLd = {
     (process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv") +
     "/ats-checker-for-new-grads",
   description:
-    "Free ATS resume checker for new graduates. Find missing keywords, fix college resume formatting mistakes, and pass the ATS filters that reject 75% of entry-level applications.",
+    "Free ATS-oriented resume checker for new graduates. Find recognized keyword gaps and review text-based resume checks.",
   mainEntity: {
     "@type": "FAQPage",
     mainEntity: faqItems.map(({ q, a }) => ({
@@ -96,8 +94,8 @@ const painPoints = [
 const tools = [
   {
     step: "1",
-    title: "Find every keyword the entry-level JD is scanning for",
-    body: "Paste any job description. Our NLP engine identifies every hard skill, tool, certification, and role-specific term — including ones you actually have from coursework and projects but forgot to list.",
+    title: "Find recognized terms in the entry-level job description",
+    body: "Paste an English job description. Our NLP engine identifies taxonomy skills, tools, certifications, and role-specific terms.",
     href: "/keyword-analyzer",
     cta: "Extract Keywords Free",
     color: "indigo",
@@ -173,9 +171,8 @@ export default function NewGradsPage() {
           </h1>
 
           <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-8 leading-relaxed">
-            75% of entry-level resumes are rejected by ATS before a recruiter sees them — not
-            because you&apos;re underqualified, but because your resume is missing the exact
-            keywords the system scans for. Our free tools find the gaps so you can close them.
+            Entry-level postings often use specific skills and role language. Our tools show
+            which recognized terms are present or missing; they do not predict a recruiter&apos;s decision.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -277,7 +274,7 @@ export default function NewGradsPage() {
             Land Your First Role — Start Free Today
           </h2>
           <p className="text-violet-100 mb-8">
-            9 free AI tools for new grads. No credit card. No limits. Just results.
+            9 free tools for new grads. No credit card. Fair-use limits apply to AI generation.
           </p>
           <a
             href="/sign-up"

@@ -1,6 +1,6 @@
 # Post-Launch Monitoring — First 72 Hours + Week 1
 
-> Go/no-go signed **GO** on 2026-08-04. Launching ad-free.
+> **NOT ACTIVE:** the 2026-08-04 adversarial re-audit superseded the earlier GO decision with **NO-GO**. Use this runbook only after every blocker in `docs/LAUNCH_READINESS_AUDIT.md` is proven closed.
 > Owner: Laxmi Narayana Bingi (bobby.bingo696@gmail.com)
 > Support: support@resumeai.cv
 

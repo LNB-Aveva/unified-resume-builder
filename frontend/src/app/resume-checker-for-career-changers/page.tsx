@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Resume Checker for Career Changers — Fix ATS Keyword Gaps",
   description:
     "Switching industries? ATS rejects career changers before a human reads them. " +
-    "Our free tool finds missing industry keywords, runs 15 formatting checks, and " +
+    "Our tool finds recognized industry keyword gaps, runs 15 text-based checks, and " +
     "shows you exactly how to make your transferable skills visible to recruiters.",
   keywords: [
     "resume checker for career changers",
@@ -32,7 +32,7 @@ const faqItems = [
   },
   {
     q: "How do I add keywords for a field I'm transitioning into?",
-    a: "Use the Keyword Extractor (Tool 1) to identify every keyword appearing in your target job description — hard skills, certifications, tools, and role-specific terms. Then review your experience for genuine equivalents you can honestly claim. Don't fabricate experience, but don't undersell transferable work either. If you used 'budget management' in your old role and the new JD says 'P&L ownership', that's the same concept — use the new vocabulary.",
+    a: "Use the Keyword Extractor (Tool 1) to identify recognized skills, certifications, tools, and role-specific terms in your target job description. Then review your experience for genuine equivalents you can honestly claim. Do not fabricate experience or assume two phrases are equivalent without comparing the responsibilities.",
   },
   {
     q: "Should my career change resume look different for ATS?",
@@ -96,8 +96,8 @@ const painPoints = [
 const tools = [
   {
     step: "1",
-    title: "Find every keyword your new industry uses",
-    body: "Paste any job description from your target field. Our NLP engine identifies every hard skill, tool, certification, and role-specific term ATS systems scan for — the exact vocabulary gap between your old industry and the new one.",
+    title: "Find recognized terms used in your new industry",
+    body: "Paste an English job description from your target field. Our NLP engine identifies taxonomy skills, tools, certifications, and role-specific terms.",
     href: "/keyword-analyzer",
     cta: "Extract Keywords Free",
     color: "indigo",
@@ -105,7 +105,7 @@ const tools = [
   {
     step: "2",
     title: "See your match score before you apply",
-    body: "Upload your resume against any job description. Get your ATS match percentage and a list of every missing keyword — so you know exactly what to add before submitting.",
+    body: "Paste your resume and an English job description. Get an explainable taxonomy percentage and missing recognized terms to review before submitting.",
     href: "/sign-up",
     cta: "Run Gap Analysis",
     color: "violet",
@@ -173,9 +173,8 @@ export default function CareerChangersPage() {
           </h1>
 
           <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-8 leading-relaxed">
-            75% of resumes are rejected by ATS before a recruiter ever sees them. For career
-            changers, the rejection rate is even higher — because ATS doesn&apos;t recognize
-            transferable experience, only exact industry keywords. Our free tools close that gap.
+            Career changes create a vocabulary problem: similar experience may be described
+            differently in a new field. Our tools highlight recognized language gaps; they do not predict hiring decisions.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

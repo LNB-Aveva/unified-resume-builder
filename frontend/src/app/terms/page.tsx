@@ -81,8 +81,8 @@ export default function TermsOfService() {
               Deleting a resume removes it and all of its versions. Account deletion removes all resumes, all version snapshots,
               jobs, profile data, and your authentication identity. Your JSON data export includes your account email and creation
               date, profile, jobs, saved-resume metadata, and all resume version snapshots. When you create a shareable ATS score
-              link, the score and matched and missing keyword lists expire 30 days after creation; expired records are removed by
-              the cleanup process based on their expiration timestamp.
+              link, the score and matched and missing keyword lists become inaccessible 30 days after creation; the expired
+              database row may remain until maintenance cleanup or account deletion.
             </p>
           </div>
         </section>
@@ -100,7 +100,8 @@ export default function TermsOfService() {
             When our AI provider experiences sustained outages, the system temporarily pauses AI requests to prevent degraded responses, automatically recovering when service is restored.
           </p>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
-            We use Sentry for backend error tracking. No resume content is transmitted to Sentry.
+            We use Sentry for frontend and backend error tracking. Application filters remove request bodies, credentials, cookies,
+            and stack-frame local variables before events are sent.
           </p>
         </section>
 

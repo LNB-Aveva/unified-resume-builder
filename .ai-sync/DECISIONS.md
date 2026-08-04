@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-030: Launch Reclassified NO-GO and Process-Local AI Quotas
+- **Date:** 2026-08-04
+- **Agent:** copilot
+- **Context:** An adversarial review found the recorded GO status relied on skipped production RLS tests, a non-certified consent banner, no backup restore, non-commercial/sleeping free hosting, and an unmeasured provider-routed LLM cost. Existing minute/IP limits did not bound daily account or aggregate AI use.
+- **Decision:** Treat every unverified production gate as failed; supersede the earlier GO status with NO-GO. Add atomic process-local UTC-day quotas of 20 authenticated generations per user, five public previews per IP, and 500 aggregate generations. Document that restarts reset them and that provider-side spend controls/persistent metering remain mandatory. The minimum fully hardened commercial baseline is a user budget decision, not something code may silently purchase.
+- **Alternatives Considered:** Keep the existing GO because the site is already reachable — rejected because reachability is not production proof. Rely only on per-minute IP limits — rejected because accounts and IPs can be rotated and the limits do not cap aggregate spend. Add Redis or a paid billing ledger immediately — rejected because it expands architecture and cost without owner approval.
+- **Files Affected:** `backend/app/core/rate_limit.py`, AI route files/tests, `docs/LAUNCH_READINESS_AUDIT.md`, `docs/LAUNCH_PROGRAM.md`, `docs/ENV_VARS.md`
+
 ### DEC-029: AnyIO Task Group for AI Rewrite Fallbacks (2026-08-03)
 - **Date:** 2026-08-03
 - **Agent:** copilot

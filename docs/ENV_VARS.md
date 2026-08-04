@@ -12,6 +12,9 @@ For local dev, copy `backend/.env.example` to `backend/.env`.
 | Variable | Required | Where set | Default | What it controls | What breaks without it |
 |----------|----------|-----------|---------|-----------------|----------------------|
 | `HUGGINGFACE_API_KEY` | Yes (for AI features) | Render dashboard / `.env` | `""` | Auth for HuggingFace Inference API | `/summary`, `/rewrite`, `/cover-letter`, `/preview-rewrite` return 503 |
+| `AI_DAILY_USER_LIMIT` | Yes (cost guard) | Render dashboard / `.env` | `20` | Per-account UTC-day AI generation quota | Default guard applies; process restart resets it |
+| `AI_DAILY_GLOBAL_LIMIT` | Yes (cost guard) | Render dashboard / `.env` | `500` | Process-wide UTC-day AI generation quota | Default guard applies; this is not a provider billing cap |
+| `AI_PREVIEW_DAILY_IP_LIMIT` | Yes (cost guard) | Render dashboard / `.env` | `5` | Per-IP UTC-day public preview quota | Default guard applies; distributed clients can use separate buckets |
 | `FRONTEND_URL` | Yes (production) | Render dashboard | `""` | CORS allowed origins (comma-separated) | Frontend requests blocked by CORS in production |
 | `PORT` | Auto | Injected by Render | `8000` | Server listen port | N/A — Render always injects this |
 | `RENDER` | Auto | Injected by Render | `""` | Detects production (disables /docs, enables HSTS) | Swagger UI stays enabled in production |

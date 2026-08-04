@@ -13,7 +13,7 @@ Screenshot of the ATS score page showing a resume being analyzed
 
 ## Article Body
 
-Every year, 75% of resumes are rejected by Applicant Tracking Systems before a human ever reads them. I built a free tool to fix that.
+Applicant Tracking Systems can parse resume text differently from people, and job descriptions often contain role language applicants overlook. I built a tool to make one part of that review explainable.
 
 **[ResumeAI](https://resumeai.cv)** analyzes your resume against any job description, scores your keyword match, and helps you optimize it — all without signing up or paying.
 
@@ -73,7 +73,7 @@ Both hosting services have generous free tiers:
 - **Vercel** (frontend): Auto-deploys from `main` branch, edge CDN, custom domain support
 - **Render** (backend): Free web service, auto-sleeps after 15min inactivity (cold starts take ~30s)
 
-Total monthly cost: $0 (domain registration excluded).
+The launch configuration used free service tiers (domain registration excluded). Provider limits and prices can change, so this is not a guaranteed ongoing cost.
 
 ### What I Learned
 
@@ -93,6 +93,6 @@ Feedback welcome — what features would make this more useful for your job sear
 
 ## Publishing Notes
 - Post on a Tuesday or Wednesday morning (9-11am ET) for max visibility
-- Cross-post to LinkedIn with #resumetips #ATS #jobsearch #opensource
+- Cross-post to LinkedIn with #resumetips #ATS #jobsearch #AI
 - Respond to every comment in first 2 hours
 - DA 70+ backlink from dev.to

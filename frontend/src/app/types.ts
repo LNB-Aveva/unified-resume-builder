@@ -72,6 +72,9 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000
 
 export function connectionError(err: unknown): string {
   const msg = err instanceof Error ? err.message : "";
+  if (msg.includes("timed out")) {
+    return "The request took too long and was stopped. Please try again.";
+  }
   if (msg === "Failed to fetch" || msg === "Load failed") {
     return (
       "Could not reach the API server. " +

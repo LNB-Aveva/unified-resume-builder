@@ -5,8 +5,8 @@ import AnalyzerDemo from "../components/AnalyzerDemo";
 export const metadata: Metadata = {
   title: "Free Resume Keyword Analyzer — Extract ATS Keywords from Any Job",
   description:
-    "Free ATS keyword analyzer. Paste any job description and instantly extract " +
-    "every keyword ATS systems scan for — hard skills, soft skills, certifications, " +
+    "Free ATS-oriented keyword analyzer. Paste an English job description and extract " +
+    "recognized hard skills, soft skills, certifications, " +
     "and job title variants. No sign-up required.",
   keywords: [
     "resume keyword analyzer",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const faqItems = [
   {
     q: "What is an ATS keyword analyzer?",
-    a: "An ATS keyword analyzer reads a job description and identifies every keyword that an Applicant Tracking System is likely to scan for when filtering resumes. This includes hard skills (Python, Excel), soft skills (leadership, collaboration), certifications (PMP, AWS Certified), tools (Jira, Salesforce), and job title variants. Knowing these keywords lets you tailor your resume to pass the automated filter.",
+    a: "An ATS-oriented keyword analyzer reads a job description and identifies terms recognized by its taxonomy. It cannot predict every employer's ATS rules or identify every relevant phrase.",
   },
   {
     q: "How does the keyword extraction work?",
@@ -52,7 +52,7 @@ const jsonLd = {
   url:
     (process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv") + "/keyword-analyzer",
   description:
-    "Free ATS keyword analyzer. Extract every keyword ATS systems scan for from any job description.",
+    "Free ATS-oriented keyword analyzer. Extract recognized skills and terms from an English job description.",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   offers: {
@@ -221,7 +221,7 @@ export default function KeywordAnalyzerPage() {
               {
                 step: "1",
                 title: "Extract keywords from the job posting",
-                body: "Paste the full job description into the keyword analyzer above. You'll get a categorised list of every keyword ATS is likely scanning for.",
+                body: "Paste the full English job description into the analyzer above. You'll get a categorized list of terms recognized by the current taxonomy.",
               },
               {
                 step: "2",
@@ -321,7 +321,7 @@ export default function KeywordAnalyzerPage() {
             </span>
           </Link>
           <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
-            Free ATS resume checker &mdash; 9 AI tools, no sign-up required.
+            Public keyword demo requires no sign-up. Full tools require a free account.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
             <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">

@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Request
 
 from app.api.routes._ai_errors import call_ai_service
-from app.core.rate_limit import limiter
+from app.core.rate_limit import enforce_preview_ai_quota, limiter
 from app.schemas.preview import BulletPreviewRequest, BulletPreviewResponse
 from app.services.ai.preview import preview_rewrite_bullet
 
@@ -22,5 +22,6 @@ router = APIRouter()
 )
 @limiter.limit("5/minute")
 async def preview_rewrite_route(request: Request, body: BulletPreviewRequest) -> BulletPreviewResponse:
+    enforce_preview_ai_quota(request)
     result = await call_ai_service(preview_rewrite_bullet(body.bullet))
     return BulletPreviewResponse(**result)

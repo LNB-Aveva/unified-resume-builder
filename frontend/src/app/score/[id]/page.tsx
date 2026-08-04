@@ -41,11 +41,15 @@ export async function generateMetadata({
   const { id } = await params;
   const score = await getScore(id);
   if (!score) {
-    return { title: "Score Not Found — ResumeAI" };
+    return {
+      title: "Score Not Found — ResumeAI",
+      robots: { index: false, follow: false },
+    };
   }
   const pct = Math.round(score.overall_score);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv";
   return {
+    robots: { index: false, follow: false },
     title: `${pct}% ATS Match Score — ResumeAI`,
     description: `${score.grade_label}. ${score.total_matched} of ${score.total_job_keywords} ATS keywords matched. Check your own resume score free at ResumeAI.`,
     openGraph: {

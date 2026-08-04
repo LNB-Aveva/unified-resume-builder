@@ -164,7 +164,7 @@ export default async function Image() {
             fontSize: 18,
           }}
         >
-          resumeai.cv · 100% free · Create a free account
+          resumeai.cv · No subscription fee today · Create an account
         </div>
       </div>
     ),

@@ -49,7 +49,7 @@ export default function PrivacyPolicy() {
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Error Data</h3>
-              <p>We use Sentry for backend error tracking. No resume content is transmitted to Sentry.</p>
+              <p>We use Sentry for frontend and backend error tracking. Application filters remove request bodies, authorization data, cookies, and stack-frame local variables before events are sent.</p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Browser Storage</h3>
@@ -76,10 +76,10 @@ export default function PrivacyPolicy() {
             to our FastAPI backend and forwarded to Hugging Face&apos;s inference API for processing. This data is:
           </p>
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
-            <li>Not stored or logged on our servers beyond the duration of the request</li>
-            <li>Not used to train any AI models</li>
+            <li>Not intentionally persisted by ResumeAI after the request completes; infrastructure and inference providers may retain limited operational data under their own policies</li>
+            <li>Not used by ResumeAI to train our own models</li>
             <li>Transmitted securely over HTTPS</li>
-            <li>Processed only for the purpose of generating your requested output</li>
+            <li>Submitted by ResumeAI only to generate your requested output and operate or secure the service</li>
           </ul>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
             When our AI provider experiences sustained outages, the system temporarily pauses AI requests to prevent degraded responses, automatically recovering when service is restored.
@@ -91,7 +91,7 @@ export default function PrivacyPolicy() {
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed">
             <li><strong>Supabase</strong> &mdash; Authentication and storage for account data, saved resumes, and job tracking</li>
             <li><strong>Hugging Face</strong> &mdash; AI inference for summary generation, bullet rewriting, and cover letter generation</li>
-            <li><strong>Sentry</strong> &mdash; Backend error tracking; no resume content is transmitted</li>
+            <li><strong>Sentry</strong> &mdash; Frontend and backend error tracking with application-level PII filtering</li>
             <li><strong>Vercel</strong> &mdash; Website hosting and deployment</li>
             <li><strong>Google Analytics</strong> &mdash; Anonymous usage analytics (loaded only with your consent)</li>
           </ul>
@@ -114,7 +114,7 @@ export default function PrivacyPolicy() {
               <li><strong>Account data</strong> (email, profile) &mdash; retained while your account is active and deleted when account deletion completes.</li>
               <li><strong>Job tracker entries</strong> &mdash; retained while your account is active. Deleted when you delete your account.</li>
               <li><strong>Saved resumes and versions</strong> &mdash; retained until you explicitly delete the resume or delete your account.</li>
-              <li><strong>Shareable ATS score links</strong> &mdash; expire 30 days after creation. Expired records are removed by the cleanup process based on their expiration timestamp.</li>
+              <li><strong>Shareable ATS score links</strong> &mdash; become inaccessible 30 days after creation. The underlying expired row may remain until maintenance cleanup or account deletion.</li>
             </ul>
           </div>
         </section>
@@ -157,7 +157,7 @@ export default function PrivacyPolicy() {
             <ul className="list-disc list-inside space-y-2 mt-3">
               <li><strong>Essential cookies</strong> &mdash; required for authentication session management (via Supabase). These cannot be disabled.</li>
               <li><strong>Analytics cookies</strong> &mdash; Google Analytics (GA4) is loaded only after you choose Accept.</li>
-              <li><strong>Advertising cookies</strong> &mdash; Google AdSense is loaded on every page and respects Google Consent Mode v2. When you choose Reject, no ad cookies are set and no personalized ads are shown. When you choose Accept, AdSense may set cookies for ad personalization and measurement.</li>
+              <li><strong>Advertising</strong> &mdash; the Google AdSense verification script may load when configured. Ad units are not currently displayed. Before ads are shown where required, a certified consent platform must collect the applicable regional consent.</li>
             </ul>
             <p>Your accepted or rejected choice is stored in your browser&apos;s localStorage under <code>cookie_consent</code>. You can reset that choice at any time using the cookie settings link in the site footer.</p>
           </div>

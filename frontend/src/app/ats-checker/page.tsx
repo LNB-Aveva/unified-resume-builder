@@ -4,9 +4,8 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Free ATS Score Checker — Check Your Resume Score Instantly",
   description:
-    "Free ATS score checker. Upload your resume and job description " +
-    "to get an instant ATS match score, find missing keywords, and run 15 formatting " +
-    "compliance checks. 100% free with a free account.",
+    "ATS-oriented score checker. Paste your resume and job description " +
+    "to get an explainable taxonomy match score, find missing recognized terms, and run 15 text-based checks.",
   keywords: [
     "ATS score checker free",
     "free ATS resume checker",
@@ -17,8 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Free ATS Score Checker | ResumeAI",
     description:
-      "Get your ATS match score instantly. Find missing keywords and fix formatting " +
-      "issues that get your resume rejected. 100% free with a free account.",
+      "Get an explainable taxonomy match score. Find missing recognized terms and review 15 text-based checks.",
   },
   alternates: {
     canonical: "/ats-checker",
@@ -40,7 +38,7 @@ const faqItems = [
   },
   {
     q: "Can I check my resume for free?",
-    a: "Yes, completely free with no limits. Unlike other tools that restrict you to 2 free scans per month, ResumeAI lets you check your resume against as many job descriptions as you want. Free account, no credit card, no paywall.",
+    a: "Yes. ResumeAI currently offers resume checks with a free account and no credit card. Fair-use and daily limits protect service availability, especially for AI generation.",
   },
   {
     q: "Does ATS check formatting too?",
@@ -127,9 +125,8 @@ export default function ATSCheckerPage() {
         </h1>
 
         <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto mb-8">
-          75% of resumes are rejected by ATS before a human reads them. Check
-          your ATS match score instantly — find missing keywords and formatting
-          issues that get your resume filtered out.
+          Compare your resume with an English job description, review recognized
+          keyword gaps, and inspect 15 text-based checks before you apply.
         </p>
 
         <Link
@@ -164,7 +161,7 @@ export default function ATSCheckerPage() {
               {
                 step: "1",
                 title: "Paste a job description",
-                body: "Our NLP engine extracts every keyword the ATS is scanning for — hard skills, soft skills, certifications, and job title variants.",
+                body: "Our NLP engine extracts recognized hard skills, soft skills, certifications, and job-title terms from its taxonomy.",
               },
               {
                 step: "2",
@@ -319,10 +316,10 @@ export default function ATSCheckerPage() {
                     Free
                   </td>
                   <td className="py-2.5 px-4 text-center text-gray-500 dark:text-gray-400">
-                    $50/mo
+                    Check current plan
                   </td>
                   <td className="py-2.5 px-4 text-center text-gray-500 dark:text-gray-400">
-                    $20-30/mo
+                    Check current plan
                   </td>
                 </tr>
               </tbody>

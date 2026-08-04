@@ -37,8 +37,8 @@ export const metadata: Metadata = {
 
   description:
     "Free ATS resume checker. Scan your resume for ATS keywords, " +
-    "get an instant match score, run 15 formatting checks, rewrite bullets with AI, " +
-    "and download ATS-safe PDFs. 9 tools, 100% free.",
+    "get an explainable match score, run 15 text-based checks, rewrite bullets with AI, " +
+    "and download simple PDFs. 9 tools with no subscription fee today.",
 
   // Keywords matter less to Google than they used to, but still help Bing and
   // give crawlers vocabulary to understand the page's topic.
@@ -66,8 +66,8 @@ export const metadata: Metadata = {
     title: "Free ATS Resume Checker & Keyword Analyzer | ResumeAI",
     description:
       "Free ATS resume checker. Scan for keywords, get your match " +
-      "score, run 15 formatting checks, rewrite bullets with AI, and export ATS-safe PDFs. " +
-      "9 tools. 100% free.",
+      "score, run 15 text-based checks, rewrite bullets with AI, and export simple PDFs. " +
+      "9 tools with no subscription fee today.",
     url: "/",
     images: [
       {

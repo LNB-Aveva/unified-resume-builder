@@ -14,7 +14,7 @@ export const blogPosts: BlogPost[] = [
     slug: "how-to-beat-ats-filters-2026",
     title: "How to Beat ATS Filters in 2026 — The Complete Guide",
     description:
-      "75% of resumes are rejected by ATS before a human reads them. Learn exactly how Applicant Tracking Systems work, what they scan for, and how to optimise your resume to pass every time.",
+      "Learn how Applicant Tracking Systems parse applications, where keyword comparison helps, and which resume details still need human review.",
     publishedAt: "2026-07-04",
     updatedAt: "2026-07-04",
     readingTime: "12 min read",
@@ -27,18 +27,18 @@ export const blogPosts: BlogPost[] = [
     ],
     sections: [
       {
-        heading: "What Is ATS and Why Does It Reject 75% of Resumes?",
+        heading: "What Is an ATS and What Does It Actually Do?",
         content: [
           "An Applicant Tracking System (ATS) is software that companies use to manage job applications. Before a recruiter ever sees your resume, ATS scans it, parses the text, extracts structured data (name, email, skills, work history), and scores you against the job description.",
-          "If your resume doesn't include the right keywords or uses formatting that the parser can't read, you're filtered out automatically — no matter how qualified you are. Studies from Jobscan and Harvard Business School estimate that 75% of resumes are rejected by ATS before reaching a human reviewer.",
-          "This isn't a problem limited to small companies. Over 99% of Fortune 500 companies use ATS, and the software has expanded to mid-market and startup hiring as well. The most common ATS platforms in 2026 include Workday, Greenhouse, Lever, iCIMS, Ashby, and SAP SuccessFactors.",
+          "A parser can miss or reorder content in a complex document, and an employer may search for particular qualifications. Neither outcome means every application is automatically scored or rejected, and no public checker can predict a specific employer's decision.",
+          "ATS products are used by organizations of many sizes. Common platforms include Workday, Greenhouse, Lever, iCIMS, Ashby, and SAP SuccessFactors, but each customer's configuration and workflow can differ.",
         ],
       },
       {
         heading: "The 6 Most Common ATS Platforms in 2026",
         content: [
           "Each ATS parses resumes slightly differently. Here are the platforms you're most likely to encounter:",
-          "Workday — used by large enterprises (60% of Fortune 500). Known for strict formatting requirements. Parses PDFs well but struggles with multi-column layouts.",
+          "Workday — used by many large employers. Resume parsing behavior can vary by configuration, file, and integrated service.",
           "Greenhouse — popular with tech companies and startups. Good at parsing modern resume formats but penalises missing keywords heavily.",
           "Lever — combines ATS with CRM. Relatively forgiving on formatting but keyword matching is strict.",
           "iCIMS — common in healthcare, finance, and government. Older parser technology — avoid complex formatting entirely.",
@@ -49,7 +49,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: "10 Formatting Rules Every ATS-Friendly Resume Must Follow",
         content: [
-          "ATS failures fall into two categories: missing keywords and unreadable formatting. Even if you have every keyword, bad formatting means the parser can't extract them. Follow these 10 rules:",
+          "Resume parsing can be affected by missing role language and hard-to-read document structure. These conservative practices reduce risk, but a pasted-text checker cannot inspect the original file layout:",
           "1. Use a single-column layout. Multi-column resumes confuse most ATS parsers because they read left-to-right, top-to-bottom. Two columns cause text to get interleaved.",
           "2. No images, graphics, or icons. ATS can't read visual elements. Your skills chart or headshot is invisible to the parser.",
           "3. Use standard section headings. Stick to 'Work Experience', 'Education', 'Skills', and 'Summary'. Creative headings like 'My Journey' or 'What I Bring' won't be recognised.",
@@ -75,7 +75,7 @@ export const blogPosts: BlogPost[] = [
         heading: "Step-by-Step: Checking Your Resume with ResumeAI",
         content: [
           "Here's how to use our free tool to check your resume against any job description:",
-          "Step 1: Go to ResumeAI and paste the job description into the ATS Keyword Extractor. The NLP engine identifies every keyword the ATS is likely scanning for — hard skills, soft skills, certifications, and job title variants.",
+          "Step 1: Go to ResumeAI and paste an English job description into the Keyword Extractor. The NLP engine identifies terms recognized by its taxonomy, including skills, certifications, and job-title terms.",
           "Step 2: Paste your resume into the Gap Analysis tool alongside the job description. You'll see a match score and a list of keywords that are present vs missing.",
           "Step 3: Run the ATS Compliance Checker to verify your formatting passes all 15 rules. This catches issues that prevent the parser from reading your resume even if the keywords are there.",
           "Step 4: Use the AI Bullet Rewriter to naturally incorporate missing keywords into your experience bullets — without inventing facts or experience you don't have.",
@@ -209,17 +209,17 @@ export const blogPosts: BlogPost[] = [
       {
         heading: "The Problem with Most 'Free' Resume Checkers",
         content: [
-          "Search for 'free ATS resume checker' and you'll find dozens of tools. But most of them follow the same playbook: offer 1-2 free scans, then lock the results behind a $30-50/month paywall.",
+          "Search for 'free ATS resume checker' and you'll find many products with different trial allowances, subscriptions, and feature limits. Verify current terms on the provider's official site.",
           "This is frustrating for job seekers who are often already financially stressed. You need to check your resume against every job description you apply to — not just one or two. A tool that limits you to 2 free scans per month isn't solving the problem.",
           "Beyond the paywall issue, most resume checkers only do keyword matching. They compare words in your resume to words in the job description and give you a percentage. That's useful, but it misses half the problem: formatting.",
-          "A resume can have every keyword perfectly matched and still get rejected if the ATS parser can't read the file. Tables, multi-column layouts, images, and custom fonts all break parsing. You need both keyword analysis AND formatting checks.",
+          "Document structure can affect parsing. ResumeAI accepts pasted text, so its compliance checker cannot see tables, columns, images, fonts, or margins in the source file; those require manual review or a real file parser.",
         ],
       },
       {
         heading: "What a Proper ATS Check Should Include",
         content: [
           "A complete ATS check needs three things:",
-          "1. Keyword extraction — Identify every keyword the ATS is likely scanning for in the job description. This goes beyond simple word frequency — it should detect hard skills, soft skills, certifications, tools, and job title variants.",
+          "1. Keyword extraction — Identify recognized job-description terms and disclose the taxonomy's language and coverage limits.",
           "2. Gap analysis — Compare your resume against those keywords and show exactly which ones are present vs missing, with a match score.",
           "3. Format compliance — Check your resume's structure against known ATS parsing rules: single-column layout, standard headings, no images, proper bullet characters, consistent dates, and more.",
           "Most tools do #1 and #2 at a basic level but skip #3 entirely. The best tools also help you fix the gaps — with AI-powered suggestions for rewriting bullets and generating content.",
@@ -229,10 +229,9 @@ export const blogPosts: BlogPost[] = [
         heading: "Feature Comparison: ResumeAI vs Jobscan vs Resume Worded vs Skillresy",
         content: [
           "Here's how the major ATS resume checkers compare on features, pricing, and limitations:",
-          "Jobscan — The market leader. Strong keyword matching with specific ATS platform detection (Workday, Greenhouse, etc.). Offers AI Optimize, Job Match, and LinkedIn optimisation. Price: $49.95/month after 2 free scans. Limitation: Free tier is extremely limited, and the monthly price is steep for job seekers.",
-          "Resume Worded — Good scoring algorithm with detailed feedback. Offers a 'Targeted Resume' tool and LinkedIn review. Price: $29/month after limited free checks. Limitation: AI suggestions are generic and don't account for your specific experience.",
-          "Skillresy — Newer entrant focused on skills matching. Clean interface with visual skill gap charts. Price: Free tier with limited scans, $19/month for full access. Limitation: Formatting checks are minimal.",
-          "ResumeAI — 9 tools including keyword extraction, gap analysis, 15-rule compliance checker, AI summary generator, AI cover letter generator, AI bullet rewriter, PDF export with 3 templates, and job application tracker. Price: Free with a free account, no usage limits. All features available immediately.",
+          "Jobscan and Resume Worded offer resume-targeting and feedback products. Their features, allowances, and prices can change; consult their official sites and privacy terms for a current comparison.",
+          "Competitor features and prices change frequently, so verify them on each provider's official site. Compare language support, scoring transparency, file parsing, privacy, retention, and usage limits—not just the headline score.",
+          "ResumeAI includes keyword extraction, gap analysis, 15 text-based checks, optional AI drafting tools, PDF export with three templates, and a job application tracker. It currently has no subscription fee, but fair-use and provider limits apply.",
         ],
       },
       {

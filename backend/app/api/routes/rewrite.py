@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.api.routes._ai_errors import call_ai_service
 from app.core.auth import require_auth
-from app.core.rate_limit import limiter
+from app.core.rate_limit import enforce_authenticated_ai_quota, limiter
 from app.schemas.rewriter import BulletRewriteRequest, BulletRewriteResponse
 from app.services.ai.rewriter import rewrite_bullets
 
@@ -27,4 +27,5 @@ async def rewrite_bullets_route(request: Request, request_body: BulletRewriteReq
     if not request_body.bullets.strip():
         raise HTTPException(status_code=422, detail="bullets cannot be empty.")
 
+    enforce_authenticated_ai_quota(_user_id)
     return await call_ai_service(rewrite_bullets(request_body))

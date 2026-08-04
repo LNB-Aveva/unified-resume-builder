@@ -78,8 +78,14 @@ export async function createResume(
       resume_text: resumeText ?? null,
     });
 
-  if (versionErr)
+  if (versionErr) {
+    await supabase
+      .from("resumes")
+      .delete()
+      .eq("id", resume.id)
+      .eq("user_id", user.id);
     return { id: "", error: "Failed to save version." };
+  }
 
   return { id: resume.id };
 }
@@ -104,26 +110,38 @@ export async function saveVersion(
 
   if (!resume) return { version: 0, error: "Resume not found." };
 
-  const { data: latest } = await supabase
-    .from("resume_versions")
-    .select("version_number")
-    .eq("resume_id", resumeId)
-    .order("version_number", { ascending: false })
-    .limit(1)
-    .single();
+  let savedVersion = 0;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const { data: latest, error: latestError } = await supabase
+      .from("resume_versions")
+      .select("version_number")
+      .eq("resume_id", resumeId)
+      .order("version_number", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-  const nextVersion = (latest?.version_number ?? 0) + 1;
+    if (latestError) return { version: 0, error: "Failed to read resume versions." };
 
-  const { error: versionErr } = await supabase
-    .from("resume_versions")
-    .insert({
+    const nextVersion = (latest?.version_number ?? 0) + 1;
+    const { error: versionError } = await supabase.from("resume_versions").insert({
       resume_id: resumeId,
       version_number: nextVersion,
       resume_data: data,
       resume_text: resumeText ?? null,
     });
 
-  if (versionErr) return { version: 0, error: "Failed to save version." };
+    if (!versionError) {
+      savedVersion = nextVersion;
+      break;
+    }
+    if (versionError.code !== "23505") {
+      return { version: 0, error: "Failed to save version." };
+    }
+  }
+
+  if (!savedVersion) {
+    return { version: 0, error: "Another save happened at the same time. Please try again." };
+  }
 
   await supabase
     .from("resumes")
@@ -131,7 +149,7 @@ export async function saveVersion(
     .eq("id", resumeId)
     .eq("user_id", user.id);
 
-  return { version: nextVersion };
+  return { version: savedVersion };
 }
 
 export async function listResumes(): Promise<ResumeSummary[]> {

@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Resume Checker for Tech Jobs — Match Every Keyword in the Job Description",
+  title: "Resume Checker for Tech Jobs — Review Job Description Keywords",
   description:
     "Software engineers and developers: ATS rejects tech resumes for missing specific " +
     "technologies, not missing skills. Our free keyword extractor shows exactly which tools, " +
-    "languages, and frameworks the job description requires. 100% free.",
+    "languages, and frameworks its taxonomy recognizes. No subscription fee today.",
   keywords: [
     "resume checker for tech jobs",
     "ATS resume checker software engineer",
@@ -105,7 +105,7 @@ const tools = [
   {
     step: "2",
     title: "See your exact technology match score",
-    body: "Upload your resume against any tech job description. Get your ATS percentage and a clear list of which technologies you have, which you're missing, and how many to add to hit the 70%+ threshold. Know before you apply.",
+    body: "Paste your resume and an English tech job description. Get an explainable taxonomy percentage and a list of recognized technologies found or missing.",
     href: "/sign-up",
     cta: "Run Gap Analysis",
     color: "violet",
@@ -274,7 +274,7 @@ export default function TechJobsPage() {
       <section className="py-16 bg-gradient-to-r from-emerald-600 to-indigo-600">
         <div className="mx-auto max-w-2xl px-4 text-center">
           <h2 className="font-[family-name:var(--font-display)] text-3xl font-bold text-white mb-4">
-            Match Every Keyword. Land the Tech Role.
+            Review the Keywords. Improve the Draft.
           </h2>
           <p className="text-emerald-100 mb-8">
             9 free AI tools for software engineers. No credit card. Unlimited scans.

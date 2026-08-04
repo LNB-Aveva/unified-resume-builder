@@ -6,7 +6,9 @@ import threading
 import time
 from collections import deque
 from collections.abc import Callable
+from datetime import UTC, datetime, timedelta
 
+from fastapi import HTTPException
 from slowapi import Limiter
 from starlette.requests import Request
 
@@ -91,3 +93,81 @@ class SlidingWindowRateLimiter:
 
 
 global_ip_limiter = SlidingWindowRateLimiter()
+
+
+def _positive_env_int(name: str, default: int) -> int:
+    try:
+        return max(1, int(os.getenv(name, str(default)) or str(default)))
+    except ValueError:
+        return default
+
+
+class DailyQuotaLimiter:
+    """Atomic in-memory UTC-day quotas for one or more request scopes.
+
+    This is a last-line cost guard for the single Render process. It is not a
+    substitute for a persistent, distributed billing ledger: process restarts
+    reset counters and multiple instances would each have independent quotas.
+    """
+
+    def __init__(self, now_func: Callable[[], datetime] | None = None) -> None:
+        self._now_func = now_func or (lambda: datetime.now(UTC))
+        self._day = self._now_func().date()
+        self._counts: dict[str, int] = {}
+        self._lock = threading.Lock()
+
+    def check_many(self, quotas: list[tuple[str, int]]) -> tuple[bool, str | None, int]:
+        """Consume all quotas atomically, or consume none and report the blocked scope."""
+        now = self._now_func()
+        day = now.date()
+        with self._lock:
+            if day != self._day:
+                self._day = day
+                self._counts.clear()
+
+            for key, limit in quotas:
+                if self._counts.get(key, 0) >= limit:
+                    next_day = datetime.combine(day + timedelta(days=1), datetime.min.time(), tzinfo=UTC)
+                    retry_after = max(1, math.ceil((next_day - now).total_seconds()))
+                    return False, key, retry_after
+
+            for key, _limit in quotas:
+                self._counts[key] = self._counts.get(key, 0) + 1
+            return True, None, 0
+
+
+AI_DAILY_USER_LIMIT = _positive_env_int("AI_DAILY_USER_LIMIT", 20)
+AI_DAILY_GLOBAL_LIMIT = _positive_env_int("AI_DAILY_GLOBAL_LIMIT", 500)
+AI_PREVIEW_DAILY_IP_LIMIT = _positive_env_int("AI_PREVIEW_DAILY_IP_LIMIT", 5)
+ai_daily_limiter = DailyQuotaLimiter()
+
+
+def enforce_authenticated_ai_quota(user_id: str) -> None:
+    """Limit authenticated AI generations by user and total provider budget."""
+    allowed, blocked_scope, retry_after = ai_daily_limiter.check_many(
+        [("global", AI_DAILY_GLOBAL_LIMIT), (f"user:{user_id}", AI_DAILY_USER_LIMIT)]
+    )
+    if not allowed:
+        detail = (
+            "AI generation is temporarily at its daily capacity. Please try again tomorrow."
+            if blocked_scope == "global"
+            else "You have reached today's AI generation limit. Please try again tomorrow."
+        )
+        raise HTTPException(status_code=429, detail=detail, headers={"Retry-After": str(retry_after)})
+
+
+def enforce_preview_ai_quota(request: Request) -> None:
+    """Limit the unauthenticated demo by client IP and total provider budget."""
+    allowed, blocked_scope, retry_after = ai_daily_limiter.check_many(
+        [
+            ("global", AI_DAILY_GLOBAL_LIMIT),
+            (f"preview:{get_client_ip(request)}", AI_PREVIEW_DAILY_IP_LIMIT),
+        ]
+    )
+    if not allowed:
+        detail = (
+            "AI generation is temporarily at its daily capacity. Please try again tomorrow."
+            if blocked_scope == "global"
+            else "This preview has reached its daily limit. Create an account or try again tomorrow."
+        )
+        raise HTTPException(status_code=429, detail=detail, headers={"Retry-After": str(retry_after)})

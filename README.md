@@ -22,7 +22,7 @@ An all-in-one platform for ATS scoring, keyword gap analysis, AI-powered resume 
 | Backend | Python 3.13 + FastAPI | Async API, Pydantic validation |
 | Auth + DB | Supabase (PostgreSQL) | Auth, RLS, profiles, job tracking |
 | NLP | JSON skill taxonomy + regex/synonym matching | 220+ skills, 65+ synonym groups |
-| AI | HuggingFace Inference API (Qwen2.5-Coder-32B) | Resume rewriting, summaries, cover letters |
+| AI | Hugging Face Inference Providers (Qwen2.5-7B-Instruct, provider-routed) | Resume rewriting, summaries, cover letters |
 | PDF | fpdf2 | Pure-Python PDF generation (no system deps) |
 | Hosting | Vercel (frontend) + Render (backend) | Free-tier deployment |
 
@@ -53,7 +53,7 @@ See [docs/ENV_VARS.md](docs/ENV_VARS.md) for the full environment variable matri
 
 ## Project Status
 
-Launched and live at [resumeai.cv](https://resumeai.cv). See [docs/LAUNCH_PROGRAM.md](docs/LAUNCH_PROGRAM.md) for the phased roadmap and backlog.
+The public site is reachable at [resumeai.cv](https://resumeai.cv), but the current launch review is **NO-GO** for a hardened, monetized launch. Production RLS/deletion proof, recoverable backups, non-sleeping commercial hosting, a measured LLM spend cap, and a certified consent platform remain exit gates. See [docs/LAUNCH_READINESS_AUDIT.md](docs/LAUNCH_READINESS_AUDIT.md) and [docs/LAUNCH_PROGRAM.md](docs/LAUNCH_PROGRAM.md).
 
 ## License
 

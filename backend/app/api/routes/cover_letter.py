@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.api.routes._ai_errors import call_ai_service
 from app.core.auth import require_auth
-from app.core.rate_limit import limiter
+from app.core.rate_limit import enforce_authenticated_ai_quota, limiter
 from app.schemas.cover_letter import CoverLetterRequest, CoverLetterResponse
 from app.services.ai.cover_letter import generate_cover_letter
 
@@ -30,4 +30,5 @@ async def create_cover_letter(request: Request, request_body: CoverLetterRequest
     if not request_body.experience_summary.strip():
         raise HTTPException(status_code=422, detail="experience_summary cannot be empty.")
 
+    enforce_authenticated_ai_quota(_user_id)
     return await call_ai_service(generate_cover_letter(request_body))

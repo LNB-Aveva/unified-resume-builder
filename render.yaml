@@ -15,10 +15,11 @@
 #   5. Deploy — Render runs buildCommand, then startCommand
 #
 # FREE TIER NOTES:
-#   - 750 hours/month free (enough for one always-on service)
-#   - Spins down after 15 min inactivity → first request takes ~30-60s to wake up
-#   - The frontend already shows loading spinners so this is handled gracefully
-#   - 512 MB RAM — sufficient for FastAPI + NLP libraries
+#   - Render documents Free as a hobby/testing tier, not a production tier.
+#   - It spins down after 15 min inactivity; wake-up can take about one minute.
+#   - The frontend bounds waits and reports timeouts, but that does not make the
+#     cold start launch-grade. Upgrade `plan` to `starter` only after owner approval.
+#   - 512 MB RAM is sufficient for the current taxonomy/regex + fpdf2 runtime.
 
 services:
   - type: web
@@ -65,6 +66,15 @@ services:
       # Sentry error reporting DSN (optional but recommended).
       - key: SENTRY_DSN
         sync: false
+
+      # Process-local AI cost guards. These reset on restart and supplement,
+      # rather than replace, a provider-side billing cap.
+      - key: AI_DAILY_USER_LIMIT
+        value: "20"
+      - key: AI_DAILY_GLOBAL_LIMIT
+        value: "500"
+      - key: AI_PREVIEW_DAILY_IP_LIMIT
+        value: "5"
 
       # Marks the deployment as production (enables HSTS, hides /docs).
       - key: ENV

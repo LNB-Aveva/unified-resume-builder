@@ -50,8 +50,13 @@ function loadJobsLocal(): TrackedJob[] {
   }
 }
 
-function saveJobsLocal(jobs: TrackedJob[]): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+function saveJobsLocal(jobs: TrackedJob[]): boolean {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 // ── Supabase helpers ──
@@ -60,11 +65,12 @@ async function ensureAnonSession(): Promise<string | null> {
   const sb = getSupabase();
   if (!sb) return null;
 
-  const { data: { session } } = await sb.auth.getSession();
+  const { data: { session }, error: sessionError } = await sb.auth.getSession();
+  if (sessionError) throw sessionError;
   if (session?.user?.id) return session.user.id;
 
   const { data, error } = await sb.auth.signInAnonymously();
-  if (error || !data.user) return null;
+  if (error || !data.user) throw error ?? new Error("Could not create a session.");
   return data.user.id;
 }
 
@@ -81,7 +87,8 @@ async function loadJobsSupabase(): Promise<TrackedJob[]> {
     .eq("user_id", userId)
     .order("date_added", { ascending: false });
 
-  if (error || !data) return [];
+  if (error) throw error;
+  if (!data) return [];
 
   return data.map((row) => ({
     id: row.id,
@@ -96,25 +103,29 @@ async function loadJobsSupabase(): Promise<TrackedJob[]> {
 }
 
 async function insertJobSupabase(job: TrackedJob): Promise<boolean> {
-  const sb = getSupabase();
-  if (!sb) return false;
+  try {
+    const sb = getSupabase();
+    if (!sb) return false;
 
-  const userId = await ensureAnonSession();
-  if (!userId) return false;
+    const userId = await ensureAnonSession();
+    if (!userId) return false;
 
-  const { error } = await sb.from("jobs").insert({
-    id: job.id,
-    user_id: userId,
-    company: job.company,
-    title: job.title,
-    url: job.url || null,
-    status: job.status,
-    notes: job.notes || null,
-    resume_id: job.resumeId || null,
-    date_added: job.dateAdded,
-  });
+    const { error } = await sb.from("jobs").insert({
+      id: job.id,
+      user_id: userId,
+      company: job.company,
+      title: job.title,
+      url: job.url || null,
+      status: job.status,
+      notes: job.notes || null,
+      resume_id: job.resumeId || null,
+      date_added: job.dateAdded,
+    });
 
-  return !error;
+    return !error;
+  } catch {
+    return false;
+  }
 }
 
 async function loadResumesSupabase(): Promise<ResumeBrief[]> {
@@ -135,25 +146,33 @@ async function loadResumesSupabase(): Promise<ResumeBrief[]> {
 }
 
 async function updateJobSupabase(id: string, fields: Partial<{ status: string; notes: string; resume_id: string | null }>): Promise<boolean> {
-  const sb = getSupabase();
-  if (!sb) return false;
+  try {
+    const sb = getSupabase();
+    if (!sb) return false;
 
-  const userId = await ensureAnonSession();
-  if (!userId) return false;
+    const userId = await ensureAnonSession();
+    if (!userId) return false;
 
-  const { error } = await sb.from("jobs").update(fields).eq("id", id).eq("user_id", userId);
-  return !error;
+    const { error } = await sb.from("jobs").update(fields).eq("id", id).eq("user_id", userId);
+    return !error;
+  } catch {
+    return false;
+  }
 }
 
 async function deleteJobSupabase(id: string): Promise<boolean> {
-  const sb = getSupabase();
-  if (!sb) return false;
+  try {
+    const sb = getSupabase();
+    if (!sb) return false;
 
-  const userId = await ensureAnonSession();
-  if (!userId) return false;
+    const userId = await ensureAnonSession();
+    if (!userId) return false;
 
-  const { error } = await sb.from("jobs").delete().eq("id", id).eq("user_id", userId);
-  return !error;
+    const { error } = await sb.from("jobs").delete().eq("id", id).eq("user_id", userId);
+    return !error;
+  } catch {
+    return false;
+  }
 }
 
 // ── Component ──
@@ -175,22 +194,28 @@ export default function JobTracker() {
 
   const [filterStatus, setFilterStatus] = useState<Status | "All">("All");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [syncError, setSyncError] = useState("");
 
   useEffect(() => {
     async function init() {
-      if (supabaseEnabled) {
-        const sessionReady = await ensureAnonSession();
-        const sbJobs = sessionReady ? await loadJobsSupabase() : [];
-        if (sessionReady) {
+      try {
+        if (supabaseEnabled) {
+          const sessionReady = await ensureAnonSession();
+          const sbJobs = sessionReady ? await loadJobsSupabase() : [];
           // Migrate any localStorage jobs to Supabase on first connect
           const localJobs = loadJobsLocal();
           if (localJobs.length > 0 && sbJobs.length === 0) {
+            let migratedAll = true;
             for (const job of localJobs) {
-              await insertJobSupabase(job);
+              migratedAll = (await insertJobSupabase(job)) && migratedAll;
             }
-            const migrated = await loadJobsSupabase();
-            setJobs(migrated);
-            localStorage.removeItem(STORAGE_KEY);
+            if (migratedAll) {
+              setJobs(await loadJobsSupabase());
+              localStorage.removeItem(STORAGE_KEY);
+            } else {
+              setJobs(localJobs);
+              setSyncError("Some jobs could not be copied to cloud storage. Browser copies were preserved.");
+            }
           } else {
             setJobs(sbJobs);
           }
@@ -200,16 +225,23 @@ export default function JobTracker() {
         } else {
           setJobs(loadJobsLocal());
         }
-      } else {
+      } catch {
         setJobs(loadJobsLocal());
+        setUseSupabase(false);
+        setSyncError("Cloud job data is unavailable. Showing browser-saved jobs; cloud jobs may be missing.");
+      } finally {
+        setIsHydrated(true);
       }
-      setIsHydrated(true);
     }
     init();
   }, []);
 
   const persistLocal = useCallback((updated: TrackedJob[]) => {
-    if (!useSupabase) saveJobsLocal(updated);
+    if (!useSupabase && !saveJobsLocal(updated)) {
+      setSyncError("This change could not be saved in your browser.");
+      return false;
+    }
+    return true;
   }, [useSupabase]);
 
   const counts = useMemo(() => {
@@ -240,10 +272,13 @@ export default function JobTracker() {
     };
 
     const updated = [newJob, ...jobs];
+    if (useSupabase && !(await insertJobSupabase(newJob))) {
+      setSyncError("The job was not saved. Your existing cloud data was not changed.");
+      return;
+    }
+    if (!useSupabase && !persistLocal(updated)) return;
     setJobs(updated);
-    persistLocal(updated);
-
-    if (useSupabase) await insertJobSupabase(newJob);
+    setSyncError("");
 
     setCompany(""); setTitle(""); setUrl(""); setNotes(""); setSelectedResumeId("");
     setFormError("");
@@ -252,18 +287,24 @@ export default function JobTracker() {
 
   async function handleStatusChange(id: string, status: Status) {
     const updated = jobs.map((j) => j.id === id ? { ...j, status } : j);
+    if (useSupabase && !(await updateJobSupabase(id, { status }))) {
+      setSyncError("The status change was not saved. Please try again.");
+      return;
+    }
+    if (!useSupabase && !persistLocal(updated)) return;
     setJobs(updated);
-    persistLocal(updated);
-
-    if (useSupabase) await updateJobSupabase(id, { status });
+    setSyncError("");
   }
 
   async function handleResumeChange(id: string, resumeId: string | null) {
     const updated = jobs.map((j) => j.id === id ? { ...j, resumeId } : j);
+    if (useSupabase && !(await updateJobSupabase(id, { resume_id: resumeId }))) {
+      setSyncError("The resume link was not saved. Please try again.");
+      return;
+    }
+    if (!useSupabase && !persistLocal(updated)) return;
     setJobs(updated);
-    persistLocal(updated);
-
-    if (useSupabase) await updateJobSupabase(id, { resume_id: resumeId });
+    setSyncError("");
   }
 
   const notesTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -276,18 +317,23 @@ export default function JobTracker() {
     if (useSupabase) {
       if (notesTimerRef.current) clearTimeout(notesTimerRef.current);
       notesTimerRef.current = setTimeout(() => {
-        updateJobSupabase(id, { notes: newNotes });
+        void updateJobSupabase(id, { notes: newNotes }).then((saved) => {
+          if (!saved) setSyncError("Your latest notes were not saved. Copy them before leaving this page.");
+        });
       }, 500);
     }
   }
 
   async function handleDelete(id: string) {
     const updated = jobs.filter((j) => j.id !== id);
+    if (useSupabase && !(await deleteJobSupabase(id))) {
+      setSyncError("The job was not deleted. Please try again.");
+      return;
+    }
+    if (!useSupabase && !persistLocal(updated)) return;
     setJobs(updated);
-    persistLocal(updated);
+    setSyncError("");
     if (expandedId === id) setExpandedId(null);
-
-    if (useSupabase) await deleteJobSupabase(id);
   }
 
   if (!isHydrated) {
@@ -300,6 +346,12 @@ export default function JobTracker() {
 
   return (
     <div className="space-y-6">
+
+      {syncError && (
+        <div role="alert" className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100">
+          {syncError}
+        </div>
+      )}
 
       {/* ── Header row: status filter pills + Add button ── */}
       <div className="flex flex-wrap items-center justify-between gap-3">

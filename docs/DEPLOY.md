@@ -44,22 +44,45 @@ Before pushing to main:
 ## Rollback
 
 ### Frontend (Vercel)
-1. Go to Vercel dashboard > Deployments
-2. Find the last good deployment
-3. Click "..." > "Promote to Production"
-4. Takes effect in ~30 seconds
+
+From the linked frontend directory, inspect errors and roll back to the immediately previous production deployment:
+
+```powershell
+Push-Location .\frontend
+npx vercel logs --environment production --status-code 5xx --since 30m
+npx vercel rollback
+npx vercel rollback status
+Pop-Location
+Invoke-WebRequest -Uri 'https://resumeai.cv' -UseBasicParsing -TimeoutSec 30
+```
+
+Vercel Hobby can roll back only to the immediately previous production deployment. Undo with `npx vercel promote <deployment-url>`.
 
 ### Backend (Render)
-1. Go to Render dashboard > Events
-2. Find the last good deploy
-3. Click "Rollback to this deploy"
-4. Service restarts in ~60 seconds
+
+Set `RENDER_API_KEY`, `RENDER_SERVICE_ID`, and `RENDER_GOOD_DEPLOY_ID` as process-only environment values, then run:
+
+```powershell
+$renderHeaders = @{
+  Authorization = "Bearer $env:RENDER_API_KEY"
+  Accept = 'application/json'
+  'Content-Type' = 'application/json'
+}
+$rollbackBody = @{ deployId = $env:RENDER_GOOD_DEPLOY_ID } | ConvertTo-Json
+Invoke-RestMethod -Method Post `
+  -Uri "https://api.render.com/v1/services/$env:RENDER_SERVICE_ID/rollback" `
+  -Headers $renderHeaders `
+  -Body $rollbackBody
+Invoke-RestMethod -Uri 'https://unified-resume-builder-api.onrender.com/health' -TimeoutSec 90
+```
+
+Render rollback does not disable automatic deploys. Do not merge or push the bad revision again.
 
 ### Database (Supabase)
-- No automated migrations — schema changes are applied manually via SQL Editor
-- Point-in-time recovery available on paid plans
-- For free tier: keep `supabase-schema.sql` as the source of truth
-- Supabase schema changes are non-reversible without a backup. Back up affected data and record the reverse SQL before applying production DDL.
+- Ordered migrations live in `supabase/migrations/`, but production application remains an operator action.
+- Supabase Free does not include automatic backups or point-in-time recovery.
+- Schema changes are not considered releasable until a backup and restore drill succeeds on non-production data.
+- Record and review reverse SQL before applying production DDL; never improvise a destructive database rollback during an incident.
 
 ## Environment variables
 
