@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-04                 |
-| Working On | Session 98: Phase 2 exit gate verification |
+| Working On | Session 99: merging verification branches |
 
 ---
 
@@ -32,16 +32,14 @@
 - **Did:**
   - **Phase 2 exit gate PASSED** — full verification:
     - Backend: 467 passed, 24 skipped, 90% branch coverage (floor: 80%)
-    - Frontend: ruff clean, eslint clean, build clean (30 routes)
-    - E2E: 44 Playwright tests pass (18 happy-path, 6 failure-path, 6 accessibility, 10 smoke, 4 mobile)
-    - CI green on main: run 30919865957
-    - Deliberate backend break (analyze route): CI run 30922884807 — Backend FAILED at test_valid_payload
-    - Deliberate frontend break (h1→div): same CI run — E2E FAILED at keyword analyzer tests
-    - Breaks reverted, code restored to clean state
-  - Updated LAUNCH_PROGRAM.md: exit gate evidence, current test counts, F7 resolved, ground truth refreshed
-  - Installed missing Playwright + @axe-core/playwright dependencies (npm install)
-- **Commit:** pending
-- **Next:** Commit docs, push, create PR
+    - E2E: 44 Playwright tests pass; CI green on main
+    - Deliberate breaks (analyze route + h1→div) caught by CI, then reverted
+  - **Phase 3 full reverification** — all 8 tasks independently verified from scratch
+  - **Security fix:** Removed user data from cover_letter.py system prompt (injection gap)
+  - **Threat model rewrite:** `docs/THREAT-MODEL.md` rewritten to match deployed architecture
+  - Full suite: 467 passed, 24 skipped
+- **Commit:** merged
+- **Next:** Merge PRs to main
 - **Blockers:** None
 
 ### Session 97 (Claude) — 2026-08-04

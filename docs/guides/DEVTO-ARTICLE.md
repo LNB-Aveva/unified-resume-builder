@@ -85,7 +85,7 @@ Total monthly cost: $0 (domain registration excluded).
 ### Try It
 
 **Live**: [resumeai.cv](https://resumeai.cv)
-**Source**: [GitHub](https://github.com/LNB-Aveva/unified-resume-builder)
+**Built by**: [LNB-Aveva](https://github.com/LNB-Aveva)
 
 Feedback welcome — what features would make this more useful for your job search?
 

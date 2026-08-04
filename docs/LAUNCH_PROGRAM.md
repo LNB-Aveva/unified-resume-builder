@@ -124,6 +124,8 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | 3.7 Configure Sentry and all logs to exclude request bodies, auth headers, resume/job text, AI prompts, and generated content. | `backend/app/main.py` (`_strip_pii` + `send_default_pii=False`) | DONE — before_send strips request data/body, authorization/cookie headers |
 | 3.8 Re-run Bandit, secret scan, npm audit, and requirements-only pip-audit with zero unaccepted runtime High/Critical findings. | CI and manifests | DONE — Bandit 0 high, pip-audit runtime+dev 0 vulns, npm audit production 0, detect-secrets clean (only tsbuildinfo false positive) |
 
+**Reverification (2026-08-04):** All 8 tasks independently verified. Two fixes applied: (1) `cover_letter.py:49` — removed user data (`job_title`, `company_name`) from system prompt where it lacked `<<<`/`>>>` delimiters; model reads them from the properly delimited user message instead. (2) `THREAT-MODEL.md` — fully rewritten to match deployed architecture (was stale since Session 26): 9 endpoints with auth status, 5-table RLS, global rate limiter, body size cap, circuit breaker, Sentry PII filtering, 467 tests. Security scans re-run: Bandit 0 High, pip-audit 0 vulns, npm audit production 0, detect-secrets clean. Auth tests: 80 passed. Rate limiter tests: 8 passed. Full suite: 467 passed, 24 skipped.
+
 **Definition of Done:** Threat model matches deployed architecture; authenticated APIs reject missing/invalid tokens; public writes cannot bypass limits; no telemetry records resume PII.
 
 **Exit gate:** Automated abuse/auth tests pass, security scans pass, and a telemetry inspection shows metadata only.
