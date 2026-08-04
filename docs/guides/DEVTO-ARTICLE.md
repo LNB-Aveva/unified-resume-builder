@@ -93,6 +93,6 @@ Feedback welcome — what features would make this more useful for your job sear
 
 ## Publishing Notes
 - Post on a Tuesday or Wednesday morning (9-11am ET) for max visibility
-- Cross-post to LinkedIn with #resumetips #ATS #jobsearch #opensource
+- Cross-post to LinkedIn with #resumetips #ATS #jobsearch #AI
 - Respond to every comment in first 2 hours
 - DA 70+ backlink from dev.to
