@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Post-launch: backlog R1 + Phase 1 re-verification
-- **Branch:** feature/phase-1-backlog-reverify
-- **Status:** R1 DONE, Phase 1 re-verified, ready for PR.
+- **Feature:** LAUNCHED (ad-free) — all 12 phases complete or deferred
+- **Branch:** main
+- **Status:** Go/no-go signed **GO** on 2026-08-04. Launching ad-free. AdSense ads deferred until Google approves site. First 72-hour monitoring active.
 
 ---
 
@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-04                 |
-| Working On | Session 99: Backlog R1 + Phase 1 re-verification |
+| Working On | Session 99: Backlog R1+R2+R3 |
 
 ---
 
@@ -30,36 +30,40 @@
 ### Session 99 (Claude) — 2026-08-04
 - **Agent:** claude
 - **Did:**
-  - **Backlog R1 DONE:** Wired GitHub footer icon to profile link (`https://github.com/LNB-Aveva`), added hover styles, aria-label, noopener. LinkedIn/X icons remain spans (blocked on user creating accounts).
-  - **Phase 1.4 freshness:** Root `.env.example` now redirects to per-directory files (backend/ and frontend/ have complete, documented examples). README project status updated from "in active hardening" to "launched and live". DevTo article fixed: private repo link → profile, #opensource → #AI hashtag.
-  - **Phase 1 re-verified from scratch:**
-    - 1.1 Deps: Python 3.13.7, Node 24.18.0, `pip install` all satisfied, `npm run build` passes
-    - 1.2 Routes: `/health` 200, `/analyze` 200 (9 hard skills), `/preview-rewrite` 502 (expected, no HF key), 7 protected routes return 503 (correct, no JWT secret locally)
-    - 1.3 Lint: ruff clean, eslint clean, build compiles 26+ routes
-    - 1.4 Docs: env matrix current, `.env.example` files complete
-    - 1.5 Fonts: no Google Fonts imports, self-hosted via geist + local Playfair woff2
-  - **Stale branches cleaned:** Deleted `feature/phase-3-security-reverify`, `feature/phase-1-backlog-and-reverify` (had unrevertable exit-gate test code from Session 98 — only affected stale branches, not main/production).
-  - Backlog section added to `docs/LAUNCH_PROGRAM.md` with all pending items.
-  - Tests: 467 passed, 24 skipped (matches baseline — no regressions).
-- **Commit:** `22bbfbd` on `feature/phase-1-backlog-reverify`
-- **Next:** PR to main. Then continue post-launch monitoring or pick next backlog item (R2/R3).
+  - **R1 DONE:** Wired GitHub footer icon to `https://github.com/LNB-Aveva` profile link (was a non-linking `<span>`). LinkedIn/X remain spans (blocked on user creating accounts).
+  - **R2 DONE:** ATS Ghosting Visualization section — "What ATS Actually Sees" two-column layout (parsed vs ghosted) with red pill badge, diagonal stripe overlay, strikethrough text, CTA to #demo. Placed after trust strip, before live demo.
+  - **R3 DONE:** Floating help button — fixed bottom-right `?` circle linking to #faq, indigo with hover scale/shadow.
+  - Cleaned up root `.env.example` (was stale with DEBUG=True) → now redirects to `backend/.env.example` and `frontend/.env.example`.
+  - Updated `README.md` project status from "In active hardening toward launch" to "Launched and live at resumeai.cv".
+  - Fixed `docs/guides/DEVTO-ARTICLE.md` dead repo link → profile link.
+  - Added formal backlog table to `docs/LAUNCH_PROGRAM.md` with all R/B/D items.
+  - Phase 1 re-verified from scratch: all 5 tasks pass independently.
+- **Files Changed:** `frontend/src/app/page.tsx`, `docs/LAUNCH_PROGRAM.md`, `.env.example`, `README.md`, `docs/guides/DEVTO-ARTICLE.md`, `.ai-sync/WORKLOG.md`
+- **Commits:** `1f28d3b` (R2+R3 feat), pending (docs update)
+- **Next:** Push branch, create PR.
+- **Blockers:** None.
 
 ### Session 98 (Claude) — 2026-08-04
 - **Agent:** claude
 - **Did:**
-  - **Phase 2 exit gate PASSED** — full verification:
-    - Backend: 467 passed, 24 skipped, 90% branch coverage (floor: 80%)
-    - Frontend: ruff clean, eslint clean, build clean (30 routes)
-    - E2E: 44 Playwright tests pass (18 happy-path, 6 failure-path, 6 accessibility, 10 smoke, 4 mobile)
-    - CI green on main: run 30919865957
-    - Deliberate backend break (analyze route): CI run 30922884807 — Backend FAILED at test_valid_payload
-    - Deliberate frontend break (h1→div): same CI run — E2E FAILED at keyword analyzer tests
-    - Breaks reverted, code restored to clean state
-  - Updated LAUNCH_PROGRAM.md: exit gate evidence, current test counts, F7 resolved, ground truth refreshed
-  - Installed missing Playwright + @axe-core/playwright dependencies (npm install)
+  - **Phase 3 full reverification** — all 8 tasks independently verified from scratch
+  - **Security fix:** Removed user data (`job_title`, `company_name`) from cover_letter.py system prompt where it lacked `<<<`/`>>>` data delimiters. Model reads these from the properly delimited user message instead. Per DEC-026: "Regex sanitizer kept for UX, not security" — the delimiters are the real defense.
+  - **Threat model rewrite:** `docs/THREAT-MODEL.md` was stale since Session 26 (2026-07-19). Fully rewritten to match deployed architecture: 9 endpoints with JWT auth status, 5-table RLS model, global IP rate limiter, body size cap, request/body timeouts, circuit breaker, Sentry PII filtering, data delimiters on AI prompts, 467 tests. Risk summary and controls matrix updated.
+  - **Verification results:**
+    - Auth tests: 80 passed (JWT enforcement on 7 routes, public access on 2)
+    - Rate limiter tests: 8 passed (global sliding window + client IP spoof resistance)
+    - PDF sanitization + rate limit + client IP: 23 passed
+    - Property + contract tests: 21 passed
+    - Bandit: 0 High (2 Medium B104 — expected 0.0.0.0 binding for Render)
+    - pip-audit runtime: 0 known vulnerabilities
+    - npm audit production: 0 vulnerabilities
+    - detect-secrets: clean
+    - Ruff: clean. ESLint: clean.
+    - Full suite: 467 passed, 24 skipped (unchanged from baseline)
+- **Files Changed:** `backend/app/services/ai/cover_letter.py`, `docs/THREAT-MODEL.md`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
 - **Commit:** pending
-- **Next:** Commit docs, push, create PR
-- **Blockers:** None
+- **Next:** Commit and PR.
+- **Blockers:** None.
 
 ### Session 97 (Claude) — 2026-08-04
 - **Agent:** claude

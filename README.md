@@ -53,7 +53,7 @@ See [docs/ENV_VARS.md](docs/ENV_VARS.md) for the full environment variable matri
 
 ## Project Status
 
-Launched and live at [resumeai.cv](https://resumeai.cv). See [docs/LAUNCH_PROGRAM.md](docs/LAUNCH_PROGRAM.md) for the phased roadmap.
+Launched and live at [resumeai.cv](https://resumeai.cv). See [docs/LAUNCH_PROGRAM.md](docs/LAUNCH_PROGRAM.md) for the phased roadmap and backlog.
 
 ## License
 
