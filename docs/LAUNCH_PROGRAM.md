@@ -138,13 +138,15 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | 4.2 Add `resumes` and immutable `resume_versions` tables with ownership, timestamps, indexes, and cascade behavior. | `supabase-schema.sql` | DONE — resumes + resume_versions tables with full RLS (select/insert/update/delete for resumes; select/insert/delete for versions — no update = immutable), CHECK constraints, cascade delete, user_id FK |
 | 4.3 Add save, list, load, rename, version, and delete flows without silently overwriting prior versions. | `frontend/src/app/actions/resume.ts`, `(protected)/resumes/`, `ResumeExporter.tsx`, tools page | DONE — server actions (create/saveVersion/list/load/rename/delete/listVersions), My Resumes page with rename/delete, ResumeExporter save/save-version buttons, tools page loads from ?resume= param |
 | 4.4 Link tracked jobs to the selected resume version with an FK and safe deletion semantics. | `supabase-schema.sql`, `JobTracker.tsx` | DONE — `resume_id` FK on jobs with ON DELETE SET NULL; dropdown in add-job form and job cards for linking/unlinking resumes; Supabase helpers updated; backwards-compatible with existing data |
-| 4.5 Add two-user RLS integration tests covering select/insert/update/delete for profiles, jobs, resumes, and versions. | `backend/tests/integration/test_rls_isolation.py` | DONE — 20 tests (6 profiles, 4 jobs, 4 resumes, 3 versions, 2 shared_scores, 1 cascade) covering cross-user select/insert/update/delete + delete_own_user cascade. Skipped in CI (needs SUPABASE_SERVICE_ROLE_KEY). Run locally to prove. |
+| 4.5 Add two-user RLS integration tests covering select/insert/update/delete for profiles, jobs, resumes, and versions. | `backend/tests/integration/test_rls_isolation.py` | DONE — 20 tests (6 profiles, 4 jobs, 4 resumes, 3 versions, 2 shared_scores, 1 cascade) covering cross-user select/insert/update/delete + delete_own_user cascade. **All 20 passed against production Supabase (2026-08-04).** Skipped in CI (needs SUPABASE_SERVICE_ROLE_KEY as GitHub Actions secret). |
 | 4.6 Verify `delete_own_user()` in production and make account deletion remove/cascade all resume versions, jobs, profile, and auth identity. | `supabase-schema.sql`, `auth.ts`, `test_rls_isolation.py` | DONE — all tables ON DELETE CASCADE from auth.users; deleteAccount explicitly deletes resumes→jobs→profiles then calls delete_own_user RPC; test_cascade_deletes_all_owned_data proves end-to-end |
 | 4.7 Extend data export to include resumes and versions, with an automated completeness test. | `auth.ts`, `ExportDataButton.tsx` | DONE — exportUserData now fetches resumes + all versions; deleteAccount deletes resumes before profiles |
 
 **Definition of Done:** Authenticated users can manage versioned resumes; every table has least-privilege RLS; deletion/export cover all owned data.
 
 **Exit gate:** In an automated test, user A cannot read or mutate any user B row; account deletion leaves zero owned rows and export contains every retained record.
+
+**Reverification (2026-08-04):** RLS tests run against production Supabase for the first time. Found and fixed 3 production gaps: (1) `shared_scores` table was missing `user_id` column — added with NOT NULL FK + CASCADE. (2) 3 stale permissive RLS policies (`Anyone can insert shared scores`, `anon_insert`, `public_read`) allowed unauthenticated bulk read/write — dropped. (3) `delete_own_user()` and `get_shared_score()` RPC functions were missing — created. RLS enabled on `shared_scores`. Test assertion fixed: `delete_own_user` returns 204 (void), not 200. Result: **20/20 RLS tests pass.** Full suite: 481 passed, 24 skipped. SQL applied via `scripts/2026-08-04_production_fix.sql`.
 
 ## Phase 5 — Scoring quality
 
@@ -340,3 +342,5 @@ Items discovered during post-launch sessions. Ordered by priority.
 | D2 | Blog content engine / editorial calendar | DEFERRED | L | Content strategy |
 | D3 | SEO fat footer (150+ resume example links) | DEFERRED | L | Needs content pages first |
 | D4 | Auto-scrolling testimonial marquee | DEFERRED | M | Low priority |
+| R4 | RLS isolation tests in CI | PARTIAL — 20/20 pass locally (2026-08-04); CI skips | S | Needs `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions secret |
+| R5 | E2E browser tests for Phase 4 auth flows (F7) | TODO | M | None — Phase 4 complete, auth fixture can be built |

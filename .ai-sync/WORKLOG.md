@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 7 UX & accessibility reverification
-- **Branch:** feature/phase-7-ux-a11y
-- **Status:** All 4 tasks reverified. WCAG contrast fixes across 15 files. All 10 pages Lighthouse 100.
+- **Feature:** Phase 4 RLS reverification — production Supabase security fixes
+- **Branch:** main
+- **Status:** DONE — 20/20 RLS tests pass against production, 3 security gaps fixed, fix script updated
 
 ---
 
@@ -19,13 +19,31 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-04                 |
-| Working On | Session 103: Phase 7 reverify |
+| Working On | Session 104: Phase 4 RLS reverification complete, committing |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 104 (Claude) — 2026-08-04
+- **Agent:** claude
+- **Did:**
+  - **Phase 4 RLS reverification against production Supabase** — ran 20 RLS isolation tests for the first time against real database
+  - **Found and fixed 3 production security gaps:**
+    1. `shared_scores` table missing `user_id` column — added NOT NULL FK with CASCADE
+    2. 3 stale permissive RLS policies (`Anyone can insert shared scores`, `anon_insert`, `public_read`) allowed unauthenticated bulk read/write — dropped
+    3. `delete_own_user()` and `get_shared_score()` RPC functions missing — created as SECURITY DEFINER
+  - RLS enabled on `shared_scores` table (was missing despite policies existing)
+  - Updated `scripts/2026-08-04_production_fix.sql` with all stale policy drops + ENABLE RLS
+  - Updated `docs/LAUNCH_PROGRAM.md`: task 4.5 reverification note, R4/R5 backlog items
+  - Fixed test assertion: `delete_own_user` returns 204 (void function), not 200
+  - **Result:** 20/20 RLS tests pass. Full suite: 481 passed, 24 skipped. Both linters clean.
+- **Files Changed:** `docs/LAUNCH_PROGRAM.md`, `scripts/2026-08-04_production_fix.sql`, `.ai-sync/WORKLOG.md`
+- **Commits:** pending
+- **Next:** None — Phase 4 reverification complete
+- **Blockers:** None
 
 ### Session 103 (Claude) — 2026-08-04
 - **Agent:** claude

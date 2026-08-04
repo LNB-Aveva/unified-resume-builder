@@ -37,9 +37,12 @@ alter table public.shared_scores
 alter table public.shared_scores enable row level security;
 
 -- ── Step 3: Fix RLS policies ─────────────────────────────────────────
--- Remove the old wide-open anon SELECT policy
+-- Remove ALL stale permissive policies (some from early sessions)
 drop policy if exists "Anyone can read unexpired shared scores" on public.shared_scores;
 drop policy if exists "Anyone can read shared scores" on public.shared_scores;
+drop policy if exists "Anyone can insert shared scores" on public.shared_scores;
+drop policy if exists "anon_insert" on public.shared_scores;
+drop policy if exists "public_read" on public.shared_scores;
 
 -- Owner-only SELECT
 drop policy if exists "Users read own shared scores" on public.shared_scores;
