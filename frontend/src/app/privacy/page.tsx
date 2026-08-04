@@ -157,8 +157,9 @@ export default function PrivacyPolicy() {
             <ul className="list-disc list-inside space-y-2 mt-3">
               <li><strong>Essential cookies</strong> &mdash; required for authentication session management (via Supabase). These cannot be disabled.</li>
               <li><strong>Analytics cookies</strong> &mdash; Google Analytics (GA4) is loaded only after you choose Accept.</li>
+              <li><strong>Advertising cookies</strong> &mdash; Google AdSense is loaded on every page and respects Google Consent Mode v2. When you choose Reject, no ad cookies are set and no personalized ads are shown. When you choose Accept, AdSense may set cookies for ad personalization and measurement.</li>
             </ul>
-            <p>We do not currently load advertising cookies. Your accepted or rejected analytics choice is stored in your browser&apos;s localStorage under <code>cookie_consent</code>. You can reset that choice at any time using the cookie settings link in the site footer.</p>
+            <p>Your accepted or rejected choice is stored in your browser&apos;s localStorage under <code>cookie_consent</code>. You can reset that choice at any time using the cookie settings link in the site footer.</p>
           </div>
         </section>
 
@@ -166,7 +167,7 @@ export default function PrivacyPolicy() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">GDPR (European Users)</h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
             If you are in the European Economic Area, you have additional rights under the General Data Protection Regulation, including
-            the right to access, rectify, port, and erase your personal data. Our legal basis for processing is your consent (for analytics)
+            the right to access, rectify, port, and erase your personal data. Our legal basis for processing is your consent (for analytics and advertising)
             and legitimate interest (for providing and securing the service). To exercise your rights, use the Account page
             or contact us at the email below.
           </p>

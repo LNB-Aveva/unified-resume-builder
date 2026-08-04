@@ -41,18 +41,7 @@ function loadGA4(gaId: string) {
   document.head.appendChild(inline);
 }
 
-function loadAdSense(adsenseId: string) {
-  if (document.getElementById("adsense-script")) return;
-
-  const script = document.createElement("script");
-  script.id = "adsense-script";
-  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`;
-  script.async = true;
-  script.crossOrigin = "anonymous";
-  document.head.appendChild(script);
-}
-
-export default function CookieConsent({ gaId, adsenseId }: { gaId?: string; adsenseId?: string }) {
+export default function CookieConsent({ gaId }: { gaId?: string }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -62,17 +51,15 @@ export default function CookieConsent({ gaId, adsenseId }: { gaId?: string; adse
       return () => window.clearTimeout(timer);
     } else if (consent === "accepted") {
       if (gaId) loadGA4(gaId);
-      if (adsenseId) loadAdSense(adsenseId);
     }
-  }, [gaId, adsenseId]);
+  }, [gaId]);
 
   const handleAccept = useCallback(() => {
     localStorage.setItem(CONSENT_KEY, "accepted");
     setVisible(false);
     updateConsentMode(true);
     if (gaId) loadGA4(gaId);
-    if (adsenseId) loadAdSense(adsenseId);
-  }, [gaId, adsenseId]);
+  }, [gaId]);
 
   const handleReject = useCallback(() => {
     localStorage.setItem(CONSENT_KEY, "rejected");
@@ -86,7 +73,7 @@ export default function CookieConsent({ gaId, adsenseId }: { gaId?: string; adse
     <div role="alertdialog" aria-label="Cookie consent" className="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6">
       <div className="mx-auto max-w-3xl rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-lg p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <p className="text-sm text-gray-600 dark:text-gray-300 flex-1">
-          We use cookies for analytics (Google Analytics) and may use advertising cookies (Google AdSense) in the future.
+          We use cookies for analytics (Google Analytics) and advertising (Google AdSense).
           Essential cookies for authentication are always active.
           See our{" "}
           <Link href="/privacy" className="text-indigo-600 dark:text-indigo-400 underline">

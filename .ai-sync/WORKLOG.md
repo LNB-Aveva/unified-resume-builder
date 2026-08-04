@@ -9,7 +9,7 @@
 
 - **Feature:** Launch hardening program (docs/LAUNCH_PROGRAM.md)
 - **Branch:** main
-- **Status:** Phases 1-7, 9, and 10 COMPLETE. Phase 8 AdSense remains blocked on publisher ID/CMP/placements. Phase 11.1-11.4 DONE, 11.5 accepted, 11.6 public technical checks green with owner dashboard/rollback steps remaining.
+- **Status:** Phases 1-7, 9, and 10 COMPLETE. Phase 8.1-8.7 DONE (publisher ID obtained, ads.txt active, AdSense wired). Phase 8.8 pending deploy verification + Google review. Phase 11.1-11.4 DONE, 11.5 accepted, 11.6 public technical checks green with owner dashboard/rollback steps remaining.
 
 ---
 
@@ -17,15 +17,27 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | idle                       |
+| Agent      | claude                     |
 | Started    | 2026-08-03                 |
-| Working On | — |
+| Working On | Phase 8.4-8.7 AdSense activation |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 95 (Claude) — 2026-08-03
+- **Agent:** claude
+- **Did:**
+  - **Phase 8.4 DONE:** Owner signed up for AdSense. Publisher ID: `pub-7869093425931175`. Account open, site `resumeai.cv` registered.
+  - **Phase 8.5 DONE:** Consent Mode v2 already wired. CookieConsent banner text updated ("uses" not "may use"). Privacy page updated with advertising cookie disclosure and GDPR consent basis.
+  - **Phase 8.6 DONE:** Moved AdSense script from dynamic CookieConsent injection to static `<head>` in layout.tsx (Consent Mode v2 handles privacy natively). Removed `loadAdSense` function and `adsenseId` prop from CookieConsent. AdUnit component ready for placement after Google approval.
+  - **Phase 8.7 DONE:** `ads.txt` activated with `google.com, pub-7869093425931175, DIRECT, f08c47fec0942fa0`.
+  - Updated LAUNCH_PROGRAM.md findings F4 and F9 to Resolved.
+- **Files Changed:** `frontend/public/ads.txt`, `frontend/src/app/layout.tsx`, `frontend/src/app/components/CookieConsent.tsx`, `frontend/src/app/privacy/page.tsx`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Owner sets `NEXT_PUBLIC_ADSENSE_ID=ca-pub-7869093425931175` in Vercel Production env. Deploy and verify ads.txt serves correctly. Wait for Google site review. After approval, create ad units and place them.
+- **Blockers:** Vercel env var (owner action). Google site review (1-14 days).
 
 ### Session 93 (Claude) — 2026-08-03
 - **Agent:** claude
