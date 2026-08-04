@@ -86,7 +86,7 @@ After 7 days, review and record:
 
 1. **Frontend:** Vercel dashboard → Deployments → click previous Production → "Promote to Production"
 2. **Backend:** Render dashboard → Events → Manual Deploy → select previous commit
-3. **Database:** Supabase has daily backups (free tier, no PITR). For schema rollback, apply the rollback SQL from `supabase/migrations/`
+3. **Database:** Supabase Free does not provide automatic backups. Do not launch until a recoverable backup and restore drill is recorded; schema rollback SQL alone is not a data backup.
 4. **Post-rollback:** verify site loads, Sentry for new errors, UptimeRobot confirms UP
 
 ## After 72 Hours

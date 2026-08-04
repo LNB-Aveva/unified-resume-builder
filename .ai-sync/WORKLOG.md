@@ -35,7 +35,9 @@
   - Added a 65-second browser fetch timeout, explicit Supabase-auth outage route, fail-closed account export/deletion, retry-safe concurrent resume versions, Job Tracker persistence-error handling, and noindex protection for share URLs.
   - Removed fabricated testimonials/social proof, unsupported 75% rejection statistics, stale competitor prices, “every keyword,” “free forever/no limits,” false file-layout checks, and false data-retention claims across public pages, metadata, legal pages, and launch copy.
   - Wrote `docs/LAUNCH_READINESS_AUDIT.md` with adversarial findings, checklist, cost model, failure drills, exact PowerShell rollback commands, NO-GO verdict, and manual gates. Corrected `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, and `docs/ENV_VARS.md`.
+  - Integrated concurrent remote commits `647c7c0` and `9311f57` without force-pushing. Preserved their issue templates and code-review fixes while resolving five conflicts in favor of verified backup facts, the current NO-GO decision, and non-deceptive product copy.
   - **Evidence:** Ruff passed; backend `472 passed, 24 skipped`; ESLint passed; Next production build generated 31 routes; isolated Playwright on port 3010 `44 passed`; npm and both Python dependency audits found 0 known vulnerabilities.
+  - **Post-merge evidence:** Ruff passed; backend `472 passed, 24 skipped`; ESLint passed; production build generated 31 routes; isolated Playwright on port 3012 `44 passed`.
   - **Reproducibility finding:** the first isolated Playwright run failed because required Supabase public variables were absent. After loading the existing documented public URL/anon values without copying or printing them, the same unedited 44 tests passed. The earlier port-3000 result remains invalid evidence because it reused another process.
 - **Remaining:**
   1. Commit the isolated candidate, push `feature/all-phases`, and open one PR; CI must pass.

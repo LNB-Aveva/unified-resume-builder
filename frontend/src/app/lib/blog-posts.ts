@@ -136,7 +136,7 @@ export const blogPosts: BlogPost[] = [
         heading: "Why Keyword Matching Is the #1 ATS Ranking Factor",
         content: [
           "When a recruiter posts a job, the ATS creates a profile of required and preferred qualifications — skills, tools, certifications, and experience levels. Your resume is scored based on how many of these keywords it contains.",
-          "A study by Preptel found that resumes with a keyword match rate above 70% are 3x more likely to reach a human reviewer. Below 40%, you're almost certainly filtered out.",
+          "There is no universal match-score threshold across employers or ATS products. Treat a score as a diagnostic for recognized terms, not a prediction that an application will reach a recruiter.",
           "But here's the catch: you can't just add generic keywords. ATS systems weight keywords differently based on how they appear in the job description. A skill listed under 'Required Qualifications' counts more than one mentioned in passing.",
           "The lists below are compiled from analysis of thousands of job descriptions across four major industries. These are the keywords that appear most frequently — the ones ATS systems are most likely to scan for.",
         ],
@@ -221,7 +221,7 @@ export const blogPosts: BlogPost[] = [
           "A complete ATS check needs three things:",
           "1. Keyword extraction — Identify recognized job-description terms and disclose the taxonomy's language and coverage limits.",
           "2. Gap analysis — Compare your resume against those keywords and show exactly which ones are present vs missing, with a match score.",
-          "3. Format compliance — Check your resume's structure against known ATS parsing rules: single-column layout, standard headings, no images, proper bullet characters, consistent dates, and more.",
+          "3. Compliance review — Use pasted-text checks for headings, dates, contact details, and bullet characters, then inspect the original file manually for columns, images, margins, fonts, and reading order.",
           "Most tools do #1 and #2 at a basic level but skip #3 entirely. The best tools also help you fix the gaps — with AI-powered suggestions for rewriting bullets and generating content.",
         ],
       },
@@ -237,10 +237,10 @@ export const blogPosts: BlogPost[] = [
       {
         heading: "Why 15 Formatting Rules Matter More Than You Think",
         content: [
-          "Here's a scenario that happens more often than you'd expect: a candidate has an 85% keyword match but gets rejected by ATS. The reason? Their resume uses a two-column layout, and the ATS parser read the columns as interleaved text — turning 'Senior Software Engineer at Google' into 'Senior Software at Engineer Google'.",
-          "Formatting issues are invisible to the applicant. Your resume looks perfect on screen, but the ATS parser sees something completely different. This is why a formatting compliance check is essential — not optional.",
-          "ResumeAI's compliance checker runs 15 specific formatting rules: single-column layout, no images or graphics, standard section headings, no header/footer content, no text boxes, no special characters in headings, consistent date formats, standard bullet characters, no colour-coded meaning, readable font size, contact info at top, no hyperlink-only text, correct file type, adequate margins, and logical section order.",
-          "Each rule comes with a pass/fail result and specific instructions for fixing any issues. This catches formatting problems that keyword-only checkers completely miss.",
+          "Complex source files can produce a different reading order when parsed, especially when important text is placed in columns, headers, footers, graphics, or floating text boxes.",
+          "A pasted-text checker cannot see those visual properties. Inspect the original PDF or DOCX manually and, when possible, test the extracted text before submitting.",
+          "ResumeAI runs 15 checks on properties visible in pasted text, including section headings, contact information, date consistency, bullet characters, and section order. It does not verify columns, images, margins, fonts, or file type.",
+          "Each detected text-level issue includes guidance. Treat the output as a review aid rather than proof that a particular employer's parser will accept the source file.",
         ],
       },
       {

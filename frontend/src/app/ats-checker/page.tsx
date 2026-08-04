@@ -26,15 +26,15 @@ export const metadata: Metadata = {
 const faqItems = [
   {
     q: "What is an ATS score?",
-    a: "An ATS score is a percentage that represents how well your resume matches a specific job description. ATS software compares keywords, skills, and qualifications in your resume against those in the job posting. A higher score means more keywords match, increasing your chances of passing the automated filter and reaching a human recruiter.",
+    a: "ResumeAI's score is an explainable comparison between your pasted resume text and the recognized terms in a job description. It is not a score from an employer's ATS and cannot predict whether a recruiter will advance an application.",
   },
   {
     q: "What's a good ATS score?",
-    a: "Aim for 70% or higher. Resumes scoring above 70% are roughly 3x more likely to reach a human reviewer. Below 40%, you're almost certainly filtered out. The exact threshold varies by company and ATS platform, so treat 70% as a minimum target.",
+    a: "There is no universal passing score across employers or ATS products. Use the score to inspect which recognized requirements are present or missing, then verify that any edits remain truthful to your experience.",
   },
   {
     q: "How is the ATS score calculated?",
-    a: "Our scoring engine weights exact keyword matches most heavily — hard skills, tools, and certifications from the job description. Soft skills and job title alignment also contribute. The score reflects how well your resume's content matches what the ATS is scanning for, not just simple word counting.",
+    a: "The scoring engine compares recognized hard skills, soft skills, job-title terms, education, experience, and semantic similarity. The results page exposes matched and missing terms so you can understand the score's inputs and limitations.",
   },
   {
     q: "Can I check my resume for free?",
@@ -42,7 +42,7 @@ const faqItems = [
   },
   {
     q: "Does ATS check formatting too?",
-    a: "Yes — and most people miss this. Even a resume with perfect keyword matches can be rejected if the ATS parser can't read the file. Our compliance checker runs 15 formatting rules: single-column layout, no images, standard section headings, no text boxes, consistent dates, and more.",
+    a: "ResumeAI runs 15 checks that can be evaluated from pasted text, such as headings, dates, contact information, and bullet characters. Because the tool does not inspect an uploaded source file, visual layout, columns, images, margins, and font size still require manual review.",
   },
 ];
 
@@ -53,7 +53,7 @@ const jsonLd = {
   url:
     (process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv") + "/ats-checker",
   description:
-    "Free ATS resume score checker. Get your ATS match score, find missing keywords, and run 15 formatting compliance checks.",
+    "ATS-oriented resume checker with an explainable taxonomy score, recognized keyword gaps, and 15 text-based compliance checks.",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   offers: {
@@ -171,7 +171,7 @@ export default function ATSCheckerPage() {
               {
                 step: "3",
                 title: "Get your score + fixes",
-                body: "See your ATS match score, a list of missing keywords, and 15 formatting compliance checks. Then use our AI tools to fix the gaps.",
+                body: "See your taxonomy match score, recognized keyword gaps, and 15 text-based compliance checks. Optional AI tools can help draft truthful revisions.",
               },
             ].map(({ step, title, body }) => (
               <div
@@ -195,9 +195,9 @@ export default function ATSCheckerPage() {
           What Our ATS Checker Analyses
         </h2>
         <p className="text-gray-500 dark:text-gray-400 text-sm text-center max-w-xl mx-auto mb-8">
-          Most ATS checkers only match keywords. We check both content and
-          formatting — because keywords don&apos;t matter if the parser can&apos;t read
-          your resume.
+          We compare recognized content and inspect text-level conventions. Because
+          you paste text rather than upload a source file, visual layout still needs
+          manual review.
         </p>
 
         <div className="grid sm:grid-cols-2 gap-4">
@@ -230,16 +230,16 @@ export default function ATSCheckerPage() {
           </div>
           <div className="rounded-xl border border-gray-100 dark:border-gray-700 p-5">
             <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
-              15-Rule Format Compliance
+              15 Text-Based Compliance Checks
             </h3>
             <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
               <li className="flex items-start gap-2">
                 <span className="text-indigo-600 mt-0.5">&#10003;</span>
-                Single-column layout check
+                Standard section-heading patterns
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-indigo-600 mt-0.5">&#10003;</span>
-                No images, graphics, or text boxes
+                Contact information and section order
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-indigo-600 mt-0.5">&#10003;</span>
@@ -251,18 +251,18 @@ export default function ATSCheckerPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-indigo-600 mt-0.5">&#10003;</span>
-                Contact info, margins, fonts, and 10 more rules
+                Bullet characters and other text-level rules
               </li>
             </ul>
           </div>
         </div>
       </section>
 
-      {/* Comparison */}
+      {/* Capability scope */}
       <section className="bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 py-14">
         <div className="mx-auto max-w-3xl px-4">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
-            ResumeAI vs Other ATS Checkers
+            What ResumeAI Includes
           </h2>
           <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <table className="w-full text-sm">
@@ -271,57 +271,29 @@ export default function ATSCheckerPage() {
                   <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">
                     Feature
                   </th>
-                  <th className="text-center py-3 px-4 font-semibold text-indigo-700 dark:text-indigo-400">
-                    ResumeAI
-                  </th>
-                  <th className="text-center py-3 px-4 font-semibold text-gray-500 dark:text-gray-400">
-                    Jobscan
-                  </th>
-                  <th className="text-center py-3 px-4 font-semibold text-gray-500 dark:text-gray-400">
-                    Others
+                  <th className="text-left py-3 px-4 font-semibold text-indigo-700 dark:text-indigo-400">
+                    Scope
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
                 {[
-                  ["Keyword extraction", true, true, true],
-                  ["Gap analysis with score", true, true, false],
-                  ["15-rule format compliance", true, false, false],
-                  ["AI bullet rewriter", true, false, false],
-                  ["AI cover letter generator", true, false, false],
-                  ["PDF export (3 templates)", true, false, false],
-                  ["Unlimited free scans", true, false, false],
-                  ["Free account (no credit card)", true, false, false],
-                ].map(([feature, us, jobscan, others]) => (
+                  ["Keyword extraction", "Recognized English taxonomy terms"],
+                  ["Gap analysis", "Explainable matched and missing terms"],
+                  ["Compliance review", "15 checks that can be evaluated from pasted text"],
+                  ["AI drafting", "Optional bullets, summaries, and cover letters; daily limits apply"],
+                  ["PDF export", "Classic, Modern, and Minimal templates"],
+                  ["Job tracking", "Account-backed application records"],
+                ].map(([feature, scope]) => (
                   <tr key={feature as string}>
                     <td className="py-2.5 px-4 text-gray-700 dark:text-gray-300">
                       {feature as string}
                     </td>
-                    <td className="py-2.5 px-4 text-center text-indigo-600 dark:text-indigo-400 font-bold">
-                      {us ? "✓" : "✗"}
-                    </td>
-                    <td className="py-2.5 px-4 text-center text-gray-500 dark:text-gray-400">
-                      {jobscan ? "✓" : "✗"}
-                    </td>
-                    <td className="py-2.5 px-4 text-center text-gray-500 dark:text-gray-400">
-                      {others ? "✓" : "✗"}
+                    <td className="py-2.5 px-4 text-left text-gray-500 dark:text-gray-400">
+                      {scope as string}
                     </td>
                   </tr>
                 ))}
-                <tr className="bg-gray-50 dark:bg-gray-800">
-                  <td className="py-2.5 px-4 font-semibold text-gray-700 dark:text-gray-200">
-                    Price
-                  </td>
-                  <td className="py-2.5 px-4 text-center font-bold text-indigo-600 dark:text-indigo-400">
-                    Free
-                  </td>
-                  <td className="py-2.5 px-4 text-center text-gray-500 dark:text-gray-400">
-                    Check current plan
-                  </td>
-                  <td className="py-2.5 px-4 text-center text-gray-500 dark:text-gray-400">
-                    Check current plan
-                  </td>
-                </tr>
               </tbody>
             </table>
           </div>
@@ -357,11 +329,11 @@ export default function ATSCheckerPage() {
       <section className="bg-indigo-600 py-14">
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-2xl font-bold text-white mb-3">
-            Stop getting filtered by ATS
+            Review Your Resume Before Applying
           </h2>
           <p className="text-indigo-200 text-sm mb-6 max-w-md mx-auto">
-            Check your resume against any job description. Get your score, find
-            missing keywords, and fix formatting issues — all free.
+            Compare your resume with an English job description, inspect recognized
+            gaps, and review text-level compliance checks. Fair-use limits apply.
           </p>
           <Link
             href="/#demo"
