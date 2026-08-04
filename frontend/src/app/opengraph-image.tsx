@@ -124,7 +124,7 @@ export default async function Image() {
           }}
         >
           9 free AI tools to get your resume past ATS and in front of humans.
-          No sign-up. No paywall.
+          Free account. No paywall.
         </div>
 
         {/* Feature pills */}
@@ -164,7 +164,7 @@ export default async function Image() {
             fontSize: 18,
           }}
         >
-          resumeai.cv · 100% free · No account required
+          resumeai.cv · 100% free · Create a free account
         </div>
       </div>
     ),

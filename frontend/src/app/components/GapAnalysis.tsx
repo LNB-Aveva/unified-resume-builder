@@ -150,7 +150,7 @@ export default function GapAnalysis() {
                   style={{
                     width: barWidth,
                     background:
-                      result.overall_score >= 65
+                      result.overall_score >= 70
                         ? "#10b981"
                         : result.overall_score >= 50
                         ? "#f59e0b"
@@ -177,14 +177,14 @@ export default function GapAnalysis() {
               could push this above 65%.
             </div>
           )}
-          {result.overall_score >= 50 && result.overall_score < 65 && (
+          {result.overall_score >= 50 && result.overall_score < 70 && (
             <div className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3 text-sm text-amber-700">
               <strong>Getting closer:</strong> Add{" "}
               {Math.ceil(result.total_missing * 0.5)} more missing keywords to reach
-              a strong match (65%+).
+              a strong match (70%+).
             </div>
           )}
-          {result.overall_score >= 65 && (
+          {result.overall_score >= 70 && (
             <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-sm text-emerald-700">
               <strong>Strong match!</strong> Your resume is well-aligned with this role.
               Focus on tailoring your bullet points to naturally include any remaining keywords.

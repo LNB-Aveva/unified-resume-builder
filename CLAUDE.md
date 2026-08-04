@@ -48,4 +48,4 @@ Always check shared context before starting any task.
 - `.ai-sync/WORKLOG.md`   — shared task log (READ + WRITE every session)
 - `.ai-sync/DECISIONS.md` — shared decisions log
 - `AGENTS.md`             — Codex instructions (READ ONLY)
-- `frontend/src/app/proxy.ts` — Next.js middleware (NOT middleware.ts)
+- `frontend/src/proxy.ts` — Next.js middleware (NOT middleware.ts)

@@ -71,6 +71,9 @@ export async function signIn(
   });
 
   if (error) {
+    if (error.status === 429) {
+      return { message: "Too many login attempts. Please wait a minute and try again." };
+    }
     return { message: "Invalid email or password." };
   }
 

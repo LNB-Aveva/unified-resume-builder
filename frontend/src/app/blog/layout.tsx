@@ -38,7 +38,7 @@ export default function BlogLayout({
             <span className="text-sm font-semibold text-gray-700">ResumeAI</span>
           </Link>
           <p className="text-xs text-gray-600 text-center">
-            Free ATS resume checker &mdash; 9 AI tools, no sign-up required.
+            Free ATS resume checker &mdash; 9 AI tools, free account.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-600">
             <Link href="/" className="hover:text-gray-700 transition">
