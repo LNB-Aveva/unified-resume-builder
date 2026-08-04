@@ -85,7 +85,7 @@ Total monthly cost: $0 (domain registration excluded).
 ### Try It
 
 **Live**: [resumeai.cv](https://resumeai.cv)
-**Source**: [GitHub](https://github.com/LNB-Aveva/unified-resume-builder)
+**Built by**: [LNB-Aveva](https://github.com/LNB-Aveva)
 
 Feedback welcome — what features would make this more useful for your job search?
 
@@ -93,6 +93,6 @@ Feedback welcome — what features would make this more useful for your job sear
 
 ## Publishing Notes
 - Post on a Tuesday or Wednesday morning (9-11am ET) for max visibility
-- Cross-post to LinkedIn with #resumetips #ATS #jobsearch #opensource
+- Cross-post to LinkedIn with #resumetips #ATS #jobsearch #AI
 - Respond to every comment in first 2 hours
 - DA 70+ backlink from dev.to
