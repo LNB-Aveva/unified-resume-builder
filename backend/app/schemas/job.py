@@ -20,3 +20,4 @@ class JobAnalysis(BaseModel):
     education_requirements: list[str] | None = None
     keywords: list[str]
     responsibilities: list[str]
+    taxonomy_coverage: float = 1.0

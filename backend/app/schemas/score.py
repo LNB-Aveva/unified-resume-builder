@@ -26,3 +26,4 @@ class ATSScore(BaseModel):
     total_job_keywords: int
     total_matched: int
     total_missing: int
+    domain_warning: str | None = None

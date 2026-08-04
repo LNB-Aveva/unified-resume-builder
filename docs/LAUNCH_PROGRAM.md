@@ -177,6 +177,34 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 **Reverification (2026-08-04):** All 6 tasks independently verified. Three fixes applied: (1) `hf_client.py:150` — replaced `asyncio.sleep` with `anyio.sleep` for consistency with the rest of the async codebase (was the last `asyncio` import). (2) `BulletRewriter`, `SummaryGenerator`, `CoverLetterGenerator` — fixed unsafe `res.json()` before `res.ok` check: if the backend returned a non-JSON error page (Render 503 HTML), `res.json()` threw a SyntaxError and users saw "Unexpected token '<'" instead of a helpful message. Now checks `res.ok` first, parses JSON with `.catch()` fallback. `connectionError()` also updated to recognize JSON parse failures and gateway error patterns. (3) Added 6 new tests: 2 for `RequestTimeoutMiddleware` (fast path + 504 on timeout) and 4 for keyword cache (cache hit, distinct keys, LRU eviction, TTL expiry). Full suite: 473 passed, 24 skipped. Both linters clean, frontend build clean.
 
+**Load test baseline (2026-08-04, localhost, single Uvicorn worker, port 8771):**
+
+Route: `/api/v1/analyze` (deterministic, public, rate limit 30/min)
+
+| Concurrency | Requests | OK | 429s | RPS | p50 (ms) | p95 (ms) | p99 (ms) | Mean (ms) |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 15 | 15 | 0 | 200.9 | 4.3 | 7.1 | 7.6 | 5.0 |
+| 5 | 15 | 15 | 0 | 276.7 | 17.9 | 20.6 | 20.8 | 16.5 |
+| 10 | 15 | 15 | 0 | 257.8 | 42.4 | 44.4 | 44.6 | 33.1 |
+| 20 | 25 | 14 | 11 | 246.0 | 75.2 | 75.6 | 75.7 | 73.5 |
+
+Auxiliary measurements:
+- `GET /health`: 2.8 ms
+- Auth rejection (no token → 503): p50 = 39.5 ms, p95 = 60.3 ms
+- Rate limiter saturation (c=20, n=40): 30 ok, 10 rejected — confirms 30/min enforcement
+
+Concurrency and latency targets (single-worker, free-tier):
+- **p95 target:** < 100 ms for deterministic routes at ≤ 10 concurrent requests
+- **p99 target:** < 150 ms for deterministic routes at ≤ 10 concurrent requests
+- **Rate limiter:** per-route limits enforced correctly (30/min analyze, 10/min AI routes, 5/min preview-rewrite)
+- **AI routes:** latency dominated by HF Inference API (typically 2–15 s); targets are set by the 60 s request timeout
+
+Coverage limitations:
+- 7 of 9 routes require Supabase JWT auth — baseline requires `SUPABASE_JWT_SECRET` in the environment
+- 2 of 9 routes call HF API — baseline requires `HUGGINGFACE_API_KEY` and incurs quota
+- Production adds network latency + Render free-tier cold starts (~30 s after 15 min idle)
+- Single-worker deployment means no inter-worker contention; results represent best-case
+
 ## Phase 7 — UX and accessibility
 
 | Task | File(s) | Status |

@@ -226,6 +226,30 @@ class TestExtractKeywords:
         assert result.soft_skills == []
         assert result.keywords == []
 
+    def test_taxonomy_coverage_high_for_tech_jd(self):
+        job = JobDescription(raw_text=JOB_TEXT)
+        result = extract_keywords(job)
+        assert result.taxonomy_coverage >= 0.8
+
+    def test_taxonomy_coverage_low_for_non_tech_jd(self):
+        job = JobDescription(raw_text="""HR Manager
+Requirements:
+- Experience with employee relations, talent acquisition, and onboarding
+- Knowledge of labor law and compliance
+- Experience with performance management
+- Strong interpersonal and conflict resolution skills
+- Benefits administration experience
+- Succession planning and workforce planning
+- Change management expertise
+""")
+        result = extract_keywords(job)
+        assert result.taxonomy_coverage <= 0.5
+
+    def test_taxonomy_coverage_defaults_to_1_for_empty_jd(self):
+        job = JobDescription(raw_text="No skills at all")
+        result = extract_keywords(job)
+        assert result.taxonomy_coverage == 1.0
+
 
 class TestKeywordCache:
     """Verify the SHA-256 + OrderedDict + TTL cache (Phase 6.1)."""

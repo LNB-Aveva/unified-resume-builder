@@ -169,6 +169,13 @@ export default function GapAnalysis() {
             </div>
           </div>
 
+          {/* Domain coverage warning */}
+          {result.domain_warning && (
+            <div className="rounded-xl bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 px-4 py-3 text-sm text-purple-800 dark:text-purple-200">
+              <strong>Limited coverage:</strong> {result.domain_warning}
+            </div>
+          )}
+
           {/* ATS context message */}
           {result.overall_score < 50 && (
             <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-700">

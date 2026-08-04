@@ -55,8 +55,15 @@
   - **New tests:** 2 for `RequestTimeoutMiddleware` (fast path + 504 on timeout), 4 for keyword cache (cache hit, distinct keys, LRU eviction, TTL expiry)
   - **Test counts:** 473 backend (up from 467), 24 skipped; ruff clean, eslint clean, frontend build clean
 - **Files Changed:** `backend/app/services/ai/hf_client.py`, `backend/tests/unit/test_hf_client.py`, `backend/tests/unit/test_request_timeout.py` (new), `backend/tests/unit/test_keyword_extractor.py`, `frontend/src/app/types.ts`, `frontend/src/app/components/{BulletRewriter,SummaryGenerator,CoverLetterGenerator}.tsx`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
-- **Commits:** pending
-- **Next:** Commit, push, create PR
+- **Commits:** `88b9fb7` (PR #29, merged)
+- **G12 load test baseline (NOT committed per user request):**
+  - Ran load test against `/api/v1/analyze` at c=1/5/10/20: p50 ranges 4–75ms, p95 ranges 7–76ms
+  - Rate limiter saturation confirmed: 30/min enforced correctly (30 ok, 10 rejected in 40-request burst)
+  - Measured health endpoint (2.8ms) and auth rejection path (p50=39.5ms)
+  - Established targets: p95 < 100ms, p99 < 150ms for deterministic routes at ≤10 concurrent
+  - Documented coverage limitations (7/9 routes need JWT, 2/9 need HF key, prod adds cold starts)
+  - Results recorded in `docs/LAUNCH_PROGRAM.md` Phase 6 section
+- **Next:** User review of baseline numbers (not committed per instruction)
 - **Blockers:** None
 
 ### Session 99 (Claude) — 2026-08-04

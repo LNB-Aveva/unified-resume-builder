@@ -23,6 +23,7 @@ export interface ATSScore {
   total_job_keywords: number;
   total_matched: number;
   total_missing: number;
+  domain_warning?: string | null;
 }
 
 export interface ComplianceCheck {
