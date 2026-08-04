@@ -9,7 +9,7 @@
 
 - **Feature:** Adversarial launch re-audit and repository-side remediation
 - **Branch:** feature/all-phases (isolated worktree: `.copilot-worktrees/all-phases`)
-- **Status:** Local candidate green, committed, and pushed. PR #31 is open; CI is pending. Launch remains NO-GO pending production/manual gates.
+- **Status:** Local candidate committed and pushed; PR #31 is open but conflicts with newer `main`. Latest-main integration was aborted because its timeout test hangs on Windows. Launch remains NO-GO.
 
 ---
 
@@ -39,12 +39,13 @@
   - Owner approved localhost. Created commits `4fa5aaa` and `1b969e3`, pushed `feature/all-phases`, and opened PR #31: `https://github.com/LNB-Aveva/unified-resume-builder/pull/31`.
   - **Evidence:** Ruff passed; backend `472 passed, 24 skipped`; ESLint passed; Next production build generated 31 routes; isolated Playwright on port 3010 `44 passed`; npm and both Python dependency audits found 0 known vulnerabilities.
   - **Post-merge evidence:** Ruff passed; backend `472 passed, 24 skipped`; ESLint passed; production build generated 31 routes; isolated Playwright on port 3012 `44 passed`.
+  - **Latest-main blocker:** PR #31 became conflicting after `f5ba41f`/`bc7e25d` landed. A no-commit merge was attempted and then aborted because `test_slow_request_returns_504` did not complete within 10 seconds on Windows even though it configures a 0.1-second timeout; `test_fast_request_succeeds` passed (`1 passed in 1.38s`). Tests were not edited and the failing merge was not committed.
   - **Reproducibility finding:** the first isolated Playwright run failed because required Supabase public variables were absent. After loading the existing documented public URL/anon values without copying or printing them, the same unedited 44 tests passed. The earlier port-3000 result remains invalid evidence because it reused another process.
 - **Remaining:**
-  1. Confirm every PR #31 CI check passes; merge only while green.
-  2. Owner decides/funds the production baseline, then runs production RLS/export/deletion/backup and certified-CMP gates.
-  3. Deploy only after every NO-GO production gate has command-backed evidence.
-- **Blockers:** Vercel commercial plan, always-on Render, Supabase backup/restore, certified CMP, production RLS/deletion/export evidence, and measured provider-side LLM spend cap.
+  1. Fix or reconcile the Windows `RequestTimeoutMiddleware` cancellation regression from latest `main`, then merge `origin/main` into PR #31 and rerun the full suite.
+  2. Confirm every PR #31 CI check passes; merge only while green.
+  3. Owner decides/funds the production baseline and completes every NO-GO production gate before deployment.
+- **Blockers:** PR #31 conflicts with `main`; latest-main timeout test hangs on Windows. Production blockers remain commercial hosting, backup/restore, certified CMP, RLS/deletion/export proof, and provider-side LLM spend cap.
 
 ### Session 99 (Claude) — 2026-08-04
 - **Agent:** claude
