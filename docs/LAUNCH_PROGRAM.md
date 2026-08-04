@@ -288,3 +288,21 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 1. **LAUNCHED (ad-free).** Go/no-go signed GO on 2026-08-04. All 12 phases complete or deferred.
 2. Run the first-72-hours monitoring checklist in `docs/POST-LAUNCH-MONITORING.md`.
 3. When Google AdSense approves the site: create ad units → provide slot IDs → place AdUnit components (12.5).
+
+## Backlog
+
+Items discovered during post-launch sessions. Ordered by priority.
+
+| # | Item | Status | Effort | Blocker |
+|---|------|--------|--------|---------|
+| R1 | Wire GitHub footer icon to profile link | **DONE** (Session 98, `22bbfbd`) | S | None |
+| R2 | ATS Ghosting Visualization section | TODO | M | Decide page placement + help button link target |
+| R3 | Floating help/feedback button | TODO | S | Same link-target question as R2 |
+| B2 | LinkedIn footer icon → real profile | BLOCKED | S | User must create LinkedIn account |
+| B3 | X footer icon → real profile | BLOCKED | S | User must create X account |
+| B4 | GitHub repo public/private → wire trust strip | BLOCKED | S | User decides repo visibility |
+| B5 | Reviews.io/Trustpilot/Product Hunt reviews | BLOCKED | - | User signs up + collects reviews |
+| D1 | Drag-and-drop PDF upload in hero | DEFERRED | L | Needs pdfjs-dist, new endpoint |
+| D2 | Blog content engine / editorial calendar | DEFERRED | L | Content strategy |
+| D3 | SEO fat footer (150+ resume example links) | DEFERRED | L | Needs content pages first |
+| D4 | Auto-scrolling testimonial marquee | DEFERRED | M | Low priority |

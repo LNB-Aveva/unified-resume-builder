@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 2 exit gate verification
-- **Branch:** feature/phase-2-tests-and-ci
-- **Status:** Exit gate PASSED. All Phase 2 items verified with evidence.
+- **Feature:** Post-launch: backlog R1 + Phase 1 re-verification
+- **Branch:** feature/phase-1-backlog-reverify
+- **Status:** R1 DONE, Phase 1 re-verified, ready for PR.
 
 ---
 
@@ -19,13 +19,30 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-04                 |
-| Working On | Session 98: Phase 2 exit gate verification |
+| Working On | Session 99: Backlog R1 + Phase 1 re-verification |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 99 (Claude) — 2026-08-04
+- **Agent:** claude
+- **Did:**
+  - **Backlog R1 DONE:** Wired GitHub footer icon to profile link (`https://github.com/LNB-Aveva`), added hover styles, aria-label, noopener. LinkedIn/X icons remain spans (blocked on user creating accounts).
+  - **Phase 1.4 freshness:** Root `.env.example` now redirects to per-directory files (backend/ and frontend/ have complete, documented examples). README project status updated from "in active hardening" to "launched and live". DevTo article fixed: private repo link → profile, #opensource → #AI hashtag.
+  - **Phase 1 re-verified from scratch:**
+    - 1.1 Deps: Python 3.13.7, Node 24.18.0, `pip install` all satisfied, `npm run build` passes
+    - 1.2 Routes: `/health` 200, `/analyze` 200 (9 hard skills), `/preview-rewrite` 502 (expected, no HF key), 7 protected routes return 503 (correct, no JWT secret locally)
+    - 1.3 Lint: ruff clean, eslint clean, build compiles 26+ routes
+    - 1.4 Docs: env matrix current, `.env.example` files complete
+    - 1.5 Fonts: no Google Fonts imports, self-hosted via geist + local Playfair woff2
+  - **Stale branches cleaned:** Deleted `feature/phase-3-security-reverify`, `feature/phase-1-backlog-and-reverify` (had unrevertable exit-gate test code from Session 98 — only affected stale branches, not main/production).
+  - Backlog section added to `docs/LAUNCH_PROGRAM.md` with all pending items.
+  - Tests: 467 passed, 24 skipped (matches baseline — no regressions).
+- **Commit:** `22bbfbd` on `feature/phase-1-backlog-reverify`
+- **Next:** PR to main. Then continue post-launch monitoring or pick next backlog item (R2/R3).
 
 ### Session 98 (Claude) — 2026-08-04
 - **Agent:** claude
