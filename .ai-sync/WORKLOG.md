@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 2 exit gate verification
-- **Branch:** feature/phase-2-tests-and-ci
-- **Status:** Exit gate PASSED. All Phase 2 items verified with evidence.
+- **Feature:** Phase 6 reliability reverification
+- **Branch:** feature/phase-6-reliability-reverify
+- **Status:** All 6 tasks reverified. 3 fixes applied, 6 new tests added.
 
 ---
 
@@ -19,13 +19,27 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-04                 |
-| Working On | Session 99: Backlog R1+R2+R3 |
+| Working On | Session 102: Phase 6 reverify |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 102 (Claude) — 2026-08-04
+- **Agent:** claude
+- **Did:**
+  - **Phase 6 full reverification** — all 6 tasks independently verified from scratch
+  - **Fix 1:** `hf_client.py` — replaced `asyncio.sleep` with `anyio.sleep` (last asyncio import in the file; inconsistent with anyio-based middleware)
+  - **Fix 2:** 3 frontend components (BulletRewriter, SummaryGenerator, CoverLetterGenerator) — unsafe `res.json()` before `res.ok` check caused raw SyntaxError when backend returned non-JSON error pages (Render 503 HTML). Now checks `res.ok` first, parses JSON with `.catch()` fallback.
+  - **Fix 3:** `connectionError()` in `types.ts` — added SyntaxError and gateway error pattern recognition so users see helpful messages instead of "Unexpected token '<'"
+  - **New tests:** 2 for `RequestTimeoutMiddleware` (fast path + 504 on timeout), 4 for keyword cache (cache hit, distinct keys, LRU eviction, TTL expiry)
+  - **Test counts:** 473 backend (up from 467), 24 skipped; ruff clean, eslint clean, frontend build clean
+- **Files Changed:** `backend/app/services/ai/hf_client.py`, `backend/tests/unit/test_hf_client.py`, `backend/tests/unit/test_request_timeout.py` (new), `backend/tests/unit/test_keyword_extractor.py`, `frontend/src/app/types.ts`, `frontend/src/app/components/{BulletRewriter,SummaryGenerator,CoverLetterGenerator}.tsx`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
+- **Commits:** pending
+- **Next:** Commit, push, create PR
+- **Blockers:** None
 
 ### Session 99 (Claude) — 2026-08-04
 - **Agent:** claude

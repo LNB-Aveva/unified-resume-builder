@@ -53,13 +53,12 @@ export default function SummaryGenerator() {
         }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        throw new Error(data.detail ?? `Server error ${res.status}`);
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail ?? `Server error ${res.status}`);
       }
 
-      setResult(data);
+      setResult(await res.json());
     } catch (err) {
       setError(connectionError(err));
     } finally {

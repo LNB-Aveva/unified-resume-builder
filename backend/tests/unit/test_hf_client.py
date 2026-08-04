@@ -33,7 +33,7 @@ async def test_call_hf_retries_transport_failures_twice(monkeypatch, error_type)
 
     monkeypatch.setattr(hf_client, "_get_api_key", lambda: "test-key")
     monkeypatch.setattr(hf_client, "_get_client", lambda: client)
-    monkeypatch.setattr(hf_client.asyncio, "sleep", sleep)
+    monkeypatch.setattr(hf_client.anyio, "sleep", sleep)
 
     result = await hf_client.call_hf([], max_tokens=10, temperature=0.1)
 
