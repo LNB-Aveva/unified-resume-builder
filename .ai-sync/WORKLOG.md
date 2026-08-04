@@ -104,9 +104,11 @@
   - **Phase 3 full reverification** — all 8 tasks independently verified from scratch
   - **Security fix:** Removed user data from cover_letter.py system prompt (injection gap)
   - **Threat model rewrite:** `docs/THREAT-MODEL.md` rewritten to match deployed architecture
+  - **X1 fix:** Auth test count corrected from 76 to 80 (40 cases × 2 backends) in task 3.1 and finding F3
+  - **X2 disposition:** CSP `'unsafe-inline'` for script-src — accepted risk. Nonce-based CSP forces all-dynamic rendering (kills static gen, CDN caching, degrades CWV, risks Vercel free-tier limits); React auto-escaping + no user-data dangerouslySetInnerHTML = negligible practical XSS risk. Documented in THREAT-MODEL.md.
   - Full suite: 467 passed, 24 skipped
-- **Commit:** merged
-- **Next:** Merge PRs to main
+- **Commits:** `e01de5b` (security fix + threat model rewrite), pending (X1+X2 doc fixes)
+- **Next:** None — Phase 3 reverification complete.
 - **Blockers:** None
 
 ### Session 97 (Claude) — 2026-08-04
