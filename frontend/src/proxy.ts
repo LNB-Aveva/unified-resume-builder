@@ -5,11 +5,18 @@ const protectedPrefixes = ["/tools", "/account", "/account-setup"];
 const authRoutes = ["/sign-in", "/sign-up", "/forgot-password"];
 
 export async function proxy(request: NextRequest) {
-  const { supabaseResponse, user } = await updateSession(request);
+  const { supabaseResponse, user, authUnavailable } = await updateSession(request);
   const path = request.nextUrl.pathname;
 
   const isProtected = protectedPrefixes.some((p) => path.startsWith(p));
   const isAuthRoute = authRoutes.some((p) => path.startsWith(p));
+
+  if (isProtected && authUnavailable) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/service-unavailable";
+    url.searchParams.set("retry", path);
+    return NextResponse.redirect(url);
+  }
 
   if (isProtected && !user) {
     const url = request.nextUrl.clone();

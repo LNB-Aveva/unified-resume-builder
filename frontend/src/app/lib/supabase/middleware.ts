@@ -1,6 +1,16 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+function isTemporaryAuthFailure(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const candidate = error as { name?: string; status?: number };
+  return (
+    candidate.name === "AuthRetryableFetchError" ||
+    candidate.status === undefined ||
+    candidate.status >= 500
+  );
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -25,9 +35,18 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  try {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-  return { supabaseResponse, user };
+    return {
+      supabaseResponse,
+      user,
+      authUnavailable: isTemporaryAuthFailure(error),
+    };
+  } catch {
+    return { supabaseResponse, user: null, authUnavailable: true };
+  }
 }

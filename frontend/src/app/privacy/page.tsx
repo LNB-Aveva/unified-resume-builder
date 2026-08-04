@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Privacy Policy — ResumeAI",
     description:
-      "How ResumeAI handles your data. No resume content is stored permanently, no data is sold, and you can delete your account at any time.",
+      "How ResumeAI handles saved resumes, AI processing, analytics, advertising, retention, export, and account deletion.",
   },
 };
 
@@ -49,11 +49,11 @@ export default function PrivacyPolicy() {
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Error Data</h3>
-              <p>We use Sentry for backend error tracking. No resume content is transmitted to Sentry.</p>
+              <p>We use Sentry for frontend and backend error tracking. Our Sentry configuration removes request bodies, authentication headers, cookies, stack-frame variables, and other fields that could contain resume content before an event is sent.</p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Browser Storage</h3>
-              <p>Resume drafts and preferences may be stored in your browser&apos;s localStorage. Job tracker data is stored in Supabase when cloud storage is available, with localStorage as a fallback. Browser-stored content leaves your device only when you explicitly use an AI-powered or saved-resume feature.</p>
+              <p>Resume drafts and preferences may be stored in your browser&apos;s localStorage. Job tracker data normally uses Supabase. If cloud storage is unavailable when the tracker opens, new browser-only entries may be stored locally and the page displays a warning. A failed cloud write is reported and is not presented as saved.</p>
             </div>
           </div>
         </section>
@@ -77,12 +77,15 @@ export default function PrivacyPolicy() {
           </p>
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
             <li>Not stored or logged on our servers beyond the duration of the request</li>
-            <li>Not used to train any AI models</li>
+            <li>Not used by ResumeAI to train our own models</li>
             <li>Transmitted securely over HTTPS</li>
             <li>Processed only for the purpose of generating your requested output</li>
           </ul>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
             When our AI provider experiences sustained outages, the system temporarily pauses AI requests to prevent degraded responses, automatically recovering when service is restored.
+          </p>
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
+            Hugging Face and the inference provider it routes the request to process the submitted text under their own terms and privacy practices. Do not submit information you do not want processed by those providers.
           </p>
         </section>
 
@@ -91,7 +94,7 @@ export default function PrivacyPolicy() {
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed">
             <li><strong>Supabase</strong> &mdash; Authentication and storage for account data, saved resumes, and job tracking</li>
             <li><strong>Hugging Face</strong> &mdash; AI inference for summary generation, bullet rewriting, and cover letter generation</li>
-            <li><strong>Sentry</strong> &mdash; Backend error tracking; no resume content is transmitted</li>
+            <li><strong>Sentry</strong> &mdash; Frontend and backend error tracking with application-level PII filtering</li>
             <li><strong>Vercel</strong> &mdash; Website hosting and deployment</li>
             <li><strong>Google Analytics</strong> &mdash; Anonymous usage analytics (loaded only with your consent)</li>
           </ul>
@@ -114,7 +117,7 @@ export default function PrivacyPolicy() {
               <li><strong>Account data</strong> (email, profile) &mdash; retained while your account is active and deleted when account deletion completes.</li>
               <li><strong>Job tracker entries</strong> &mdash; retained while your account is active. Deleted when you delete your account.</li>
               <li><strong>Saved resumes and versions</strong> &mdash; retained until you explicitly delete the resume or delete your account.</li>
-              <li><strong>Shareable ATS score links</strong> &mdash; expire 30 days after creation. Expired records are removed by the cleanup process based on their expiration timestamp.</li>
+              <li><strong>Shareable ATS score links</strong> &mdash; become inaccessible 30 days after creation. The underlying expired record may remain until maintenance cleanup or account deletion.</li>
             </ul>
           </div>
         </section>
@@ -157,9 +160,19 @@ export default function PrivacyPolicy() {
             <ul className="list-disc list-inside space-y-2 mt-3">
               <li><strong>Essential cookies</strong> &mdash; required for authentication session management (via Supabase). These cannot be disabled.</li>
               <li><strong>Analytics cookies</strong> &mdash; Google Analytics (GA4) is loaded only after you choose Accept.</li>
-              <li><strong>Advertising cookies</strong> &mdash; Google AdSense is loaded on every page and respects Google Consent Mode v2. When you choose Reject, no ad cookies are set and no personalized ads are shown. When you choose Accept, AdSense may set cookies for ad personalization and measurement.</li>
+              <li><strong>Advertising cookies</strong> &mdash; the Google AdSense site-verification script may load, but ResumeAI does not currently display ad units. Before ads are enabled, regions where Google requires a certified consent platform will use one.</li>
             </ul>
             <p>Your accepted or rejected choice is stored in your browser&apos;s localStorage under <code>cookie_consent</code>. You can reset that choice at any time using the cookie settings link in the site footer.</p>
+            <p>
+              If advertising is enabled, Google and other third-party vendors may use cookies to serve ads based on prior visits to this or other websites. You can manage personalized advertising in{" "}
+              <a href="https://adssettings.google.com/" className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2" rel="noopener noreferrer">
+                Google Ads Settings
+              </a>{" "}
+              or review additional opt-out choices at{" "}
+              <a href="https://www.aboutads.info/choices/" className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2" rel="noopener noreferrer">
+                YourAdChoices
+              </a>.
+            </p>
           </div>
         </section>
 

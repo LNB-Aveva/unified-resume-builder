@@ -23,32 +23,32 @@ const PREVIEW_SKILLS = ["Python", "React", "AWS", "Docker"];
 
 const faqItems = [
   {
-    q: "What is ATS and why do 75% of resumes get rejected before a human reads them?",
-    a: "ATS (Applicant Tracking System) is software that companies use to automatically filter resumes before a recruiter ever sees them. It scans for specific keywords from the job description, checks formatting compatibility, and scores candidates. If your resume doesn't include the right keywords or uses incompatible formatting (tables, columns, graphics), it gets filtered out automatically — no matter how qualified you are.",
+    q: "What is an ATS, and how does ResumeAI help?",
+    a: "An applicant tracking system helps employers collect, search, and organize applications. ResumeAI compares the text you paste with a job description and highlights recognized keyword gaps. It cannot predict a hiring decision or reproduce every employer's ATS configuration.",
   },
   {
     q: "How do I know if my resume is ATS-compatible?",
-    a: "Use our free ATS Compliance Checker (Tool 3). It runs 15 formatting checks covering file format, column layout, tables, images, special characters, font readability, section headings, and more. You'll get a scored report showing exactly which rules your resume violates and how to fix them.",
+    a: "Paste the text of your resume into the ATS Compliance Checker. It runs 15 text-based checks for items such as contact details, standard headings, bullet consistency, measurable results, and common text problems. Because the checker does not inspect an uploaded file, you must review columns, tables, margins, fonts, images, and reading order in the final document yourself.",
   },
   {
     q: "What keywords should I include in my resume?",
-    a: "Paste the job description into our Keyword Extractor (Tool 1). Our NLP engine identifies every skill, tool, qualification, and role-specific term that ATS systems are likely scanning for — hard skills, soft skills, certifications, and job title variants. Then use the Gap Analysis (Tool 2) to see exactly which of those keywords are missing from your resume.",
+    a: "Paste an English-language job description into the Keyword Extractor. The taxonomy and synonym matcher identifies recognized hard and soft skills. Gap Analysis then shows which recognized terms also appear in your resume. Always compare the result with the original posting because no fixed taxonomy captures every role.",
   },
   {
     q: "Is ResumeAI really free? Are there any hidden fees or premium tiers?",
-    a: "Yes, 100% free. All 9 tools — keyword extractor, gap analysis, ATS compliance checker, AI summary generator, AI cover letter generator, AI bullet rewriter, PDF export, job application tracker, and visual templates — are available with a free account, no credit card, and no usage limits. We keep costs at zero by using free-tier infrastructure and open-source AI models.",
+    a: "There is currently no subscription fee or credit card requirement. Fair-use rate limits apply, especially to AI tools, and availability depends on third-party service quotas. We will disclose any future paid plan before charging for it.",
   },
   {
     q: "Do I need to create an account or sign up?",
-    a: "Yes, a free account is required to use the tools. Sign up takes 10 seconds with just an email and password. Your resume data is stored securely in your account and syncs across devices.",
+    a: "The public keyword demo works without an account. The remaining tools require a free account. Saved resumes and job-tracker entries use your Supabase-backed account; temporary provider outages can interrupt synchronization and are reported in the interface.",
   },
   {
     q: "What are the 15 ATS compliance rules you check?",
-    a: "We check: single-column layout (no tables or columns), no images or graphics, standard section headings (Experience, Education, Skills), no headers/footers, no text boxes, no special characters in headings, consistent date formatting, standard bullet characters, no colour-coded text, readable font size (10pt+), contact information at the top, no hyperlink-only text, file type compatibility, page margin adequacy, and section order logic. Each rule comes with a pass/fail result and a fix suggestion.",
+    a: "The checker evaluates 15 properties visible in pasted text, including contact details, common section headings, summary and skills sections, bullet usage, measurable results, first-person language, repeated wording, length, and possible special-character issues. It does not inspect the source PDF or DOCX layout.",
   },
   {
     q: "How accurate is the ATS match score?",
-    a: "Our scoring engine matches the keyword logic used by common ATS platforms: it weights exact keyword matches (hard skills, tools, certifications) most heavily, followed by soft skills and job title alignment. The score is a directional guide — a score above 70% typically means strong keyword alignment. Real ATS systems vary by vendor, so treat the score as a minimum bar, not a guarantee.",
+    a: "The score is an explainable comparison against ResumeAI's curated taxonomy and synonym rules. It is useful for finding wording gaps, but it is not a score from an employer's ATS and does not predict interviews. Employer systems, recruiter searches, knockout questions, and ranking rules vary.",
   },
   {
     q: "What PDF resume templates are available?",
@@ -56,11 +56,11 @@ const faqItems = [
   },
   {
     q: "Can I use ResumeAI for any industry or job type?",
-    a: "Yes. The keyword extractor and gap analysis work for any job description — tech, finance, healthcare, marketing, engineering, sales, legal, and more. The AI models are general-purpose. The only limitation is that the skills database has broader coverage for tech and knowledge-work roles; if you're in a highly specialised trade, manually review the extracted keywords to ensure completeness.",
+    a: "ResumeAI is designed for English-language job descriptions and currently has strongest taxonomy coverage for technology and knowledge-work roles. Results for specialized trades, non-English text, healthcare, legal, and other regulated fields require especially careful manual review.",
   },
   {
     q: "Is my resume data private and secure?",
-    a: "Your data never leaves your browser unless you explicitly use an AI feature (Summary Generator, Cover Letter, or Bullet Rewriter). For those features, your text is sent to our FastAPI backend and forwarded to HuggingFace's inference API — it is not stored or logged. Job tracker data and resume content you enter into forms are stored only in your browser's localStorage and are never transmitted to our servers.",
+    a: "Pasted text is sent to our FastAPI backend when you run an analysis or export. AI feature text is also forwarded through Hugging Face to an inference provider. ResumeAI does not put request bodies in access logs. Saved resumes, versions, job-tracker entries, profiles, and shareable score data are stored in Supabase as described in our Privacy Policy.",
   },
 ];
 
@@ -119,7 +119,7 @@ const tools = [
   {
     step: "2",
     title: "See Exactly What Your Resume Is Missing",
-    desc: "Upload your resume against any job description. See your ATS match score and a list of every missing keyword you need to add.",
+    desc: "Paste your resume text beside a job description. See an explainable keyword-match score and the recognized terms that are missing.",
     icon: (
       <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
@@ -130,7 +130,7 @@ const tools = [
   {
     step: "3",
     title: "Know If Your Resume Will Pass ATS",
-    desc: "Run 15 formatting checks — tables, columns, images, headers, fonts, margins, and more. Fix every issue before ATS rejects your resume.",
+    desc: "Run 15 text-based compliance checks. Then inspect the exported document yourself for columns, tables, images, fonts, margins, and reading order.",
     icon: (
       <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
@@ -215,52 +215,6 @@ const colorMap: Record<string, { bg: string; border: string; text: string; iconB
     iconBg: "bg-emerald-100 dark:bg-emerald-900/50",
   },
 };
-
-const testimonials = [
-  {
-    name: "Sarah M.",
-    role: "Marketing Manager",
-    text: "I went from a 42% ATS match score to 89% in under 10 minutes. Got three interview callbacks within a week of updating my resume.",
-    source: "Product Hunt",
-    date: "2 weeks ago",
-  },
-  {
-    name: "James L.",
-    role: "Software Engineer",
-    text: "The keyword extractor found 12 skills I was missing from my resume. The AI bullet rewriter saved me hours of rewriting. Best free tool I've used.",
-    source: "Reddit",
-    date: "1 week ago",
-  },
-  {
-    name: "Priya K.",
-    role: "Data Analyst",
-    text: "I was paying $29/month for a resume tool that does less than this. The compliance checker caught formatting issues I never knew existed.",
-    source: "LinkedIn",
-    date: "3 days ago",
-  },
-];
-
-function SourceBadge({ source }: { source: string }) {
-  const meta: Record<string, { color: string; label: string }> = {
-    "Product Hunt": { color: "#DA552F", label: "P" },
-    "Reddit":       { color: "#FF4500", label: "R" },
-    "LinkedIn":     { color: "#0A66C2", label: "in" },
-  };
-  const m = meta[source];
-  return (
-    <div className="flex items-center gap-1.5">
-      {m && (
-        <span
-          className="h-4 w-4 rounded-sm flex items-center justify-center text-[8px] font-bold text-white leading-none shrink-0"
-          style={{ backgroundColor: m.color }}
-        >
-          {m.label}
-        </span>
-      )}
-      <span className="text-xs font-medium text-gray-500 dark:text-gray-400">via {source}</span>
-    </div>
-  );
-}
 
 export default function Home() {
   return (
@@ -378,16 +332,16 @@ export default function Home() {
                       </svg>
                     ))}
                   </div>
-                  <span className="font-medium text-gray-900 dark:text-white">Loved by 500+ job seekers</span>
+                  <span className="font-medium text-gray-900 dark:text-white">Built for English-language resumes</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:flex sm:flex-wrap sm:gap-8">
                 <div className="group">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
-                    <AnimatedCounter target={2400} suffix="+" locale />
+                    <AnimatedCounter target={220} suffix="+" locale />
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">resumes optimized</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">taxonomy skills</div>
                 </div>
                 <div className="group">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
@@ -528,7 +482,7 @@ export default function Home() {
 
             <div className="mt-8 text-center">
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                ResumeAI checks your resume against these ATS pitfalls and tells you exactly what to fix.
+                ResumeAI&apos;s pasted-text checker cannot see these layout problems. Review the final file visually and test its copy-paste reading order.
               </p>
               <a href="#demo" className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition">
                 Try the free analyzer
@@ -551,7 +505,7 @@ export default function Home() {
               Try the ATS Keyword Extractor Free
             </h2>
             <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
-              Paste any job description below. Our NLP engine instantly pulls every keyword ATS systems scan for &mdash; hard skills, soft skills, certifications, and tools.
+              Paste an English-language job description below. The taxonomy matcher identifies recognized hard skills, soft skills, certifications, and tools for your review.
             </p>
           </div>
 
@@ -608,7 +562,7 @@ export default function Home() {
               Get a Shareable ATS Score Link
             </h2>
             <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-              Paste your job description and resume. We score your keyword match and generate a permanent link you can share with mentors, recruiters, or career coaches &mdash; no sign-up required.
+              With a free account, paste your job description and resume text. We generate a private-by-link report that expires after 30 days and is excluded from search indexing.
             </p>
           </div>
 
@@ -622,16 +576,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Social Proof ── */}
+      {/* ── Explainable scoring example ── */}
       <ScrollReveal>
         <section className="py-20 sm:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="text-center mb-14">
               <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
-                Trusted by Job Seekers Worldwide
+                See What Changes a Score
               </h2>
               <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                Real results from people who used ResumeAI to beat ATS filters and land interviews.
+                This illustrative example shows how adding genuinely relevant missing terms can change ResumeAI&apos;s keyword-match score. It is not a customer result or an interview guarantee.
               </p>
             </div>
 
@@ -641,7 +595,7 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
                   {/* Before */}
                   <div className="flex-1 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Before</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Example before</p>
                     <div className="relative mx-auto h-24 w-24">
                       <svg className="h-24 w-24 -rotate-90" viewBox="0 0 36 36">
                         <circle cx="18" cy="18" r="15.5" fill="none" className="stroke-gray-200 dark:stroke-gray-700" strokeWidth="3" />
@@ -663,12 +617,12 @@ export default function Home() {
                       </div>
                       <div className="h-px w-8 bg-gradient-to-r from-emerald-300 to-emerald-300 dark:from-emerald-600 dark:to-emerald-600 hidden sm:block" />
                     </div>
-                    <p className="text-[10px] text-center text-indigo-600 dark:text-indigo-400 font-semibold mt-1">&lt; 10 min</p>
+                    <p className="text-[10px] text-center text-indigo-600 dark:text-indigo-400 font-semibold mt-1">after relevant edits</p>
                   </div>
 
                   {/* After */}
                   <div className="flex-1 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">After</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Example after</p>
                     <div className="relative mx-auto h-24 w-24">
                       <svg className="h-24 w-24 -rotate-90" viewBox="0 0 36 36">
                         <circle cx="18" cy="18" r="15.5" fill="none" className="stroke-gray-200 dark:stroke-gray-700" strokeWidth="3" />
@@ -680,39 +634,29 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-center text-sm text-gray-600 dark:text-gray-300 mt-6">
-                  Average improvement after using ResumeAI&apos;s keyword analysis and gap fixer
+                  Illustrative only: actual scores depend entirely on the two texts you provide.
                 </p>
               </div>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              {testimonials.map(({ name, role, text, source, date }) => (
-                <div key={name} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-400 dark:text-gray-400">{date}</span>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
-                    &ldquo;{text}&rdquo;
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white text-sm font-bold">
-                        {name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{name}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{role}</p>
-                      </div>
-                    </div>
-                    <SourceBadge source={source} />
-                  </div>
+              {[
+                {
+                  title: "Matched terms",
+                  text: "See which recognized job-description skills are already supported by your resume text.",
+                },
+                {
+                  title: "Missing terms",
+                  text: "Review recognized gaps, then add only terms that accurately describe your experience.",
+                },
+                {
+                  title: "Visible calculation",
+                  text: "Hard- and soft-skill components are shown separately so the result is inspectable rather than mysterious.",
+                },
+              ].map(({ title, text }) => (
+                <div key={title} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-8 shadow-sm">
+                  <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white mb-3">{title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{text}</p>
                 </div>
               ))}
             </div>
@@ -1341,30 +1285,30 @@ export default function Home() {
                 Why Job Seekers Choose ResumeAI
               </h2>
               <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                Everything you need to beat ATS filters &mdash; completely free, no strings attached.
+                 Practical tools for reviewing keyword alignment, resume text, AI-assisted drafts, and PDF output.
               </p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
                 {
-                  title: "100% Free, Forever",
-                  desc: "No credit card required. No premium tier. No usage limits. All 9 tools are completely free — we keep costs at zero using open-source AI and free-tier infrastructure.",
+                  title: "No Subscription Today",
+                  desc: "No credit card is currently required. Fair-use limits and third-party availability apply, especially to AI features.",
                   icon: <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" /></svg>,
                 },
                 {
                   title: "AI-Powered Precision",
-                  desc: "A curated skill taxonomy with synonym matching extracts every ATS keyword. HuggingFace AI rewrites bullets, generates cover letters, and creates professional summaries — all tailored to your target role.",
+                  desc: "A curated taxonomy with synonym matching extracts recognized skills. Hugging Face-routed AI drafts bullets, cover letters, and summaries for you to review.",
                   icon: <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" /></svg>,
                 },
                 {
                   title: "Built for ATS",
-                  desc: "Every tool is designed specifically to help you pass ATS filters. 15 compliance checks ensure your formatting, keywords, and structure meet what automated systems expect.",
+                  desc: "Fifteen text-based checks flag common content issues. File layout, parsing order, margins, fonts, columns, and images still require manual review.",
                   icon: <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>,
                 },
                 {
                   title: "No Black Boxes.",
-                  desc: "We use a transparent skill taxonomy and HuggingFace — well-documented, open-source AI. We don't store your resume or log your data. Every score is calculated from documented rules you can verify.",
+                  desc: "Scores expose matched and missing taxonomy terms. Saved resumes are stored only when you choose to save them, and request bodies are excluded from access logs.",
                   icon: <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" /></svg>,
                 },
               ].map(({ title, desc, icon }) => (
@@ -1400,8 +1344,8 @@ export default function Home() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 {
-                  title: "Stays in your browser",
-                  desc: "The Job Tracker and your resume draft live in your browser's localStorage. No account data syncs to our servers unless you explicitly sign in.",
+                  title: "Storage is explicit",
+                  desc: "Saved resumes and normal job-tracker use sync through Supabase. Browser storage holds drafts, preferences, and temporary fallback data when cloud storage is unavailable.",
                   icon: (
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0H3" />
@@ -1409,8 +1353,8 @@ export default function Home() {
                   ),
                 },
                 {
-                  title: "AI features: sent, never stored",
-                  desc: "When you use the AI summary, cover letter, or bullet rewriter, your text is forwarded to HuggingFace’s API and immediately discarded — nothing is logged or retained.",
+                  title: "AI requests are disclosed",
+                  desc: "AI text is sent through our backend and Hugging Face to an inference provider. ResumeAI does not store the request body as a saved resume unless you separately choose Save.",
                   icon: (
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
@@ -1418,8 +1362,8 @@ export default function Home() {
                   ),
                 },
                 {
-                  title: "No resume stored in our database",
-                  desc: "Your resume content is never stored in our database. AI features forward your text to HuggingFace's API and immediately discard it — nothing is retained on our servers.",
+                  title: "You control saved resumes",
+                  desc: "Saved resumes and version history remain in your account until you delete the resume or account. Account export and deletion controls are available from the Account page.",
                   icon: (
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
@@ -1427,8 +1371,8 @@ export default function Home() {
                   ),
                 },
                 {
-                  title: "No ads. No data sold. Ever.",
-                  desc: "We’re free because we use open-source AI and free-tier infrastructure — not because we monetise your data. There’s no business model that benefits from knowing what’s on your resume.",
+                  title: "Your data is not sold",
+                  desc: "We do not sell resume data. Advertising is planned, but no ad units are currently displayed; cookie and vendor details are disclosed in the Privacy Policy.",
                   icon: (
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
@@ -1489,8 +1433,7 @@ export default function Home() {
             Ready to beat ATS filters?
           </h2>
           <p className="text-lg text-indigo-100 mb-10 max-w-xl mx-auto">
-            Create your free account in 10 seconds. No credit card required.
-            No trial that expires. Just 9 AI tools to help you land interviews.
+            Create a free account with no credit card. Fair-use limits apply, and every AI draft and score should be reviewed before you use it.
           </p>
           <a
             href="/sign-up"
