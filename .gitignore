@@ -43,6 +43,12 @@ SECRETS_BACKUP.txt
 SECRETS_BACKUP*.txt
 
 # ============================
+# AI Agent Local Settings (may contain secrets)
+# ============================
+.claude/settings.local.json
+.copilot-worktrees/
+
+# ============================
 # IDEs and Editors
 # ============================
 .vscode/
