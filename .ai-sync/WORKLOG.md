@@ -45,6 +45,18 @@
 - **Next:** Commit, push, create PR
 - **Blockers:** None
 
+### Session 103 (Claude) — 2026-08-04
+- **Agent:** claude
+- **Did:**
+  - **X3 finding RESOLVED:** E2E suite was 44 smoke tests with only 1 tool flow (keyword analyzer). Added 6 new tool flow E2E tests exercising full submit→result flows with mocked API responses: Gap Analysis, Compliance Checker, Summary Generator, Bullet Rewriter, Cover Letter Generator, Resume Exporter (PDF download).
+  - **Auth bypass for E2E:** Cookie-based bypass (`e2e_bypass=1`) in `proxy.ts` middleware and `(protected)/layout.tsx` — guarded by `NODE_ENV !== "production"`. Existing auth redirect tests unaffected (they don't set the cookie).
+  - **Committed pending Copilot work:** domain_warning feature (backend schemas, scorer, NLP, 66 tests, frontend display) + load test baseline docs.
+  - **Test counts:** 50 E2E tests (up from 44), all passing. Backend: 473+ tests.
+- **Files Changed:** `frontend/tests/e2e/tool-flows.spec.ts` (new), `frontend/src/proxy.ts`, `frontend/src/app/(protected)/layout.tsx`, plus 12 files from prior session
+- **Commits:** `2ccec31` (domain_warning + load test), `b694f14` (X3 E2E tool flows)
+- **Next:** All cross-cutting findings addressed. Ready for next phase or code review.
+- **Blockers:** None
+
 ### Session 102 (Claude) — 2026-08-04
 - **Agent:** claude
 - **Did:**
