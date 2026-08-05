@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-05                 |
-| Working On | Session 108: Phase 5 reverification complete |
+| Working On | Session 109: Phase 4+5 reverification merged, cross-verification complete |
 
 ---
 
@@ -30,17 +30,14 @@
 ### Session 108 (Claude) — 2026-08-05
 - **Agent:** claude
 - **Did:**
-  - **Phase 5 reverification** — all 5 tasks independently verified from scratch
-  - **5.1:** 34-case eval dataset + runner confirmed working; 2 eval tests collected in CI suite
-  - **5.2:** 389 hard skills (16 categories), 50 soft skills, 91 synonym groups; 6 synonym pairs verified; 42 extractor + 12 golden-file tests pass
-  - **5.3:** Grade boundaries correct (A≥85/B≥65/C≥50/D≥30/F<30); 70/30 weighting; explainable matched/missing hard/soft in GapAnalysis; domain warning fires; 34 scorer tests pass
-  - **5.4:** Zero stale spaCy/NLTK/scikit-learn/WeasyPrint claims in public copy (frontend, README, docs/guides, templates)
-  - **5.5:** 34 cases, 100% within-one-grade, 61.8% exact; EXIT GATE PASS
-  - **Cosmetic finding → backlog R6:** B grade_label "Strong match" overlaps frontend "Strong match!" at ≥70 (not a scoring error, just confusing messaging)
-  - Full suite: 481 backend passed, 24 skipped. Ruff clean. ESLint clean.
-- **Files Changed:** `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
-- **Commits:** pending
-- **Next:** No Phase 5 work remains. Continue to Phase 6 reverification.
+  - **Phase 4 reverification** — all 7 tasks independently verified from scratch
+  - **Fix 1:** proxy.ts — added `/resumes` to `protectedPrefixes` (was missing edge-level protection)
+  - **Fix 2:** test_rls_isolation.py — cascade test now creates and verifies `shared_scores` deletion
+  - **Fix 3:** LAUNCH_PROGRAM.md — corrected 4.6 description (code uses CASCADE, not explicit deletes)
+  - **New test:** E2E test for `/resumes` → `/sign-in` redirect (51 Playwright tests, was 50)
+  - Full suite: 481 backend passed, 24 skipped. 51 Playwright E2E passed. Both linters clean.
+- **Files Changed:** `frontend/src/proxy.ts`, `backend/tests/integration/test_rls_isolation.py`, `frontend/tests/e2e/happy-path.spec.ts`, `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Create PR, merge to main.
 - **Blockers:** None
 
 ### Session 107 (Claude) — 2026-08-05
