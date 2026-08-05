@@ -129,6 +129,12 @@ test.describe("Auth redirect", () => {
     await page.waitForURL(/\/sign-in/, { timeout: 10_000 });
     await expect(page).toHaveURL(/\/sign-in/);
   });
+
+  test("accessing /resumes without auth redirects to /sign-in", async ({ page }) => {
+    await page.goto("/resumes");
+    await page.waitForURL(/\/sign-in/, { timeout: 10_000 });
+    await expect(page).toHaveURL(/\/sign-in/);
+  });
 });
 
 test.describe("Sign-in page", () => {

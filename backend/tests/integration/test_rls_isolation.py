@@ -464,6 +464,19 @@ class TestDeleteCascade:
             "resume_data": {"x": 1},
         })
 
+        score_id = f"cascade-{uuid.uuid4().hex[:8]}"
+        httpx.post(f"{REST}/shared_scores", headers=h, json={
+            "id": score_id,
+            "user_id": uid,
+            "overall_score": 75.0,
+            "grade": "B",
+            "grade_label": "Good",
+            "total_matched": 8,
+            "total_missing": 4,
+            "total_job_keywords": 12,
+            "expires_at": "2099-12-31T00:00:00Z",
+        })
+
         r = httpx.post(
             f"{REST}/rpc/delete_own_user",
             headers=h,
@@ -473,10 +486,16 @@ class TestDeleteCascade:
 
         admin_h = _admin_headers()
         admin_h["Prefer"] = "return=representation"
-        for table in ["profiles", "jobs", "resumes", "resume_versions"]:
-            key = "id" if table == "profiles" else "user_id"
-            filter_val = uid if table != "resume_versions" else resume_id
-            filter_key = "resume_id" if table == "resume_versions" else key
+        for table in ["profiles", "jobs", "resumes", "resume_versions",
+                      "shared_scores"]:
+            if table == "profiles":
+                filter_key, filter_val = "id", uid
+            elif table == "resume_versions":
+                filter_key, filter_val = "resume_id", resume_id
+            elif table == "shared_scores":
+                filter_key, filter_val = "id", score_id
+            else:
+                filter_key, filter_val = "user_id", uid
             r = httpx.get(
                 f"{REST}/{table}?{filter_key}=eq.{filter_val}",
                 headers=admin_h,

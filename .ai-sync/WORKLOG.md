@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 3 (Security and privacy) reverification
-- **Branch:** feature/phase-3-security-reverify-v2
-- **Status:** DONE — all 8 tasks verified, 1 threat model fix applied
+- **Feature:** Phase 4 (Auth and persistence) reverification
+- **Branch:** feature/phase-4-auth-persistence-reverify
+- **Status:** DONE — all 7 tasks verified, 2 fixes applied
 
 ---
 
@@ -19,13 +19,26 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-05                 |
-| Working On | Session 107: Phase 3 reverification complete |
+| Working On | Session 108: Phase 4 reverification complete |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 108 (Claude) — 2026-08-05
+- **Agent:** claude
+- **Did:**
+  - **Phase 4 reverification** — all 7 tasks independently verified from scratch
+  - **Fix 1:** proxy.ts — added `/resumes` to `protectedPrefixes` (was missing edge-level protection)
+  - **Fix 2:** test_rls_isolation.py — cascade test now creates and verifies `shared_scores` deletion
+  - **Fix 3:** LAUNCH_PROGRAM.md — corrected 4.6 description (code uses CASCADE, not explicit deletes)
+  - **New test:** E2E test for `/resumes` → `/sign-in` redirect (51 Playwright tests, was 50)
+  - Full suite: 481 backend passed, 24 skipped. 51 Playwright E2E passed. Both linters clean.
+- **Files Changed:** `frontend/src/proxy.ts`, `backend/tests/integration/test_rls_isolation.py`, `frontend/tests/e2e/happy-path.spec.ts`, `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Create PR, merge to main.
+- **Blockers:** None
 
 ### Session 107 (Claude) — 2026-08-05
 - **Agent:** claude
