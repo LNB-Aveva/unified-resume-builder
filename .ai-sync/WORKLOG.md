@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 4 RLS reverification — production Supabase security fixes
-- **Branch:** main
-- **Status:** DONE — 20/20 RLS tests pass against production, 3 security gaps fixed, fix script updated
+- **Feature:** Phase 3 (Security and privacy) reverification
+- **Branch:** feature/phase-3-security-reverify
+- **Status:** DONE — all 8 tasks verified, 1 threat model fix applied
 
 ---
 
@@ -18,8 +18,8 @@
 | Field      | Value                      |
 |------------|----------------------------|
 | Agent      | claude                     |
-| Started    | 2026-08-04                 |
-| Working On | Session 104: Phase 4 RLS reverification complete, committing |
+| Started    | 2026-08-05                 |
+| Working On | Session 107: Phase 3 reverification complete |
 
 ---
 
