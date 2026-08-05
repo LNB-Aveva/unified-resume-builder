@@ -327,3 +327,34 @@ All 10 findings fixed:
 ### Git State:
 - Branch: feature/phase-4-auth-persistence-reverify
 - Files changed: proxy.ts, test_rls_isolation.py, happy-path.spec.ts, LAUNCH_PROGRAM.md, SESSION_LOG.md, WORKLOG.md
+
+---
+
+## Session 109 — 2026-08-05
+
+### What Was Done This Session:
+
+**Phase 6 (Reliability and performance) reverification — all 6 tasks verified from scratch.**
+
+**Doc fixes applied:**
+1. `LAUNCH_PROGRAM.md` 6.3 — corrected keepalive interval from "14 min" to "13 min" (actual cron: `*/13 * * * *`)
+2. `LAUNCH_PROGRAM.md` 6.4 — corrected timeout from "30-second" to "90-second" (`--max-time 90`), added retry count
+
+**No code fixes needed — all reliability code is correct.**
+
+**Verification evidence (33 Phase 6 tests):**
+- 6.1: `RequestTimeoutMiddleware` (60s), HF timeout (30s), backoff (1s/2s), keyword cache (128 max, 5min TTL), `fetchWithRetry` (65s, 2 retries), PDF stress (3 templates + size cap + empty). 11 tests pass.
+- 6.2: `_is_retryable()` handles ConnectError/TimeoutException/5xx. `_ai_errors.py` maps errors to 502/503/504. 22 tests pass (11 × asyncio+trio).
+- 6.3: Keepalive cron `*/13 * * * *` with 3 retries × 90s timeout. Cold-start 31.3s documented.
+- 6.4: Workflow exits 1 after 3 failed attempts with `::error::` annotation. Owner notified via GitHub.
+- 6.5: Load test covers 9 routes, dry-run validates payloads. CLI with `--dry-run`, `--token`, `--base-url`.
+- 6.6: Circuit breaker: 5 failures → open, 60s recovery, half-open probe, reset on success. 16 tests pass.
+- All 9 frontend components: `res.ok` before JSON parse, `connectionError()` handles SyntaxError/5xx/timeouts.
+- Per-route rate limits: all 9 match THREAT-MODEL.md exactly.
+- Zero `asyncio` imports in application code.
+
+**Test results:** 481 backend passed (24 skipped), 51 Playwright E2E passed. Both linters clean.
+
+### Git State:
+- Branch: feature/phase-6-reliability-reverify
+- Files changed: LAUNCH_PROGRAM.md, SESSION_LOG.md, WORKLOG.md
