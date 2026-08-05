@@ -188,6 +188,14 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 **Exit gate:** At least 80% of labeled pairs remain within one human grade, zero obvious strong matches score F, and the report is reproducible in CI.
 
+**Reverification (2026-08-05, Session 108):** All 5 tasks independently verified from scratch.
+- **5.1 Eval dataset + runner:** 34-case dataset at `tests/eval/eval_dataset.json`. Runner (`run_eval.py`) and pytest wrapper (`test_eval_harness.py`) both execute correctly. 2 eval tests are collected by pytest default discovery and run in CI (part of 481-test suite).
+- **5.2 Taxonomy + synonyms + golden files:** `skills_taxonomy.json` has 389 hard skills across 16 categories, 50 soft skills, 91 synonym groups (137 reverse entries). `taxonomy.py` provides `get_hard_skills()`, `get_soft_skills()`, `get_synonym_map()`, `get_reverse_synonym_map()`, `canonicalize()`. Six synonym pairs verified: reactjs→react, k8s→kubernetes, postgres→postgresql, js→javascript, nextjs→next.js, golang→go. 42 keyword extractor tests pass (including 4 cache tests). 12 golden-file rewriter parsing tests pass.
+- **5.3 Calibrated grades + explainability:** Grade boundaries A≥85, B≥65, C≥50, D≥30, F<30. Weighted scoring 70% hard / 30% soft. `ats_scorer.py` returns `matched_hard_skills`/`missing_hard_skills`/`matched_soft_skills`/`missing_soft_skills` for explainability. `GapAnalysis.tsx` displays hard/soft breakdown with counts. Domain warning fires when taxonomy_coverage ≤ 0.5 (non-tech JDs). 34 scorer tests pass (including weight-swap detection, domain warning, synonym matching). Note: grade_label "Strong match" at B (≥65) overlaps with frontend context message "Strong match!" at ≥70 — cosmetic inconsistency, not a scoring error; added to backlog.
+- **5.4 Public copy accuracy:** grep for spaCy/NLTK/scikit-learn/WeasyPrint across frontend/, README.md, docs/guides/, backend templates: zero hits. Only references are in internal LAUNCH_PROGRAM.md documenting the cleanup.
+- **5.5 Expanded dataset + metrics:** 34 cases (IDs 1-25 original + 26-34 edge cases). Eval result: 21/34 exact (61.8%), 34/34 within-one-grade (100.0%). EXIT GATE PASS. `test_no_strong_match_scores_f` verifies no A/B-expected case scores F.
+- **Full suite:** 481 backend passed, 24 skipped. Ruff clean. ESLint clean.
+
 ## Phase 6 — Reliability and performance
 
 | Task | File(s) | Status |
@@ -370,6 +378,7 @@ Items discovered during post-launch sessions. Ordered by priority.
 | D4 | Auto-scrolling testimonial marquee | DEFERRED | M | Low priority |
 | R4 | RLS isolation tests in CI (Phase 4.5 caveat) | PARTIAL — 20/20 pass locally; CI skips | S | Needs `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions secret |
 | R5 | E2E browser tests for Phase 4 auth flows (F7 caveat) | TODO | M | None — Phase 4 is complete, Playwright auth fixture can now be built |
+| R6 | Grade label / context message alignment | TODO | S | None — cosmetic: B grade_label "Strong match" overlaps with frontend "Strong match!" at ≥70; rename B→"Good match", C→"Moderate match" |
 
 ### R4 — RLS isolation tests in CI
 

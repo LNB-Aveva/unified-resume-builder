@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 4 (Auth and persistence) reverification
-- **Branch:** feature/phase-4-auth-persistence-reverify
-- **Status:** DONE — all 7 tasks verified, 2 fixes applied
+- **Feature:** Phase 5 (Scoring quality) reverification
+- **Branch:** feature/phase-5-scoring-reverify
+- **Status:** DONE — all 5 tasks verified, 0 code fixes needed, 1 cosmetic finding added to backlog
 
 ---
 
@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-05                 |
-| Working On | Session 108: Phase 4 reverification complete |
+| Working On | Session 109: Phase 4+5 reverification merged, cross-verification complete |
 
 ---
 
@@ -47,7 +47,7 @@
   - **Fix:** THREAT-MODEL.md preview-rewrite rate limit corrected from 15/min to 5/min (matches `@limiter.limit("5/minute")`)
   - **Updated stale counts:** Backend 467→481 tests, Playwright 44→50 in LAUNCH_PROGRAM.md + THREAT-MODEL.md
   - **Security scan results:** Bandit 0 High, pip-audit 0 vulns (runtime+dev), npm audit 0 production, detect-secrets all false positives
-  - **Verified:** 80 auth tests, 111 security tests total, CORS strict allow-list, Sentry PII filter, 28 fpdf2 `_s()` paths, 11 dangerouslySetInnerHTML uses (all hardcoded), CSP covers GA4/AdSense/Sentry
+  - **Verified:** 80 auth tests, 111 security tests total, CORS strict allow-list, Sentry PII filter, 26 fpdf2 `_s()` call sites (def excluded), 11 dangerouslySetInnerHTML uses (all hardcoded), CSP covers GA4/AdSense/Sentry
   - Full suite: 481 backend passed, 24 skipped. 50 Playwright E2E passed. Both linters clean. Build clean.
 - **Files Changed:** `docs/LAUNCH_PROGRAM.md`, `docs/THREAT-MODEL.md`, `.ai-sync/WORKLOG.md`
 - **Commits:** `4943bcd`
