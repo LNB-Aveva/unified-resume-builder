@@ -1,9 +1,9 @@
-import asyncio
 import logging
 import os
 import threading
 import time
 
+import anyio
 import httpx
 
 MODEL = "Qwen/Qwen2.5-7B-Instruct:fastest"
@@ -147,7 +147,7 @@ async def call_hf(
             if attempt < _MAX_RETRIES and _is_retryable(exc):
                 delay = _BACKOFF_BASE * (2 ** attempt)
                 logger.warning("HF call attempt %d failed (%s), retrying in %.1fs", attempt + 1, exc, delay)
-                await asyncio.sleep(delay)
+                await anyio.sleep(delay)
                 continue
             if _is_retryable(exc) or isinstance(exc, RuntimeError) or was_probe:
                 _record_failure(was_probe)

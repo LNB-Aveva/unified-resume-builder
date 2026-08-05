@@ -385,7 +385,7 @@ export default function ResumeExporter({
                   <p className={`text-xs font-bold ${selected ? "text-indigo-700 dark:text-indigo-300" : "text-gray-700 dark:text-gray-200"}`}>
                     {t.label}
                   </p>
-                  <p className="text-[10px] text-gray-400 leading-tight mt-0.5 hidden sm:block">
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-tight mt-0.5 hidden sm:block">
                     {t.tagline}
                   </p>
                 </div>
@@ -512,7 +512,7 @@ export default function ResumeExporter({
                 </div>
                 <div>
                   <label className={labelCls}>
-                    Bullets <span className="font-normal text-gray-400">(one per line — paste rewritten bullets from Step 5)</span>
+                    Bullets <span className="font-normal text-gray-500 dark:text-gray-400">(one per line — paste rewritten bullets from Step 5)</span>
                   </label>
                   <textarea className={`${inputCls} resize-y font-mono`} rows={4}
                     value={exp.bulletsText}

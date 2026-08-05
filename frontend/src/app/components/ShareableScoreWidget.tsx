@@ -156,6 +156,12 @@ export default function ShareableScoreWidget() {
             </div>
           </div>
 
+          {score.domain_warning && (
+            <div className="rounded-xl bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 px-4 py-3 text-sm text-purple-800 dark:text-purple-200">
+              <strong>Limited coverage:</strong> {score.domain_warning}
+            </div>
+          )}
+
           {/* Share URL row */}
           <div>
             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">

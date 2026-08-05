@@ -188,6 +188,13 @@ def extract_keywords(job: JobDescription) -> JobAnalysis:
 
     all_keywords = sorted(set(hard_skills + soft_skills + context_skills))
 
+    total_extracted = len(hard_skills) + len(context_skills) + len(soft_skills)
+    taxonomy_coverage = (
+        (len(hard_skills) + len(soft_skills)) / total_extracted
+        if total_extracted > 0
+        else 1.0
+    )
+
     result = JobAnalysis(
         job_title=job_title,
         company=job.company,
@@ -197,6 +204,7 @@ def extract_keywords(job: JobDescription) -> JobAnalysis:
         education_requirements=education,
         keywords=all_keywords,
         responsibilities=responsibilities,
+        taxonomy_coverage=round(taxonomy_coverage, 2),
     )
 
     _cache[key] = (now, result)

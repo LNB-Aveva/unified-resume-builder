@@ -81,21 +81,21 @@ export default async function BlogArticle({ params }: Props) {
 
       <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
         {/* Breadcrumb */}
-        <nav className="text-xs text-gray-400 mb-8">
-          <Link href="/" className="hover:text-gray-600 transition">
+        <nav className="text-xs text-gray-500 dark:text-gray-400 mb-8">
+          <Link href="/" className="hover:text-gray-600 dark:hover:text-gray-300 transition">
             Home
           </Link>
           <span className="mx-2">/</span>
-          <Link href="/blog" className="hover:text-gray-600 transition">
+          <Link href="/blog" className="hover:text-gray-600 dark:hover:text-gray-300 transition">
             Blog
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-600">{post.title}</span>
+          <span className="text-gray-600 dark:text-gray-300">{post.title}</span>
         </nav>
 
         {/* Article header */}
         <header className="mb-10">
-          <div className="flex items-center gap-3 text-xs text-gray-400 mb-4">
+          <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mb-4">
             <time dateTime={post.publishedAt}>
               {new Date(post.publishedAt).toLocaleDateString("en-US", {
                 year: "numeric",
@@ -106,17 +106,17 @@ export default async function BlogArticle({ params }: Props) {
             <span aria-hidden>&middot;</span>
             <span>{post.readingTime}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
             {post.title}
           </h1>
-          <p className="text-lg text-gray-500 leading-relaxed">
+          <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed">
             {post.description}
           </p>
         </header>
 
         {/* Table of contents */}
-        <aside className="rounded-xl bg-gray-50 border border-gray-100 p-5 mb-10">
-          <h2 className="text-sm font-semibold text-gray-700 mb-3">
+        <aside className="rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-5 mb-10">
+          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
             In this article
           </h2>
           <ul className="space-y-1.5">
@@ -137,13 +137,13 @@ export default async function BlogArticle({ params }: Props) {
         <article className="prose-custom">
           {post.sections.map((section, i) => (
             <section key={i} id={`section-${i}`} className="mb-10">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                 {section.heading}
               </h2>
               {section.content.map((paragraph, j) => (
                 <p
                   key={j}
-                  className="text-gray-600 leading-relaxed mb-4 text-[0.95rem]"
+                  className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4 text-[0.95rem]"
                 >
                   {paragraph}
                 </p>
@@ -153,11 +153,11 @@ export default async function BlogArticle({ params }: Props) {
         </article>
 
         {/* CTA */}
-        <div className="rounded-2xl bg-indigo-50 border border-indigo-100 p-8 text-center my-12">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+        <div className="rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-800 p-8 text-center my-12">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
             Check your resume now — free
           </h2>
-          <p className="text-sm text-gray-500 mb-4 max-w-md mx-auto">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 max-w-md mx-auto">
             Use our free ATS keyword extractor, gap analysis, and 15-rule
             compliance checker. Try the keyword extractor free — no sign-up needed.
           </p>
@@ -171,8 +171,8 @@ export default async function BlogArticle({ params }: Props) {
 
         {/* Related articles */}
         {otherPosts.length > 0 && (
-          <div className="border-t border-gray-100 pt-10">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">
+          <div className="border-t border-gray-100 dark:border-gray-800 pt-10">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
               More ATS guides
             </h2>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -182,11 +182,11 @@ export default async function BlogArticle({ params }: Props) {
                   href={`/blog/${related.slug}`}
                   className="block group"
                 >
-                  <article className="rounded-xl border border-gray-100 p-5 hover:border-indigo-200 transition h-full">
-                    <h3 className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition mb-2">
+                  <article className="rounded-xl border border-gray-100 dark:border-gray-800 p-5 hover:border-indigo-200 dark:hover:border-indigo-800 transition h-full">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition mb-2">
                       {related.title}
                     </h3>
-                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">
                       {related.description}
                     </p>
                   </article>

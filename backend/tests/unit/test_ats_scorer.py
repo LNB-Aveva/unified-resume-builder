@@ -148,6 +148,48 @@ class TestScoreResume:
         assert "docker" in result.matched_hard_skills
 
 
+class TestDomainWarning:
+    def test_no_warning_for_high_coverage_tech_jd(self):
+        job = _job(hard=["python", "docker", "aws"], soft=["leadership"])
+        result = score_from_text(job, "python docker aws leadership")
+        assert result.domain_warning is None
+
+    def test_warning_when_low_coverage_and_enough_keywords(self):
+        job = JobAnalysis(
+            job_title="HR Manager",
+            hard_skills=["employee relations", "labor law", "performance management", "workday"],
+            soft_skills=["conflict resolution"],
+            keywords=["conflict resolution", "employee relations", "labor law", "performance management", "workday"],
+            responsibilities=["-"] * 10,
+            taxonomy_coverage=0.40,
+        )
+        result = score_from_text(job, "generic resume")
+        assert result.domain_warning is not None
+        assert "outside our taxonomy" in result.domain_warning
+
+    def test_warning_when_few_hard_skills_but_substantial_jd(self):
+        job = JobAnalysis(
+            job_title="Attorney",
+            hard_skills=[],
+            soft_skills=["analytical", "negotiation"],
+            keywords=["analytical", "negotiation"],
+            responsibilities=["-"] * 8,
+            taxonomy_coverage=1.0,
+        )
+        result = score_from_text(job, "analytical negotiation")
+        assert result.domain_warning is not None
+
+    def test_no_warning_for_short_jd(self):
+        job = _job(hard=["python"], soft=[])
+        result = score_from_text(job, "python developer")
+        assert result.domain_warning is None
+
+    def test_no_warning_default_coverage(self):
+        job = _job(hard=["python", "docker", "aws", "react"], soft=["teamwork"])
+        result = score_from_text(job, "python docker aws react teamwork")
+        assert result.domain_warning is None
+
+
 class TestScoreFromText:
     def test_matches_raw_text(self):
         job = _job(hard=["python", "docker"], soft=["leadership"])

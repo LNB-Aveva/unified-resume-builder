@@ -76,11 +76,11 @@ export default function CoverLetterGenerator() {
         }),
       });
 
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error((data as { detail?: string }).detail ?? `Server error ${res.status}`);
+        const body = await res.json().catch(() => ({}));
+        throw new Error((body as { detail?: string }).detail ?? `Server error ${res.status}`);
       }
-      setResult(data as CoverLetterResponse);
+      setResult((await res.json()) as CoverLetterResponse);
     } catch (err) {
       setError(connectionError(err));
     } finally {

@@ -77,13 +77,12 @@ export default function BulletRewriter() {
         }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        throw new Error(data.detail ?? `Server error ${res.status}`);
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.detail ?? `Server error ${res.status}`);
       }
 
-      setResult(data);
+      setResult(await res.json());
     } catch (err) {
       setError(connectionError(err));
     } finally {
@@ -130,7 +129,7 @@ export default function BulletRewriter() {
         <div className="space-y-1.5">
           <label htmlFor="br-keywords" className="block text-sm font-semibold text-gray-700 dark:text-gray-200">
             Missing Keywords
-            <span className="ml-1.5 font-normal text-gray-400 text-xs">(from Gap Analysis above)</span>
+            <span className="ml-1.5 font-normal text-gray-500 dark:text-gray-400 text-xs">(from Gap Analysis above)</span>
           </label>
           <input
             id="br-keywords"

@@ -1,5 +1,6 @@
 
 from app.schemas.job import JobDescription
+from app.services.nlp import keyword_extractor
 from app.services.nlp.keyword_extractor import (
     HARD_SKILLS,
     SOFT_SKILLS,
@@ -224,3 +225,63 @@ class TestExtractKeywords:
         assert result.hard_skills == []
         assert result.soft_skills == []
         assert result.keywords == []
+
+    def test_taxonomy_coverage_high_for_tech_jd(self):
+        job = JobDescription(raw_text=JOB_TEXT)
+        result = extract_keywords(job)
+        assert result.taxonomy_coverage >= 0.8
+
+    def test_taxonomy_coverage_low_for_non_tech_jd(self):
+        job = JobDescription(raw_text="""HR Manager
+Requirements:
+- Experience with employee relations, talent acquisition, and onboarding
+- Knowledge of labor law and compliance
+- Experience with performance management
+- Strong interpersonal and conflict resolution skills
+- Benefits administration experience
+- Succession planning and workforce planning
+- Change management expertise
+""")
+        result = extract_keywords(job)
+        assert result.taxonomy_coverage <= 0.5
+
+    def test_taxonomy_coverage_defaults_to_1_for_empty_jd(self):
+        job = JobDescription(raw_text="No skills at all")
+        result = extract_keywords(job)
+        assert result.taxonomy_coverage == 1.0
+
+
+class TestKeywordCache:
+    """Verify the SHA-256 + OrderedDict + TTL cache (Phase 6.1)."""
+
+    def setup_method(self):
+        keyword_extractor._cache.clear()
+
+    def teardown_method(self):
+        keyword_extractor._cache.clear()
+
+    def test_second_call_returns_cached_result(self):
+        job = JobDescription(raw_text=JOB_TEXT, company="TechCorp")
+        first = extract_keywords(job)
+        second = extract_keywords(job)
+        assert first is second
+
+    def test_different_inputs_produce_different_cache_entries(self):
+        job_a = JobDescription(raw_text=JOB_TEXT, company="A")
+        job_b = JobDescription(raw_text=JOB_TEXT, company="B")
+        extract_keywords(job_a)
+        extract_keywords(job_b)
+        assert len(keyword_extractor._cache) == 2
+
+    def test_cache_evicts_oldest_beyond_max_size(self, monkeypatch):
+        monkeypatch.setattr(keyword_extractor, "_CACHE_MAX_SIZE", 2)
+        for i in range(3):
+            extract_keywords(JobDescription(raw_text=f"unique job text {i} python"))
+        assert len(keyword_extractor._cache) == 2
+
+    def test_expired_entry_is_not_returned(self, monkeypatch):
+        job = JobDescription(raw_text=JOB_TEXT)
+        first = extract_keywords(job)
+        monkeypatch.setattr(keyword_extractor, "_CACHE_TTL", -1)
+        second = extract_keywords(job)
+        assert first is not second

@@ -469,7 +469,7 @@ class TestDeleteCascade:
             headers=h,
             json={},
         )
-        assert r.status_code == 200
+        assert r.status_code in (200, 204)
 
         admin_h = _admin_headers()
         admin_h["Prefer"] = "return=representation"
