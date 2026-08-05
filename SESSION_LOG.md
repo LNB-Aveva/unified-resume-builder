@@ -298,3 +298,32 @@ All 10 findings fixed:
 4. Deploy to Render (backend) + Vercel (frontend)
 5. Set up HuggingFace API key in production
 6. Set NEXT_PUBLIC_API_URL and FRONTEND_URL env vars
+
+---
+
+## Session 108 — 2026-08-05
+
+### What Was Done This Session:
+
+**Phase 4 (Auth and persistence) reverification — all 7 tasks verified from scratch.**
+
+**Fixes applied:**
+1. `proxy.ts` — added `/resumes` to `protectedPrefixes` (was protected only by layout.tsx server component, not edge middleware)
+2. `test_rls_isolation.py` — cascade test now creates and verifies `shared_scores` deletion (was untested)
+3. `LAUNCH_PROGRAM.md` — corrected 4.6 description (code uses CASCADE, not explicit deletes)
+4. `happy-path.spec.ts` — added E2E test for `/resumes` → `/sign-in` redirect
+
+**Verification evidence:**
+- 4.1: proxy.ts protects /tools, /account, /account-setup, /resumes at edge + layout.tsx guard
+- 4.2: resumes (4 RLS policies, CHECK, CASCADE) + resume_versions (3 policies, immutable, unique)
+- 4.3: 7 server actions, all verify auth + filter by user_id (defense-in-depth)
+- 4.4: resume_id FK on jobs with ON DELETE SET NULL, dropdown in JobTracker
+- 4.5: 20 RLS tests (profiles×6, jobs×4, resumes×4, versions×3, shared_scores×2, cascade×1)
+- 4.6: CASCADE chain: auth.users → all 5 tables. Test now verifies shared_scores.
+- 4.7: Export covers all 5 tables. Confirmation text lists all data types.
+
+**Test results:** 481 backend passed (24 skipped), 51 Playwright E2E passed. Both linters clean.
+
+### Git State:
+- Branch: feature/phase-4-auth-persistence-reverify
+- Files changed: proxy.ts, test_rls_isolation.py, happy-path.spec.ts, LAUNCH_PROGRAM.md, SESSION_LOG.md, WORKLOG.md
