@@ -22,9 +22,9 @@ Verified on 2026-07-29; older session-log claims are not authoritative.
 | Production frontend → backend | **WIRED** | Deployed JS contains `https://unified-resume-builder-api.onrender.com`; production CORS allows `https://resumeai.cv` and rejects `https://evil.example`. |
 | Production backend | **LIVE; cold start observed** | Render `/health` returned 200 after 31.3s on the first recheck and was fast once warm. This is too slow for an unprimed first-user request and requires a measured browser-path mitigation. |
 | Local backend | **WORKS** | Fresh Uvicorn processes on ports 8767/8768 returned 200 from all nine API routes; all four Hugging Face routes generated content and PDF export returned 1,519 bytes. |
-| Backend tests | **GREEN** | 467 passed, 24 skipped; 90% branch coverage on services/routes, above the 80% floor. Verified 2026-08-04. |
+| Backend tests | **GREEN** | 481 passed, 24 skipped; 90% branch coverage on services/routes, above the 80% floor. Reverified 2026-08-05. |
 | Frontend lint/build | **GREEN locally** | ESLint passed. `next build` compiled 26 routes/pages after Google Fonts network access was allowed. |
-| Browser tests | **GREEN** | 44 Playwright E2E tests pass: 18 happy-path, 6 failure-path, 6 accessibility (WCAG 2.1 AA), 10 smoke, 4 mobile (Pixel 7). Covers landing, keyword analyzer, ATS checker, blog, legal, auth redirect, sign-in/sign-up, SEO pages, validation errors, API errors, and mobile layout. Verified 2026-08-04. |
+| Browser tests | **GREEN** | 50 Playwright E2E tests pass: 18 happy-path, 6 failure-path, 6 accessibility (WCAG 2.1 AA), 10 smoke, 4 mobile (Pixel 7), 6 tool flows. Covers landing, keyword analyzer, ATS checker, blog, legal, auth redirect, sign-in/sign-up, SEO pages, validation errors, API errors, mobile layout, and 5 tool flows with mocked APIs. Reverified 2026-08-05. CI retries (2) added for dev-server compilation races. |
 | CI | **GREEN** | Run `30919865957` passed on commit `a3acab7`: backend lint, types, tests/coverage (90% branch), security scans, both Python audits, route startup, frontend lint, npm audit, production build, and 44 Playwright E2E tests all succeeded. Verified 2026-08-04. |
 | Python dependency audit | **GREEN LOCALLY** | Runtime and development manifests are separate and both resolve with no known vulnerabilities. The unused Semgrep dependency and its vulnerable `mcp`/`click` chain were removed. |
 | Frontend dependency audit | **PRODUCTION GREEN; DEV RED** | `npm audit --omit=dev --audit-level=high` found zero production vulnerabilities. The full installed tree reported nine High advisories in development tooling and needs triage without weakening the production gate. |
@@ -94,8 +94,8 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 2.1 Maintain unit, integration, adversarial, property, parsing, PDF, and evaluation suites. | `backend/tests/` | DONE (467 passed, 24 skipped — verified 2026-08-04) |
-| 2.2 Keep combined services/routes coverage at 80%; this is close enough to actual 82.44% to prevent regression without incentivizing trivial tests. | `.github/workflows/ci.yml`, `backend/pyproject.toml` | DONE (90% branch coverage — verified 2026-08-04) |
+| 2.1 Maintain unit, integration, adversarial, property, parsing, PDF, and evaluation suites. | `backend/tests/` | DONE (481 passed, 24 skipped — reverified 2026-08-05) |
+| 2.2 Keep combined services/routes coverage at 80%; this is close enough to actual 82.44% to prevent regression without incentivizing trivial tests. | `.github/workflows/ci.yml`, `backend/pyproject.toml` | DONE (90% branch coverage — reverified 2026-08-05) |
 | 2.3 Fix Ruff E402 and mypy errors introduced by conditional Sentry setup. | `backend/app/main.py` | DONE — CI run 30508092537 passed |
 | 2.4 Update the CVE gate for current advisories and split runtime from dev dependencies. | `backend/requirements.txt`, `backend/requirements-dev.txt`, `.github/workflows/ci.yml`, `render.yaml` | DONE — both manifests audit clean in CI |
 | 2.5 Replace smoke-only Playwright coverage with a real happy path: sign up/sign in fixture → protected tools → run analyzer → save/load resume version → PDF/export/delete. | `frontend/tests/e2e/happy-path.spec.ts` | DONE (18 tests) — covers landing, keyword analyzer with mocked API, ATS checker, blog, legal pages, auth redirect, sign-in/sign-up forms, SEO pages. Auth fixture for save/load/delete blocked on Phase 4. |
@@ -105,11 +105,11 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 **Exit gate:** Intentionally break one backend route and one browser flow; CI blocks both. Current `main` must have a successful CI run.
 
-**Exit gate PASSED (2026-08-04):**
-- Main CI green: run `30919865957` (all 3 jobs passed on commit `a3acab7`).
+**Exit gate PASSED (2026-08-04), reverified 2026-08-05:**
+- Main CI green: run `30919865957` (all 3 jobs passed on commit `a3acab7`). Subsequent run `30963112810` had 1 flaky E2E failure (identical tree, dev-server compilation race); fixed by adding `retries: 2` to Playwright CI config.
 - Deliberate backend break (analyze route cleared all results): CI run `30922884807` — Backend job FAILED at `test_valid_payload` (`assert 'python' in []`). Caught.
 - Deliberate frontend break (h1→div on keyword-analyzer): same CI run — E2E job FAILED at `keyword analyzer page loads` and `page loads with textarea` (`locator('h1')` not found). Caught.
-- Local verification: 467 backend tests pass (90% branch coverage), 44 Playwright E2E tests pass, both linters clean, frontend build clean (30 routes).
+- Local reverification (2026-08-05): 481 backend tests pass (90% branch coverage), 50 Playwright E2E tests pass (0 failures), both linters clean, frontend build clean (30 routes).
 
 ## Phase 3 — Security and privacy
 
