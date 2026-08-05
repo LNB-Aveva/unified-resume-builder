@@ -11,7 +11,7 @@ An all-in-one platform for ATS scoring, keyword gap analysis, AI-powered resume 
 - **ATS Compliance Checker** — validates formatting against 15+ ATS checkpoints
 - **AI Summary Generator** — creates tailored professional summaries from your experience
 - **AI Cover Letter Generator** — produces role-specific cover letters
-- **PDF Export** — ATS-safe document generation with professional templates
+- **PDF Export** — clean, simple PDF generation with professional templates
 - **Job Tracker** — track applications, statuses, and interview stages
 
 ## Tech Stack
@@ -22,7 +22,7 @@ An all-in-one platform for ATS scoring, keyword gap analysis, AI-powered resume 
 | Backend | Python 3.13 + FastAPI | Async API, Pydantic validation |
 | Auth + DB | Supabase (PostgreSQL) | Auth, RLS, profiles, job tracking |
 | NLP | JSON skill taxonomy + regex/synonym matching | 220+ skills, 65+ synonym groups |
-| AI | HuggingFace Inference API (Qwen2.5-Coder-32B) | Resume rewriting, summaries, cover letters |
+| AI | HuggingFace Inference API (Qwen2.5-7B-Instruct) | Resume rewriting, summaries, cover letters |
 | PDF | fpdf2 | Pure-Python PDF generation (no system deps) |
 | Hosting | Vercel (frontend) + Render (backend) | Free-tier deployment |
 
