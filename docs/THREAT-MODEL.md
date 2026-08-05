@@ -1,6 +1,6 @@
 # Threat Model — ResumeAI (resumeai.cv)
 
-Last updated: 2026-08-04 (Phase 3 reverification)
+Last updated: 2026-08-05 (Phase 3 reverification — Session 107)
 
 ## System Overview
 
@@ -20,7 +20,7 @@ Last updated: 2026-08-04 (Phase 3 reverification)
 | # | Endpoint                  | Per-Route Limit | Global Limit   | AI-Backed | Auth Required |
 |---|--------------------------|-----------------|----------------|-----------|---------------|
 | 1 | POST /api/v1/analyze      | 30/min          | 200/min/IP     | No        | No (public)   |
-| 2 | POST /api/v1/preview-rewrite | 15/min       | 200/min/IP     | Yes       | No (public)   |
+| 2 | POST /api/v1/preview-rewrite | 5/min        | 200/min/IP     | Yes       | No (public)   |
 | 3 | POST /api/v1/score        | 30/min          | 200/min/IP     | No        | Yes (JWT)     |
 | 4 | POST /api/v1/gap          | 30/min          | 200/min/IP     | No        | Yes (JWT)     |
 | 5 | POST /api/v1/compliance   | 30/min          | 200/min/IP     | No        | Yes (JWT)     |
@@ -258,8 +258,8 @@ CSP `script-src` includes `'unsafe-inline'` because Next.js requires it for fram
 | Property-based     | ~16   | Hypothesis-generated random inputs, auth, rate limit, PDF  |
 | Rate limit         | ~15   | Global limiter, per-route limits, client IP extraction     |
 | RLS isolation      | 20    | Cross-user select/insert/update/delete on all 5 tables     |
-| E2E (Playwright)   | ~44   | Landing, tools, auth, mobile, accessibility, failure paths |
-| **Total**          | **~491** | **467 backend + 24 skipped + ~44 Playwright**          |
+| E2E (Playwright)   | 50    | Landing, tools, auth, mobile, accessibility, failure paths |
+| **Total**          | **~531** | **481 backend + 24 skipped + 50 Playwright**           |
 
 ---
 

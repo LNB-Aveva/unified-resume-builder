@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 2 (Tests and CI) reverification
-- **Branch:** feature/phase-2-tests-ci-reverify
-- **Status:** DONE — CI run 30968452207 all green, PR ready
+- **Feature:** Phase 3 (Security and privacy) reverification
+- **Branch:** feature/phase-3-security-reverify-v2
+- **Status:** DONE — all 8 tasks verified, 1 threat model fix applied
 
 ---
 
@@ -19,13 +19,27 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-05                 |
-| Working On | Session 106: Phase 2 reverification |
+| Working On | Session 107: Phase 3 reverification complete |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 107 (Claude) — 2026-08-05
+- **Agent:** claude
+- **Did:**
+  - **Phase 3 reverification** — all 8 tasks independently verified from scratch
+  - **Fix:** THREAT-MODEL.md preview-rewrite rate limit corrected from 15/min to 5/min (matches `@limiter.limit("5/minute")`)
+  - **Updated stale counts:** Backend 467→481 tests, Playwright 44→50 in LAUNCH_PROGRAM.md + THREAT-MODEL.md
+  - **Security scan results:** Bandit 0 High, pip-audit 0 vulns (runtime+dev), npm audit 0 production, detect-secrets all false positives
+  - **Verified:** 80 auth tests, 111 security tests total, CORS strict allow-list, Sentry PII filter, 28 fpdf2 `_s()` paths, 11 dangerouslySetInnerHTML uses (all hardcoded), CSP covers GA4/AdSense/Sentry
+  - Full suite: 481 backend passed, 24 skipped. 50 Playwright E2E passed. Both linters clean. Build clean.
+- **Files Changed:** `docs/LAUNCH_PROGRAM.md`, `docs/THREAT-MODEL.md`, `.ai-sync/WORKLOG.md`
+- **Commits:** `4943bcd`
+- **Next:** No Phase 3 work remains.
+- **Blockers:** None
 
 ### Session 106 (Claude) — 2026-08-05
 - **Agent:** claude
