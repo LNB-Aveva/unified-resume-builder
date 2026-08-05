@@ -241,6 +241,26 @@ AI Resume Generator/
 ### Model Used:
 - Claude Sonnet 4.6 (switched from Opus — appropriate for implementation tasks)
 
+---
+
+> **Sessions 3–107** tracked in `.ai-sync/WORKLOG.md` (shared handoff log).
+
+---
+
+## Session 108 — 2026-08-05
+
+### Phase 5 (Scoring quality) reverification — PASS
+
+All 5 tasks independently verified:
+- **5.1:** 34-case eval dataset + runner working (EXIT GATE: 100% within-one-grade, 61.8% exact)
+- **5.2:** 389 hard skills, 50 soft skills, 91 synonym groups; 42 extractor + 12 golden-file tests pass
+- **5.3:** Grades calibrated (A≥85/B≥65/C≥50/D≥30/F<30), 70/30 weighting, explainable UI
+- **5.4:** Zero stale spaCy/NLTK/scikit-learn/WeasyPrint claims in public copy
+- **5.5:** 34 cases expanded from original 25; metrics tracked
+
+Full suite: 481 backend passed, 24 skipped. Ruff + ESLint clean.
+Backlog R6 added: grade_label/context message cosmetic alignment.
+
 ### API Endpoints Live (start backend with `uvicorn app.main:app --reload`):
 - GET  /               → health check
 - GET  /health         → health check
