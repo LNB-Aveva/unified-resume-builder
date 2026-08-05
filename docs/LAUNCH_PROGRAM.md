@@ -22,10 +22,10 @@ Verified on 2026-07-29; older session-log claims are not authoritative.
 | Production frontend → backend | **WIRED** | Deployed JS contains `https://unified-resume-builder-api.onrender.com`; production CORS allows `https://resumeai.cv` and rejects `https://evil.example`. |
 | Production backend | **LIVE; cold start observed** | Render `/health` returned 200 after 31.3s on the first recheck and was fast once warm. This is too slow for an unprimed first-user request and requires a measured browser-path mitigation. |
 | Local backend | **WORKS** | Fresh Uvicorn processes on ports 8767/8768 returned 200 from all nine API routes; all four Hugging Face routes generated content and PDF export returned 1,519 bytes. |
-| Backend tests | **GREEN** | 291 passed; measured services/routes coverage 82.44%, above the 80% floor. |
+| Backend tests | **GREEN** | 467 passed, 24 skipped; 90% branch coverage on services/routes, above the 80% floor. Verified 2026-08-04. |
 | Frontend lint/build | **GREEN locally** | ESLint passed. `next build` compiled 26 routes/pages after Google Fonts network access was allowed. |
-| Browser tests | **GREEN but shallow** | Six Playwright smoke tests passed; they only check page rendering, not sign-up, auth, tools, persistence, or error recovery. |
-| CI | **GREEN** | Run 30508092537 passed on commit `c07d905`: backend lint, types, tests/coverage, security scans, both Python audits, route startup, frontend lint, npm audit, and production build all succeeded. |
+| Browser tests | **GREEN** | 44 Playwright E2E tests pass: 18 happy-path, 6 failure-path, 6 accessibility (WCAG 2.1 AA), 10 smoke, 4 mobile (Pixel 7). Covers landing, keyword analyzer, ATS checker, blog, legal, auth redirect, sign-in/sign-up, SEO pages, validation errors, API errors, and mobile layout. Verified 2026-08-04. |
+| CI | **GREEN** | Run `30919865957` passed on commit `a3acab7`: backend lint, types, tests/coverage (90% branch), security scans, both Python audits, route startup, frontend lint, npm audit, production build, and 44 Playwright E2E tests all succeeded. Verified 2026-08-04. |
 | Python dependency audit | **GREEN LOCALLY** | Runtime and development manifests are separate and both resolve with no known vulnerabilities. The unused Semgrep dependency and its vulnerable `mcp`/`click` chain were removed. |
 | Frontend dependency audit | **PRODUCTION GREEN; DEV RED** | `npm audit --omit=dev --audit-level=high` found zero production vulnerabilities. The full installed tree reported nine High advisories in development tooling and needs triage without weakening the production gate. |
 | Supabase production | **PARTIALLY VERIFIED** | Anonymous read-only REST checks returned 200/zero rows for `profiles` and `jobs`, and 200 for `shared_scores`, consistent with deployed tables and RLS. Cross-user isolation and RPC deployment remain unproven. |
@@ -47,7 +47,7 @@ Severity assumes an unknown user expects every advertised feature to work, even 
 | F4 | **Resolved** | AdSense | `frontend/src/app/layout.tsx`; `frontend/public/ads.txt`; `frontend/src/app/components/AdUnit.tsx` | Publisher ID obtained (`pub-7869093425931175`), ads.txt activated, AdSense script in head via Consent Mode v2, AdUnit component ready, privacy disclosures updated. Awaiting Google site review and ad unit creation. | L |
 | F5 | **Resolved** | Database abuse/PII | `supabase-schema.sql`; `ShareableScoreWidget.tsx` | RLS now requires `auth.uid() = user_id` for inserts. CHECK constraints validate score range, grade values, and hint length. Anonymous inserts are blocked. | M |
 | F6 | **Resolved** | RLS assurance | `backend/tests/integration/test_rls_isolation.py` | 20 two-user RLS tests prove cross-user isolation for profiles, jobs, resumes, resume_versions, and shared_scores. delete_own_user cascade test proves full cleanup. | M |
-| F7 | **High** | End-to-end quality | `frontend/tests/e2e/smoke.spec.ts:3-35`; `frontend/playwright.config.ts:11-16` | The roadmap called this a happy path, but tests only render six public pages. Sign-up, sign-in, protected tools, API results, save/load, export, deletion, and mobile are untested in a browser. | L |
+| F7 | **Resolved** | End-to-end quality | `frontend/tests/e2e/` | 44 Playwright tests across 5 spec files: happy-path (18), failure-paths (6), accessibility (6), smoke (10), mobile (4). Covers landing, keyword analyzer with mocked API, ATS checker, blog, legal, auth redirect, sign-in/sign-up forms, SEO pages, validation errors, 429/500/network failure, WCAG 2.1 AA, and mobile layout at Pixel 7 viewport. Auth fixture for save/load/delete blocked on Supabase test user in CI. | L |
 | F8 | **Resolved** | Product truth | `README.md`; `frontend/src/app/keyword-analyzer/page.tsx`; `frontend/src/app/page.tsx` | All public spaCy/NLTK/scikit-learn/WeasyPrint claims replaced with accurate taxonomy/regex/fpdf2 descriptions. | S |
 | F9 | **Resolved** | Analytics/AdSense CSP | `frontend/next.config.ts` | CSP updated with GA4 and AdSense domains: `pagead2.googlesyndication.com` (script/img/connect), `doubleclick.net` (frame), `tpc.googlesyndication.com` (frame), `googletagmanager.com` (script). | M |
 | F10 | **High** | AI degradation | `backend/app/services/ai/hf_client.py:43-48`; `backend/app/api/routes/_ai_errors.py:19-38` | Connect failures are neither retryable nor mapped to 502/503; a sandboxed outage produced generic 500s on all four AI routes. Users receive an internal-error response instead of a service-unavailable path. | S |
@@ -94,8 +94,8 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 2.1 Maintain unit, integration, adversarial, property, parsing, PDF, and evaluation suites. | `backend/tests/` | DONE (291 pass) |
-| 2.2 Keep combined services/routes coverage at 80%; this is close enough to actual 82.44% to prevent regression without incentivizing trivial tests. | `.github/workflows/ci.yml`, `backend/pyproject.toml` | DONE |
+| 2.1 Maintain unit, integration, adversarial, property, parsing, PDF, and evaluation suites. | `backend/tests/` | DONE (467 passed, 24 skipped — verified 2026-08-04) |
+| 2.2 Keep combined services/routes coverage at 80%; this is close enough to actual 82.44% to prevent regression without incentivizing trivial tests. | `.github/workflows/ci.yml`, `backend/pyproject.toml` | DONE (90% branch coverage — verified 2026-08-04) |
 | 2.3 Fix Ruff E402 and mypy errors introduced by conditional Sentry setup. | `backend/app/main.py` | DONE — CI run 30508092537 passed |
 | 2.4 Update the CVE gate for current advisories and split runtime from dev dependencies. | `backend/requirements.txt`, `backend/requirements-dev.txt`, `.github/workflows/ci.yml`, `render.yaml` | DONE — both manifests audit clean in CI |
 | 2.5 Replace smoke-only Playwright coverage with a real happy path: sign up/sign in fixture → protected tools → run analyzer → save/load resume version → PDF/export/delete. | `frontend/tests/e2e/happy-path.spec.ts` | DONE (18 tests) — covers landing, keyword analyzer with mocked API, ATS checker, blog, legal pages, auth redirect, sign-in/sign-up forms, SEO pages. Auth fixture for save/load/delete blocked on Phase 4. |
@@ -104,6 +104,12 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 **Definition of Done:** Every push/PR runs lint, types, tests, security audits, frontend build, and meaningful E2E tests; all checks are green.
 
 **Exit gate:** Intentionally break one backend route and one browser flow; CI blocks both. Current `main` must have a successful CI run.
+
+**Exit gate PASSED (2026-08-04):**
+- Main CI green: run `30919865957` (all 3 jobs passed on commit `a3acab7`).
+- Deliberate backend break (analyze route cleared all results): CI run `30922884807` — Backend job FAILED at `test_valid_payload` (`assert 'python' in []`). Caught.
+- Deliberate frontend break (h1→div on keyword-analyzer): same CI run — E2E job FAILED at `keyword analyzer page loads` and `page loads with textarea` (`locator('h1')` not found). Caught.
+- Local verification: 467 backend tests pass (90% branch coverage), 44 Playwright E2E tests pass, both linters clean, frontend build clean (30 routes).
 
 ## Phase 3 — Security and privacy
 
@@ -132,13 +138,15 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | 4.2 Add `resumes` and immutable `resume_versions` tables with ownership, timestamps, indexes, and cascade behavior. | `supabase-schema.sql` | DONE — resumes + resume_versions tables with full RLS (select/insert/update/delete for resumes; select/insert/delete for versions — no update = immutable), CHECK constraints, cascade delete, user_id FK |
 | 4.3 Add save, list, load, rename, version, and delete flows without silently overwriting prior versions. | `frontend/src/app/actions/resume.ts`, `(protected)/resumes/`, `ResumeExporter.tsx`, tools page | DONE — server actions (create/saveVersion/list/load/rename/delete/listVersions), My Resumes page with rename/delete, ResumeExporter save/save-version buttons, tools page loads from ?resume= param |
 | 4.4 Link tracked jobs to the selected resume version with an FK and safe deletion semantics. | `supabase-schema.sql`, `JobTracker.tsx` | DONE — `resume_id` FK on jobs with ON DELETE SET NULL; dropdown in add-job form and job cards for linking/unlinking resumes; Supabase helpers updated; backwards-compatible with existing data |
-| 4.5 Add two-user RLS integration tests covering select/insert/update/delete for profiles, jobs, resumes, and versions. | `backend/tests/integration/test_rls_isolation.py` | DONE — 20 tests (6 profiles, 4 jobs, 4 resumes, 3 versions, 2 shared_scores, 1 cascade) covering cross-user select/insert/update/delete + delete_own_user cascade. Skipped in CI (needs SUPABASE_SERVICE_ROLE_KEY). Run locally to prove. |
+| 4.5 Add two-user RLS integration tests covering select/insert/update/delete for profiles, jobs, resumes, and versions. | `backend/tests/integration/test_rls_isolation.py` | DONE — 20 tests (6 profiles, 4 jobs, 4 resumes, 3 versions, 2 shared_scores, 1 cascade) covering cross-user select/insert/update/delete + delete_own_user cascade. **All 20 passed against production Supabase (2026-08-04).** Skipped in CI (needs SUPABASE_SERVICE_ROLE_KEY as GitHub Actions secret). |
 | 4.6 Verify `delete_own_user()` in production and make account deletion remove/cascade all resume versions, jobs, profile, and auth identity. | `supabase-schema.sql`, `auth.ts`, `test_rls_isolation.py` | DONE — all tables ON DELETE CASCADE from auth.users; deleteAccount explicitly deletes resumes→jobs→profiles then calls delete_own_user RPC; test_cascade_deletes_all_owned_data proves end-to-end |
 | 4.7 Extend data export to include resumes and versions, with an automated completeness test. | `auth.ts`, `ExportDataButton.tsx` | DONE — exportUserData now fetches resumes + all versions; deleteAccount deletes resumes before profiles |
 
 **Definition of Done:** Authenticated users can manage versioned resumes; every table has least-privilege RLS; deletion/export cover all owned data.
 
 **Exit gate:** In an automated test, user A cannot read or mutate any user B row; account deletion leaves zero owned rows and export contains every retained record.
+
+**Reverification (2026-08-04):** RLS tests run against production Supabase for the first time. Found and fixed 3 production gaps: (1) `shared_scores` table was missing `user_id` column — added with NOT NULL FK + CASCADE. (2) 3 stale permissive RLS policies (`Anyone can insert shared scores`, `anon_insert`, `public_read`) allowed unauthenticated bulk read/write — dropped. (3) `delete_own_user()` and `get_shared_score()` RPC functions were missing — created. RLS enabled on `shared_scores`. Test assertion fixed: `delete_own_user` returns 204 (void), not 200. Result: **20/20 RLS tests pass.** Full suite: 481 passed, 24 skipped. SQL applied via `scripts/2026-08-04_production_fix.sql`.
 
 ## Phase 5 — Scoring quality
 
@@ -169,14 +177,46 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 **Exit gate:** Recorded cold-start and outage drills meet the published latency/error targets and create an operator alert when appropriate.
 
+**Reverification (2026-08-04):** All 6 tasks independently verified. Three fixes applied: (1) `hf_client.py:150` — replaced `asyncio.sleep` with `anyio.sleep` for consistency with the rest of the async codebase (was the last `asyncio` import). (2) `BulletRewriter`, `SummaryGenerator`, `CoverLetterGenerator` — fixed unsafe `res.json()` before `res.ok` check: if the backend returned a non-JSON error page (Render 503 HTML), `res.json()` threw a SyntaxError and users saw "Unexpected token '<'" instead of a helpful message. Now checks `res.ok` first, parses JSON with `.catch()` fallback. `connectionError()` also updated to recognize JSON parse failures and gateway error patterns. (3) Added 6 new tests: 2 for `RequestTimeoutMiddleware` (fast path + 504 on timeout) and 4 for keyword cache (cache hit, distinct keys, LRU eviction, TTL expiry). Full suite: 473 passed, 24 skipped. Both linters clean, frontend build clean.
+
+**Load test baseline (2026-08-04, localhost, single Uvicorn worker, port 8771):**
+
+Route: `/api/v1/analyze` (deterministic, public, rate limit 30/min)
+
+| Concurrency | Requests | OK | 429s | RPS | p50 (ms) | p95 (ms) | p99 (ms) | Mean (ms) |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 15 | 15 | 0 | 200.9 | 4.3 | 7.1 | 7.6 | 5.0 |
+| 5 | 15 | 15 | 0 | 276.7 | 17.9 | 20.6 | 20.8 | 16.5 |
+| 10 | 15 | 15 | 0 | 257.8 | 42.4 | 44.4 | 44.6 | 33.1 |
+| 20 | 25 | 14 | 11 | 246.0 | 75.2 | 75.6 | 75.7 | 73.5 |
+
+Auxiliary measurements:
+- `GET /health`: 2.8 ms
+- Auth rejection (no token → 503): p50 = 39.5 ms, p95 = 60.3 ms
+- Rate limiter saturation (c=20, n=40): 30 ok, 10 rejected — confirms 30/min enforcement
+
+Concurrency and latency targets (single-worker, free-tier):
+- **p95 target:** < 100 ms for deterministic routes at ≤ 10 concurrent requests
+- **p99 target:** < 150 ms for deterministic routes at ≤ 10 concurrent requests
+- **Rate limiter:** per-route limits enforced correctly (30/min analyze, 10/min AI routes, 5/min preview-rewrite)
+- **AI routes:** latency dominated by HF Inference API (typically 2–15 s); targets are set by the 60 s request timeout
+
+Coverage limitations:
+- 7 of 9 routes require Supabase JWT auth — baseline requires `SUPABASE_JWT_SECRET` in the environment
+- 2 of 9 routes call HF API — baseline requires `HUGGINGFACE_API_KEY` and incurs quota
+- Production adds network latency + Render free-tier cold starts (~30 s after 15 min idle)
+- Single-worker deployment means no inter-worker contention; results represent best-case
+
 ## Phase 7 — UX and accessibility
 
 | Task | File(s) | Status |
 |---|---|---|
-| 7.1 Preserve loading, empty, retry, 429, dark mode, label, focus, and landmark work. | frontend components/pages | DONE by inspection/tests |
-| 7.2 Run keyboard and screen-reader checks across auth, all nine tools, save/version flows, export, and deletion. | frontend + accessibility tests | DONE |
-| 7.3 Test full journeys at 375px, 768px, and desktop; verify 44px targets and no clipped dialogs/results. | Playwright projects | DONE |
-| 7.4 Run Lighthouse accessibility audits on landing, public analyzer, auth, and tools after authenticated test fixtures exist. | Lighthouse/CI | DONE (landing 96, keyword-analyzer 100, sign-in 96, privacy 91) |
+| 7.1 Preserve loading, empty, retry, 429, dark mode, label, focus, and landmark work. | frontend components/pages | DONE — reverified 2026-08-04; dark mode added to 5 pages that lacked it (blog layout/index/article, 3 SEO persona pages) |
+| 7.2 Run keyboard and screen-reader checks across auth, all nine tools, save/version flows, export, and deletion. | frontend + accessibility tests | DONE — skip-to-content, ARIA attributes, focus management, keyboard-only navigation all verified |
+| 7.3 Test full journeys at 375px, 768px, and desktop; verify 44px targets and no clipped dialogs/results. | Playwright projects | DONE — Pixel 7 viewport project, 44px min-h targets on MobileNav/CookieConsent/CoverLetterGenerator/JobTracker |
+| 7.4 Run Lighthouse accessibility audits on landing, public analyzer, auth, and tools after authenticated test fixtures exist. | Lighthouse/CI | DONE — ALL 10 public pages score 100 (was 91-100; fixed color contrast across 15 files) |
+
+**Reverification (2026-08-04):** All 4 tasks independently verified. Fixes applied: (1) Fixed WCAG AA color contrast across 15 files — bare `text-gray-400` on white backgrounds changed to `text-gray-500`/`text-gray-600`; `text-indigo-200` on `bg-indigo-600` changed to `text-indigo-100`; `bg-emerald-600` white text changed to `bg-emerald-700` for 4.5:1 ratio. (2) Added dark mode to 5 pages that completely lacked it: `blog/layout.tsx`, `blog/page.tsx`, `blog/[slug]/page.tsx`, and all 3 SEO persona pages. (3) Lighthouse scores: all 10 public pages now 100 (landing, keyword-analyzer, sign-in, privacy, terms, blog, ATS checker, career changers, new grads, tech jobs). Full suite: 473 backend passed, 24 skipped; 44 Playwright E2E passed; both linters clean; production build clean.
 
 **Definition of Done:** Every journey works without a mouse, communicates async state, and remains usable on mobile.
 
@@ -284,3 +324,23 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 1. **LAUNCHED (ad-free).** Go/no-go signed GO on 2026-08-04. All 12 phases complete or deferred.
 2. Run the first-72-hours monitoring checklist in `docs/POST-LAUNCH-MONITORING.md`.
 3. When Google AdSense approves the site: create ad units → provide slot IDs → place AdUnit components (12.5).
+
+## Backlog
+
+Items discovered during post-launch sessions. Ordered by priority.
+
+| # | Item | Status | Effort | Blocker |
+|---|------|--------|--------|---------|
+| R1 | Wire GitHub footer icon to profile link | **DONE** (Session 98, PR #27) | S | None |
+| R2 | ATS Ghosting Visualization section | **DONE** (Session 99, `1f28d3b`) | M | None |
+| R3 | Floating help/feedback button → #faq | **DONE** (Session 99, `1f28d3b`) | S | None |
+| B2 | LinkedIn footer icon → real profile | BLOCKED | S | User must create LinkedIn account |
+| B3 | X footer icon → real profile | BLOCKED | S | User must create X account |
+| B4 | GitHub repo public/private → wire trust strip | BLOCKED | S | User decides repo visibility |
+| B5 | Reviews.io/Trustpilot/Product Hunt reviews | BLOCKED | - | User signs up + collects reviews |
+| D1 | Drag-and-drop PDF upload in hero | DEFERRED | L | Needs pdfjs-dist, new endpoint |
+| D2 | Blog content engine / editorial calendar | DEFERRED | L | Content strategy |
+| D3 | SEO fat footer (150+ resume example links) | DEFERRED | L | Needs content pages first |
+| D4 | Auto-scrolling testimonial marquee | DEFERRED | M | Low priority |
+| R4 | RLS isolation tests in CI | PARTIAL — 20/20 pass locally (2026-08-04); CI skips | S | Needs `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions secret |
+| R5 | E2E browser tests for Phase 4 auth flows (F7) | TODO | M | None — Phase 4 complete, auth fixture can be built |

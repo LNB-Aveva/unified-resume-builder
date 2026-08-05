@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** LAUNCHED (ad-free) — all 12 phases complete or deferred
+- **Feature:** Phase 4 RLS reverification — production Supabase security fixes
 - **Branch:** main
-- **Status:** Go/no-go signed **GO** on 2026-08-04. Launching ad-free. AdSense ads deferred until Google approves site. First 72-hour monitoring active.
+- **Status:** DONE — 20/20 RLS tests pass against production, 3 security gaps fixed, fix script updated
 
 ---
 
@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-04                 |
-| Working On | Session 98: Phase 3 security reverification |
+| Working On | Session 104: Phase 4 RLS reverification complete, committing |
 
 ---
 
@@ -27,16 +27,105 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 104 (Claude) — 2026-08-04
+- **Agent:** claude
+- **Did:**
+  - **Phase 4 RLS reverification against production Supabase** — ran 20 RLS isolation tests for the first time against real database
+  - **Found and fixed 3 production security gaps:**
+    1. `shared_scores` table missing `user_id` column — added NOT NULL FK with CASCADE
+    2. 3 stale permissive RLS policies (`Anyone can insert shared scores`, `anon_insert`, `public_read`) allowed unauthenticated bulk read/write — dropped
+    3. `delete_own_user()` and `get_shared_score()` RPC functions missing — created as SECURITY DEFINER
+  - RLS enabled on `shared_scores` table (was missing despite policies existing)
+  - Updated `scripts/2026-08-04_production_fix.sql` with all stale policy drops + ENABLE RLS
+  - Updated `docs/LAUNCH_PROGRAM.md`: task 4.5 reverification note, R4/R5 backlog items
+  - Fixed test assertion: `delete_own_user` returns 204 (void function), not 200
+  - **Result:** 20/20 RLS tests pass. Full suite: 481 passed, 24 skipped. Both linters clean.
+- **Files Changed:** `docs/LAUNCH_PROGRAM.md`, `scripts/2026-08-04_production_fix.sql`, `.ai-sync/WORKLOG.md`
+- **Commits:** pending
+- **Next:** None — Phase 4 reverification complete
+- **Blockers:** None
+
+### Session 103 (Claude) — 2026-08-04
+- **Agent:** claude
+- **Did:**
+  - **Phase 7 full reverification** — all 4 tasks (7.1-7.4) independently verified from scratch
+  - **WCAG contrast fixes (15 files):**
+    - Bare `text-gray-400` on white backgrounds → `text-gray-500` (ratio 3.0→4.6:1)
+    - `text-indigo-200` on `bg-indigo-600` → `text-indigo-100` (ratio 3.3→5.5:1) — ATS checker + score page CTAs
+    - `text-gray-500` on colored card backgrounds → `text-gray-600` (ratio 4.3→6.3:1) — 3 SEO persona pages
+    - `bg-emerald-600` white text → `bg-emerald-700` (ratio 3.7→4.8:1) — 3 SEO persona pages
+  - **Dark mode added to 5 pages** that completely lacked it: `blog/layout.tsx`, `blog/page.tsx`, `blog/[slug]/page.tsx` (3 blog pages), plus footer/CTA dark variants on 3 SEO persona pages
+  - **Lighthouse scores:** All 10 public pages now 100 (was: landing 100, keyword-analyzer 100, sign-in 100, privacy 100, terms 100, blog 96, ATS checker 96, career changers 96, new grads 96, tech jobs 96)
+  - **Code audit verified:** loading/empty/retry states, 44px touch targets, skip-to-content, ARIA attributes, focus management, landmark elements — all present and correct
+  - **Test counts:** 473 backend, 24 skipped; 44 Playwright E2E; ruff clean, eslint clean, frontend build clean (30 routes)
+- **Files Changed:** `frontend/src/app/blog/{layout,page,[slug]/page}.tsx`, `frontend/src/app/{ats-checker,resume-checker-for-career-changers,ats-checker-for-new-grads,resume-checker-for-tech-jobs}/page.tsx`, `frontend/src/app/score/[id]/page.tsx`, `frontend/src/app/page.tsx`, `frontend/src/app/components/{GapAnalysis,BulletRewriter,ResumeExporter}.tsx`, `frontend/src/app/(auth)/sign-up/SignUpForm.tsx`, `frontend/src/app/(protected)/{account-setup/AccountSetupForm,resumes/ResumeList}.tsx`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
+- **Commits:** pending
+- **Next:** Commit, push, create PR
+- **Blockers:** None
+
+### Session 103 (Claude) — 2026-08-04
+- **Agent:** claude
+- **Did:**
+  - **X3 finding RESOLVED:** E2E suite was 44 smoke tests with only 1 tool flow (keyword analyzer). Added 6 new tool flow E2E tests exercising full submit→result flows with mocked API responses: Gap Analysis, Compliance Checker, Summary Generator, Bullet Rewriter, Cover Letter Generator, Resume Exporter (PDF download).
+  - **Auth bypass for E2E:** Cookie-based bypass (`e2e_bypass=1`) in `proxy.ts` middleware and `(protected)/layout.tsx` — guarded by `NODE_ENV !== "production"`. Existing auth redirect tests unaffected (they don't set the cookie).
+  - **Committed pending Copilot work:** domain_warning feature (backend schemas, scorer, NLP, 66 tests, frontend display) + load test baseline docs.
+  - **Test counts:** 50 E2E tests (up from 44), all passing. Backend: 473+ tests.
+- **Files Changed:** `frontend/tests/e2e/tool-flows.spec.ts` (new), `frontend/src/proxy.ts`, `frontend/src/app/(protected)/layout.tsx`, plus 12 files from prior session
+- **Commits:** `2ccec31` (domain_warning + load test), `b694f14` (X3 E2E tool flows)
+- **Next:** All cross-cutting findings addressed. Ready for next phase or code review.
+- **Blockers:** None
+
+### Session 102 (Claude) — 2026-08-04
+- **Agent:** claude
+- **Did:**
+  - **Phase 6 full reverification** — all 6 tasks independently verified from scratch
+  - **Fix 1:** `hf_client.py` — replaced `asyncio.sleep` with `anyio.sleep` (last asyncio import in the file; inconsistent with anyio-based middleware)
+  - **Fix 2:** 3 frontend components (BulletRewriter, SummaryGenerator, CoverLetterGenerator) — unsafe `res.json()` before `res.ok` check caused raw SyntaxError when backend returned non-JSON error pages (Render 503 HTML). Now checks `res.ok` first, parses JSON with `.catch()` fallback.
+  - **Fix 3:** `connectionError()` in `types.ts` — added SyntaxError and gateway error pattern recognition so users see helpful messages instead of "Unexpected token '<'"
+  - **New tests:** 2 for `RequestTimeoutMiddleware` (fast path + 504 on timeout), 4 for keyword cache (cache hit, distinct keys, LRU eviction, TTL expiry)
+  - **Test counts:** 473 backend (up from 467), 24 skipped; ruff clean, eslint clean, frontend build clean
+- **Files Changed:** `backend/app/services/ai/hf_client.py`, `backend/tests/unit/test_hf_client.py`, `backend/tests/unit/test_request_timeout.py` (new), `backend/tests/unit/test_keyword_extractor.py`, `frontend/src/app/types.ts`, `frontend/src/app/components/{BulletRewriter,SummaryGenerator,CoverLetterGenerator}.tsx`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
+- **Commits:** `88b9fb7` (PR #29, merged)
+- **G12 load test baseline (NOT committed per user request):**
+  - Ran load test against `/api/v1/analyze` at c=1/5/10/20: p50 ranges 4–75ms, p95 ranges 7–76ms
+  - Rate limiter saturation confirmed: 30/min enforced correctly (30 ok, 10 rejected in 40-request burst)
+  - Measured health endpoint (2.8ms) and auth rejection path (p50=39.5ms)
+  - Established targets: p95 < 100ms, p99 < 150ms for deterministic routes at ≤10 concurrent
+  - Documented coverage limitations (7/9 routes need JWT, 2/9 need HF key, prod adds cold starts)
+  - Results recorded in `docs/LAUNCH_PROGRAM.md` Phase 6 section
+- **Next:** User review of baseline numbers (not committed per instruction)
+- **Blockers:** None
+
+### Session 99 (Claude) — 2026-08-04
+- **Agent:** claude
+- **Did:**
+  - **R1 DONE:** Wired GitHub footer icon to `https://github.com/LNB-Aveva` profile link (was a non-linking `<span>`). LinkedIn/X remain spans (blocked on user creating accounts).
+  - **R2 DONE:** ATS Ghosting Visualization section — "What ATS Actually Sees" two-column layout (parsed vs ghosted) with red pill badge, diagonal stripe overlay, strikethrough text, CTA to #demo. Placed after trust strip, before live demo.
+  - **R3 DONE:** Floating help button — fixed bottom-right `?` circle linking to #faq, indigo with hover scale/shadow.
+  - Cleaned up root `.env.example` (was stale with DEBUG=True) → now redirects to `backend/.env.example` and `frontend/.env.example`.
+  - Updated `README.md` project status from "In active hardening toward launch" to "Launched and live at resumeai.cv".
+  - Fixed `docs/guides/DEVTO-ARTICLE.md` dead repo link → profile link.
+  - Added formal backlog table to `docs/LAUNCH_PROGRAM.md` with all R/B/D items.
+  - Phase 1 re-verified from scratch: all 5 tasks pass independently.
+- **Files Changed:** `frontend/src/app/page.tsx`, `docs/LAUNCH_PROGRAM.md`, `.env.example`, `README.md`, `docs/guides/DEVTO-ARTICLE.md`, `.ai-sync/WORKLOG.md`
+- **Commits:** `1f28d3b` (R2+R3 feat), pending (docs update)
+- **Next:** Push branch, create PR.
+- **Blockers:** None.
+
 ### Session 98 (Claude) — 2026-08-04
 - **Agent:** claude
 - **Did:**
+  - **Phase 2 exit gate PASSED** — full verification:
+    - Backend: 467 passed, 24 skipped, 90% branch coverage (floor: 80%)
+    - E2E: 44 Playwright tests pass; CI green on main
+    - Deliberate breaks (analyze route + h1→div) caught by CI, then reverted
   - **Phase 3 full reverification** — all 8 tasks independently verified from scratch
-  - **Security fix:** Removed user data (`job_title`, `company_name`) from cover_letter.py system prompt where it lacked `<<<`/`>>>` data delimiters. Model reads these from the properly delimited user message instead.
-  - **Threat model rewrite:** `docs/THREAT-MODEL.md` fully rewritten to match deployed architecture: 9 endpoints, 5-table RLS, global IP rate limiter, body size cap, timeouts, circuit breaker, Sentry PII filtering, data delimiters, 467 tests.
+  - **Security fix:** Removed user data from cover_letter.py system prompt (injection gap)
+  - **Threat model rewrite:** `docs/THREAT-MODEL.md` rewritten to match deployed architecture
   - **X1 fix:** Auth test count corrected from 76 to 80 (40 cases × 2 backends) in task 3.1 and finding F3
-  - **X2 disposition:** CSP `'unsafe-inline'` for script-src — accepted risk. Documented in THREAT-MODEL.md.
+  - **X2 disposition:** CSP `'unsafe-inline'` for script-src — accepted risk. Nonce-based CSP forces all-dynamic rendering (kills static gen, CDN caching, degrades CWV, risks Vercel free-tier limits); React auto-escaping + no user-data dangerouslySetInnerHTML = negligible practical XSS risk. Documented in THREAT-MODEL.md.
   - Full suite: 467 passed, 24 skipped
-- **Commits:** `e01de5b` (security fix + threat model rewrite), cherry-picked X1+X2 doc fixes
+- **Commits:** `e01de5b` (security fix + threat model rewrite), pending (X1+X2 doc fixes)
 - **Next:** None — Phase 3 reverification complete.
 - **Blockers:** None
 

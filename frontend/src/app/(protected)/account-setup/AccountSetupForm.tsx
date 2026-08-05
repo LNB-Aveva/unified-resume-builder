@@ -126,7 +126,7 @@ export default function AccountSetupForm() {
                   />
                   <label htmlFor="newsletterOptIn" className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                     Subscribe to ResumeAI updates &mdash; resume tips, ATS guides, and new features
-                    <span className="text-gray-400 ml-1">(optional)</span>
+                    <span className="text-gray-500 dark:text-gray-400 ml-1">(optional)</span>
                   </label>
                 </div>
                 {state?.errors?.newsletterOptIn && (

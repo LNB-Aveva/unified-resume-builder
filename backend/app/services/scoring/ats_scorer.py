@@ -82,6 +82,18 @@ def _score_skills(job_analysis: JobAnalysis, resume_text: str) -> ATSScore:
     matched_keywords = sorted(set(matched_hard + matched_soft))
     missing_keywords = sorted(set(missing_hard + missing_soft))
 
+    domain_warning: str | None = None
+    coverage = job_analysis.taxonomy_coverage
+    total_kw = len(job_analysis.keywords)
+    has_few_hard = len(job_analysis.hard_skills) <= 1
+    has_substance = len(job_analysis.responsibilities) >= 5
+    if (coverage <= 0.5 and total_kw >= 3) or (has_few_hard and has_substance):
+        domain_warning = (
+            "This job description contains skills outside our taxonomy "
+            "(optimized for tech roles). Scores for non-tech roles like HR, "
+            "finance, healthcare, or education may be less accurate."
+        )
+
     return ATSScore(
         overall_score=overall_score,
         grade=grade,
@@ -97,6 +109,7 @@ def _score_skills(job_analysis: JobAnalysis, resume_text: str) -> ATSScore:
         total_job_keywords=len(job_analysis.keywords),
         total_matched=len(matched_keywords),
         total_missing=len(missing_keywords),
+        domain_warning=domain_warning,
     )
 
 
