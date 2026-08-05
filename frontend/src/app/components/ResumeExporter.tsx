@@ -717,7 +717,7 @@ export default function ResumeExporter({
       )}
 
       <p className="text-center text-xs text-gray-500 dark:text-gray-400">
-        3 ATS-safe single-column templates · fpdf2 · No watermarks
+        3 single-column templates · fpdf2 · No watermarks
       </p>
     </div>
   );

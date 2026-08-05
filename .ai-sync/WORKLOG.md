@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 4 RLS reverification — production Supabase security fixes
-- **Branch:** main
-- **Status:** DONE — 20/20 RLS tests pass against production, 3 security gaps fixed, fix script updated
+- **Feature:** Phase 2 (Tests and CI) reverification
+- **Branch:** feature/phase-2-tests-ci-reverify
+- **Status:** DONE — CI run 30968452207 all green, PR ready
 
 ---
 
@@ -18,8 +18,8 @@
 | Field      | Value                      |
 |------------|----------------------------|
 | Agent      | claude                     |
-| Started    | 2026-08-04                 |
-| Working On | Session 104: Phase 4 RLS reverification complete, committing |
+| Started    | 2026-08-05                 |
+| Working On | Session 106: Phase 2 reverification |
 
 ---
 
@@ -27,74 +27,31 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
-### Session 104 (Claude) — 2026-08-04
+### Session 106 (Claude) — 2026-08-05
 - **Agent:** claude
 - **Did:**
-  - **Phase 4 RLS reverification against production Supabase** — ran 20 RLS isolation tests for the first time against real database
-  - **Found and fixed 3 production security gaps:**
-    1. `shared_scores` table missing `user_id` column — added NOT NULL FK with CASCADE
-    2. 3 stale permissive RLS policies (`Anyone can insert shared scores`, `anon_insert`, `public_read`) allowed unauthenticated bulk read/write — dropped
-    3. `delete_own_user()` and `get_shared_score()` RPC functions missing — created as SECURITY DEFINER
-  - RLS enabled on `shared_scores` table (was missing despite policies existing)
-  - Updated `scripts/2026-08-04_production_fix.sql` with all stale policy drops + ENABLE RLS
-  - Updated `docs/LAUNCH_PROGRAM.md`: task 4.5 reverification note, R4/R5 backlog items
-  - Fixed test assertion: `delete_own_user` returns 204 (void function), not 200
-  - **Result:** 20/20 RLS tests pass. Full suite: 481 passed, 24 skipped. Both linters clean.
-- **Files Changed:** `docs/LAUNCH_PROGRAM.md`, `scripts/2026-08-04_production_fix.sql`, `.ai-sync/WORKLOG.md`
-- **Commits:** pending
-- **Next:** None — Phase 4 reverification complete
+  - **Phase 2 reverification** — all 6 tasks independently verified from scratch
+  - **Fixed CI flaky E2E failure:** Main CI run `30963112810` had 1 flaky mobile test (identical tree to passing run, dev-server compilation race). Added `retries: 2` to `playwright.config.ts` for CI environments.
+  - **Merged origin/main:** Resolved 3 conflicts (proxy.ts: combined E2E bypass + authUnavailable; page.tsx: kept accuracy-rewritten cards; LAUNCH_PROGRAM.md: kept detailed R4/R5 descriptions)
+  - **Local verification:** 481 backend tests pass (90% branch coverage), 50 Playwright E2E tests pass, both linters clean, build clean
+  - **CI verification:** Run `30968452207` — all 3 jobs green (Backend 381 pass/89%, Frontend clean, E2E 50 pass)
+  - **Exit gate re-confirmed:** Deliberate break CI run `30922884807` still valid (backend + E2E caught); green CI run `30919865957` on `a3acab7`
+- **Files Changed:** `frontend/playwright.config.ts`, `frontend/src/proxy.ts`, `frontend/src/app/page.tsx`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
+- **Commits:** `919f9bb` (merge + Playwright retry fix)
+- **Next:** Create PR, merge to main
 - **Blockers:** None
 
-### Session 103 (Claude) — 2026-08-04
+### Session 105 (Claude) — 2026-08-04
 - **Agent:** claude
 - **Did:**
-  - **Phase 7 full reverification** — all 4 tasks (7.1-7.4) independently verified from scratch
-  - **WCAG contrast fixes (15 files):**
-    - Bare `text-gray-400` on white backgrounds → `text-gray-500` (ratio 3.0→4.6:1)
-    - `text-indigo-200` on `bg-indigo-600` → `text-indigo-100` (ratio 3.3→5.5:1) — ATS checker + score page CTAs
-    - `text-gray-500` on colored card backgrounds → `text-gray-600` (ratio 4.3→6.3:1) — 3 SEO persona pages
-    - `bg-emerald-600` white text → `bg-emerald-700` (ratio 3.7→4.8:1) — 3 SEO persona pages
-  - **Dark mode added to 5 pages** that completely lacked it: `blog/layout.tsx`, `blog/page.tsx`, `blog/[slug]/page.tsx` (3 blog pages), plus footer/CTA dark variants on 3 SEO persona pages
-  - **Lighthouse scores:** All 10 public pages now 100 (was: landing 100, keyword-analyzer 100, sign-in 100, privacy 100, terms 100, blog 96, ATS checker 96, career changers 96, new grads 96, tech jobs 96)
-  - **Code audit verified:** loading/empty/retry states, 44px touch targets, skip-to-content, ARIA attributes, focus management, landmark elements — all present and correct
-  - **Test counts:** 473 backend, 24 skipped; 44 Playwright E2E; ruff clean, eslint clean, frontend build clean (30 routes)
-- **Files Changed:** `frontend/src/app/blog/{layout,page,[slug]/page}.tsx`, `frontend/src/app/{ats-checker,resume-checker-for-career-changers,ats-checker-for-new-grads,resume-checker-for-tech-jobs}/page.tsx`, `frontend/src/app/score/[id]/page.tsx`, `frontend/src/app/page.tsx`, `frontend/src/app/components/{GapAnalysis,BulletRewriter,ResumeExporter}.tsx`, `frontend/src/app/(auth)/sign-up/SignUpForm.tsx`, `frontend/src/app/(protected)/{account-setup/AccountSetupForm,resumes/ResumeList}.tsx`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
-- **Commits:** pending
-- **Next:** Commit, push, create PR
-- **Blockers:** None
-
-### Session 103 (Claude) — 2026-08-04
-- **Agent:** claude
-- **Did:**
-  - **X3 finding RESOLVED:** E2E suite was 44 smoke tests with only 1 tool flow (keyword analyzer). Added 6 new tool flow E2E tests exercising full submit→result flows with mocked API responses: Gap Analysis, Compliance Checker, Summary Generator, Bullet Rewriter, Cover Letter Generator, Resume Exporter (PDF download).
-  - **Auth bypass for E2E:** Cookie-based bypass (`e2e_bypass=1`) in `proxy.ts` middleware and `(protected)/layout.tsx` — guarded by `NODE_ENV !== "production"`. Existing auth redirect tests unaffected (they don't set the cookie).
-  - **Committed pending Copilot work:** domain_warning feature (backend schemas, scorer, NLP, 66 tests, frontend display) + load test baseline docs.
-  - **Test counts:** 50 E2E tests (up from 44), all passing. Backend: 473+ tests.
-- **Files Changed:** `frontend/tests/e2e/tool-flows.spec.ts` (new), `frontend/src/proxy.ts`, `frontend/src/app/(protected)/layout.tsx`, plus 12 files from prior session
-- **Commits:** `2ccec31` (domain_warning + load test), `b694f14` (X3 E2E tool flows)
-- **Next:** All cross-cutting findings addressed. Ready for next phase or code review.
-- **Blockers:** None
-
-### Session 102 (Claude) — 2026-08-04
-- **Agent:** claude
-- **Did:**
-  - **Phase 6 full reverification** — all 6 tasks independently verified from scratch
-  - **Fix 1:** `hf_client.py` — replaced `asyncio.sleep` with `anyio.sleep` (last asyncio import in the file; inconsistent with anyio-based middleware)
-  - **Fix 2:** 3 frontend components (BulletRewriter, SummaryGenerator, CoverLetterGenerator) — unsafe `res.json()` before `res.ok` check caused raw SyntaxError when backend returned non-JSON error pages (Render 503 HTML). Now checks `res.ok` first, parses JSON with `.catch()` fallback.
-  - **Fix 3:** `connectionError()` in `types.ts` — added SyntaxError and gateway error pattern recognition so users see helpful messages instead of "Unexpected token '<'"
-  - **New tests:** 2 for `RequestTimeoutMiddleware` (fast path + 504 on timeout), 4 for keyword cache (cache hit, distinct keys, LRU eviction, TTL expiry)
-  - **Test counts:** 473 backend (up from 467), 24 skipped; ruff clean, eslint clean, frontend build clean
-- **Files Changed:** `backend/app/services/ai/hf_client.py`, `backend/tests/unit/test_hf_client.py`, `backend/tests/unit/test_request_timeout.py` (new), `backend/tests/unit/test_keyword_extractor.py`, `frontend/src/app/types.ts`, `frontend/src/app/components/{BulletRewriter,SummaryGenerator,CoverLetterGenerator}.tsx`, `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
-- **Commits:** `88b9fb7` (PR #29, merged)
-- **G12 load test baseline (NOT committed per user request):**
-  - Ran load test against `/api/v1/analyze` at c=1/5/10/20: p50 ranges 4–75ms, p95 ranges 7–76ms
-  - Rate limiter saturation confirmed: 30/min enforced correctly (30 ok, 10 rejected in 40-request burst)
-  - Measured health endpoint (2.8ms) and auth rejection path (p50=39.5ms)
-  - Established targets: p95 < 100ms, p99 < 150ms for deterministic routes at ≤10 concurrent
-  - Documented coverage limitations (7/9 routes need JWT, 2/9 need HF key, prod adds cold starts)
-  - Results recorded in `docs/LAUNCH_PROGRAM.md` Phase 6 section
-- **Next:** User review of baseline numbers (not committed per instruction)
-- **Blockers:** None
+  - **360° code review** (`/code-review high --fix`): 8 parallel finder angles, 10 verified findings, 22 total fixes across 18 files.
+  - **Accuracy rewrite sweep:** eliminated all remaining "ATS-safe" (9 instances), "Unlimited scans" (5 instances), "compliance checks" overclaims (6 instances), and "instantly identifies/extracts every" overclaims (2 instances) missed by the initial accuracy rewrite.
+  - **Safety fix:** `fetchWithRetry.ts` — `window.setTimeout` → `globalThis` fallback to prevent server-side crash if module is imported from SSR.
+  - All changes pass pre-commit (ruff + eslint).
+- **Files Changed:** 18 files — `page.tsx`, `ats-checker/page.tsx`, `keyword-analyzer/page.tsx`, `ats-checker-for-new-grads/page.tsx`, `resume-checker-for-career-changers/page.tsx`, `resume-checker-for-tech-jobs/page.tsx`, `tools/page.tsx`, `fetchWithRetry.ts`, `ResumeExporter.tsx`, `ShareableScoreWidget.tsx`, + 8 pre-existing accuracy edits from prior session.
+- **Commits:** `6b49e9f`
+- **Next:** localhost verification, then merge to main when ready.
+- **Blockers:** None.
 
 ### Session 99 (Claude) — 2026-08-04
 - **Agent:** claude
@@ -122,11 +79,9 @@
   - **Phase 3 full reverification** — all 8 tasks independently verified from scratch
   - **Security fix:** Removed user data from cover_letter.py system prompt (injection gap)
   - **Threat model rewrite:** `docs/THREAT-MODEL.md` rewritten to match deployed architecture
-  - **X1 fix:** Auth test count corrected from 76 to 80 (40 cases × 2 backends) in task 3.1 and finding F3
-  - **X2 disposition:** CSP `'unsafe-inline'` for script-src — accepted risk. Nonce-based CSP forces all-dynamic rendering (kills static gen, CDN caching, degrades CWV, risks Vercel free-tier limits); React auto-escaping + no user-data dangerouslySetInnerHTML = negligible practical XSS risk. Documented in THREAT-MODEL.md.
   - Full suite: 467 passed, 24 skipped
-- **Commits:** `e01de5b` (security fix + threat model rewrite), pending (X1+X2 doc fixes)
-- **Next:** None — Phase 3 reverification complete.
+- **Commit:** merged
+- **Next:** Merge PRs to main
 - **Blockers:** None
 
 ### Session 97 (Claude) — 2026-08-04

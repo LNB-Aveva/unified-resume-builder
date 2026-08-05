@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 
 const PHRASES = [
-  "Land More Interviews.",
-  "Get Hired Faster.",
-  "Beat ATS Ghosting.",
+  "Explain Every Score.",
+  "Find Keyword Gaps.",
+  "Improve Your Draft.",
   "Stand Out to Recruiters.",
 ];
 const TYPE_MS = 65;

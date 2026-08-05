@@ -81,8 +81,8 @@ export default function TermsOfService() {
               Deleting a resume removes it and all of its versions. Account deletion removes all resumes, all version snapshots,
               jobs, profile data, and your authentication identity. Your JSON data export includes your account email and creation
               date, profile, jobs, saved-resume metadata, and all resume version snapshots. When you create a shareable ATS score
-              link, the score and matched and missing keyword lists expire 30 days after creation; expired records are removed by
-              the cleanup process based on their expiration timestamp.
+              link, the score and matched and missing keyword lists become inaccessible 30 days after creation. The expired
+              database record may remain until maintenance cleanup or account deletion.
             </p>
           </div>
         </section>

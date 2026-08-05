@@ -4,9 +4,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Free ATS Score Checker — Check Your Resume Score Instantly",
   description:
-    "Free ATS score checker. Upload your resume and job description " +
-    "to get an instant ATS match score, find missing keywords, and run 15 formatting " +
-    "compliance checks. 100% free with a free account.",
+    "ATS-oriented score checker. Paste your resume and job description " +
+    "to get an explainable taxonomy match score, find missing recognized terms, and run 15 text-based " +
+    "checks with a free account.",
   keywords: [
     "ATS score checker free",
     "free ATS resume checker",
@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Free ATS Score Checker | ResumeAI",
     description:
-      "Get your ATS match score instantly. Find missing keywords and fix formatting " +
-      "issues that get your resume rejected. 100% free with a free account.",
+      "Get an explainable taxonomy match score. Find missing recognized terms and review " +
+      "15 text-based checks with a free account.",
   },
   alternates: {
     canonical: "/ats-checker",
@@ -55,7 +55,7 @@ const jsonLd = {
   url:
     (process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv") + "/ats-checker",
   description:
-    "Free ATS resume score checker. Get your ATS match score, find missing keywords, and run 15 formatting compliance checks.",
+    "Free ATS resume score checker. Get your taxonomy match score, find recognized keyword gaps, and run 15 text-based checks.",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   offers: {
@@ -119,7 +119,7 @@ export default function ATSCheckerPage() {
       <section className="mx-auto max-w-3xl px-4 pt-16 pb-12 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
           <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
-          Free &bull; Free account &bull; Unlimited scans
+          Free &bull; Free account &bull; Fair-use access
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
@@ -127,9 +127,8 @@ export default function ATSCheckerPage() {
         </h1>
 
         <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto mb-8">
-          75% of resumes are rejected by ATS before a human reads them. Check
-          your ATS match score instantly — find missing keywords and formatting
-          issues that get your resume filtered out.
+          Compare your resume with an English job description, review recognized
+          keyword gaps, and inspect 15 text-based checks before you apply.
         </p>
 
         <Link
@@ -164,7 +163,7 @@ export default function ATSCheckerPage() {
               {
                 step: "1",
                 title: "Paste a job description",
-                body: "Our NLP engine extracts every keyword the ATS is scanning for — hard skills, soft skills, certifications, and job title variants.",
+                body: "Our NLP engine extracts recognized hard skills, soft skills, certifications, and job-title terms from its taxonomy.",
               },
               {
                 step: "2",
@@ -174,7 +173,7 @@ export default function ATSCheckerPage() {
               {
                 step: "3",
                 title: "Get your score + fixes",
-                body: "See your ATS match score, a list of missing keywords, and 15 formatting compliance checks. Then use our AI tools to fix the gaps.",
+                body: "See your taxonomy match score, a list of recognized keyword gaps, and 15 text-based formatting checks. Then use our AI tools to fix the gaps.",
               },
             ].map(({ step, title, body }) => (
               <div

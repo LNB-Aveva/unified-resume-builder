@@ -80,6 +80,12 @@ export function connectionError(err: unknown): string {
       "Please wait 30–60 seconds and try again."
     );
   }
+  if (msg.includes("Request timed out")) {
+    return (
+      "The request took too long and was stopped. " +
+      "Please wait a moment and try again."
+    );
+  }
   if (msg.includes("AI service") || msg.includes("AI model timed out") || msg.includes("AI generation failed")) {
     return (
       "AI features are temporarily unavailable. " +

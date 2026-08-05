@@ -90,17 +90,15 @@ export async function deleteAccount(): Promise<FormState> {
   const supabase = await createClient();
   const {
     data: { user },
+    error: userError,
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  if (userError || !user) {
     return { message: "Not authenticated." };
   }
 
-  await supabase.from("shared_scores").delete().eq("user_id", user.id);
-  await supabase.from("resumes").delete().eq("user_id", user.id);
-  await supabase.from("jobs").delete().eq("user_id", user.id);
-  await supabase.from("profiles").delete().eq("id", user.id);
-
+  // The database function deletes auth.users. Foreign keys cascade every owned
+  // table in the same transaction, avoiding a partially deleted account.
   const { error } = await supabase.rpc("delete_own_user");
 
   if (error) {
@@ -122,23 +120,42 @@ export async function exportUserData(): Promise<{ json?: string; error?: string 
   }
 
   const [profileResult, jobsResult, resumesResult, sharedScoresResult] = await Promise.all([
-    supabase.from("profiles").select("*").eq("id", user.id).single(),
+    supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
     supabase.from("jobs").select("*").eq("user_id", user.id).order("date_added", { ascending: false }),
     supabase.from("resumes").select("id, title, created_at, updated_at").eq("user_id", user.id).order("updated_at", { ascending: false }),
     supabase.from("shared_scores").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
   ]);
 
+  if (
+    profileResult.error ||
+    jobsResult.error ||
+    resumesResult.error ||
+    sharedScoresResult.error
+  ) {
+    return {
+      error: "We could not retrieve all of your data. Nothing was downloaded; please try again.",
+    };
+  }
+
   const resumes = resumesResult.data ?? [];
-  const resumesWithVersions = await Promise.all(
+  const versionResults = await Promise.all(
     resumes.map(async (r) => {
-      const { data: versions } = await supabase
+      const { data: versions, error } = await supabase
         .from("resume_versions")
         .select("version_number, resume_data, resume_text, created_at")
         .eq("resume_id", r.id)
         .order("version_number", { ascending: true });
-      return { ...r, versions: versions ?? [] };
+      return { resume: { ...r, versions: versions ?? [] }, error };
     }),
   );
+
+  if (versionResults.some((result) => result.error)) {
+    return {
+      error: "We could not retrieve every resume version. Nothing was downloaded; please try again.",
+    };
+  }
+
+  const resumesWithVersions = versionResults.map((result) => result.resume);
 
   const exportData = {
     exported_at: new Date().toISOString(),
@@ -231,12 +248,16 @@ export async function setupAccount(
     return { message: "Not authenticated." };
   }
 
-  await supabase.auth.updateUser({
+  const { error: metadataError } = await supabase.auth.updateUser({
     data: {
       newsletter_opted_in: validated.data.newsletterOptIn === "on",
       terms_accepted_at: new Date().toISOString(),
     },
   });
+
+  if (metadataError) {
+    return { message: "Failed to save account preferences. Please try again." };
+  }
 
   const { error } = await supabase.from("profiles").upsert({
     id: user.id,
