@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 3 (Security and privacy) reverification
-- **Branch:** feature/phase-3-security-reverify-v2
-- **Status:** DONE — all 8 tasks verified, 1 threat model fix applied
+- **Feature:** Phase 5 (Scoring quality) reverification
+- **Branch:** feature/phase-5-scoring-reverify
+- **Status:** DONE — all 5 tasks verified, 0 code fixes needed, 1 cosmetic finding added to backlog
 
 ---
 
@@ -19,13 +19,29 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-05                 |
-| Working On | Session 107: Phase 3 reverification complete |
+| Working On | Session 108: Phase 5 reverification complete |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 108 (Claude) — 2026-08-05
+- **Agent:** claude
+- **Did:**
+  - **Phase 5 reverification** — all 5 tasks independently verified from scratch
+  - **5.1:** 34-case eval dataset + runner confirmed working; 2 eval tests collected in CI suite
+  - **5.2:** 389 hard skills (16 categories), 50 soft skills, 91 synonym groups; 6 synonym pairs verified; 42 extractor + 12 golden-file tests pass
+  - **5.3:** Grade boundaries correct (A≥85/B≥65/C≥50/D≥30/F<30); 70/30 weighting; explainable matched/missing hard/soft in GapAnalysis; domain warning fires; 34 scorer tests pass
+  - **5.4:** Zero stale spaCy/NLTK/scikit-learn/WeasyPrint claims in public copy (frontend, README, docs/guides, templates)
+  - **5.5:** 34 cases, 100% within-one-grade, 61.8% exact; EXIT GATE PASS
+  - **Cosmetic finding → backlog R6:** B grade_label "Strong match" overlaps frontend "Strong match!" at ≥70 (not a scoring error, just confusing messaging)
+  - Full suite: 481 backend passed, 24 skipped. Ruff clean. ESLint clean.
+- **Files Changed:** `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`
+- **Commits:** pending
+- **Next:** No Phase 5 work remains. Continue to Phase 6 reverification.
+- **Blockers:** None
 
 ### Session 107 (Claude) — 2026-08-05
 - **Agent:** claude
@@ -34,7 +50,7 @@
   - **Fix:** THREAT-MODEL.md preview-rewrite rate limit corrected from 15/min to 5/min (matches `@limiter.limit("5/minute")`)
   - **Updated stale counts:** Backend 467→481 tests, Playwright 44→50 in LAUNCH_PROGRAM.md + THREAT-MODEL.md
   - **Security scan results:** Bandit 0 High, pip-audit 0 vulns (runtime+dev), npm audit 0 production, detect-secrets all false positives
-  - **Verified:** 80 auth tests, 111 security tests total, CORS strict allow-list, Sentry PII filter, 28 fpdf2 `_s()` paths, 11 dangerouslySetInnerHTML uses (all hardcoded), CSP covers GA4/AdSense/Sentry
+  - **Verified:** 80 auth tests, 111 security tests total, CORS strict allow-list, Sentry PII filter, 26 fpdf2 `_s()` call sites (def excluded), 11 dangerouslySetInnerHTML uses (all hardcoded), CSP covers GA4/AdSense/Sentry
   - Full suite: 481 backend passed, 24 skipped. 50 Playwright E2E passed. Both linters clean. Build clean.
 - **Files Changed:** `docs/LAUNCH_PROGRAM.md`, `docs/THREAT-MODEL.md`, `.ai-sync/WORKLOG.md`
 - **Commits:** `4943bcd`
