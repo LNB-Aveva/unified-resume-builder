@@ -52,7 +52,7 @@ const faqItems = [
   },
   {
     q: "What PDF resume templates are available?",
-    a: "Three ATS-safe single-column templates: Classic (indigo accent with horizontal rules — traditional and widely accepted), Modern (navy header band with teal section accents — clean and contemporary), and Minimal (zero colour, pure black-and-white — maximally conservative, best for strict ATS environments). All three are single-column with no graphics, tables, or special characters that could confuse parsers.",
+    a: "Three single-column templates: Classic (indigo accent with horizontal rules — traditional and widely accepted), Modern (navy header band with teal section accents — clean and contemporary), and Minimal (zero colour, pure black-and-white — maximally conservative). All three are single-column with no graphics, tables, or special characters.",
   },
   {
     q: "Can I use ResumeAI for any industry or job type?",
@@ -70,8 +70,8 @@ const jsonLd = {
   name: "ResumeAI",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv",
   description:
-    "Free ATS resume checker and keyword analyzer. Extract ATS keywords, score your resume, " +
-    "run 15 compliance checks, generate AI cover letters, rewrite bullets, and export ATS-safe PDFs.",
+    "Free ATS resume checker and keyword analyzer. Extract recognized keywords, score your resume, " +
+    "run 15 text-based checks, generate AI cover letters, rewrite bullets, and export simple PDFs.",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   browserRequirements: "Requires JavaScript",
@@ -106,8 +106,8 @@ const faqJsonLd = {
 const tools = [
   {
     step: "1",
-    title: "Find Every Keyword ATS Scans For",
-    desc: "Paste any job description. Our NLP engine instantly identifies every hard skill, soft skill, certification, and job-specific term that ATS filters scan for.",
+    title: "Find Recognized Job Keywords",
+    desc: "Paste any job description. Our NLP engine highlights recognized hard skills, soft skills, certifications, and job-specific terms from a built-in taxonomy.",
     icon: (
       <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -173,8 +173,8 @@ const tools = [
   },
   {
     step: "7",
-    title: "Download Your ATS-Safe Resume",
-    desc: "Download your resume as an ATS-safe PDF. Three clean templates — Classic, Modern, and Minimal. No watermarks, no limits.",
+    title: "Download Your Resume as PDF",
+    desc: "Download your resume as a simple single-column PDF. Three clean templates — Classic, Modern, and Minimal. No watermarks.",
     icon: (
       <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
@@ -278,7 +278,7 @@ export default function Home() {
             <div>
               <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-8">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                9 Free AI Tools &mdash; No Credit Card Required
+                9 Resume Tools &mdash; No Credit Card Required
               </div>
 
               <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
@@ -288,9 +288,8 @@ export default function Home() {
               </h1>
 
               <p className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 mb-10 max-w-xl leading-relaxed">
-                75% of resumes are rejected before a human reads them. Our free ATS
-                resume checker and 9 AI tools help you match keywords, fix formatting,
-                and get seen by recruiters.
+                Review recognized job keywords, compare them with your resume, and
+                improve your draft with explainable checks and optional AI assistance.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -307,33 +306,18 @@ export default function Home() {
                   href="#demo"
                   className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 px-8 py-4 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200"
                 >
-                  Analyze My Resume Free
+                  Try the Keyword Demo
                   <svg className="h-4 w-4 text-indigo-500 group-hover:translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
                   </svg>
                 </a>
               </div>
 
-              <div className="flex items-center gap-3 mb-10">
-                <div className="flex -space-x-2">
-                  {["S", "J", "P", "A", "M"].map((initial, i) => (
-                    <div key={i} className={`h-8 w-8 rounded-full border-2 border-white dark:border-gray-950 flex items-center justify-center text-white text-xs font-bold ${
-                      ["bg-indigo-500", "bg-violet-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500"][i]
-                    }`}>
-                      {initial}
-                    </div>
-                  ))}
-                </div>
-                <div className="text-sm">
-                  <div className="flex items-center gap-1 mb-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} className="h-3.5 w-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <span className="font-medium text-gray-900 dark:text-white">Built for English-language resumes</span>
-                </div>
+              <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-10">
+                <svg className="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                Built for English-language resumes and job descriptions
               </div>
 
               <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:flex sm:flex-wrap sm:gap-8">
@@ -347,19 +331,19 @@ export default function Home() {
                   <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
                     <AnimatedCounter target={9} />
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">AI-powered tools</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">resume tools</div>
                 </div>
                 <div className="group">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
                     <AnimatedCounter target={15} />
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">ATS format checks</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">text-based checks</div>
                 </div>
                 <div className="group">
                   <div className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200">
-                    <AnimatedCounter target={100} suffix="%" />
+                    <AnimatedCounter target={3} />
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">free forever</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">PDF templates</div>
                 </div>
               </div>
             </div>
@@ -384,15 +368,15 @@ export default function Home() {
                 icon: <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456Z" /></svg>,
               },
               {
-                label: "Results in Seconds",
+                label: "Bounded Waits",
                 icon: <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" /></svg>,
               },
               {
-                label: "No Usage Limits",
+                label: "Fair-Use Access",
                 icon: <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" /></svg>,
               },
               {
-                label: "Open-Source AI",
+                label: "Explainable Scoring",
                 icon: <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" /></svg>,
               },
             ].map(({ label, icon }) => (
@@ -412,13 +396,13 @@ export default function Home() {
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-2 rounded-full bg-red-50 dark:bg-red-950/50 border border-red-100 dark:border-red-800 px-4 py-1.5 text-xs font-semibold text-red-700 dark:text-red-300 mb-4">
                 <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-                75% of resumes are rejected
+                Layout can hide resume content
               </div>
               <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
                 What ATS Actually Sees
               </h2>
               <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                ATS software doesn&apos;t read your resume like a human. It parses text fields and ignores everything else.
+                ATS parsers extract text differently from people and can lose or reorder content in complex layouts.
               </p>
             </div>
 
@@ -515,7 +499,7 @@ export default function Home() {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Want the full analysis? Gap scoring, compliance checks, AI rewrites, and PDF export are all free with an account.
+              Want the full analysis? Gap scoring, formatting checks, AI rewrites, and PDF export are all free with an account.
             </p>
             <a
               href="/sign-up"
@@ -781,7 +765,7 @@ export default function Home() {
                 How It Works
               </h2>
               <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                Go from job description to optimized resume in minutes. Nine AI tools handle the heavy lifting.
+                Move from a job description to a reviewed resume draft with nine focused tools.
               </p>
             </div>
 
@@ -790,7 +774,7 @@ export default function Home() {
                 {
                   step: "1",
                   title: "Extract",
-                  desc: "Paste any job description. Our NLP engine instantly identifies every keyword that ATS filters scan for.",
+                  desc: "Paste an English job description. Our NLP engine identifies recognized terms from its skills taxonomy.",
                   tools: "Keyword Extractor",
                   gradient: "from-indigo-600 to-violet-600",
                   shadow: "shadow-indigo-500/20",
@@ -798,7 +782,7 @@ export default function Home() {
                 {
                   step: "2",
                   title: "Analyze",
-                  desc: "Upload your resume. See your ATS match score, find missing keywords, and run 15 formatting checks.",
+                  desc: "Paste your resume. See its taxonomy match score, find missing recognized terms, and run 15 text-based checks.",
                   tools: "Gap Analysis + Compliance Checker",
                   gradient: "from-indigo-600 to-violet-600",
                   shadow: "shadow-indigo-500/20",
@@ -814,7 +798,7 @@ export default function Home() {
                 {
                   step: "4",
                   title: "Export & Apply",
-                  desc: "Download an ATS-safe PDF from 3 templates. Track every application from Saved through Offer.",
+                  desc: "Download a simple PDF from 3 templates. Track every application from Saved through Offer.",
                   tools: "PDF Export + Job Tracker",
                   gradient: "from-emerald-500 to-emerald-600",
                   shadow: "shadow-emerald-500/20",
@@ -1062,7 +1046,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-start gap-2">
                     <svg className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                    <span>15/15 ATS compliance checks passed</span>
+                    <span>15/15 formatting checks passed</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <svg className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
@@ -1459,10 +1443,10 @@ export default function Home() {
                 <span className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white">ResumeAI</span>
               </Link>
               <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mb-3">
-                Free ATS resume checker with 9 AI tools. Beat the filters, match keywords, and land more interviews.
+                Resume tools for reviewing recognized keywords, improving drafts, and checking ATS-oriented text signals.
               </p>
               <p className="text-xs text-indigo-600 dark:text-indigo-400 font-medium mb-3">
-                Helping 500+ job seekers optimize their resumes
+                Designed for English-language resumes and job descriptions
               </p>
               <a href="mailto:support@resumeai.cv" className="text-xs text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition mb-6 inline-block">
                 support@resumeai.cv
@@ -1515,14 +1499,14 @@ export default function Home() {
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Compare</h3>
               <ul className="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
                 <li><a href="#compare" className="hover:text-gray-900 dark:hover:text-white transition">Free vs Paid Tools</a></li>
-                <li><a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">All 9 AI Tools</a></li>
+                <li><a href="#tools" className="hover:text-gray-900 dark:hover:text-white transition">All 9 Resume Tools</a></li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-200 dark:border-gray-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              &copy; {new Date().getFullYear()} ResumeAI. 100% free.
+              &copy; {new Date().getFullYear()} ResumeAI. No subscription fee today.
             </p>
             <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
               <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Privacy</Link>
@@ -1531,7 +1515,7 @@ export default function Home() {
               <span>&middot;</span>
               <CookieSettingsButton />
               <span>&middot;</span>
-              <span>Built with open-source AI</span>
+              <span>Explainable taxonomy scoring</span>
             </div>
           </div>
         </div>

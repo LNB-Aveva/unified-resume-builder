@@ -76,10 +76,10 @@ export default function PrivacyPolicy() {
             to our FastAPI backend and forwarded to Hugging Face&apos;s inference API for processing. This data is:
           </p>
           <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
-            <li>Not stored or logged on our servers beyond the duration of the request</li>
+            <li>Not intentionally persisted by ResumeAI after the request completes; infrastructure and inference providers may retain limited operational data under their own policies</li>
             <li>Not used by ResumeAI to train our own models</li>
             <li>Transmitted securely over HTTPS</li>
-            <li>Processed only for the purpose of generating your requested output</li>
+            <li>Submitted by ResumeAI only to generate your requested output and operate or secure the service</li>
           </ul>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
             When our AI provider experiences sustained outages, the system temporarily pauses AI requests to prevent degraded responses, automatically recovering when service is restored.

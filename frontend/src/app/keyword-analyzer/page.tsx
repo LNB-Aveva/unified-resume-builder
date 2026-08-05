@@ -5,8 +5,8 @@ import AnalyzerDemo from "../components/AnalyzerDemo";
 export const metadata: Metadata = {
   title: "Free Resume Keyword Analyzer — Extract ATS Keywords from Any Job",
   description:
-    "Free ATS keyword analyzer. Paste any job description and instantly extract " +
-    "every keyword ATS systems scan for — hard skills, soft skills, certifications, " +
+    "Free ATS-oriented keyword analyzer. Paste an English job description and extract " +
+    "recognized hard skills, soft skills, certifications, " +
     "and job title variants. No sign-up required.",
   keywords: [
     "resume keyword analyzer",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const faqItems = [
   {
     q: "What is an ATS keyword analyzer?",
-    a: "An ATS keyword analyzer reads a job description and identifies every keyword that an Applicant Tracking System is likely to scan for when filtering resumes. This includes hard skills (Python, Excel), soft skills (leadership, collaboration), certifications (PMP, AWS Certified), tools (Jira, Salesforce), and job title variants. Knowing these keywords lets you tailor your resume to pass the automated filter.",
+    a: "An ATS-oriented keyword analyzer reads a job description and identifies terms recognized by its taxonomy. This can include hard skills (Python, Excel), soft skills (leadership, collaboration), certifications (PMP, AWS Certified), tools (Jira, Salesforce), and job-title terms. It cannot predict every employer's ATS rules or identify every relevant phrase.",
   },
   {
     q: "How does the keyword extraction work?",
@@ -52,7 +52,7 @@ const jsonLd = {
   url:
     (process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv") + "/keyword-analyzer",
   description:
-    "Free ATS keyword analyzer. Extract every keyword ATS systems scan for from any job description.",
+    "Free ATS-oriented keyword analyzer. Extract recognized skills and terms from an English job description.",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   offers: {
@@ -124,8 +124,8 @@ export default function KeywordAnalyzerPage() {
         </h1>
 
         <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto mb-8">
-          Paste any job description. Our NLP engine instantly extracts every
-          keyword ATS systems scan for — hard skills, soft skills,
+          Paste any job description. Our NLP engine highlights recognized
+          terms from a built-in taxonomy — hard skills, soft skills,
           certifications, tools, and job title variants.
         </p>
 
@@ -221,7 +221,7 @@ export default function KeywordAnalyzerPage() {
               {
                 step: "1",
                 title: "Extract keywords from the job posting",
-                body: "Paste the full job description into the keyword analyzer above. You'll get a categorised list of every keyword ATS is likely scanning for.",
+                body: "Paste the full English job description into the analyzer above. You'll get a categorized list of terms recognized by the current taxonomy.",
               },
               {
                 step: "2",
@@ -236,7 +236,7 @@ export default function KeywordAnalyzerPage() {
               {
                 step: "4",
                 title: "Verify and export",
-                body: "Run the gap analysis again to verify your score improved (aim for 70%+). Then check formatting compliance and export as an ATS-safe PDF.",
+                body: "Run the gap analysis again to see how the explainable score changed. Then review the text checks, inspect the layout manually, and export a simple PDF.",
               },
             ].map(({ step, title, body }) => (
               <div key={step} className="flex gap-4">
@@ -290,8 +290,8 @@ export default function KeywordAnalyzerPage() {
               Got your keywords? Now fix your resume.
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-5 max-w-md mx-auto">
-              Sign up free to run Gap Analysis, check ATS compliance, rewrite bullets,
-              and export an ATS-safe PDF &mdash; all 9 tools, no credit card.
+              Sign up free to run Gap Analysis, check formatting, rewrite bullets,
+              and export a simple PDF &mdash; all 9 tools, no credit card.
             </p>
             <Link
               href="/sign-up"

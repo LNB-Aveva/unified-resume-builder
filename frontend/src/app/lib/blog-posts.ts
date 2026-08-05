@@ -14,7 +14,7 @@ export const blogPosts: BlogPost[] = [
     slug: "how-to-beat-ats-filters-2026",
     title: "How to Beat ATS Filters in 2026 — The Complete Guide",
     description:
-      "75% of resumes are rejected by ATS before a human reads them. Learn exactly how Applicant Tracking Systems work, what they scan for, and how to optimise your resume to pass every time.",
+      "Learn how Applicant Tracking Systems parse applications, where keyword comparison helps, and which resume details still need human review.",
     publishedAt: "2026-07-04",
     updatedAt: "2026-07-04",
     readingTime: "12 min read",
@@ -27,11 +27,11 @@ export const blogPosts: BlogPost[] = [
     ],
     sections: [
       {
-        heading: "What Is ATS and Why Does It Reject 75% of Resumes?",
+        heading: "What Is an ATS and What Does It Actually Do?",
         content: [
-          "An Applicant Tracking System (ATS) is software that companies use to manage job applications. Before a recruiter ever sees your resume, ATS scans it, parses the text, extracts structured data (name, email, skills, work history), and scores you against the job description.",
-          "If your resume doesn't include the right keywords or uses formatting that the parser can't read, you're filtered out automatically — no matter how qualified you are. Studies from Jobscan and Harvard Business School estimate that 75% of resumes are rejected by ATS before reaching a human reviewer.",
-          "This isn't a problem limited to small companies. Over 99% of Fortune 500 companies use ATS, and the software has expanded to mid-market and startup hiring as well. The most common ATS platforms in 2026 include Workday, Greenhouse, Lever, iCIMS, Ashby, and SAP SuccessFactors.",
+          "An Applicant Tracking System (ATS) is software that employers use to collect and manage job applications. Some systems parse resume text into structured fields such as contact details, skills, and work history; screening rules and recruiter workflows vary by employer.",
+          "A parser can miss or reorder content in a complex document, and an employer may search for particular qualifications. Neither outcome means every application is automatically scored or rejected, and no public checker can predict a specific employer's decision.",
+          "Common platforms include Workday, Greenhouse, Lever, iCIMS, Ashby, and SAP SuccessFactors. Their configurations differ by customer, so treat general ATS guidance as risk reduction rather than a guaranteed pass.",
         ],
       },
       {
@@ -49,7 +49,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: "10 Formatting Rules Every ATS-Friendly Resume Must Follow",
         content: [
-          "ATS failures fall into two categories: missing keywords and unreadable formatting. Even if you have every keyword, bad formatting means the parser can't extract them. Follow these 10 rules:",
+          "Resume parsing can be affected by missing role language and hard-to-read document structure. These ten conservative practices reduce risk, but the ResumeAI text checker cannot inspect the original file layout:",
           "1. Use a single-column layout. Multi-column resumes confuse most ATS parsers because they read left-to-right, top-to-bottom. Two columns cause text to get interleaved.",
           "2. No images, graphics, or icons. ATS can't read visual elements. Your skills chart or headshot is invisible to the parser.",
           "3. Use standard section headings. Stick to 'Work Experience', 'Education', 'Skills', and 'Summary'. Creative headings like 'My Journey' or 'What I Bring' won't be recognised.",
@@ -65,19 +65,19 @@ export const blogPosts: BlogPost[] = [
       {
         heading: "How to Find the Right Keywords for Your Resume",
         content: [
-          "Keywords are the single most important factor in ATS scoring. The system compares words in your resume against words in the job description and calculates a match percentage.",
+          "Job-description language is one useful input when tailoring a resume. Employer systems and recruiters may evaluate it alongside required qualifications, application answers, work authorization, and other criteria.",
           "The manual approach: Read the job description carefully. Highlight every hard skill (Python, Tableau, GAAP), soft skill (collaboration, leadership), certification (PMP, AWS Certified), and tool (Jira, Salesforce) mentioned. Then check your resume for each one.",
-          "The automated approach: Use a keyword extraction tool to parse the job description with NLP and identify every term the ATS is likely scanning for. This catches keywords you might miss manually — including job title variants, industry jargon, and skill synonyms.",
-          "Pro tip: Exact keyword matches score higher than synonyms. If the job says 'project management', use that exact phrase rather than 'managed projects'. ATS systems are getting smarter at synonyms, but exact matches are still the safest bet.",
+          "The automated approach: Use a keyword extraction tool to surface terms recognized by its taxonomy, then compare those results with your own reading. Any taxonomy has blind spots, especially for niche roles and non-English text.",
+          "Use the employer's wording only when it truthfully describes your experience. ResumeAI groups some variants and synonyms, but it cannot model the matching behavior of every ATS configuration.",
         ],
       },
       {
         heading: "Step-by-Step: Checking Your Resume with ResumeAI",
         content: [
           "Here's how to use our free tool to check your resume against any job description:",
-          "Step 1: Go to ResumeAI and paste the job description into the ATS Keyword Extractor. The NLP engine identifies every keyword the ATS is likely scanning for — hard skills, soft skills, certifications, and job title variants.",
-          "Step 2: Paste your resume into the Gap Analysis tool alongside the job description. You'll see a match score and a list of keywords that are present vs missing.",
-          "Step 3: Run the ATS Compliance Checker to verify your formatting passes all 15 rules. This catches issues that prevent the parser from reading your resume even if the keywords are there.",
+          "Step 1: Go to ResumeAI and paste an English job description into the Keyword Extractor. The NLP engine identifies terms recognized by its taxonomy, including skills, certifications, and job-title terms.",
+          "Step 2: Paste your resume into the Gap Analysis tool alongside the job description. You'll see an explainable taxonomy score and a list of recognized terms that are present or missing.",
+          "Step 3: Run the ATS Compliance Checker for 15 text-based signals, then inspect the original document's columns, margins, fonts, images, headers, and footers yourself.",
           "Step 4: Use the AI Bullet Rewriter to naturally incorporate missing keywords into your experience bullets — without inventing facts or experience you don't have.",
           "Step 5: Generate a tailored cover letter and download your optimised resume as a clean PDF.",
         ],
@@ -211,17 +211,17 @@ export const blogPosts: BlogPost[] = [
         content: [
           "Search for 'free ATS resume checker' and you'll find dozens of tools. But most of them follow the same playbook: offer 1-2 free scans, then lock the results behind a $30-50/month paywall.",
           "This is frustrating for job seekers who are often already financially stressed. You need to check your resume against every job description you apply to — not just one or two. A tool that limits you to 2 free scans per month isn't solving the problem.",
-          "Beyond the paywall issue, most resume checkers only do keyword matching. They compare words in your resume to words in the job description and give you a percentage. That's useful, but it misses half the problem: formatting.",
-          "A resume can have every keyword perfectly matched and still get rejected if the ATS parser can't read the file. Tables, multi-column layouts, images, and custom fonts all break parsing. You need both keyword analysis AND formatting checks.",
+          "Beyond the paywall issue, many resume checkers compare resume text with a job description and return a percentage. That can surface vocabulary gaps, but it does not reproduce a specific employer's ATS configuration.",
+          "Document structure can also affect parsing. ResumeAI accepts pasted text, so its compliance checker cannot see tables, columns, images, fonts, or margins in the source file; those require manual review or a real file parser.",
         ],
       },
       {
         heading: "What a Proper ATS Check Should Include",
         content: [
           "A complete ATS check needs three things:",
-          "1. Keyword extraction — Identify every keyword the ATS is likely scanning for in the job description. This goes beyond simple word frequency — it should detect hard skills, soft skills, certifications, tools, and job title variants.",
+          "1. Keyword extraction — Identify recognized job-description terms and disclose the taxonomy's language and coverage limits.",
           "2. Gap analysis — Compare your resume against those keywords and show exactly which ones are present vs missing, with a match score.",
-          "3. Format compliance — Check your resume's structure against known ATS parsing rules: single-column layout, standard headings, no images, proper bullet characters, consistent dates, and more.",
+          "3. Honest compliance guidance — Check text-based signals automatically and clearly separate them from layout properties that require inspecting the original file.",
           "Most tools do #1 and #2 at a basic level but skip #3 entirely. The best tools also help you fix the gaps — with AI-powered suggestions for rewriting bullets and generating content.",
         ],
       },
@@ -229,19 +229,16 @@ export const blogPosts: BlogPost[] = [
         heading: "Feature Comparison: ResumeAI vs Jobscan vs Resume Worded vs Skillresy",
         content: [
           "Here's how the major ATS resume checkers compare on features, pricing, and limitations:",
-          "Jobscan — The market leader. Strong keyword matching with specific ATS platform detection (Workday, Greenhouse, etc.). Offers AI Optimize, Job Match, and LinkedIn optimisation. Price: $49.95/month after 2 free scans. Limitation: Free tier is extremely limited, and the monthly price is steep for job seekers.",
-          "Resume Worded — Good scoring algorithm with detailed feedback. Offers a 'Targeted Resume' tool and LinkedIn review. Price: $29/month after limited free checks. Limitation: AI suggestions are generic and don't account for your specific experience.",
-          "Skillresy — Newer entrant focused on skills matching. Clean interface with visual skill gap charts. Price: Free tier with limited scans, $19/month for full access. Limitation: Formatting checks are minimal.",
-          "ResumeAI — 9 tools including keyword extraction, gap analysis, 15-rule compliance checker, AI summary generator, AI cover letter generator, AI bullet rewriter, PDF export with 3 templates, and job application tracker. Price: Free with a free account, no usage limits. All features available immediately.",
+          "Competitor features and prices change frequently, so verify them on each provider's official site before choosing a service. Compare language support, scoring transparency, file parsing, privacy, retention, and usage limits—not just the headline score.",
+          "ResumeAI includes keyword extraction, gap analysis, 15 text-based checks, optional AI drafting tools, PDF export with three templates, and a job application tracker. It currently has no subscription fee, but fair-use limits and third-party provider limits apply.",
         ],
       },
       {
-        heading: "Why 15 Formatting Rules Matter More Than You Think",
+        heading: "Why Text Checks Are Only Part of ATS Review",
         content: [
-          "Here's a scenario that happens more often than you'd expect: a candidate has an 85% keyword match but gets rejected by ATS. The reason? Their resume uses a two-column layout, and the ATS parser read the columns as interleaved text — turning 'Senior Software Engineer at Google' into 'Senior Software at Engineer Google'.",
-          "Formatting issues are invisible to the applicant. Your resume looks perfect on screen, but the ATS parser sees something completely different. This is why a formatting compliance check is essential — not optional.",
-          "ResumeAI's compliance checker runs 15 specific formatting rules: single-column layout, no images or graphics, standard section headings, no header/footer content, no text boxes, no special characters in headings, consistent date formats, standard bullet characters, no colour-coded meaning, readable font size, contact info at top, no hyperlink-only text, correct file type, adequate margins, and logical section order.",
-          "Each rule comes with a pass/fail result and specific instructions for fixing any issues. This catches formatting problems that keyword-only checkers completely miss.",
+          "A two-column document can look correct to a person while a parser extracts its text in an unexpected order. A pasted-text checker cannot detect that original layout problem.",
+          "ResumeAI's compliance checker runs 15 checks over the text you provide, including headings, dates, contact details, bullet characters, section order, and content length. It also presents manual reminders for file-only properties.",
+          "Before applying, inspect the exported PDF yourself and, when possible, copy its text into a plain-text editor to check extraction order. No generic checklist guarantees compatibility with every employer system.",
         ],
       },
       {

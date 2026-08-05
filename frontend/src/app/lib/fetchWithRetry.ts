@@ -2,6 +2,9 @@ const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 3000;
 const REQUEST_TIMEOUT_MS = 65_000;
 
+const _setTimeout = typeof window !== "undefined" ? window.setTimeout : globalThis.setTimeout;
+const _clearTimeout = typeof window !== "undefined" ? window.clearTimeout : globalThis.clearTimeout;
+
 function isNetworkError(err: unknown): boolean {
   if (!(err instanceof Error)) return false;
   return err.message === "Failed to fetch" || err.message === "Load failed";
@@ -14,7 +17,7 @@ export async function fetchWithRetry(
   let lastError: unknown;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    const timeoutId = _setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     const abortFromCaller = () => controller.abort();
     init?.signal?.addEventListener("abort", abortFromCaller, { once: true });
 
@@ -32,7 +35,7 @@ export async function fetchWithRetry(
       }
       throw err;
     } finally {
-      window.clearTimeout(timeoutId);
+      _clearTimeout(timeoutId);
       init?.signal?.removeEventListener("abort", abortFromCaller);
     }
   }

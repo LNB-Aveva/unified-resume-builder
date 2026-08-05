@@ -13,9 +13,9 @@ Screenshot of the ATS score page showing a resume being analyzed
 
 ## Article Body
 
-Every year, 75% of resumes are rejected by Applicant Tracking Systems before a human ever reads them. I built a free tool to fix that.
+Applicant Tracking Systems can parse resume text differently from people, and job descriptions often contain role language applicants overlook. I built a tool to make one part of that review explainable.
 
-**[ResumeAI](https://resumeai.cv)** analyzes your resume against any job description, scores your keyword match, and helps you optimize it — all without signing up or paying.
+**[ResumeAI](https://resumeai.cv)** compares pasted resume text with an English job description, explains its taxonomy match score, and helps you revise a draft. The public keyword demo requires no account; full tools require a free account.
 
 Here's how I built it.
 

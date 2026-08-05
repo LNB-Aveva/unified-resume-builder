@@ -14,7 +14,7 @@ export default function SignUpForm() {
         Create your account
       </h1>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-        Free forever. Get your ATS score in seconds.
+        No subscription fee today. Create an account to use the full toolkit.
       </p>
 
       {state?.message && (

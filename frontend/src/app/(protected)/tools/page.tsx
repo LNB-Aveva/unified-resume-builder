@@ -115,7 +115,7 @@ export default async function ToolsPage({
             <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
               <span className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white text-xs font-bold shrink-0">3</span>
               ATS Compliance Checker
-              <InfoTooltip tip="Run 15 formatting checks to ensure your resume passes ATS parsers." />
+              <InfoTooltip tip="Run 15 text-based checks and review the listed layout items manually." />
             </h2>
             <ComplianceChecker />
           </section>
@@ -151,7 +151,7 @@ export default async function ToolsPage({
             <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
               <span className="h-7 w-7 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white text-xs font-bold shrink-0">7</span>
               PDF Resume Export
-              <InfoTooltip tip="Export your resume as an ATS-safe PDF using one of 3 templates." />
+              <InfoTooltip tip="Export your resume as a simple PDF using one of 3 templates." />
             </h2>
             <ResumeExporter
               initialResumeId={loadedResumeId}

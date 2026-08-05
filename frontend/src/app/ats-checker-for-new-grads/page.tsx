@@ -4,9 +4,8 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "ATS Checker for New Grads — Get Your Entry-Level Resume Past ATS",
   description:
-    "75% of entry-level resumes are rejected before a human reads them. Our free ATS " +
-    "checker helps new grads find missing keywords, fix college resume formatting mistakes, " +
-    "and compete with experienced candidates. 100% free, no sign-up to try.",
+    "Our free ATS-oriented checker helps new grads find recognized keyword gaps, review " +
+    "college resume text issues, and explain the resulting match score. No sign-up is needed for the public demo.",
   keywords: [
     "ATS checker for new grads",
     "ATS resume checker for college students",
@@ -52,7 +51,7 @@ const jsonLd = {
     (process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv") +
     "/ats-checker-for-new-grads",
   description:
-    "Free ATS resume checker for new graduates. Find missing keywords, fix college resume formatting mistakes, and pass the ATS filters that reject 75% of entry-level applications.",
+    "Free ATS-oriented resume checker for new graduates. Find recognized keyword gaps and review text-based resume checks.",
   mainEntity: {
     "@type": "FAQPage",
     mainEntity: faqItems.map(({ q, a }) => ({
@@ -96,8 +95,8 @@ const painPoints = [
 const tools = [
   {
     step: "1",
-    title: "Find every keyword the entry-level JD is scanning for",
-    body: "Paste any job description. Our NLP engine identifies every hard skill, tool, certification, and role-specific term — including ones you actually have from coursework and projects but forgot to list.",
+    title: "Find recognized terms in the entry-level job description",
+    body: "Paste an English job description. Our NLP engine identifies taxonomy skills, tools, certifications, and role-specific terms — including ones you may genuinely have from coursework and projects but forgot to list.",
     href: "/keyword-analyzer",
     cta: "Extract Keywords Free",
     color: "indigo",
@@ -113,7 +112,7 @@ const tools = [
   {
     step: "3",
     title: "Fix the 15 formatting mistakes college resumes make",
-    body: "Run 15 ATS compliance checks on your resume. Columns, objective statements, tables, image headers, and inconsistent dates all trigger rejections. Get a pass/fail on every rule with specific fix instructions.",
+    body: "Run 15 text-based formatting checks on your resume. Columns, objective statements, tables, image headers, and inconsistent dates are flagged. Get a pass/fail on every rule with specific fix instructions.",
     href: "/ats-checker",
     cta: "Check ATS Compliance",
     color: "emerald",
@@ -161,7 +160,7 @@ export default function NewGradsPage() {
         <div className="mx-auto max-w-4xl px-4 pt-16 pb-14 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-violet-50 border border-violet-100 px-4 py-1.5 text-xs font-semibold text-violet-700 mb-6">
             <span className="h-1.5 w-1.5 rounded-full bg-violet-500 animate-pulse" />
-            Free &bull; No credit card &bull; Unlimited scans
+            Free &bull; No credit card &bull; Fair-use access
           </div>
 
           <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-5">
@@ -173,9 +172,9 @@ export default function NewGradsPage() {
           </h1>
 
           <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-8 leading-relaxed">
-            75% of entry-level resumes are rejected by ATS before a recruiter sees them — not
-            because you&apos;re underqualified, but because your resume is missing the exact
-            keywords the system scans for. Our free tools find the gaps so you can close them.
+            Entry-level postings often use specific skills and role language. Our tools show
+            which recognized terms are present or missing so you can make an informed,
+            truthful revision; they do not predict a recruiter&apos;s decision.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
