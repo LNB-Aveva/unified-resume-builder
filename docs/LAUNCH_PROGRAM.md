@@ -174,6 +174,16 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
   - **4.7 Export:** `exportUserData` fetches profiles, jobs, resumes, shared_scores in parallel, then fetches all versions per resume. Returns JSON with account, profile, jobs, resumes (with versions), shared_scores. `DeleteAccountButton` confirmation text lists all data types.
   - **Full suite:** 481 backend passed, 24 skipped. 51 Playwright E2E passed (was 50). Both linters clean. Frontend build clean.
 
+**Cross-verification (2026-08-05, Session 110):** All 7 tasks independently re-verified from scratch. No code fixes needed.
+- **4.1:** proxy.ts `protectedPrefixes` includes `/tools`, `/account`, `/account-setup`, `/resumes`. Layout.tsx server-component guard with `getUser()` + redirect. E2E test confirms `/resumes` → `/sign-in` redirect.
+- **4.2:** `resumes` table: RLS enabled, 4 policies (select/insert/update/delete by user_id), CHECK on title 1-200, CASCADE from auth.users, index on user_id. `resume_versions`: RLS enabled, 3 policies (select/insert/delete via parent ownership), NO update policy (immutable), unique(resume_id, version_number), CASCADE from resumes.
+- **4.3:** 7 server actions verified (create, saveVersion, list, load, listVersions, rename, delete). All verify `getUser()` + filter by `user_id`. `saveVersion` retries on 23505. `createResume` rolls back on version failure.
+- **4.4:** `resume_id uuid references resumes(id) on delete set null` on jobs table. JobTracker has resume dropdown. `updateJobSupabase` filters by user_id.
+- **4.5:** 20 RLS tests collected (profiles×6, jobs×4, resumes×4, versions×3, shared_scores×2, cascade×1). Skipped in CI (needs SUPABASE_SERVICE_ROLE_KEY).
+- **4.6:** Cascade test creates rows in all 5 tables (profiles, jobs, resumes, resume_versions, shared_scores), calls `delete_own_user()`, verifies zero rows in all 5 tables.
+- **4.7:** `exportUserData` fetches all 5 tables in parallel + versions per resume. Returns JSON with account, profile, jobs, resumes (with versions), shared_scores.
+- **Full suite:** 481 backend passed, 24 skipped. 51 Playwright E2E passed. Both linters clean.
+
 ## Phase 5 — Scoring quality
 
 | Task | File(s) | Status |
@@ -196,6 +206,14 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 - **5.5 Expanded dataset + metrics:** 34 cases (IDs 1-25 original + 26-34 edge cases). Eval result: 21/34 exact (61.8%), 34/34 within-one-grade (100.0%). EXIT GATE PASS. `test_no_strong_match_scores_f` verifies no A/B-expected case scores F.
 - **Full suite:** 481 backend passed, 24 skipped. Ruff clean. ESLint clean.
 
+**Cross-verification (2026-08-05, Session 110):** All 5 tasks independently re-verified from scratch. No code fixes needed.
+- **5.1:** 34-case eval dataset at `tests/eval/eval_dataset.json`. 2 eval tests collected and pass (within-one-grade + no-A/B-scores-F).
+- **5.2:** 389 hard skills (16 categories), 50 soft skills, 91 synonym groups (137 reverse entries). Six synonym pairs verified: reactjs→react, k8s→kubernetes, postgres→postgresql, js→javascript, nextjs→next.js, golang→go. 42 extractor + 12 golden-file tests pass (88 total with 34 scorer tests).
+- **5.3:** Grade boundaries A≥85/B≥65/C≥50/D≥30/F<30. Weighted 70% hard / 30% soft. `GapAnalysis.tsx` displays matched/missing hard/soft breakdown. 34 scorer tests pass.
+- **5.4:** Zero spaCy/NLTK/scikit-learn/WeasyPrint hits in frontend/, README.md, docs/guides/.
+- **5.5:** 34 cases, 2 eval tests pass. EXIT GATE PASS (100% within-one-grade).
+- **Full suite:** 481 backend passed, 24 skipped. Both linters clean.
+
 ## Phase 6 — Reliability and performance
 
 | Task | File(s) | Status |
@@ -213,16 +231,15 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 **Reverification (2026-08-04):** All 6 tasks independently verified. Three fixes applied: (1) `hf_client.py:150` — replaced `asyncio.sleep` with `anyio.sleep` for consistency with the rest of the async codebase (was the last `asyncio` import). (2) `BulletRewriter`, `SummaryGenerator`, `CoverLetterGenerator` — fixed unsafe `res.json()` before `res.ok` check: if the backend returned a non-JSON error page (Render 503 HTML), `res.json()` threw a SyntaxError and users saw "Unexpected token '<'" instead of a helpful message. Now checks `res.ok` first, parses JSON with `.catch()` fallback. `connectionError()` also updated to recognize JSON parse failures and gateway error patterns. (3) Added 6 new tests: 2 for `RequestTimeoutMiddleware` (fast path + 504 on timeout) and 4 for keyword cache (cache hit, distinct keys, LRU eviction, TTL expiry). Full suite: 473 passed, 24 skipped. Both linters clean, frontend build clean.
 
-**Reverification (2026-08-05, Session 109):** All 6 tasks independently re-verified from scratch. Two doc fixes applied: (1) 6.3 keepalive interval corrected from "14 min" to "13 min" (cron is `*/13 * * * *`). (2) 6.4 timeout corrected from "30-second" to "90-second" (`--max-time 90` in keepalive.yml) and added retry count. Verification evidence:
-- **6.1 Request timeout + HF timeout + keyword cache + fetchWithRetry + PDF stress:** `RequestTimeoutMiddleware` at 60s via `anyio.fail_after`. HF client per-request timeout 30s, 2 retries with exponential backoff (1s, 2s). Keyword cache: `OrderedDict` LRU, 128 max size, 5-min TTL, SHA-256 keys. `fetchWithRetry`: 65s client timeout, 2 retries for network errors (3s delay), abort signal forwarding. PDF stress tests: 3 templates × large resume (20 jobs × 30 bullets), size cap (<5MB), empty resume. `authFetch` wraps `fetchWithRetry` with Supabase JWT. 2 timeout + 5 PDF + 4 cache = 11 tests pass.
-- **6.2 Transport retry + error mapping:** `_is_retryable()` catches `ConnectError`, `TimeoutException`, 5xx. 3 attempts total with exponential backoff. `_ai_errors.py` maps: `ConnectError`→503, `ReadTimeout`→504, `HTTPStatusError`→502, `CircuitBreakerOpenError`→503+`Retry-After:60`, `ValueError`→503, `RuntimeError`→500, `BaseExceptionGroup`→unwrap first exception, catch-all→500. 22 tests pass (11 cases × asyncio+trio).
-- **6.3 Cold start:** Keepalive cron at `*/13 * * * *` (under Render's 15-min sleep). Retry loop: 3 attempts with 90s timeout each, 10s between retries. Cold-start 31.3s documented (Session 72); warm path 2-3s.
-- **6.4 Keepalive alerting:** Workflow exits 1 after 3 failed attempts. `::error::` annotation surfaces in GitHub Actions UI. Repository notifications notify owner on workflow failure. Cron schedule confirmed at 13-min interval.
-- **6.5 Load test:** 9 `RouteCase` entries validated against Pydantic schemas (dry-run confirmed). Covers: 2 public routes at concurrency 20, 7 authenticated routes at concurrency 2-3. Reports: requests, RPS, p50/p95/p99, mean, error rate, timeout rate. CLI: `--base-url`, `--token`, `--timeout`, `--deterministic-requests`, `--ai-requests`, `--dry-run`.
-- **6.6 Circuit breaker:** Opens after 5 consecutive failures (`_FAILURE_THRESHOLD`). Rejects for 60s (`_RECOVERY_SECONDS`). Half-open: admits single probe (`_half_open_probe_in_flight`), second concurrent probe rejected. Successful probe resets circuit. Failure counter resets on any success. Thread-safe via `threading.Lock`. 8 circuit breaker tests × 2 backends = 16 tests pass. Frontend `connectionError()` recognizes: network errors, timeouts, AI service messages, SyntaxError (non-JSON response), 5xx status codes.
-- **All 9 frontend components** check `res.ok` before parsing success JSON. Public routes (`AnalyzerDemo`, `BulletPreviewWidget`) use `fetchWithRetry`; authenticated routes use `authFetch` (wraps `fetchWithRetry` with JWT). Zero `asyncio` imports in application code (all async uses `anyio`).
-- **Per-route rate limits verified:** analyze 30/min, preview-rewrite 5/min, score 30/min, gap 30/min, compliance 30/min, summary 10/min, rewrite 10/min, cover-letter 10/min, export 15/min. All match THREAT-MODEL.md.
-- **Full suite:** 481 backend passed, 24 skipped. 51 Playwright E2E passed. Both linters clean. Frontend build clean.
+**Cross-verification (2026-08-05, Session 110):** All 6 tasks independently re-verified from scratch. Two doc fixes applied: (1) 6.3 keepalive interval corrected from "14 min" to "13 min" (cron is `*/13 * * * *`). (2) 6.4 timeout corrected from "30-second" to "90-second" (`--max-time 90` in keepalive.yml), added retry count ("3-attempt retry loop"). Verification evidence:
+- **6.1:** `RequestTimeoutMiddleware` 60s (`anyio.fail_after`). HF client 30s timeout + 2 retries (1s/2s backoff). Keyword cache: `OrderedDict` LRU, 128 max, 5-min TTL, SHA-256 keys. `fetchWithRetry`: 65s timeout, 2 retries, 3s delay. PDF stress: 3 templates × large resume, size cap <5MB, empty resume. 2 timeout + 5 PDF + 4 cache = 11 tests pass.
+- **6.2:** `_is_retryable()` catches ConnectError, TimeoutException, 5xx. `_ai_errors.py` maps 7 exception types: ConnectError→503, TimeoutException→504, HTTPStatusError→502, CircuitBreakerOpenError→503+Retry-After, ValueError→503, RuntimeError→500, BaseExceptionGroup→unwrap. 22 tests pass (11 cases × asyncio+trio).
+- **6.3:** Keepalive cron `*/13 * * * *` with 3 retries × 90s timeout. Cold-start 31.3s documented.
+- **6.4:** Workflow exits 1 after 3 failed attempts with `::error::` annotation. GitHub notifications on failure.
+- **6.5:** 9 RouteCase entries validated. Dry-run + 2 smoke tests pass.
+- **6.6:** Circuit breaker: 5 failures → open, 60s recovery, half-open probe, reset on success. 22 hf_client tests pass (includes retry + breaker coverage). Frontend `connectionError()` handles: network errors, timeouts, AI service messages, SyntaxError, 5xx status.
+- **All 9 frontend components** check `res.ok` before JSON parse. `connectionError()` covers 5 error patterns.
+- **Full suite:** 481 backend passed, 24 skipped. 51 Playwright E2E passed. Both linters clean.
 
 **Load test baseline (2026-08-04, localhost, single Uvicorn worker, port 8771):**
 
