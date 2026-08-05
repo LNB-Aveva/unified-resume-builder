@@ -4,10 +4,14 @@ import AxeBuilder from "@axe-core/playwright";
 const PUBLIC_PAGES = [
   { name: "landing", path: "/" },
   { name: "keyword-analyzer", path: "/keyword-analyzer" },
+  { name: "ats-checker", path: "/ats-checker" },
   { name: "sign-in", path: "/sign-in" },
   { name: "privacy", path: "/privacy" },
   { name: "terms", path: "/terms" },
   { name: "blog", path: "/blog" },
+  { name: "career-changers", path: "/resume-checker-for-career-changers" },
+  { name: "new-grads", path: "/ats-checker-for-new-grads" },
+  { name: "tech-jobs", path: "/resume-checker-for-tech-jobs" },
 ];
 
 for (const { name, path } of PUBLIC_PAGES) {
