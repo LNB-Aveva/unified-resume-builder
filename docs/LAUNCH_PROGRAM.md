@@ -24,7 +24,7 @@ Verified on 2026-07-29; older session-log claims are not authoritative.
 | Local backend | **WORKS** | Fresh Uvicorn processes on ports 8767/8768 returned 200 from all nine API routes; all four Hugging Face routes generated content and PDF export returned 1,519 bytes. |
 | Backend tests | **GREEN** | 481 passed, 24 skipped; 90% branch coverage on services/routes, above the 80% floor. Reverified 2026-08-05. |
 | Frontend lint/build | **GREEN locally** | ESLint passed. `next build` compiled 26 routes/pages after Google Fonts network access was allowed. |
-| Browser tests | **GREEN** | 50 Playwright E2E tests pass: 18 happy-path, 6 failure-path, 6 accessibility (WCAG 2.1 AA), 10 smoke, 4 mobile (Pixel 7), 6 tool flows. Covers landing, keyword analyzer, ATS checker, blog, legal, auth redirect, sign-in/sign-up, SEO pages, validation errors, API errors, mobile layout, and 5 tool flows with mocked APIs. Reverified 2026-08-05. |
+| Browser tests | **GREEN** | 50 Playwright E2E tests pass: 18 happy-path, 6 failure-path, 6 accessibility (WCAG 2.1 AA), 10 smoke, 4 mobile (Pixel 7), 6 tool flows. Covers landing, keyword analyzer, ATS checker, blog, legal, auth redirect, sign-in/sign-up, SEO pages, validation errors, API errors, mobile layout, and 5 tool flows with mocked APIs. Reverified 2026-08-05. CI retries (2) added for dev-server compilation races. |
 | CI | **GREEN** | Run `30919865957` passed on commit `a3acab7`: backend lint, types, tests/coverage (90% branch), security scans, both Python audits, route startup, frontend lint, npm audit, production build, and 44 Playwright E2E tests all succeeded. Verified 2026-08-04. |
 | Python dependency audit | **GREEN LOCALLY** | Runtime and development manifests are separate and both resolve with no known vulnerabilities. The unused Semgrep dependency and its vulnerable `mcp`/`click` chain were removed. |
 | Frontend dependency audit | **PRODUCTION GREEN; DEV RED** | `npm audit --omit=dev --audit-level=high` found zero production vulnerabilities. The full installed tree reported nine High advisories in development tooling and needs triage without weakening the production gate. |
@@ -94,8 +94,8 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 2.1 Maintain unit, integration, adversarial, property, parsing, PDF, and evaluation suites. | `backend/tests/` | DONE (467 passed, 24 skipped — verified 2026-08-04) |
-| 2.2 Keep combined services/routes coverage at 80%; this is close enough to actual 82.44% to prevent regression without incentivizing trivial tests. | `.github/workflows/ci.yml`, `backend/pyproject.toml` | DONE (90% branch coverage — verified 2026-08-04) |
+| 2.1 Maintain unit, integration, adversarial, property, parsing, PDF, and evaluation suites. | `backend/tests/` | DONE (481 passed, 24 skipped — reverified 2026-08-05) |
+| 2.2 Keep combined services/routes coverage at 80%; this is close enough to actual 82.44% to prevent regression without incentivizing trivial tests. | `.github/workflows/ci.yml`, `backend/pyproject.toml` | DONE (90% branch coverage — reverified 2026-08-05) |
 | 2.3 Fix Ruff E402 and mypy errors introduced by conditional Sentry setup. | `backend/app/main.py` | DONE — CI run 30508092537 passed |
 | 2.4 Update the CVE gate for current advisories and split runtime from dev dependencies. | `backend/requirements.txt`, `backend/requirements-dev.txt`, `.github/workflows/ci.yml`, `render.yaml` | DONE — both manifests audit clean in CI |
 | 2.5 Replace smoke-only Playwright coverage with a real happy path: sign up/sign in fixture → protected tools → run analyzer → save/load resume version → PDF/export/delete. | `frontend/tests/e2e/happy-path.spec.ts` | DONE (18 tests) — covers landing, keyword analyzer with mocked API, ATS checker, blog, legal pages, auth redirect, sign-in/sign-up forms, SEO pages. Auth fixture for save/load/delete blocked on Phase 4. |
@@ -105,11 +105,11 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 
 **Exit gate:** Intentionally break one backend route and one browser flow; CI blocks both. Current `main` must have a successful CI run.
 
-**Exit gate PASSED (2026-08-04):**
-- Main CI green: run `30919865957` (all 3 jobs passed on commit `a3acab7`).
+**Exit gate PASSED (2026-08-04), reverified 2026-08-05:**
+- Main CI green: run `30919865957` (all 3 jobs passed on commit `a3acab7`). Subsequent run `30963112810` had 1 flaky E2E failure (identical tree, dev-server compilation race); fixed by adding `retries: 2` to Playwright CI config.
 - Deliberate backend break (analyze route cleared all results): CI run `30922884807` — Backend job FAILED at `test_valid_payload` (`assert 'python' in []`). Caught.
 - Deliberate frontend break (h1→div on keyword-analyzer): same CI run — E2E job FAILED at `keyword analyzer page loads` and `page loads with textarea` (`locator('h1')` not found). Caught.
-- Local verification: 467 backend tests pass (90% branch coverage), 44 Playwright E2E tests pass, both linters clean, frontend build clean (30 routes).
+- Local reverification (2026-08-05): 481 backend tests pass (90% branch coverage), 50 Playwright E2E tests pass (0 failures), both linters clean, frontend build clean (30 routes).
 
 ## Phase 3 — Security and privacy
 
@@ -354,5 +354,40 @@ Items discovered during post-launch sessions. Ordered by priority.
 | D2 | Blog content engine / editorial calendar | DEFERRED | L | Content strategy |
 | D3 | SEO fat footer (150+ resume example links) | DEFERRED | L | Needs content pages first |
 | D4 | Auto-scrolling testimonial marquee | DEFERRED | M | Low priority |
-| R4 | RLS isolation tests in CI | PARTIAL — 20/20 pass locally (2026-08-04); CI skips | S | Needs `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions secret |
-| R5 | E2E browser tests for Phase 4 auth flows (F7) | TODO | M | None — Phase 4 complete, auth fixture can be built |
+| R4 | RLS isolation tests in CI (Phase 4.5 caveat) | PARTIAL — 20/20 pass locally; CI skips | S | Needs `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions secret |
+| R5 | E2E browser tests for Phase 4 auth flows (F7 caveat) | TODO | M | None — Phase 4 is complete, Playwright auth fixture can now be built |
+
+### R4 — RLS isolation tests in CI
+
+**What:** 20 two-user RLS integration tests exist in `backend/tests/integration/test_rls_isolation.py`. They cover cross-user select/insert/update/delete for `profiles`, `jobs`, `resumes`, `resume_versions`, and `shared_scores`, plus a `delete_own_user` cascade test. All 20 pass locally but are **skipped in every CI run** because they require `SUPABASE_SERVICE_ROLE_KEY` (used to create/teardown test users via the admin API).
+
+**Why it matters:** These tests are the Phase 4 exit gate proof ("user A cannot read or mutate user B's row"). Without them in CI, a future code change could break RLS and merge to `main` undetected.
+
+**To implement:**
+1. Add `SUPABASE_SERVICE_ROLE_KEY` as a GitHub Actions repository secret (Settings → Secrets → Actions).
+2. Expose it in `.github/workflows/ci.yml` backend job: `env: SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}`.
+3. Verify the 20 tests run (not skip) and pass in the next CI run.
+4. The service role key is in the Supabase dashboard → Settings → API → `service_role` (secret). **Never commit it to code.**
+
+**Files:** `.github/workflows/ci.yml`, `backend/tests/integration/test_rls_isolation.py` (no code changes needed — tests already check for the env var and skip if absent).
+
+### R5 — E2E browser tests for Phase 4 auth flows
+
+**What:** Phase 4 features (save/load/rename/version/delete resume, data export, account deletion) have **zero Playwright browser tests**. Task 2.5 noted "Auth fixture for save/load/delete blocked on Phase 4" — Phase 4 shipped in Sessions 76–79 but the E2E coverage was never circled back to. Finding F7 (High) remains open for this reason.
+
+**Why it matters:** The resume persistence flow is the core paid-user journey. A regression in save/load/delete would be invisible until a real user hits it. Current E2E tests only cover public pages and unauthenticated flows.
+
+**To implement:**
+1. Create a Playwright auth fixture that signs in via Supabase email/password (needs a dedicated test user in Supabase — e.g. `e2e-test@resumeai.cv` with a known password, set as GitHub Actions secrets `E2E_TEST_EMAIL` / `E2E_TEST_PASSWORD`).
+2. Create `frontend/tests/e2e/resume-flows.spec.ts` covering:
+   - Sign in → navigate to /tools → create a resume → save it → verify it appears in /resumes
+   - Load a saved resume → verify fields populate → rename it → verify new name
+   - Save a version → verify version list shows 2 entries
+   - Delete the resume → verify it's gone from /resumes
+   - Data export → verify downloaded JSON contains resume data
+   - Account deletion → verify redirect to landing page (use a throwaway test user or skip destructive step)
+3. Wire the fixture into `frontend/playwright.config.ts` as an authenticated project.
+4. Add `E2E_TEST_EMAIL` and `E2E_TEST_PASSWORD` to `.github/workflows/ci.yml` E2E job secrets.
+5. Requires the backend to be running (or API mocked at the network level) during E2E — check current Playwright config for how the dev server is started.
+
+**Files:** `frontend/tests/e2e/resume-flows.spec.ts` (new), `frontend/playwright.config.ts`, `.github/workflows/ci.yml`, Supabase dashboard (test user creation).

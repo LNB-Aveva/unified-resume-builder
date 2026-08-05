@@ -17,7 +17,15 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next({ request });
   }
 
-  const { supabaseResponse, user } = await updateSession(request);
+  const { supabaseResponse, user, authUnavailable } = await updateSession(request);
+
+  if (isProtected && authUnavailable) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/service-unavailable";
+    url.searchParams.set("retry", path);
+    return NextResponse.redirect(url);
+  }
+
 
   if (isProtected && !user) {
     const url = request.nextUrl.clone();

@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Resume Checker for Tech Jobs — Match Every Keyword in the Job Description",
+  title: "Resume Checker for Tech Jobs — Review Job Description Keywords",
   description:
     "Software engineers and developers: ATS rejects tech resumes for missing specific " +
     "technologies, not missing skills. Our free keyword extractor shows exactly which tools, " +
-    "languages, and frameworks the job description requires. 100% free.",
+    "languages, and frameworks its taxonomy recognizes. No subscription fee today.",
   keywords: [
     "resume checker for tech jobs",
     "ATS resume checker software engineer",
@@ -105,7 +105,7 @@ const tools = [
   {
     step: "2",
     title: "See your exact technology match score",
-    body: "Upload your resume against any tech job description. Get your ATS percentage and a clear list of which technologies you have, which you're missing, and how many to add to hit the 70%+ threshold. Know before you apply.",
+    body: "Paste your resume and an English tech job description. Get an explainable taxonomy percentage and a clear list of recognized technologies found or missing. Review relevance before adding anything.",
     href: "/sign-up",
     cta: "Run Gap Analysis",
     color: "violet",
@@ -113,7 +113,7 @@ const tools = [
   {
     step: "3",
     title: "Fix the formatting issues that break tech resume parsing",
-    body: "Run 15 ATS compliance checks. Skill matrices, multi-column layouts, icon rows, and project card formats all fail ATS parsers. Get a specific pass/fail for each rule with instructions to fix it before your next application.",
+    body: "Run 15 text-based formatting checks. Skill matrices, multi-column layouts, icon rows, and project card formats are flagged. Get a specific pass/fail for each rule with instructions to fix it before your next application.",
     href: "/ats-checker",
     cta: "Check ATS Compliance",
     color: "emerald",
@@ -161,7 +161,7 @@ export default function TechJobsPage() {
         <div className="mx-auto max-w-4xl px-4 pt-16 pb-14 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-100 px-4 py-1.5 text-xs font-semibold text-emerald-700 mb-6">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Free &bull; No credit card &bull; Unlimited scans
+            Free &bull; No credit card &bull; Fair-use access
           </div>
 
           <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-5">
@@ -274,10 +274,10 @@ export default function TechJobsPage() {
       <section className="py-16 bg-gradient-to-r from-emerald-600 to-indigo-600">
         <div className="mx-auto max-w-2xl px-4 text-center">
           <h2 className="font-[family-name:var(--font-display)] text-3xl font-bold text-white mb-4">
-            Match Every Keyword. Land the Tech Role.
+            Review the Keywords. Improve the Draft.
           </h2>
           <p className="text-emerald-100 mb-8">
-            9 free AI tools for software engineers. No credit card. Unlimited scans.
+            9 tools for software engineers. No subscription fee today. Fair-use limits apply.
           </p>
           <a
             href="/sign-up"

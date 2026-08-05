@@ -187,7 +187,7 @@ export default function ShareableScoreWidget() {
           {/* Sign-up nudge */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-700 pt-4">
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              Want to fix the {score.total_missing} missing keywords? Get AI rewrites, compliance checks, and PDF export — all free.
+              Want to fix the {score.total_missing} missing keywords? Get AI rewrites, formatting checks, and PDF export — all free.
             </p>
             <a
               href="/sign-up"
