@@ -510,7 +510,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 |---|---|---|
 | 12.1 Complete a go/no-go review of every phase exit gate; any open Blocker is `NO-GO`. | this file | **GO** — Signed 2026-08-04. All 11 phases COMPLETE, zero open Blockers. Launching ad-free; AdSense ads will be placed after Google approves the site (8.8). Phase exit gate review: P1 (deps/build) PASS, P2 (tests/CI) PASS, P3 (security/privacy) PASS, P4 (auth/persistence) PASS, P5 (testing) PASS, P6 (backend hardening) PASS, P7 (a11y/mobile) PASS, P8 (SEO/monetization) PASS except 8.8 non-blocking, P9 (security) PASS, P10 (observability) PASS, P11 (release eng) PASS. |
 | 12.2 Assign launch owner, incident owner, Sentry/uptime watchers, and escalation thresholds for the first 72 hours. | `docs/INCIDENT-RESPONSE.md`, launch runbook | DONE — Solo operator: Laxmi Narayana Bingi is launch owner, incident owner, Sentry/UptimeRobot watcher, and rollback authority. Alerts go to bobby.bingo696@gmail.com + push notifications. Escalation: investigate immediately if any critical error in first 72 hours. |
-| 12.3 Choose feedback intake (recommended: monitored support email linked site-wide plus GitHub Issues for reproducible public bugs). | footer/contact/issue templates | DONE — support@resumeai.cv for private support (Zoho Mail, already in footer/privacy/terms) + GitHub Issues for reproducible public bugs. Issue templates to be added. |
+| 12.3 Choose feedback intake (recommended: monitored support email linked site-wide plus GitHub Issues for reproducible public bugs). | footer/contact/issue templates | DONE — support@resumeai.cv for private support (Zoho Mail, already in footer/privacy/terms) + GitHub Issues for reproducible public bugs. Issue templates added (`bug_report.md` + `feature_request.md` in `.github/ISSUE_TEMPLATE/`). |
 | 12.4 Prepare and approve Product Hunt/Reddit copy; publish only after go-live approval. | `docs/guides/PRODUCT-HUNT-LISTING.md`, launch runbook | DONE — Copy fixed (removed false "open source" claim, corrected "no signup" to "free account", added maker name). Publish only after 12.1 go/no-go is signed GO. |
 | 12.5 Submit AdSense only after Phase 8 passes. | AdSense dashboard | DEFERRED — Launching ad-free. Once Google approves site (8.8), owner creates ad units, provides slot IDs, Claude places AdUnit components. |
 | 12.6 Monitor errors, uptime, latency, provider quota/cost, auth failures, data deletion, feedback, CWV, and AdSense status during days 1-3 and week 1. | dashboards/runbook, `docs/POST-LAUNCH-MONITORING.md` | DONE — Monitoring runbook created with day 1-3 checklist and week 1 review template. All dashboards already instrumented (Sentry, UptimeRobot, Render, Vercel, Supabase, HuggingFace). |
@@ -518,6 +518,52 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 **Definition of Done:** Launch has explicit ownership, rollback authority, feedback intake, monitoring cadence, and an AdSense-ready production site.
 
 **Exit gate:** Go/no-go signed `GO`; launch executed; first-72-hours review completed with incidents and follow-ups recorded.
+
+**Reverification (2026-08-06, Session 117):** All 6 tasks independently verified from scratch. One doc correction applied.
+
+- **Doc correction:** 12.3 table row said "Issue templates to be added" — they were already added (Session 95). `.github/ISSUE_TEMPLATE/bug_report.md` and `feature_request.md` both exist, each with `assignees: LNB-Ává`. Corrected table row to reflect reality.
+
+- **12.1 Go/no-go:**
+  - LAUNCH_PROGRAM.md: `GO — Signed 2026-08-04. All 11 phases COMPLETE, zero open Blockers.`
+  - All 11 phase exit gates listed as PASS (P1–P11, with P8 8.8 non-blocking).
+  - Production site live: `https://resumeai.cv` → HTTP 200, title "Free ATS Resume Checker & Keyword Analyzer | ResumeAI". Verified 2026-08-06.
+  - Backend health: `https://unified-resume-builder-api.onrender.com/health` → `{"status":"ok"}`. Verified 2026-08-06. PASS.
+
+- **12.2 Launch owner:**
+  - `docs/INCIDENT-RESPONSE.md` Contacts section: Launch owner = Laxmi Narayana Bingi; incident owner = same; Sentry/UptimeRobot watcher = same; rollback authority = same.
+  - Alert email: bobby.bingo696@gmail.com; public support: support@resumeai.cv.
+  - Monitoring stack: UptimeRobot (email + push), Sentry (backend + frontend), GitHub Actions CI.
+  - Escalation thresholds: 4 severity levels (Critical <1h, High same-day, Medium 24h, Low next-session). PASS.
+
+- **12.3 Feedback intake:**
+  - `support@resumeai.cv` in 3 locations: footer `page.tsx:1451`, `privacy/page.tsx:205`, `terms/page.tsx:159`. All are `mailto:` links.
+  - GitHub issue templates: `.github/ISSUE_TEMPLATE/bug_report.md` (label: bug, assignee: LNB-Aveva), `.github/ISSUE_TEMPLATE/feature_request.md` (label: enhancement, assignee: LNB-Aveva). Both exist and are correct.
+  - GitHub profile: footer GitHub icon links to `https://github.com/LNB-Aveva`. PASS.
+
+- **12.4 Product Hunt/Reddit copy:**
+  - `docs/guides/PRODUCT-HUNT-LISTING.md` exists.
+  - Tagline (60 chars): "Free AI-powered ATS resume checker and optimizer" — no false claims.
+  - First comment: "Full tools require a free account" (not "no signup") ✓. No "open source" claim ✓.
+  - Maker: Laxmi Narayana Bingi, Website: https://resumeai.cv ✓.
+  - Note: "Launch Timing" section targets Early August 2026 — already August 6; owner should update timing and schedule the actual PH submission when ready. PASS.
+
+- **12.5 AdSense:**
+  - DEFERRED — `NEXT_PUBLIC_ADSENSE_ID=ca-pub-7869093425931175` set in Vercel (verified Session 95, 2026-08-03). `ads.txt` live at `https://resumeai.cv/ads.txt` (verified Session 112). `AdUnit.tsx` and layout.tsx wired. Site under Google review. No ad units placed yet — by design (ad-free launch). Owner action: wait for Google approval, then create ad units and provide slot IDs. PASS (deferred).
+
+- **12.6 Monitoring runbook:**
+  - `docs/POST-LAUNCH-MONITORING.md` exists: 9-service dashboard table, Day 1 checklist (10 items), Day 2 checklist (7 items), Day 3 checklist (7 items), Week 1 review table (12 metrics), 7-signal escalation thresholds, 4-step rollback procedure.
+  - Day 1–2 checklists have empty `[ ]` — these require owner to check external dashboards (Sentry, UptimeRobot, Render, Vercel, Supabase, HuggingFace). **Owner action:** complete Day 1–3 checklists in `docs/POST-LAUNCH-MONITORING.md` and record results in the Week 1 review table. The 72-hour window closes 2026-08-07.
+  - Exit gate sub-condition "first-72-hours review completed with incidents and follow-ups recorded" is **OWNER-PENDING** (checklists not yet filled in). PARTIAL.
+
+- **Definition of Done — assessment:**
+  - Explicit ownership: ✓ INCIDENT-RESPONSE.md.
+  - Rollback authority: ✓ INCIDENT-RESPONSE.md + DEPLOY.md rehearsal.
+  - Feedback intake: ✓ support email (3 locations) + GitHub issue templates.
+  - Monitoring cadence: ✓ POST-LAUNCH-MONITORING.md runbook.
+  - AdSense-ready production site: ✓ ads.txt live, script wired, env var set, Google review in progress.
+  - **Definition of Done: MET.**
+
+- **Full suite:** 492 backend passed, 24 skipped. `python -m ruff check app/ --config ruff.toml` → All checks passed. `npm run lint` → 0 errors. (2026-08-06)
 
 ## Current priority
 

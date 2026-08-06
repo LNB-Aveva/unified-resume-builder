@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 12 (Launch and post-launch) reverification — NEXT
-- **Branch:** feature/phase-12-launch-post-launch (not yet created)
-- **Status:** READY — Phase 11 reverification COMPLETE (PR #45, branch feature/phase-11-release-engineering). Phase 12 is the next session's work.
+- **Feature:** All 12 phases reverified — COMPLETE
+- **Branch:** main (after PR merge)
+- **Status:** Phase 12 reverification COMPLETE. All 12 phases done. Owner action: complete Day 1–3 monitoring checklists in `docs/POST-LAUNCH-MONITORING.md` (72-hour window closes 2026-08-07).
 
 ---
 
@@ -19,13 +19,25 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-06                 |
-| Working On | Session 116 complete. Phase 12 reverification next. |
+| Working On | Session 117 complete. All 12 phases reverified. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 117 (Claude) — 2026-08-06
+- **Agent:** claude
+- **Did:**
+  - **Phase 12 (Launch and post-launch) reverification** — all 6 tasks independently verified from scratch
+  - **Doc fix:** 12.3 table row said "Issue templates to be added" — already existed (Session 95). Fixed to "Issue templates added (bug_report.md + feature_request.md in .github/ISSUE_TEMPLATE/)".
+  - Verified: production site live (`https://resumeai.cv` → 200, correct title), backend health (`/health` → `{"status":"ok"}`), INCIDENT-RESPONSE.md contacts correct, support@resumeai.cv in 3 locations, both GitHub issue templates exist, PRODUCT-HUNT-LISTING.md copy clean, AdSense wired (DEFERRED), POST-LAUNCH-MONITORING.md runbook complete.
+  - Definition of Done: MET. Exit gate partial: 72-hour monitoring checklists remain owner-pending.
+  - Full suite: **492 backend passed**, 24 skipped. Ruff clean. ESLint clean.
+- **Files Changed:** `docs/LAUNCH_PROGRAM.md`, `.ai-sync/WORKLOG.md`, `SESSION_LOG.md`
+- **Next:** Owner completes Day 1–3 monitoring checklists by 2026-08-07. When Google AdSense approves site: create ad units → provide slot IDs → Claude places AdUnit components.
+- **Blockers:** Google AdSense review (external, pending). Day 1–3 monitoring checklists need owner external-dashboard access.
 
 ### Session 116 (Claude) — 2026-08-06
 - **Agent:** claude

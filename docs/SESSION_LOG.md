@@ -4,6 +4,34 @@
 
 ---
 
+## Session 117 — 2026-08-06
+
+**Branch:** `feature/phase-12-launch-post-launch`
+**Scope:** Phase 12 (Launch and post-launch) reverification
+
+### Evidence
+
+| Task | Verified | Evidence |
+|------|----------|----------|
+| 12.1 Go/no-go | PASS | LAUNCH_PROGRAM.md: "GO — Signed 2026-08-04". Production: `https://resumeai.cv` → 200, title matches. Backend: `/health` → `{"status":"ok"}`. All 11 phase exit gates PASS. |
+| 12.2 Launch owner | PASS | INCIDENT-RESPONSE.md Contacts: Laxmi Narayana Bingi as launch/incident owner, rollback authority, Sentry/UptimeRobot watcher. bobby.bingo696@gmail.com for alerts. |
+| 12.3 Feedback intake | PASS | support@resumeai.cv in footer (page.tsx:1451), privacy (205), terms (159). GitHub templates: bug_report.md + feature_request.md in .github/ISSUE_TEMPLATE/ (both assignee: LNB-Aveva). Doc fix: table row said "to be added" — corrected. |
+| 12.4 PH/Reddit copy | PASS | PRODUCT-HUNT-LISTING.md: no "open source" claim, "free account" not "no signup", maker name correct. Note: PH launch timing says "Early August" — owner should reschedule. |
+| 12.5 AdSense | PASS (deferred) | NEXT_PUBLIC_ADSENSE_ID set in Vercel, ads.txt live, AdUnit.tsx + layout.tsx wired. Google site review in progress. Ad-free launch is intentional. |
+| 12.6 Monitoring | PARTIAL | POST-LAUNCH-MONITORING.md exists with full runbook. Day 1–2 checklists have empty `[ ]` — owner must fill in (requires external dashboard access). 72-hour window closes 2026-08-07. |
+
+**Definition of Done: MET.** All structural requirements present (ownership, rollback, feedback intake, monitoring cadence, AdSense-ready site).
+
+**Exit gate partial:** "first-72-hours review completed" is owner-pending (fill in POST-LAUNCH-MONITORING.md checklists by 2026-08-07).
+
+### Test counts
+
+- Backend: **492 passed**, 24 skipped (same as baseline — no code changes)
+- Ruff: All checks passed
+- ESLint: 0 errors
+
+---
+
 ## Session 114 — 2026-08-06
 
 **Branch:** `main` (doc fix only — no feature branch needed)
