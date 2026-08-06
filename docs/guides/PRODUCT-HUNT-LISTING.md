@@ -45,4 +45,5 @@ Would love feedback on what features to add next!
 ## Launch Timing
 - Best days: Tuesday, Wednesday, Thursday
 - Best time: 12:01 AM PT (all day to accumulate votes)
-- Target: Early August 2026
+- Next window: 2026-08-11 (Tuesday) or 2026-08-12 (Wednesday)
+- Note: Submit by 11:59 PM PT the day before to ensure your listing goes live at 12:01 AM PT on launch day

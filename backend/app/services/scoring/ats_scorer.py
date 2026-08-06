@@ -9,8 +9,8 @@ from app.services.nlp import taxonomy
 
 _GRADE_MAP = [
     (85, "A", "Excellent match"),
-    (65, "B", "Strong match"),
-    (50, "C", "Good match"),
+    (65, "B", "Good match"),
+    (50, "C", "Moderate match"),
     (30, "D", "Needs improvement"),
     (0,  "F", "Poor match -- likely filtered by ATS"),
 ]

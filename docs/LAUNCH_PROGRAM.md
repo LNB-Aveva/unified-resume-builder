@@ -590,7 +590,7 @@ Items discovered during post-launch sessions. Ordered by priority.
 | D4 | Auto-scrolling testimonial marquee | DEFERRED | M | Low priority |
 | R4 | RLS isolation tests in CI (Phase 4.5 caveat) | PARTIAL — 20/20 pass locally; CI skips | S | Needs `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions secret |
 | R5 | E2E browser tests for Phase 4 auth flows (F7 caveat) | TODO | M | None — Phase 4 is complete, Playwright auth fixture can now be built |
-| R6 | Grade label / context message alignment | TODO | S | None — cosmetic: B grade_label "Strong match" overlaps with frontend "Strong match!" at ≥70; rename B→"Good match", C→"Moderate match" |
+| R6 | Grade label / context message alignment | **DONE** (Session 117) | S | `ats_scorer.py`: B→"Good match", C→"Moderate match" — eliminates overlap with frontend "Strong match!" context message at ≥70 |
 
 ### R4 — RLS isolation tests in CI
 
