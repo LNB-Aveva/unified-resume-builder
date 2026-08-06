@@ -374,6 +374,12 @@ All 10 findings fixed:
 
 **Test results:** 481 backend passed (24 skipped). ESLint clean. Ruff clean. `npm run build`: ✓ Compiled successfully (31/31 pages).
 
+**Post-session owner confirmations (2026-08-05):**
+- `NEXT_PUBLIC_ADSENSE_ID=ca-pub-7869093425931175` confirmed set in Vercel Production+Preview (was set 2 days prior)
+- AdSense payments profile confirmed complete: Individual account, Laxmi Narayana Bingi, Aurora IL 60504 — site review now unblocked
+- PR #41 confirmed merged → main tip 239f9bd, canonical URL fix live in production
+- 8.8 remaining: wait for Google site review only; after approval create ad units + share slot IDs
+
 ---
 
 ## Session 111 — 2026-08-05

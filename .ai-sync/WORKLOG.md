@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 8 reverification
-- **Branch:** feature/phase-8-seo-adsense
-- **Status:** DONE — all 8 tasks verified, 1 fix applied (canonical URLs on 5 pages). 8.8 remains PARTIAL on 3 owner actions.
+- **Feature:** Phase 8 reverification — FULLY COMPLETE
+- **Branch:** main (PR #41 merged → 239f9bd)
+- **Status:** DONE — all 8 tasks verified + fixed. 8.8 unblocked: Vercel env var set, payments profile done, site "Requires review" → waiting Google only.
 
 ---
 
@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-05                 |
-| Working On | Session 112: Phase 8 reverification complete, PR pending |
+| Working On | Session 112: Phase 8 fully closed. Next: Phase 9 reverification. |
 
 ---
 
