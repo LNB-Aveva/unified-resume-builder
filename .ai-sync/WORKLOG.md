@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 7 reverification
-- **Branch:** feature/phase-7-ux-a11y-reverify
-- **Status:** DONE — all 4 tasks verified, 2 fixes applied (dark mode on 3 SEO pages, a11y tests expanded to 10 pages)
+- **Feature:** Phase 8 reverification
+- **Branch:** feature/phase-8-seo-adsense
+- **Status:** DONE — all 8 tasks verified, 1 fix applied (canonical URLs on 5 pages). 8.8 remains PARTIAL on 3 owner actions.
 
 ---
 
@@ -19,13 +19,25 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-05                 |
-| Working On | Session 111: Phase 7 reverification complete, PR pending |
+| Working On | Session 112: Phase 8 reverification complete, PR pending |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 112 (Claude) — 2026-08-05
+- **Agent:** claude
+- **Did:**
+  - **Phase 8 reverification** — all 8 tasks independently verified from scratch
+  - **Fix:** 5 pages (blog, sign-in, sign-up, privacy, terms) missing `alternates.canonical` — were inheriting root layout `canonical: "/"`, signalling Google they were home page duplicates. Added correct canonical path to each.
+  - Production checks: ads.txt (`https://resumeai.cv/ads.txt`) returns correct content HTTP 200. Sitemap confirmed 17 URLs at production.
+  - Full suite: 481 backend passed, 24 skipped. ESLint clean. Ruff clean. Build compiled successfully (31/31 pages).
+  - 8.8 PARTIAL — code complete; 3 owner actions remain: (1) set `NEXT_PUBLIC_ADSENSE_ID` in Vercel, (2) wait Google site review, (3) provide ad slot IDs after approval.
+- **Files Changed:** `blog/page.tsx`, `(auth)/sign-in/page.tsx`, `(auth)/sign-up/page.tsx`, `privacy/page.tsx`, `terms/page.tsx`, `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Phase 9 reverification (or next session instruction).
+- **Blockers:** None (code side). 8.8 owner actions listed above.
 
 ### Session 111 (Claude) — 2026-08-05
 - **Agent:** claude

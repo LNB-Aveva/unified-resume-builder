@@ -10,6 +10,9 @@ export const metadata: Metadata = {
     description:
       "Sign up free and get instant access to 9 ATS resume tools. No credit card required.",
   },
+  alternates: {
+    canonical: "/sign-up",
+  },
 };
 
 export default function SignUpPage() {

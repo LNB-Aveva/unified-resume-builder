@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     description:
       "How ResumeAI handles saved resumes, AI processing, analytics, advertising, retention, export, and account deletion.",
   },
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 export default function PrivacyPolicy() {

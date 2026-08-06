@@ -10,6 +10,9 @@ export const metadata: Metadata = {
     description:
       "Sign in to access your free ATS resume tools. Check your ATS score, analyze keywords, and optimize your resume.",
   },
+  alternates: {
+    canonical: "/sign-in",
+  },
 };
 
 export default function SignInPage() {
