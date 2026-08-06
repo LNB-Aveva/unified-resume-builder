@@ -362,6 +362,40 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 **Exit gate:** A data-flow-to-policy review finds no contradiction. Obtain legal review if the owner’s risk tolerance or launch jurisdictions require it.
 
+**Reverification (2026-08-05, Session 113):** All 5 tasks independently verified from scratch. No code fixes needed. One doc correction applied to 9.5.
+
+- **9.1 AI disclosure, cookie categories, rights, 30-day retention:**
+  - Privacy page sections verified: Overview, Information We Collect (account, resume content, usage data, error data, browser storage), How We Use Your Information, Data Processing & AI Features (Hugging Face, circuit breaker, not persisted by ResumeAI), Third-Party Services, Data Security, Data Retention, Saved Resumes and Version History, Your Rights, Cookies (essential/analytics/advertising), GDPR, CCPA, Contact.
+  - Cookie categories: essential (Supabase auth), analytics (GA4, consent-gated), advertising (AdSense script loads, no ad units yet, TCF CMP note for when ads enabled). All 3 categories explicitly described.
+  - Rights: access via Account page, delete all data (5 tables), export all data, withdraw cookie consent, clear localStorage.
+  - 30-day shared-score retention: `ShareableScoreWidget.tsx:46` sets `expires_at = Date.now() + 30 * 24 * 60 * 60 * 1000`. `get_shared_score()` SECURITY DEFINER filters `expires_at >= now()` — link is inaccessible after expiry. Policy accurately says "The underlying expired record may remain until maintenance cleanup or account deletion" (no pg_cron on free tier). PASS.
+
+- **9.2 Policy and retention for saved resumes/versions:**
+  - Privacy page "Saved Resumes and Version History" section: describes stored fields (personal info, work history, education, skills), Supabase PostgreSQL, immutable timestamped version snapshots, deletion cascades (resume → all versions; account → all data), JSON export includes every version.
+  - Data Retention section: "Saved resumes and versions — retained until you explicitly delete the resume or delete your account."
+  - Terms section 5 "Your Content": describes saved content, immutable versioned snapshots, delete-resume removes all versions, account deletion removes all 5 tables, export includes all resume version snapshots. PASS.
+
+- **9.3 No inaccurate vendor/technology claims; HF and telemetry precise:**
+  - Privacy page: taxonomy/synonym matching + fpdf2 for analysis/PDF; Hugging Face as AI inference provider for summaries/rewriting/cover letters; Sentry configuration removes request bodies, auth headers, cookies, stack-frame variables.
+  - Terms page: "curated skill taxonomy with synonym matching" and "fpdf2" for description; "Hugging Face is our AI inference provider"; Sentry for backend error tracking, no resume content transmitted.
+  - `grep -r "spaCy|NLTK|scikit|WeasyPrint" frontend/src` → 0 hits. PASS.
+
+- **9.4 Support email reachable in all 3 locations:**
+  - `privacy/page.tsx` Contact section: `mailto:support@resumeai.cv` ✓
+  - `terms/page.tsx` Contact section: `mailto:support@resumeai.cv` ✓
+  - `page.tsx` footer (line 1451): `mailto:support@resumeai.cv` displayed as `support@resumeai.cv` ✓
+  - Zoho Mail free tier confirmed live (Session 91, 2026-08-01). PASS.
+
+- **9.5 Account deletion and export cover all resume data:**
+  - `deleteAccount()` (auth.ts:89): calls `supabase.rpc("delete_own_user")`. The `delete_own_user()` SECURITY DEFINER function deletes `auth.users` row; CASCADE chain removes profiles, jobs, resumes, shared_scores (all with `on delete cascade`); resumes→resume_versions cascades. No explicit pre-RPC deletes needed — CASCADE is atomic and more reliable.
+  - **Doc correction:** previous 9.5 description said "deleteAccount now explicitly deletes shared_scores before RPC" — this was inaccurate for current code. The function calls `delete_own_user()` directly (CASCADE handles everything). Description updated here to reflect reality.
+  - `exportUserData()` (auth.ts:112): fetches profiles, jobs, resumes (metadata: id/title/created_at/updated_at), shared_scores in parallel; then fetches per-resume versions (version_number, resume_data, resume_text, created_at). Export JSON has: account (email, created_at), profile, jobs, resumes (with versions array), shared_scores.
+  - `ExportDataButton.tsx`: triggers client-side download of `resumeai-export-{date}.json`.
+  - `DeleteAccountButton.tsx`: confirmation text "permanently delete your account, profile, resumes, job tracker entries, and shared scores."
+  - RLS cascade test (`test_rls_isolation.py:440`): creates rows in all 5 tables (profiles, jobs, resumes, resume_versions, shared_scores), calls `delete_own_user()`, verifies zero rows in all 5 tables. Skipped in CI (needs SUPABASE_SERVICE_ROLE_KEY). PASS.
+
+- **Full suite:** 481 backend passed, 24 skipped. Ruff: 0 errors. ESLint: 0 errors.
+
 ## Phase 10 — Observability
 
 | Task | File(s) | Status |

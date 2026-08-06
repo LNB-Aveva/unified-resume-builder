@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 8 reverification — FULLY COMPLETE
-- **Branch:** main (PR #41 merged → 239f9bd)
-- **Status:** DONE — all 8 tasks verified + fixed. 8.8 unblocked: Vercel env var set, payments profile done, site "Requires review" → waiting Google only.
+- **Feature:** Phase 9 reverification — FULLY COMPLETE
+- **Branch:** feature/phase-9-legal-compliance-reverify (PR pending)
+- **Status:** DONE — all 5 tasks verified, no code fixes, 1 doc correction (9.5 deleteAccount description), PR open.
 
 ---
 
@@ -19,13 +19,24 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-05                 |
-| Working On | Session 112: Phase 8 fully closed. Next: Phase 9 reverification. |
+| Working On | Session 113: Phase 9 reverification complete. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 113 (Claude) — 2026-08-05
+- **Agent:** claude
+- **Did:**
+  - **Phase 9 reverification** — all 5 tasks independently verified from scratch
+  - No code fixes needed. One doc correction: 9.5 DONE description said "deleteAccount explicitly deletes shared_scores before RPC" — inaccurate; current code calls `delete_own_user()` directly (CASCADE handles cleanup). Updated LAUNCH_PROGRAM.md.
+  - Verified: privacy/terms pages complete and accurate, support@resumeai.cv in 3 locations, 30-day expiry enforced in code and policy, export covers all 5 tables, CASCADE deletion atomic.
+  - Full suite: 481 backend passed, 24 skipped. Ruff clean. ESLint clean.
+- **Files Changed:** `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
+- **Next:** All 12 phases complete. Monitoring (POST-LAUNCH-MONITORING.md). AdSense awaiting Google approval.
+- **Blockers:** None.
 
 ### Session 112 (Claude) — 2026-08-05
 - **Agent:** claude
