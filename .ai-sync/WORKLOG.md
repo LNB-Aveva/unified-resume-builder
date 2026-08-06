@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 11 (Release engineering) reverification — NEXT
-- **Branch:** feature/phase-11-release-engineering (not yet created)
-- **Status:** READY — Phase 10 MERGED (PR #44, commit 08aa965 on main). Phase 11 reverification is the next session's work.
+- **Feature:** Phase 12 (Launch and post-launch) reverification — NEXT
+- **Branch:** feature/phase-12-launch-post-launch (not yet created)
+- **Status:** READY — Phase 11 reverification COMPLETE (PR #45, branch feature/phase-11-release-engineering). Phase 12 is the next session's work.
 
 ---
 
@@ -19,13 +19,24 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-06                 |
-| Working On | Session 115 complete. Phase 11 reverification next. |
+| Working On | Session 116 complete. Phase 12 reverification next. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 116 (Claude) — 2026-08-06
+- **Agent:** claude
+- **Did:**
+  - **Phase 11 (Release engineering) reverification** — all 6 tasks independently verified from scratch
+  - **Doc fixes:** `docs/DEPLOY.md` — test count "385+" → "492+"; keepalive interval "14 min" → "13 min".
+  - Verified: DEPLOY.md architecture/auth/rate-limiting/rollback docs, ENV_VARS.md completeness, 6 ordered idempotent migrations (001–006) + README, EnvironmentBanner.tsx in layout.tsx, branch protection API (strict=true, 3 required checks, force-push disabled), staging docs, rollback rehearsal evidence.
+  - Full suite: **492 backend passed**, 24 skipped. Ruff clean. ESLint clean.
+- **Files Changed:** `docs/DEPLOY.md`, `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Phase 12 (Launch and post-launch) reverification.
+- **Blockers:** None.
 
 ### Session 115 (Claude) — 2026-08-06
 - **Agent:** claude

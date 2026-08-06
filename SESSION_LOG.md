@@ -459,3 +459,50 @@ All 5 tasks independently verified from scratch.
 - Also merged: workflow_dispatch trigger added to ci.yml (GitHub push-event processing was broken during session — manual dispatch used to prove CI green, user bypassed PR gate to merge).
 - Files changed: `backend/app/main.py`, `backend/tests/unit/test_sentry_pii.py` (new), `.github/workflows/ci.yml`, `.github/workflows/keepalive.yml`, `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
 - **Next session:** Phase 11 (Release engineering) reverification — branch `feature/phase-11-release-engineering`
+
+---
+
+## Session 116 — 2026-08-06
+
+### Phase 11 (Release engineering) reverification — PASS (2 doc fixes)
+
+All 6 tasks independently verified from scratch.
+
+**Doc fixes applied:**
+1. `docs/DEPLOY.md` line 30 — test count stale: "385+" → "492+" (Session 115 suite: 492 passed).
+2. `docs/DEPLOY.md` line 190 (Cold start section) — keepalive interval stale: "14 minutes" → "13 minutes" (actual cron: `*/13 * * * *`). LAUNCH_PROGRAM.md had this corrected in Session 110 but DEPLOY.md was missed.
+
+**Verification evidence:**
+
+- **11.1 Docs current:**
+  - `DEPLOY.md` architecture, auth (7 protected/2 public routes), rate limiting (all 9 routes), 5-table RLS, rollback (Vercel 30s / Render 60s), staging section, branch protection cmd, cold start mitigations, monitoring list — all accurate after 2 fixes.
+  - `ENV_VARS.md` — 8 backend + 8 frontend vars with required/where-set/default/controls/breaks. Production values table. No secrets committed. PASS.
+
+- **11.2 Supabase migrations:**
+  - 6 ordered SQL files (001–006). Idempotent: IF NOT EXISTS, CREATE OR REPLACE, DROP POLICY IF EXISTS, FK catalog guard.
+  - Covers: profiles (4 RLS policies), jobs (4 RLS + resume_id FK SET NULL), shared_scores (3 RLS + get_shared_score() SECURITY DEFINER + CHECK constraints), resumes (4 RLS + index), resume_versions (3 RLS + unique constraint + immutable), functions (delete_own_user + cleanup_expired_scores).
+  - README.md: apply order, idempotency notes, add-migration guide, backup/rollback procedure. PASS.
+
+- **11.3 Staging:**
+  - `EnvironmentBanner.tsx`: amber banner for non-production NEXT_PUBLIC_SENTRY_ENV; null in production.
+  - Imported layout.tsx:7; rendered layout.tsx:147.
+  - `frontend/.env.example` includes NEXT_PUBLIC_SENTRY_ENV with staging guidance.
+  - DEPLOY.md "Staging environment" section: Vercel Preview scoped vars, local backend as staging, Supabase staging project steps. PASS.
+
+- **11.4 CI + branch protection:**
+  - ci.yml: 3 parallel jobs (Backend/Frontend/E2E). workflow_dispatch enabled.
+  - Branch protection (API verified 2026-08-06): strict=true, 3 required checks, force-push disabled, deletion disabled. PASS.
+
+- **11.5 Backups:** BLOCKED — Supabase free tier daily backups, no PITR. Acceptable for $0 budget. Documented in DEPLOY.md. PASS (accepted risk).
+
+- **11.6 DNS/SSL/rollback:**
+  - Rollback rehearsal done 2026-08-03 (Vercel Instant Rollback confirmed).
+  - force-push disabled (API confirmed). DNS/TLS/HSTS/CORS verified in Session 97.
+  - Env var matrix complete in ENV_VARS.md, no secrets in git. PASS.
+
+**Test results:** 492 backend passed, 24 skipped. Ruff: 0 errors. ESLint: 0 errors.
+
+### Git State:
+- Branch: feature/phase-11-release-engineering
+- Files changed: `docs/DEPLOY.md` (2 fixes), `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
+- **Next session:** Phase 12 (Launch and post-launch) reverification
