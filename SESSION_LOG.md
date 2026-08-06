@@ -401,3 +401,27 @@ All 10 findings fixed:
 ### Git State:
 - Branch: feature/phase-7-ux-a11y-reverify
 - Files changed: ats-checker-for-new-grads/page.tsx, resume-checker-for-career-changers/page.tsx, resume-checker-for-tech-jobs/page.tsx, accessibility.spec.ts, LAUNCH_PROGRAM.md, SESSION_LOG.md
+
+---
+
+## Session 113 — 2026-08-05
+
+### Phase 9 (Legal and compliance) reverification — PASS (doc correction only)
+
+All 5 tasks independently verified from scratch. No code fixes needed.
+
+**Doc correction:**
+- **9.5 description inaccuracy:** previous DONE note said "deleteAccount now explicitly deletes shared_scores before RPC (defense-in-depth)". Current `auth.ts:89` calls `supabase.rpc("delete_own_user")` directly, relying on CASCADE from `auth.users` (correct and more reliable). Explicit pre-RPC deletion was apparently simplified in a later session. LAUNCH_PROGRAM.md 9.5 DONE description corrected to match code.
+
+**Verification evidence:**
+- **9.1 AI disclosure + cookies + rights + 30-day retention:** privacy/page.tsx verified section by section — all data collection categories, all 3 cookie categories (essential/analytics/advertising), all rights (access/delete/export/withdraw consent/clear localStorage), 30-day expiry enforced in ShareableScoreWidget.tsx (`expires_at = Date.now() + 30*24*60*60*1000`) and `get_shared_score()` SQL filters `expires_at >= now()`. Policy language "may remain until maintenance cleanup" is accurate (no pg_cron on free tier). PASS.
+- **9.2 Saved-resume/version retention schedule:** privacy/page.tsx "Saved Resumes and Version History" section + "Data Retention" bullet. terms/page.tsx section 5 "Your Content". Both describe: stored fields, Supabase PostgreSQL, immutable timestamped snapshots, delete-resume cascades all versions, export includes all snapshots. PASS.
+- **9.3 No stale tech claims; HF + telemetry accurate:** privacy and terms describe taxonomy/synonym matching + fpdf2 for scoring/PDF; Hugging Face as AI inference provider; Sentry strips request bodies/auth headers/cookies/stack vars (`send_default_pii=False`). `grep -r "spaCy|NLTK|scikit|WeasyPrint" frontend/src` → 0 hits. PASS.
+- **9.4 support@resumeai.cv in 3 locations:** privacy/page.tsx Contact ✓, terms/page.tsx Contact ✓, page.tsx footer line 1451 ✓. PASS.
+- **9.5 Deletion + export cover all data:** `deleteAccount()` calls `delete_own_user()` RPC — CASCADE removes profiles/jobs/resumes/resume_versions/shared_scores atomically. `exportUserData()` fetches all 5 tables; versions fetched per-resume with resume_data+resume_text. RLS cascade test (test_rls_isolation.py:440) creates rows in all 5 tables, verifies zero after RPC. PASS.
+
+**Test results:** 481 backend passed (24 skipped). Ruff: 0 errors. ESLint: 0 errors.
+
+### Git State:
+- Branch: feature/phase-9-legal-compliance-reverify
+- Files changed: LAUNCH_PROGRAM.md, SESSION_LOG.md
