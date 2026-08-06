@@ -352,3 +352,25 @@ All 10 findings fixed:
 ### Git State:
 - Branch: docs/phase-4-5-6-cross-verify
 - Files changed: LAUNCH_PROGRAM.md, SESSION_LOG.md, WORKLOG.md
+
+---
+
+## Session 111 — 2026-08-05
+
+### Phase 7 (UX and accessibility) reverification — PASS (2 fixes applied)
+
+**Fixes applied:**
+1. **Dark mode on 3 SEO persona pages** — previous session's claim was inaccurate: `bc7e25d` only fixed WCAG contrast ratios on these pages (gray-400→gray-500), never added `dark:` variants. Added 36 `dark:` class instances per page to: `ats-checker-for-new-grads/page.tsx`, `resume-checker-for-career-changers/page.tsx`, `resume-checker-for-tech-jobs/page.tsx`. Covers nav, hero blobs/badge, heading, subtext, secondary CTA, pain points section/cards, tools section/cards, FAQ section/cards, footer.
+2. **Accessibility test coverage gap** — `accessibility.spec.ts` tested 6 of the 10 claimed public pages. Expanded to 10: added `/ats-checker`, `/resume-checker-for-career-changers`, `/ats-checker-for-new-grads`, `/resume-checker-for-tech-jobs`. All 10 pass WCAG 2.1 AA (0 serious/critical violations).
+
+**Verification evidence:**
+- **7.1:** Loading states in all tool components; `isLoading`+`disabled` pattern; `dark:` in 45 TSX files; skip-to-content in root layout; `<main id="main-content">` on all 15 public pages.
+- **7.2:** ARIA attributes (aria-label, aria-live, aria-expanded, role=) in 21 component files; `sr-only`/`focus-visible` in 18 files.
+- **7.3:** Pixel 7 (412px) project in playwright.config.ts; `min-h-[44px]` in 5 files; 4 mobile tests pass.
+- **7.4:** 10/10 public pages pass axe-core WCAG 2.1 AA (expanded from 6 to 10 pages).
+
+**Test results:** 481 backend passed (24 skipped), **55 Playwright E2E passed** (was 51 — 4 new axe-core tests). Both linters clean.
+
+### Git State:
+- Branch: feature/phase-7-ux-a11y-reverify
+- Files changed: ats-checker-for-new-grads/page.tsx, resume-checker-for-career-changers/page.tsx, resume-checker-for-tech-jobs/page.tsx, accessibility.spec.ts, LAUNCH_PROGRAM.md, SESSION_LOG.md

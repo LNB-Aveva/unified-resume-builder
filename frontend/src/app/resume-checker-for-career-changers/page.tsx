@@ -121,30 +121,30 @@ const tools = [
 ];
 
 const colorMap: Record<string, { bg: string; text: string; border: string; btnBg: string }> = {
-  indigo: { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-100", btnBg: "bg-indigo-600 hover:bg-indigo-700" },
-  violet: { bg: "bg-violet-50", text: "text-violet-700", border: "border-violet-100", btnBg: "bg-violet-600 hover:bg-violet-700" },
-  emerald: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-100", btnBg: "bg-emerald-700 hover:bg-emerald-800" },
+  indigo: { bg: "bg-indigo-50 dark:bg-indigo-950/30", text: "text-indigo-700 dark:text-indigo-300", border: "border-indigo-100 dark:border-indigo-800", btnBg: "bg-indigo-600 hover:bg-indigo-700" },
+  violet: { bg: "bg-violet-50 dark:bg-violet-950/30", text: "text-violet-700 dark:text-violet-300", border: "border-violet-100 dark:border-violet-800", btnBg: "bg-violet-600 hover:bg-violet-700" },
+  emerald: { bg: "bg-emerald-50 dark:bg-emerald-950/30", text: "text-emerald-700 dark:text-emerald-300", border: "border-emerald-100 dark:border-emerald-800", btnBg: "bg-emerald-700 hover:bg-emerald-800" },
 };
 
 export default function CareerChangersPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
 
       {/* Nav */}
-      <nav className="border-b border-gray-100 bg-white/90 backdrop-blur sticky top-0 z-10">
+      <nav className="border-b border-gray-100 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur sticky top-0 z-10">
         <div className="mx-auto max-w-4xl px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center shadow-sm">
               <span className="text-white text-sm font-bold">R</span>
             </div>
-            <span className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900">ResumeAI</span>
+            <span className="font-[family-name:var(--font-display)] text-lg font-bold text-gray-900 dark:text-white">ResumeAI</span>
           </Link>
           <div className="flex items-center gap-4 text-sm">
-            <Link href="/#tools" className="text-gray-500 hover:text-gray-900 transition hidden sm:inline">All Tools</Link>
+            <Link href="/#tools" className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition hidden sm:inline">All Tools</Link>
             <Link href="/sign-up" className="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-2 text-white font-semibold text-sm shadow hover:shadow-md transition">
               Get Started Free
             </Link>
@@ -156,15 +156,15 @@ export default function CareerChangersPage() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-indigo-100/50 blur-3xl" />
+          <div className="absolute top-[-80px] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-indigo-100/50 dark:bg-indigo-900/20 blur-3xl" />
         </div>
         <div className="mx-auto max-w-4xl px-4 pt-16 pb-14 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-100 px-4 py-1.5 text-xs font-semibold text-indigo-700 mb-6">
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-4 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
             <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
             Free &bull; No credit card &bull; Fair-use access
           </div>
 
-          <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-5">
+          <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight mb-5">
             Career Changers: Stop Getting Rejected
             <br />
             <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
@@ -172,7 +172,7 @@ export default function CareerChangersPage() {
             </span>
           </h1>
 
-          <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-8 leading-relaxed">
             Career changes create a vocabulary problem: the same experience may be described
             differently in a new field. Our tools highlight recognized language gaps so you can
             revise truthfully; they do not predict an employer&apos;s ATS or hiring decision.
@@ -190,33 +190,33 @@ export default function CareerChangersPage() {
             </a>
             <a
               href="/ats-checker"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-8 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 px-8 py-3.5 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200"
             >
               Check ATS Compliance
             </a>
           </div>
 
-          <p className="mt-5 text-sm text-gray-500">9 free AI tools &mdash; no account required to try the keyword extractor</p>
+          <p className="mt-5 text-sm text-gray-500 dark:text-gray-400">9 free AI tools &mdash; no account required to try the keyword extractor</p>
         </div>
       </section>
 
       {/* Pain Points */}
-      <section className="bg-gray-50 border-y border-gray-100 py-16">
+      <section className="bg-gray-50 dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 py-16">
         <div className="mx-auto max-w-4xl px-4">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white text-center mb-3">
             Why ATS Rejects Career Changers
           </h2>
-          <p className="text-gray-500 text-center mb-10 max-w-xl mx-auto">
+          <p className="text-gray-500 dark:text-gray-400 text-center mb-10 max-w-xl mx-auto">
             It&apos;s not your qualifications — it&apos;s your vocabulary. Here&apos;s what&apos;s happening before a recruiter ever sees your name.
           </p>
           <div className="grid sm:grid-cols-3 gap-6">
             {painPoints.map(({ icon, title, body }) => (
-              <div key={title} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                <div className="h-10 w-10 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 mb-4">
+              <div key={title} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
+                <div className="h-10 w-10 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-800 flex items-center justify-center text-rose-500 mb-4">
                   {icon}
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
@@ -226,10 +226,10 @@ export default function CareerChangersPage() {
       {/* Tools */}
       <section className="py-16">
         <div className="mx-auto max-w-4xl px-4">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-3">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white text-center mb-3">
             3 Free Tools to Fix It
           </h2>
-          <p className="text-gray-500 text-center mb-10 max-w-xl mx-auto">
+          <p className="text-gray-500 dark:text-gray-400 text-center mb-10 max-w-xl mx-auto">
             No account needed to try the keyword extractor. Full access with a free account.
           </p>
           <div className="grid sm:grid-cols-3 gap-6">
@@ -238,8 +238,8 @@ export default function CareerChangersPage() {
               return (
                 <div key={step} className={`rounded-2xl border ${c.border} ${c.bg} p-6 flex flex-col`}>
                   <div className={`text-xs font-bold ${c.text} uppercase tracking-widest mb-3`}>Step {step}</div>
-                  <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed flex-1 mb-5">{body}</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed flex-1 mb-5">{body}</p>
                   <a
                     href={href}
                     className={`inline-flex items-center justify-center gap-1.5 rounded-xl ${c.btnBg} px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200`}
@@ -254,16 +254,16 @@ export default function CareerChangersPage() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-gray-50 border-t border-gray-100 py-16">
+      <section className="bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 py-16">
         <div className="mx-auto max-w-2xl px-4">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 text-center mb-10">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-gray-900 dark:text-white text-center mb-10">
             Frequently Asked Questions
           </h2>
           <div className="space-y-6">
             {faqItems.map(({ q, a }) => (
-              <div key={q} className="bg-white rounded-2xl border border-gray-100 p-6">
-                <h3 className="font-semibold text-gray-900 mb-2">{q}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{a}</p>
+              <div key={q} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-6">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{q}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{a}</p>
               </div>
             ))}
           </div>
@@ -294,14 +294,14 @@ export default function CareerChangersPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-8">
-        <div className="mx-auto max-w-4xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-          <Link href="/" className="font-semibold text-gray-700 hover:text-indigo-600 transition">ResumeAI</Link>
+      <footer className="border-t border-gray-100 dark:border-gray-800 py-8">
+        <div className="mx-auto max-w-4xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
+          <Link href="/" className="font-semibold text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition">ResumeAI</Link>
           <div className="flex items-center gap-6">
-            <Link href="/resume-checker-for-career-changers" className="hover:text-gray-700 transition">Career Changers</Link>
-            <Link href="/ats-checker-for-new-grads" className="hover:text-gray-700 transition">New Grads</Link>
-            <Link href="/resume-checker-for-tech-jobs" className="hover:text-gray-700 transition">Tech Jobs</Link>
-            <Link href="/privacy" className="hover:text-gray-700 transition">Privacy</Link>
+            <Link href="/resume-checker-for-career-changers" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Career Changers</Link>
+            <Link href="/ats-checker-for-new-grads" className="hover:text-gray-700 dark:hover:text-gray-300 transition">New Grads</Link>
+            <Link href="/resume-checker-for-tech-jobs" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Tech Jobs</Link>
+            <Link href="/privacy" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Privacy</Link>
           </div>
           <span>&copy; {new Date().getFullYear()} ResumeAI</span>
         </div>
