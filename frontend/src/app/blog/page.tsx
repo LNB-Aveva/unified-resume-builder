@@ -13,6 +13,9 @@ export const metadata: Metadata = {
       "Practical guides on beating ATS filters, finding resume keywords, and " +
       "optimising your resume for Applicant Tracking Systems.",
   },
+  alternates: {
+    canonical: "/blog",
+  },
 };
 
 export default function BlogIndex() {

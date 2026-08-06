@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     description:
       "Terms and conditions for using ResumeAI's free ATS resume checker and optimization tools.",
   },
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default function TermsOfService() {

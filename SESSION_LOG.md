@@ -355,6 +355,27 @@ All 10 findings fixed:
 
 ---
 
+## Session 112 — 2026-08-05
+
+### Phase 8 (SEO and AdSense) reverification — PASS (1 fix applied)
+
+**Fix applied:**
+- **Canonical URL gap (8.1):** 5 pages (blog, sign-in, sign-up, privacy, terms) had no `alternates.canonical` in their metadata and inherited the root layout's `canonical: "/"`. This wrongly told Google all 5 pages were duplicates of the home page. Fixed by adding the correct path to each page's metadata export.
+
+**Verification evidence:**
+- **8.1:** sitemap.ts: 11 static + 6 blog = 17 URLs. Confirmed at production `https://resumeai.cv/sitemap.xml`. robots.ts disallows protected routes. `export const metadata` in 19 files. JSON-LD on 7 pages. Canonical URLs: all 12 in-sitemap pages now have correct `alternates.canonical`.
+- **8.2:** Lighthouse mobile 85-94, desktop 100 (Session 84 measurements, no performance-affecting changes since).
+- **8.3:** 6 blog articles. Blog index "Written by the team behind ResumeAI". JSON-LD Organization authorship per article. `support@resumeai.cv` in footer.
+- **8.4:** Publisher ID `pub-7869093425931175` (owner action, done 2026-08-03).
+- **8.5:** Consent Mode v2: all 4 signals default-denied in layout.tsx head. CookieConsent.tsx grants/revokes on Accept/Reject.
+- **8.6:** AdSense script conditional on `NEXT_PUBLIC_ADSENSE_ID`. `AdUnit.tsx` has consent check, RAF guard, responsive format. CSP covers pagead2/doubleclick/tpc domains.
+- **8.7:** Production ads.txt: `google.com, pub-7869093425931175, DIRECT, f08c47fec0942fa0` — HTTP 200 verified.
+- **8.8:** PARTIAL — code complete. 3 owner actions remain: (1) set `NEXT_PUBLIC_ADSENSE_ID=ca-pub-7869093425931175` in Vercel → Project Settings → Environment Variables → Production; (2) wait for Google AdSense site review; (3) after approval, create ad units in AdSense dashboard and provide slot IDs.
+
+**Test results:** 481 backend passed (24 skipped). ESLint clean. Ruff clean. `npm run build`: ✓ Compiled successfully (31/31 pages).
+
+---
+
 ## Session 111 — 2026-08-05
 
 ### Phase 7 (UX and accessibility) reverification — PASS (2 fixes applied)
