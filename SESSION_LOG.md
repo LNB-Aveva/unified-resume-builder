@@ -455,5 +455,7 @@ All 5 tasks independently verified from scratch.
 **Test results:** **492 backend passed** (was 481 — +11 new PII tests), 24 skipped. Ruff: 0 errors. ESLint: 0 errors. Frontend build: ✓ compiled successfully.
 
 ### Git State:
-- Branch: feature/phase-10-observability
-- Files changed: `backend/app/main.py`, `backend/tests/unit/test_sentry_pii.py` (new), `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
+- PR #44 merged to main (commit 08aa965). Branch: feature/phase-10-observability (closed).
+- Also merged: workflow_dispatch trigger added to ci.yml (GitHub push-event processing was broken during session — manual dispatch used to prove CI green, user bypassed PR gate to merge).
+- Files changed: `backend/app/main.py`, `backend/tests/unit/test_sentry_pii.py` (new), `.github/workflows/ci.yml`, `.github/workflows/keepalive.yml`, `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
+- **Next session:** Phase 11 (Release engineering) reverification — branch `feature/phase-11-release-engineering`
