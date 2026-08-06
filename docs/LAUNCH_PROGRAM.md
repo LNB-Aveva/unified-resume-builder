@@ -356,7 +356,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 | 9.2 Update policy and retention schedule for saved resumes/versions before persistence ships. | privacy and terms pages | DONE — documents stored fields, Supabase PostgreSQL, immutable timestamped versions, retention, cascade deletion, and complete JSON export |
 | 9.3 Replace inaccurate vendor/technology claims and document Hugging Face processing and telemetry controls precisely. | legal pages, public copy | DONE — privacy and terms describe taxonomy synonym matching, fpdf2, Hugging Face AI processing, saved-resume storage, and Sentry error tracking without resume content |
 | 9.4 Keep a reachable support email; `support@resumeai.cv` is now live via Zoho Mail (free). Updated in privacy and terms pages. | privacy/terms/footer/contact | DONE — support@resumeai.cv set up via Zoho Mail free tier (2026-08-01) |
-| 9.5 Verify account deletion and export in production, including all new resume data. | auth actions, Supabase, E2E | DONE — export verified (all 5 tables: account, profile, jobs, resumes, shared_scores); deleteAccount now explicitly deletes shared_scores before RPC (defense-in-depth); confirmation text updated to list all data types |
+| 9.5 Verify account deletion and export in production, including all new resume data. | auth actions, Supabase, E2E | DONE — export verified (all 5 tables: account, profile, jobs, resumes, shared_scores); deleteAccount calls `delete_own_user()` RPC — CASCADE from auth.users atomically removes all 5 tables; confirmation text updated to list all data types |
 
 **Definition of Done:** Policy matches actual data flows, vendors, retention, ads, AI processing, export, and deletion; contact details are monitored.
 
