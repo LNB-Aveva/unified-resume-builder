@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phase 12 (Launch and post-launch) reverification — NEXT
-- **Branch:** feature/phase-12-launch-post-launch (not yet created)
-- **Status:** READY — Phase 11 reverification COMPLETE (PR #45, branch feature/phase-11-release-engineering). Phase 12 is the next session's work.
+- **Feature:** All 12 phases reverified + R6 backlog fix — COMPLETE
+- **Branch:** feature/phase-12-launch-post-launch (PR #46 open, 2 commits)
+- **Status:** Phase 12 reverification COMPLETE. R6 grade label fix shipped. PR #46 ready to merge. Owner action: complete Day 1–3 monitoring checklists by 2026-08-07.
 
 ---
 
@@ -19,13 +19,27 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-06                 |
-| Working On | Session 116 complete. Phase 12 reverification next. |
+| Working On | Session 117 complete. All 12 phases reverified. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 117 (Claude) — 2026-08-06
+- **Agent:** claude
+- **Did:**
+  - **Phase 12 (Launch and post-launch) reverification** — all 6 tasks independently verified from scratch
+  - **Doc fix:** 12.3 table row said "Issue templates to be added" — already existed (Session 95). Fixed to "Issue templates added".
+  - **R6 DONE:** Grade label alignment — backend B "Strong match"→"Good match", C "Good match"→"Moderate match". Eliminates overlap with frontend context message "Strong match!" at ≥70. 492 tests pass, 0 regressions.
+  - **PH timing updated:** PRODUCT-HUNT-LISTING.md launch timing updated to "Next window: 2026-08-11 (Tuesday) or 2026-08-12 (Wednesday)".
+  - Production verified live: `https://resumeai.cv` → 200, `/health` → `{"status":"ok"}`.
+  - Full suite: **492 backend passed**, 24 skipped. Ruff clean. ESLint clean.
+  - Branch: feature/phase-12-launch-post-launch, commits 431b695 + 51eed59. PR #46 open.
+- **Files Changed:** `backend/app/services/scoring/ats_scorer.py`, `docs/LAUNCH_PROGRAM.md`, `docs/guides/PRODUCT-HUNT-LISTING.md`, `docs/SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Merge PR #46 (wait for CI or direct merge — doc-only first commit). Owner completes Day 1–3 monitoring checklists by 2026-08-07. AdSense: wait for Google approval.
+- **Blockers:** Google AdSense review (external). Day 1–3 monitoring checklists need owner external-dashboard access.
 
 ### Session 116 (Claude) — 2026-08-06
 - **Agent:** claude
