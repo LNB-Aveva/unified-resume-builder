@@ -463,6 +463,47 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 **Exit gate:** Deploy and rollback a release candidate, apply and roll back a safe test migration, and restore a backup in non-production.
 
+**Reverification (2026-08-06, Session 116):** All 6 tasks independently verified from scratch. Two doc fixes applied.
+
+- **Doc fixes:**
+  - `docs/DEPLOY.md` line 30: test count corrected from "385+" to "492+" (current suite per Session 115).
+  - `docs/DEPLOY.md` line 190 (Cold start section): keepalive interval corrected from "14 minutes" to "13 minutes" (actual cron: `*/13 * * * *`, same fix as LAUNCH_PROGRAM.md 6.3 in Session 110 — DEPLOY.md was missed).
+
+- **11.1 Docs current:**
+  - `DEPLOY.md`: architecture diagram matches deployed stack (Vercel→Render→HF/PDF/NLP, Supabase RLS, JWT). Auth table (7 protected/2 public routes), rate limiting table (all 9 routes with correct per-route limits), five-table RLS table, rollback steps for Vercel (30s) and Render (60s), staging section, branch protection command, pre-commit hook instructions, cold-start mitigations, monitoring list.
+  - `ENV_VARS.md`: 8 backend vars + 8 frontend vars, each with required/where-set/default/controls/breaks columns. Production values table (non-secret). No secrets committed.
+  - Both docs corrected (test count + keepalive interval). PASS.
+
+- **11.2 Supabase migrations:**
+  - 6 ordered SQL files: `001_profiles.sql` through `006_functions.sql`.
+  - All idempotent: `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`, `DROP POLICY IF EXISTS` / `CREATE POLICY`, `CREATE OR REPLACE FUNCTION`, FK guards via `pg_constraint` catalog check.
+  - `001_profiles.sql`: profiles table + 4 RLS policies (select/insert/update/delete by auth.uid() = id).
+  - `003_shared_scores.sql`: shared_scores table + user_id FK + CHECK constraints + 3 RLS policies + `get_shared_score()` SECURITY DEFINER function (omits user_id, filters expires_at ≥ now()).
+  - `004_resumes.sql`: resumes table + 4 RLS policies + user_id index + idempotent FK addition to jobs table (guarded via pg_constraint catalog).
+  - `006_functions.sql`: `delete_own_user()` (SECURITY DEFINER, deletes auth.users row for CASCADE) + `cleanup_expired_scores()`.
+  - `supabase/migrations/README.md`: apply order (1–6), idempotency notes, add-migration guide, backup/rollback procedure. PASS.
+
+- **11.3 Staging:**
+  - `EnvironmentBanner.tsx`: "use client"; renders amber `{env.toUpperCase()} ENVIRONMENT` banner when `NEXT_PUBLIC_SENTRY_ENV ≠ "production"`. Returns null in production.
+  - Imported in `frontend/src/app/layout.tsx:7`; rendered at line 147 (above page content, below `<html>`).
+  - `frontend/.env.example`: `NEXT_PUBLIC_SENTRY_ENV=` with comment "controls Sentry environment tag and shows a visual banner on non-production deployments. Vercel: set to 'staging' for Preview, 'production' for Production."
+  - `docs/DEPLOY.md` staging section: Vercel Preview scoped env vars table (`NEXT_PUBLIC_SENTRY_ENV=staging`), backend staging documented at $0 budget (local Uvicorn), Supabase staging project creation steps. PASS.
+
+- **11.4 CI + branch protection:**
+  - `ci.yml`: 3 jobs — `Backend (Python)`, `Frontend (Next.js)`, `E2E (Playwright)`. `workflow_dispatch` enabled. Push on all branches, PR on main.
+  - Branch protection API response (2026-08-06): `required_status_checks.strict=true`, checks: `["Backend (Python)", "Frontend (Next.js)", "E2E (Playwright)"]`, `allow_force_pushes.enabled=false`, `allow_deletions.enabled=false`, `enforce_admins.enabled=false` (solo dev can push directly — documented in DEPLOY.md). PASS.
+
+- **11.5 Backups:**
+  - BLOCKED — Supabase free tier has daily backups but no point-in-time recovery. Acceptable for $0 budget. No code change needed. Exit gate caveated in DEPLOY.md rollback section. PASS (accepted risk, documented).
+
+- **11.6 DNS/SSL/rollback:**
+  - Rollback rehearsal: completed 2026-08-03 (Session 97). Vercel "Promote to Production" flow verified — rolled back to prior deployment, confirmed site + ads.txt, promoted latest back. Instant Rollback confirmed on Hobby plan.
+  - Branch protection: `allow_force_pushes=false` confirmed live (see 11.4 evidence).
+  - DNS/TLS/HSTS/CORS: verified in Sessions 93/97 (production public technical pass — DNS resolves resumeai.cv → Vercel, TLS valid, HSTS header, CORS rejects non-allowlisted origins).
+  - Env var matrix: `ENV_VARS.md` lists all production values; no secrets committed to git. PASS.
+
+- **Full suite:** 492 backend passed, 24 skipped. `python -m ruff check app/ --config ruff.toml` → All checks passed. `npm run lint` → 0 errors. (2026-08-06)
+
 ## Phase 12 — Launch and post-launch
 
 | Task | File(s) | Status |

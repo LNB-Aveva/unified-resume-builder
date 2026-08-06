@@ -27,7 +27,7 @@ Supabase PostgreSQL <--- RLS-scoped frontend data access
 
 1. **Frontend (Vercel):** Auto-deploys on every push to `main`. Preview deployments created for PRs.
 2. **Backend (Render):** Auto-deploys on every push to `main`. Free tier sleeps after 15 min idle.
-3. **CI (GitHub Actions):** Runs on every push — backend tests (385+, with 20 credential-dependent RLS tests skipped), frontend lint, frontend build.
+3. **CI (GitHub Actions):** Runs on every push — backend tests (492+, with 20 credential-dependent RLS tests skipped), frontend lint, frontend build.
 
 ## Deploy checklist
 
@@ -187,7 +187,7 @@ still work (solo developer workflow) but CI runs on every push and flags failure
 
 Render free tier sleeps after 15 min of inactivity. First request after sleep takes 30-60 seconds.
 Mitigations:
-- GitHub Actions keepalive cron pings `/health` every 14 minutes
+- GitHub Actions keepalive cron pings `/health` every 13 minutes
 - Frontend uses `fetchWithRetry` with 3s delay between retries
 
 ## Monitoring
