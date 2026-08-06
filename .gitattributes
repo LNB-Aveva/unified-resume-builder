@@ -1,0 +1,4 @@
+# Log files that multiple branches write to — use union merge to avoid conflicts.
+# Union merge includes all lines from both sides rather than blocking with a conflict marker.
+.ai-sync/WORKLOG.md merge=union
+SESSION_LOG.md merge=union
