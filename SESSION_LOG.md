@@ -506,3 +506,50 @@ All 6 tasks independently verified from scratch.
 - Branch: feature/phase-11-release-engineering
 - Files changed: `docs/DEPLOY.md` (2 fixes), `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
 - **Next session:** Phase 12 (Launch and post-launch) reverification
+
+---
+
+## Session 118 — 2026-08-06
+
+### Phases 10, 11, 12 independent cross-verification — all 3 PASS (0 new issues)
+
+All 15 tasks across Phases 10, 11, 12 independently verified from scratch against the live codebase. No code changes required — all prior session fixes hold.
+
+**Commands run and results:**
+
+- `pytest tests/unit/test_sentry_pii.py` → **11 passed** (Phase 10.1 exit gate)
+- `pytest tests/unit/test_access_log.py` → **10 passed** (Phase 10.3 exit gate)
+- `python -m ruff check app/ --config ruff.toml` → **All checks passed**
+- `npm run lint` → **0 errors**
+- Full suite: **492 backend passed**, 24 skipped (unchanged from Session 115)
+
+**Phase 10 — Observability (all 5 tasks PASS):**
+- **10.1:** `_strip_pii()` at module-level (main.py:27); `send_default_pii=False`, `include_local_variables=False` (main.py:53-55); 11 PII unit tests pass.
+- **10.2:** `frontend/src/instrumentation.ts` and `instrumentation-client.ts` both exist; `sendDefaultPii: false`, `replaysSessionSampleRate: 0`, `beforeSend` strip in client file; CSP `connect-src` includes `*.ingest.sentry.io` + `*.ingest.us.sentry.io` (next.config.ts:24).
+- **10.3:** `AccessLogMiddleware` in main.py; 10 access log unit tests pass (`test_access_log.py`).
+- **10.4:** keepalive.yml cron `*/13 * * * *`; `--max-time 90`; exits 1 on 3 consecutive failures → GitHub owner email.
+- **10.5:** All services on free tiers (external, accepted on trust from Session 93).
+
+**Phase 11 — Release engineering (all 6 tasks PASS):**
+- **11.1:** `DEPLOY.md` — test count shows `492+` (line 30), keepalive shows `13 minutes` (line 190). Both stale values corrected in Session 116.
+- **11.2:** 6 migration files confirmed: `001_profiles.sql` through `006_functions.sql`.
+- **11.3:** `EnvironmentBanner` imported at `layout.tsx:7`, rendered at `layout.tsx:147`.
+- **11.4:** Branch protection API (2026-08-06): `strict=true`, required checks: `["Backend (Python)", "Frontend (Next.js)", "E2E (Playwright)"]`, force-push disabled.
+- **11.5:** BLOCKED/accepted — Supabase free tier, no PITR, documented.
+- **11.6:** Rollback rehearsal 2026-08-03; force-push confirmed disabled via API.
+
+**Phase 12 — Launch and post-launch (all 6 tasks PASS):**
+- **12.1:** `GO — Signed 2026-08-04` in LAUNCH_PROGRAM.md; production https://resumeai.cv accessible (Session 117 verified HTTP 200).
+- **12.2:** INCIDENT-RESPONSE.md: Launch owner = Laxmi Narayana Bingi (line 76); rollback authority confirmed (line 79); alerts to bobby.bingo696@gmail.com + support@resumeai.cv.
+- **12.3:** `support@resumeai.cv` in 3 confirmed locations (page.tsx:1451, privacy/page.tsx:205, terms/page.tsx:159). Issue templates: `.github/ISSUE_TEMPLATE/bug_report.md` + `feature_request.md` both exist.
+- **12.4:** PRODUCT-HUNT-LISTING.md — "free account" (not "no signup") confirmed (line 29); no "open source" claim found; maker = Laxmi Narayana Bingi, website = https://resumeai.cv; timing = "2026-08-11 or 2026-08-12" (Session 117 updated from "Early August").
+- **12.5:** DEFERRED — ads.txt live, AdUnit.tsx wired, NEXT_PUBLIC_ADSENSE_ID set in Vercel; Google site review pending.
+- **12.6:** `docs/POST-LAUNCH-MONITORING.md` exists with Day 1/2/3 + Week 1 sections (5 section matches confirmed).
+- **R6:** `ats_scorer.py` grade labels: B → "Good match", C → "Moderate match" (confirmed at lines 12-13).
+
+**Discrepancies found:** None. All 15 claimed DONEs verified against live code.
+
+### Git State:
+- Branch: feature/phase-12-launch-post-launch (existing; PR #46 open)
+- Files changed this session: `SESSION_LOG.md`, `.ai-sync/WORKLOG.md` (doc-only)
+- No new branch or PR needed — prior session's PR #46 covers all code changes
