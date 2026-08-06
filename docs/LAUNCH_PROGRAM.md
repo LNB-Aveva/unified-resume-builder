@@ -410,6 +410,44 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 **Exit gate:** Controlled frontend error, backend 500, outage, and budget-threshold drills each notify the responsible person within the documented target.
 
+**Reverification (2026-08-06, Session 115):** All 5 tasks independently verified from scratch. One code improvement applied.
+
+- **Code change:** `_strip_pii()` was defined inside `if _sentry_dsn:` block making it untestable. Moved to module-level (always defined); `sentry_sdk.init()` still conditional on `SENTRY_DSN`. Added `backend/tests/unit/test_sentry_pii.py` with 11 unit tests.
+
+- **10.1 Backend Sentry:**
+  - `sentry_sdk.init()` is conditional on `SENTRY_DSN` env var (absent in local/test/dev).
+  - `_strip_pii()` (now module-level, testable): strips `request.data`, `request.body`, `authorization`/`cookie`/`set-cookie` headers, all stack-frame `vars`, and top-level `extra` key.
+  - `send_default_pii=False`, `include_local_variables=False`.
+  - 11 PII-filter unit tests pass: `test_strips_request_data_and_body`, `test_strips_auth_header`, `test_strips_cookie_header`, `test_strips_set_cookie_header`, `test_preserves_content_type_header`, `test_strips_stack_frame_local_vars`, `test_strips_extra`, `test_tolerates_missing_request`, `test_tolerates_missing_exception`, `test_tolerates_empty_headers`, `test_returns_event_dict`. Run: `pytest tests/unit/test_sentry_pii.py` → **11 passed**.
+  - External evidence (Session 93, 2026-08-03): Sentry backend project shows 3,390 sessions, 1 release, 0 errors (healthy). `SENTRY_DSN` set in Render.
+
+- **10.2 Frontend Sentry:**
+  - `frontend/src/instrumentation.ts`: server-side hook — `register()` initializes `@sentry/nextjs` v10.69.0 when `NEXT_PUBLIC_SENTRY_DSN` is set; `sendDefaultPii: false`; `beforeSend` strips `request.data`, auth/cookie headers, stack-frame vars, `event.extra`; `onRequestError = Sentry.captureRequestError` for unhandled server route errors.
+  - `frontend/src/instrumentation-client.ts`: browser SDK init when DSN set; `sendDefaultPii: false`; `replaysSessionSampleRate: 0`/`replaysOnErrorSampleRate: 0` (no session replay); `beforeSend` strips `event.extra`, `request.data`, auth/cookie headers.
+  - CSP `connect-src`: includes `https://*.ingest.sentry.io` and `https://*.ingest.us.sentry.io` (US regional Sentry endpoint). Verified in `next.config.ts:24`.
+  - External evidence (Session 93, 2026-08-02): `NEXT_PUBLIC_SENTRY_DSN` + `NEXT_PUBLIC_SENTRY_ENV` set in Vercel Production+Preview. Network tab confirmed Sentry events sent with HTTP 200.
+
+- **10.3 Structured access logs:**
+  - `AccessLogMiddleware` emits JSON log per request: `request_id`, `method`, `path`, `route` (FastAPI matched path format), `status`, `duration_ms`, `client` (XFF/host), `rate_limited` (status=429), `auth_failed` (status=401/403), `is_ai_route` (path in `_AI_ROUTES` frozenset), `content_length` (response).
+  - 10 access log unit tests pass (6 AI-route classification × route + 3 status classification + 1 normal request). Run: `pytest tests/unit/test_access_log.py` → **10 passed**.
+
+- **10.4 UptimeRobot + keepalive:**
+  - `keepalive.yml`: cron `*/13 * * * *`, 3 retries × 90s timeout; workflow fails with `::error::` and `exit 1` on non-200 after 3 attempts → GitHub sends owner email on failure. `/health` is exempt from rate limiting.
+  - External evidence (Session 93, 2026-08-03): UptimeRobot email alerts (bobby.bingo696@gmail.com) + push notifications ON for Up/Down events. Weekly/Monthly reports enabled. `/health` pings confirmed in Render logs.
+
+- **10.5 Cost/usage alarms:**
+  - All services on free tiers: Vercel Hobby (email notifications enabled, function invocation alerts), Render Free ($0.00 MTD, failure alerts on), Supabase Free (spend cap enabled, DB 10.28% of 500MB), HuggingFace Free ($0.00, rate-limited), Sentry Free (no billing).
+  - No payment methods attached to any service → net charge is $0; overage is blocked rather than billed.
+  - Verified 2026-08-03 (Session 93).
+
+- **Exit gate drills — evidence:**
+  - **Backend error (PII drill):** 11 `test_sentry_pii.py` tests prove `_strip_pii()` removes all resume/auth PII from events before they leave the process. `pytest tests/unit/test_sentry_pii.py` → **11 passed** (2026-08-06).
+  - **Frontend error:** CSP and SDK wiring verified in code; Sentry DSN confirmed in Vercel; network confirmed 200 on Sentry ingest (Session 93, 2026-08-02).
+  - **Outage:** UptimeRobot alerts configured (email + push, confirmed 2026-08-03). keepalive workflow fails workflow → GitHub notifies owner on 3 consecutive health failures.
+  - **Budget threshold:** No payment methods attached; Supabase spend cap enabled; Vercel free-tier notifications on. Cost alarm is architectural (can't be charged; no alarm needed).
+
+- **Full suite:** 492 backend passed (was 481 + 11 new), 24 skipped. Ruff clean. ESLint clean. Frontend build clean.
+
 ## Phase 11 — Release engineering
 
 | Task | File(s) | Status |

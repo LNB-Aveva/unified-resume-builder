@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Phases 7+8+9 cross-verification — FULLY COMPLETE (PRs #40/#41/#42 all merged)
-- **Branch:** main
-- **Status:** DONE — all phases verified, 1 stale doc fixed (9.5 table row still had old description), suite 481+55 green.
+- **Feature:** Phase 10 (Observability) reverification — COMPLETE
+- **Branch:** feature/phase-10-observability
+- **Status:** DONE — all 5 tasks verified, 1 code fix (_strip_pii module-level), 11 new PII filter tests, 492 backend tests pass.
 
 ---
 
@@ -19,13 +19,25 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-06                 |
-| Working On | Session 114: Phase 7+8+9 cross-verification confirmed. Phases 10-12 reverification next. |
+| Working On | Session 115: Phase 10 reverification COMPLETE. PR to create. |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 115 (Claude) — 2026-08-06
+- **Agent:** claude
+- **Did:**
+  - **Phase 10 (Observability) reverification** — all 5 tasks independently verified from scratch
+  - **Code fix:** `_strip_pii()` was inside `if _sentry_dsn:` block — untestable. Moved to module-level. Ruff import sort auto-fixed.
+  - **New test file:** `backend/tests/unit/test_sentry_pii.py` — 11 unit tests proving PII is stripped from Sentry events (body/data, auth/cookie/set-cookie headers, stack-frame vars, extra key).
+  - Verified: backend Sentry init (conditional, PII-safe, `include_local_variables=False`), frontend instrumentation files (server + client), CSP Sentry domains (`*.ingest.sentry.io` + `*.ingest.us.sentry.io`), access log middleware fields (10 tests), keepalive failure detection, UptimeRobot config (external), all services on free tiers with no payment methods.
+  - Full suite: **492 backend passed** (+11), 24 skipped. Ruff clean. ESLint clean. Frontend build clean.
+- **Files Changed:** `backend/app/main.py`, `backend/tests/unit/test_sentry_pii.py` (new), `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Phases 11, 12 reverification.
+- **Blockers:** None.
 
 ### Session 114 (Claude) — 2026-08-06
 - **Agent:** claude

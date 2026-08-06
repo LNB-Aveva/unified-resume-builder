@@ -425,3 +425,35 @@ All 5 tasks independently verified from scratch. No code fixes needed.
 ### Git State:
 - Branch: feature/phase-9-legal-compliance-reverify
 - Files changed: LAUNCH_PROGRAM.md, SESSION_LOG.md
+
+---
+
+## Session 115 — 2026-08-06
+
+### Phase 10 (Observability) reverification — PASS (1 code fix, 11 new tests)
+
+All 5 tasks independently verified from scratch.
+
+**Code change applied:**
+- `backend/app/main.py` — `_strip_pii()` moved from inside `if _sentry_dsn:` block to module-level. Previously untestable (only defined when SENTRY_DSN env var is set); now always importable for unit testing. `sentry_sdk.init()` remains conditional on DSN. Ruff import sort auto-fix applied.
+- `backend/tests/unit/test_sentry_pii.py` (new) — 11 unit tests for `_strip_pii()`: strips request body/data, auth/cookie/set-cookie headers, stack-frame local vars, extra key; preserves non-PII headers; tolerates missing request/exception/headers; returns dict.
+
+**Verification evidence:**
+- **10.1 Backend Sentry:** `sentry_sdk.init()` conditional on `SENTRY_DSN`. `_strip_pii()`: strips request.data/body, auth/cookie/set-cookie headers, stack-frame vars, event.extra. `send_default_pii=False`, `include_local_variables=False`. **11 PII filter tests pass.** External (Session 93): 3,390 sessions tracked, 1 release, 0 errors in Sentry backend project.
+- **10.2 Frontend Sentry:** `instrumentation.ts` (server): `register()` + `onRequestError = Sentry.captureRequestError`; PII-safe beforeSend. `instrumentation-client.ts` (browser): init with `sendDefaultPii: false`, no session replay, PII-safe beforeSend. CSP `connect-src` covers `*.ingest.sentry.io` + `*.ingest.us.sentry.io`. `@sentry/nextjs` v10.69.0. Env vars in Vercel (Session 93 confirmed HTTP 200 on Sentry ingest).
+- **10.3 Access logs:** `AccessLogMiddleware` logs: route, content_length, rate_limited (429), auth_failed (401/403), is_ai_route. **10 access log unit tests pass.**
+- **10.4 UptimeRobot:** keepalive.yml: `*/13 * * * *`, 3 retries × 90s, exits 1 on failure → GitHub owner email. External (Session 93): UptimeRobot email + push ON for bobby.bingo696@gmail.com.
+- **10.5 Cost alarms:** All services free tier, no payment methods attached. Supabase spend cap enabled. Can't be billed.
+
+**Exit gate drills:**
+- Backend PII drill: `pytest tests/unit/test_sentry_pii.py` → **11 passed** (2026-08-06)
+- Access log drill: `pytest tests/unit/test_access_log.py` → **10 passed** (2026-08-06)
+- Frontend drill: CSP + SDK wiring verified; Session 93 confirmed live HTTP 200 on Sentry ingest
+- Outage drill: UptimeRobot config confirmed + keepalive failure detection verified
+- Budget drill: Free tiers + no payment methods → net charge $0 always
+
+**Test results:** **492 backend passed** (was 481 — +11 new PII tests), 24 skipped. Ruff: 0 errors. ESLint: 0 errors. Frontend build: ✓ compiled successfully.
+
+### Git State:
+- Branch: feature/phase-10-observability
+- Files changed: `backend/app/main.py`, `backend/tests/unit/test_sentry_pii.py` (new), `docs/LAUNCH_PROGRAM.md`, `SESSION_LOG.md`, `.ai-sync/WORKLOG.md`
