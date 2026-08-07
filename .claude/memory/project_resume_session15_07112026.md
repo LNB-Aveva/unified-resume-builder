@@ -24,7 +24,7 @@ metadata:
 - User plans to wipe this laptop and continue from a new laptop via `git clone`
 
 ### Secrets (for new laptop .env setup)
-- `HUGGINGFACE_API_KEY=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`
+- `HUGGINGFACE_API_KEY=[REDACTED — rotate the exposed token]`
 - `NEXT_PUBLIC_API_URL=http://localhost:8000`
 - `NEXT_PUBLIC_SITE_URL=http://localhost:3000`
 

@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Post-launch maintenance
-- **Branch:** main (tip: 2336e5f)
-- **Status:** Session 121 DONE. PR #48 + #49 MERGED. 401 UX fix cherry-picked to main (2336e5f). Monitoring verified. AdSense pending Google review. Render Starter $7/mo upgrade pending owner click.
+- **Feature:** Prompt 3 launch-gate audit
+- **Branch:** fix/prompt-gaps-closure (tip: see session 125 commit)
+- **Status:** Session 125 DONE. Gates 2/3/5 complete (Claude). Gates 4/6 assigned to Codex. 3 owner-action blockers remain before final GO.
 
 ---
 
@@ -19,13 +19,25 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-07                 |
-| Working On | Session 123 DONE — closed 4 Codex-identified gaps, owner data recorded, Render Starter confirmed |
+| Working On | Session 125 DONE — Prompt 3 Gates 2+3+5 complete |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 125 (Claude) — 2026-08-07
+- **Agent:** claude
+- **Did:**
+  - Prompt 3 strategic split: Claude owns Gates 2+3+5; Codex owns Gate 4+6 + Gate 1 code fixes.
+  - **Gate 2 (Go/no-go checklist):** All 12 phase exit gates verified with evidence. Result: CONDITIONAL NO-GO — 3 owner actions required: (a) HF token rotation, (b) RLS re-run with production credentials, (c) TCF CMP confirmation for AdSense.
+  - **Gate 3 (Cost model):** Full 100/1k/10k user scenario table. First cliff: Supabase 500MB DB fills at ~9,600 users (~52KB/user). HF free-tier rate limits visible at ~1,000 users (circuit breaker handles gracefully). $7/mo budget safe through ~9,600 users; next upgrade Supabase Pro $25/mo.
+  - **Gate 5 (Rollback):** Exact commands documented for Vercel (promote-to-production or `vercel rollback`) and Render (dashboard redeploy or git revert + push) independently. 5-minute detection via UptimeRobot + `curl /health`. Result: PASS.
+  - All content written to `docs/LAUNCH_READINESS_AUDIT.md` (was untracked, now committed).
+- **Files Changed:** `docs/LAUNCH_READINESS_AUDIT.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Codex completes Gate 4 (failure drills: HF down, Supabase down, Render sleep, malformed PDF, 50-page resume, non-English JD). Codex writes Gate 6 final verdict. Owner: rotate HF token, re-run RLS suite, confirm TCF CMP.
+- **Blockers:** HF token rotation (owner). RLS credentials (owner). TCF CMP confirmation (owner). Gate 4+6 (Codex).
 
 ### Session 124 (Copilot) — 2026-08-07
 - **Agent:** copilot
