@@ -55,8 +55,9 @@
   - Recorded owner decision DEC-030: approve Render Starter at the quoted $7/month; keep Vercel and Supabase on current free plans until revenue is greater than $0. Dashboard purchase remains owner-only and unverified.
   - Verified all 15 PowerShell blocks parse, all referenced repository paths exist, the RLS suite contains exactly 20 tests, and no Bash commands were added.
   - Mandatory Ruff and ESLint checks passed; the existing localhost frontend returned HTTP 200 with the expected ResumeAI title. Owner approved commit and push on 2026-08-06.
+  - Committed as `6db3171`, pushed `feature/codex-prompt3-docs`, and opened PR #49: https://github.com/LNB-Aveva/unified-resume-builder/pull/49
 - **Files Changed:** `docs/RLS_VERIFICATION.md`, `docs/ROLLBACK.md`, `docs/SMTP_VERIFICATION.md`, `.ai-sync/DECISIONS.md`, `.ai-sync/WORKLOG.md`
-- **Next:** Commit and push the documentation branch, open one PR to `main`, and require green CI. Owner then executes the credential- and dashboard-dependent checks from the runbooks.
+- **Next:** Require green CI on PR #49, then merge. Owner executes the credential- and dashboard-dependent checks from the runbooks before launch.
 - **Blockers:** Production RLS credentials, Render API/service/deploy IDs, Vercel CLI login/link, SMTP dashboard access, and the Render Starter purchase all require owner-controlled credentials or dashboards.
 
 ### Session 119 (Claude) — 2026-08-06
