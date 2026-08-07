@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-030: Render Starter Is the Only Approved New Monthly Spend (2026-08-06)
+- **Date:** 2026-08-06
+- **Agent:** manual
+- **Context:** The owner accepted the re-triage recommendation to remove Render Free cold starts while keeping fixed launch spend minimal.
+- **Decision:** Approve upgrading the production backend to Render Starter at the quoted $7/month. Keep Vercel and Supabase on their current free plans until revenue is greater than $0. The dashboard upgrade and billing confirmation remain an owner action; repository documentation must not claim Starter is active until the deployed service plan is verified.
+- **Alternatives Considered:** Remain entirely on free tiers — rejected because idle cold starts damage first-use reliability. Upgrade Vercel and Supabase immediately — deferred until revenue or measured capacity/recovery needs justify the additional fixed cost.
+- **Files Affected:** `.ai-sync/DECISIONS.md`, `docs/ROLLBACK.md`
+
 ### DEC-029: AnyIO Task Group for AI Rewrite Fallbacks (2026-08-03)
 - **Date:** 2026-08-03
 - **Agent:** copilot

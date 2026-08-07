@@ -7,6 +7,12 @@
 
 ## Current Task
 
+- **Feature:** All 12 phases reverified + R6 backlog fix — COMPLETE
+- **Branch:** feature/phase-12-launch-post-launch (PR #47 open), PR #46 MERGED
+- **Status:** Phase 10+11+12 independent cross-verification COMPLETE (Session 118). PR #47 ready to merge. Owner action: complete Day 1–3 monitoring checklists by 2026-08-07.
+- **Feature:** Prompt 3 hardening — PR #48 open, localhost verified
+- **Branch:** feature/prompt3-hardening (PR #48), feature/codex-prompt3-docs (Copilot R11-R13)
+- **Status:** Session 120 DONE. Both branches ready for merge. Render $7/mo approved.
 - **Feature:** Prompt 3 adversarial audit — re-triage + hardening fixes
 - **Branch:** feature/prompt3-hardening
 - **Status:** Session 119 IN PROGRESS. R7+R8+R9+R10 DONE. Codex tasks R11+R12+R13 assigned.
@@ -19,6 +25,8 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-06                 |
+| Working On | Session 118 complete. All 12 phases cross-verified. |
+| Working On | PR #48 localhost verification, Render budget decision |
 | Working On | Prompt 3 re-triage, cleanup cron, language detection, backup script |
 
 ---
@@ -26,6 +34,36 @@
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 118 (Claude) — 2026-08-06
+### Session 120 (Claude) — 2026-08-06
+- **Agent:** claude
+- **Did:**
+  - Created PR #48 for `feature/prompt3-hardening` → main
+  - Verified `/api/cron/cleanup` on localhost: 401 without auth, 401 with wrong secret, 200 with correct CRON_SECRET returning `{"deleted":0}`
+  - Verified language detection on localhost: German text triggers `language_warning` message, English text returns null
+  - 47 keyword extractor tests pass (includes 5 language detection tests)
+  - **Render Starter $7/mo APPROVED** by user — eliminates 30+ second cold starts
+  - Updated budget memory: $7/mo Render Starter is the only paid upgrade
+- **Files Changed:** None (verification only + memory updates)
+- **Next:** Owner merges PR #48, upgrades Render, sets CRON_SECRET. Copilot R11-R13 docs ready for review.
+- **Blockers:** None code-side. Owner actions listed below.
+
+### Session 120 (Copilot) — 2026-08-06
+- **Agent:** copilot
+- **Did:**
+  - Created `feature/codex-prompt3-docs` from current `origin/main`; confirmed stale PR #31 is closed.
+  - **R11:** drafted `docs/RLS_VERIFICATION.md` for the 20-test production isolation/cascade suite, including safe process-scoped credentials, expected evidence, failure response, cleanup, and a protected manual GitHub Actions environment.
+  - **R12:** drafted `docs/ROLLBACK.md` with PowerShell-only Vercel link/rollback and Render deploy discovery/API rollback commands, independent verification, triggers, and secret cleanup.
+  - **R13:** drafted `docs/SMTP_VERIFICATION.md` for Zoho custom SMTP, external-inbox sign-up/reset checks, template/DNS review, troubleshooting, and the explicit limitation that current `main` has no user-facing email-change action.
+  - Recorded owner decision DEC-030: approve Render Starter at the quoted $7/month; keep Vercel and Supabase on current free plans until revenue is greater than $0. Dashboard purchase remains owner-only and unverified.
+  - Verified all 15 PowerShell blocks parse, all referenced repository paths exist, the RLS suite contains exactly 20 tests, and no Bash commands were added.
+  - Mandatory Ruff and ESLint checks passed; the existing localhost frontend returned HTTP 200 with the expected ResumeAI title. Owner approved commit and push on 2026-08-06.
+  - Committed as `6db3171`, pushed `feature/codex-prompt3-docs`, and opened PR #49: https://github.com/LNB-Aveva/unified-resume-builder/pull/49
+  - Merged current `origin/main` (`55a65b4`, Prompt 3 hardening) to clear PR #49's conflict. Combined-branch validation passed: 497 backend tests passed, 24 production-credential tests skipped, and the Next.js production build generated all 32 routes.
+- **Files Changed:** `docs/RLS_VERIFICATION.md`, `docs/ROLLBACK.md`, `docs/SMTP_VERIFICATION.md`, `.ai-sync/DECISIONS.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Require green CI on PR #49, then merge. Owner executes the credential- and dashboard-dependent checks from the runbooks before launch.
+- **Blockers:** Production RLS credentials, Render API/service/deploy IDs, Vercel CLI login/link, SMTP dashboard access, and the Render Starter purchase all require owner-controlled credentials or dashboards.
 
 ### Session 119 (Claude) — 2026-08-06
 - **Agent:** claude
