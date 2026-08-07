@@ -36,6 +36,8 @@ For local dev, copy `frontend/.env.example` to `frontend/.env.local`.
 | `NEXT_PUBLIC_ADSENSE_ID` | No | Vercel dashboard / `.env.local` | `""` | AdSense publisher ID `ca-pub-XXX` (consent-gated) | Ads disabled; AdUnit component renders nothing |
 | `NEXT_PUBLIC_SENTRY_DSN` | No | Vercel dashboard / `.env.local` | `""` | Sentry DSN for frontend error tracking (PII-safe) | Frontend errors not reported to Sentry |
 | `NEXT_PUBLIC_SENTRY_ENV` | No | Vercel dashboard / `.env.local` | `"production"` | Environment tag for Sentry + staging banner | Defaults to "production"; no staging indicator |
+| `CRON_SECRET` | Yes (for cleanup) | Vercel dashboard | — | Auth token for `/api/cron/cleanup` endpoint | Expired shared scores never cleaned up |
+| `SUPABASE_SERVICE_ROLE_KEY` | No | Vercel dashboard | — | Admin Supabase key for cleanup RPC (falls back to anon key) | Cleanup uses anon key (works if function has PUBLIC execute) |
 
 ## Production Values (Secrets Redacted)
 
@@ -48,3 +50,4 @@ For local dev, copy `frontend/.env.example` to `frontend/.env.local`.
 | `HUGGINGFACE_API_KEY` | (set in Render — secret) |
 | `FRONTEND_URL` | `https://resumeai.cv` |
 | `SUPABASE_JWT_SECRET` | (set in Render — secret; get from Supabase dashboard → Settings → API → JWT Secret) |
+| `CRON_SECRET` | (set in Vercel + GitHub Actions secret — generate with `openssl rand -hex 32`) |

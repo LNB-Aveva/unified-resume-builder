@@ -4,6 +4,7 @@ from app.services.nlp import keyword_extractor
 from app.services.nlp.keyword_extractor import (
     HARD_SKILLS,
     SOFT_SKILLS,
+    _detect_non_english,
     _extract_education,
     _extract_experience,
     _extract_responsibilities,
@@ -285,3 +286,40 @@ class TestKeywordCache:
         monkeypatch.setattr(keyword_extractor, "_CACHE_TTL", -1)
         second = extract_keywords(job)
         assert first is not second
+
+
+class TestLanguageDetection:
+    def test_english_returns_none(self):
+        text = (
+            "We are looking for a Senior Software Engineer with experience in "
+            "Python and React. The ideal candidate will have 5 years of experience "
+            "in building scalable web applications and working with cloud services."
+        )
+        assert _detect_non_english(text) is None
+
+    def test_spanish_returns_warning(self):
+        text = (
+            "Estamos buscando un Ingeniero de Software Senior con experiencia en "
+            "desarrollo de aplicaciones web escalables y servicios en la nube. "
+            "El candidato ideal tendrá conocimientos de Python y React."
+        )
+        assert _detect_non_english(text) is not None
+        assert "English" in _detect_non_english(text)
+
+    def test_short_text_skips_check(self):
+        assert _detect_non_english("Python React") is None
+
+    def test_english_job_description_no_warning(self):
+        job = JobDescription(raw_text=JOB_TEXT)
+        result = extract_keywords(job)
+        assert result.language_warning is None
+
+    def test_non_english_job_description_has_warning(self):
+        spanish_jd = (
+            "Estamos buscando un Ingeniero de Software Senior con experiencia en "
+            "desarrollo de aplicaciones web escalables y servicios en la nube. "
+            "El candidato ideal tendrá conocimientos de Python y React."
+        )
+        job = JobDescription(raw_text=spanish_jd)
+        result = extract_keywords(job)
+        assert result.language_warning is not None

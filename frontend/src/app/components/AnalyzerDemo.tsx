@@ -82,6 +82,11 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
       {/* Results */}
       {result && (
         <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-6 space-y-5 animate-in fade-in duration-300">
+          {result.language_warning && (
+            <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 p-4 text-sm text-amber-800 dark:text-amber-200">
+              {result.language_warning}
+            </div>
+          )}
           {/* Header */}
           <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
             <p className="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">

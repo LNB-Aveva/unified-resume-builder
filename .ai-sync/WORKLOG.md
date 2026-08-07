@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** All 12 phases reverified + R6 backlog fix — COMPLETE
-- **Branch:** feature/phase-12-launch-post-launch (PR #47 open), PR #46 MERGED
-- **Status:** Phase 10+11+12 independent cross-verification COMPLETE (Session 118). PR #47 ready to merge. Owner action: complete Day 1–3 monitoring checklists by 2026-08-07.
+- **Feature:** Prompt 3 adversarial audit — re-triage + hardening fixes
+- **Branch:** feature/prompt3-hardening
+- **Status:** Session 119 IN PROGRESS. R7+R8+R9+R10 DONE. Codex tasks R11+R12+R13 assigned.
 
 ---
 
@@ -19,7 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-06                 |
-| Working On | Session 118 complete. All 12 phases cross-verified. |
+| Working On | Prompt 3 re-triage, cleanup cron, language detection, backup script |
 
 ---
 
@@ -27,7 +27,21 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
-### Session 118 (Claude) — 2026-08-06
+### Session 119 (Claude) — 2026-08-06
+- **Agent:** claude
+- **Did:**
+  - **Prompt 3 adversarial audit re-triage:** Codex ran Prompt 3 on worktree branch (PR #31, now conflicting). Re-triaged all 13 findings against current main: 5 already fixed, 3 need code, 5 are external/budget.
+  - **R7 — Cleanup cron endpoint:** Created `/api/cron/cleanup` route (Next.js) calling `cleanup_expired_scores()` RPC. Protected by `CRON_SECRET` header. Wired into keepalive workflow as non-fatal step.
+  - **R8 — Language detection:** Added `_detect_non_english()` to keyword extractor — checks English stop word ratio. Returns `language_warning` field in `JobAnalysis` response. Frontend `AnalyzerDemo.tsx` shows amber warning banner. 5 new tests (497 total).
+  - **R9 — Backup script:** Created `scripts/backup-supabase.ps1` using `pg_dump`. Added `backups/` to `.gitignore`.
+  - **R10 — Codex triage:** PR #31 conflicts + stale findings → recommend close. Assigned Codex R11+R12+R13.
+  - Updated ENV_VARS.md with `CRON_SECRET` + `SUPABASE_SERVICE_ROLE_KEY`.
+  - Full suite: **497 backend passed** (+5), 24 skipped. Ruff clean. ESLint clean.
+- **Files Changed:** `frontend/src/app/api/cron/cleanup/route.ts` (new), `backend/app/services/nlp/keyword_extractor.py`, `backend/app/schemas/job.py`, `frontend/src/app/types.ts`, `frontend/src/app/components/AnalyzerDemo.tsx`, `backend/tests/unit/test_keyword_extractor.py`, `.github/workflows/keepalive.yml`, `scripts/backup-supabase.ps1` (new), `docs/ENV_VARS.md`, `docs/LAUNCH_PROGRAM.md`, `.gitignore`, `.ai-sync/WORKLOG.md`
+- **Next:** Owner: (1) generate CRON_SECRET, set in Vercel + GitHub Actions. (2) Close PR #31. (3) Consider Render Starter $7/mo upgrade. Codex: R11+R12+R13.
+- **Blockers:** CRON_SECRET needs to be set for cleanup to work. Render cold starts need $7/mo upgrade.
+
+
 - **Agent:** claude
 - **Did:**
   - **Phases 10, 11, 12 independent cross-verification** — all 15 tasks verified from scratch against live codebase

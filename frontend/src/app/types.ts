@@ -6,6 +6,7 @@ export interface JobAnalysis {
   required_experience: string | null;
   keywords: string[];
   responsibilities: string[];
+  language_warning?: string | null;
 }
 
 export interface ATSScore {

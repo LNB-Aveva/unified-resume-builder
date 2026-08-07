@@ -591,6 +591,13 @@ Items discovered during post-launch sessions. Ordered by priority.
 | R4 | RLS isolation tests in CI (Phase 4.5 caveat) | PARTIAL — 20/20 pass locally; CI skips | S | Needs `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions secret |
 | R5 | E2E browser tests for Phase 4 auth flows (F7 caveat) | TODO | M | None — Phase 4 is complete, Playwright auth fixture can now be built |
 | R6 | Grade label / context message alignment | **DONE** (Session 117) | S | `ats_scorer.py`: B→"Good match", C→"Moderate match" — eliminates overlap with frontend "Strong match!" context message at ≥70 |
+| R7 | Expired shared scores cleanup cron | **DONE** (Session 119) | S | `/api/cron/cleanup` route + keepalive workflow calls it. Needs `CRON_SECRET` env var in Vercel + GitHub Actions. |
+| R8 | Language detection warning for non-English | **DONE** (Session 119) | S | `keyword_extractor.py` + `JobAnalysis.language_warning` + AnalyzerDemo UI banner. 5 new tests. |
+| R9 | Manual Supabase backup script | **DONE** (Session 119) | S | `scripts/backup-supabase.ps1`. Needs `pg_dump` + Supabase connection string. |
+| R10 | Codex Prompt 3 adversarial audit triage | **DONE** (Session 119) | S | 5/13 findings already fixed on main. See session notes. |
+| R11 | Production RLS verification runbook | TODO (Codex) | S | Needs prod credentials + test script |
+| R12 | Rollback CLI setup + verification | TODO (Codex) | S | Needs Render API key + Vercel link |
+| R13 | SMTP verification checklist | TODO (Codex) | S | Verify Zoho SMTP config in Supabase dashboard |
 
 ### R4 — RLS isolation tests in CI
 
