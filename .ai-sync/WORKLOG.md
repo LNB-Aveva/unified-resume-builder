@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Post-launch maintenance
-- **Branch:** main (tip: 2336e5f)
-- **Status:** Session 121 DONE. PR #48 + #49 MERGED. 401 UX fix cherry-picked to main (2336e5f). Monitoring verified. AdSense pending Google review. Render Starter $7/mo upgrade pending owner click.
+- **Feature:** Prompt 3 launch-gate audit
+- **Branch:** fix/prompt-gaps-closure (tip: see session 125 commit)
+- **Status:** Session 125 DONE. Gates 2/3/5 complete (Claude). Gates 4/6 assigned to Codex. 3 owner-action blockers remain before final GO.
 
 ---
 
@@ -19,6 +19,7 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-07                 |
+| Working On | Session 126 DONE — CI green, PR #52 open |
 | Working On | Session 123 DONE — closed 4 Codex-identified gaps, owner data recorded, Render Starter confirmed |
 
 ---
@@ -26,6 +27,45 @@
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 126 (Claude) — 2026-08-07
+- **Agent:** claude
+- **Did:**
+  - Diagnosed 2 CI failures on fix/prompt-gaps-closure (nanoid CVE GHSA-2v37-7h3g-55p8)
+  - Added `"nanoid": ">=3.3.17"` to package.json overrides; `npm audit --omit=dev --audit-level=high` now 0 vulnerabilities
+  - Committed (3b754d7) and pushed; CI now queued on new commit
+  - Opened PR #52 for the full fix/prompt-gaps-closure branch
+- **Files Changed:** `frontend/package.json`, `frontend/package-lock.json`
+- **Next:** CI passes on PR #52 → user merges to main. Owner blockers (HF token, RLS, TCF CMP) still pending.
+- **Blockers:** Owner: HF token rotation, RLS credentials, TCF CMP confirmation.
+
+### Session 125 (Claude) — 2026-08-07
+- **Agent:** claude
+- **Did:**
+  - Prompt 3 strategic split: Claude owns Gates 2+3+5; Codex owns Gate 4+6 + Gate 1 code fixes.
+  - **Gate 2 (Go/no-go checklist):** All 12 phase exit gates verified with evidence. Result: CONDITIONAL NO-GO — 3 owner actions required: (a) HF token rotation, (b) RLS re-run with production credentials, (c) TCF CMP confirmation for AdSense.
+  - **Gate 3 (Cost model):** Full 100/1k/10k user scenario table. First cliff: Supabase 500MB DB fills at ~9,600 users (~52KB/user). HF free-tier rate limits visible at ~1,000 users (circuit breaker handles gracefully). $7/mo budget safe through ~9,600 users; next upgrade Supabase Pro $25/mo.
+  - **Gate 5 (Rollback):** Exact commands documented for Vercel (promote-to-production or `vercel rollback`) and Render (dashboard redeploy or git revert + push) independently. 5-minute detection via UptimeRobot + `curl /health`. Result: PASS.
+  - All content written to `docs/LAUNCH_READINESS_AUDIT.md` (was untracked, now committed).
+- **Files Changed:** `docs/LAUNCH_READINESS_AUDIT.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Codex completes Gate 4 (failure drills: HF down, Supabase down, Render sleep, malformed PDF, 50-page resume, non-English JD). Codex writes Gate 6 final verdict. Owner: rotate HF token, re-run RLS suite, confirm TCF CMP.
+- **Blockers:** HF token rotation (owner). RLS credentials (owner). TCF CMP confirmation (owner). Gate 4+6 (Codex).
+
+### Session 124 (Copilot) — 2026-08-07
+- **Agent:** copilot
+- **Did:**
+  - Started a fresh Prompt 3 launch-gate audit and drafted Gate 1 in `docs/LAUNCH_READINESS_AUDIT.md`.
+  - Baseline passed: 497 backend tests, Ruff, ESLint, 32-route frontend build, 126 targeted security tests, npm production audit, and runtime/development Python audits.
+  - Production probes verified legal/crawler pages and health at 200, production docs at 404, seven protected routes at 401, 1 MB body cap at 413, and strict production CORS.
+  - Production RLS proof remains unavailable in this process: all 20 credential-dependent tests skipped.
+  - Found a committed Hugging Face token in `.claude/memory/project_resume_session15_07112026.md`; redacted the current file. Public Git history still contains it, so owner rotation is mandatory.
+  - Found no durable daily per-user/global AI quota, a public paid-inference preview route, contradictory `Unlimited` usage copy, non-fatal retention cleanup failures, and no repository proof of a certified TCF CMP.
+  - Verified localhost:3000 returned HTTP 200 with the expected title.
+  - **STOP CONDITION:** post-change full suite failed two unchanged ReDoS performance tests at approximately 2.21s and 2.52s against a 2-second ceiling: 2 failed, 495 passed, 24 skipped. Tests were not edited or weakened.
+  - Concurrent Session 123 committed `2a3cec0` and switched the shared worktree to `fix/prompt-gaps-closure`; this audit stopped without committing or pushing to avoid overwriting that work.
+- **Files Changed:** `docs/LAUNCH_READINESS_AUDIT.md` (new), `.claude/memory/project_resume_session15_07112026.md` (credential redaction), `.ai-sync/WORKLOG.md`
+- **Next:** (1) owner revokes the exposed Hugging Face token and replaces the Render secret; (2) rerun the two failed ReDoS tests in an idle environment, then the full suite; (3) reconcile the audit branch with `2a3cec0` and obtain owner approval for accurate fair-use copy.
+- **Blockers:** Exposed-token rotation, two post-change performance-test failures, production RLS credentials, certified CMP dashboard proof.
 
 ### Session 123 (Claude) — 2026-08-07
 - **Agent:** claude
