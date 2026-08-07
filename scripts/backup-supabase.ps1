@@ -31,12 +31,7 @@ $outFile = Join-Path $backupDir "supabase_backup_$timestamp.sql"
 
 Write-Host "Backing up Supabase to $outFile ..."
 
-pg_dump $ConnectionString `
-    --schema=public `
-    --no-owner `
-    --no-privileges `
-    --format=plain `
-    --file="$outFile"
+& pg_dump "--dbname=$ConnectionString" "--schema=public" "--no-owner" "--no-privileges" "--format=plain" "--file=$outFile"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "pg_dump failed with exit code $LASTEXITCODE"

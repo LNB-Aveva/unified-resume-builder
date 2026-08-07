@@ -27,6 +27,22 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 124 (Copilot) — 2026-08-07
+- **Agent:** copilot
+- **Did:**
+  - Started a fresh Prompt 3 launch-gate audit and drafted Gate 1 in `docs/LAUNCH_READINESS_AUDIT.md`.
+  - Baseline passed: 497 backend tests, Ruff, ESLint, 32-route frontend build, 126 targeted security tests, npm production audit, and runtime/development Python audits.
+  - Production probes verified legal/crawler pages and health at 200, production docs at 404, seven protected routes at 401, 1 MB body cap at 413, and strict production CORS.
+  - Production RLS proof remains unavailable in this process: all 20 credential-dependent tests skipped.
+  - Found a committed Hugging Face token in `.claude/memory/project_resume_session15_07112026.md`; redacted the current file. Public Git history still contains it, so owner rotation is mandatory.
+  - Found no durable daily per-user/global AI quota, a public paid-inference preview route, contradictory `Unlimited` usage copy, non-fatal retention cleanup failures, and no repository proof of a certified TCF CMP.
+  - Verified localhost:3000 returned HTTP 200 with the expected title.
+  - **STOP CONDITION:** post-change full suite failed two unchanged ReDoS performance tests at approximately 2.21s and 2.52s against a 2-second ceiling: 2 failed, 495 passed, 24 skipped. Tests were not edited or weakened.
+  - Concurrent Session 123 committed `2a3cec0` and switched the shared worktree to `fix/prompt-gaps-closure`; this audit stopped without committing or pushing to avoid overwriting that work.
+- **Files Changed:** `docs/LAUNCH_READINESS_AUDIT.md` (new), `.claude/memory/project_resume_session15_07112026.md` (credential redaction), `.ai-sync/WORKLOG.md`
+- **Next:** (1) owner revokes the exposed Hugging Face token and replaces the Render secret; (2) rerun the two failed ReDoS tests in an idle environment, then the full suite; (3) reconcile the audit branch with `2a3cec0` and obtain owner approval for accurate fair-use copy.
+- **Blockers:** Exposed-token rotation, two post-change performance-test failures, production RLS credentials, certified CMP dashboard proof.
+
 ### Session 123 (Claude) — 2026-08-07
 - **Agent:** claude
 - **Did:**

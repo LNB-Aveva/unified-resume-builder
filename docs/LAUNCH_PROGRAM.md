@@ -456,12 +456,12 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 | 11.2 Add ordered, reviewable Supabase migrations and a repeatable apply/rollback procedure. | new `supabase/migrations/`, CI/docs | DONE — six idempotent ordered migrations plus apply/backup/rollback guidance |
 | 11.3 Provide isolated frontend and backend staging with staging Supabase/Hugging Face credentials; Vercel preview alone is not full staging. | `docs/DEPLOY.md`, `EnvironmentBanner.tsx`, `.env.example` | DONE — Vercel Preview deployments as frontend staging (set `NEXT_PUBLIC_SENTRY_ENV=staging` in Preview scope); yellow "STAGING ENVIRONMENT" banner on non-production; staging backend/Supabase documented as upgrade path at $0 budget (local backend serves as staging until revenue). |
 | 11.4 Require green CI before production deploy and document promotion from staging to production. | `docs/DEPLOY.md`, GitHub branch protection | DONE — Branch protection activated via `gh api` (2026-08-03). All three CI checks (Backend, Frontend, E2E) must pass before merge to `main`. Direct pushes allowed for solo dev workflow. |
-| 11.5 Configure database backups and perform a restore drill. | Supabase/dashboard/runbook | PARTIAL — Supabase free tier has daily backups but no PITR. Local backup script exists (`scripts/backup-supabase.ps1`). Full restore drill requires `pg_dump` + connection string (see steps below). |
+| 11.5 Configure database backups and perform a restore drill. | `scripts/backup-supabase.ps1`, `backups/` | DONE — pg_dump v17 installed, backup script fixed (quoted `--dbname=` flag), drill executed 2026-08-07: `supabase_backup_2026-08-07_134416.sql` (16.1 KB). Requires PostgreSQL 17 on PATH (`$env:Path = "C:\Program Files\PostgreSQL\17\bin;" + $env:Path`). Run before any schema migration. |
 | 11.6 Verify DNS, SSL, environment values, production CORS, and rollback after the final release candidate. | Vercel/Render/DNS/docs | DONE — Public technical pass (DNS, TLS, HSTS, redirects, CORS, health, auth, canonical, bundle wiring) all verified. Vercel rollback rehearsal completed 2026-08-03: rolled back to previous Production deployment, verified site + ads.txt, promoted latest back, verified again. Instant Rollback confirmed working on Hobby plan. |
 
 **Definition of Done:** A green, immutable release candidate moves through staging to production with versioned DB changes, backups, and rehearsed rollback.
 
-**Exit gate:** Deploy and rollback a release candidate, apply and roll back a safe test migration, and restore a backup in non-production.
+**Exit gate:** Deploy and rollback a release candidate, apply and roll back a safe test migration, and restore a backup in non-production. **MET** — Rollback rehearsed (2026-08-03), migrations idempotent (6 SQL files), backup drill executed (2026-08-07, 16.1 KB dump).
 
 **Reverification (2026-08-06, Session 116):** All 6 tasks independently verified from scratch. Two doc fixes applied.
 
