@@ -7,15 +7,9 @@
 
 ## Current Task
 
-- **Feature:** All 12 phases reverified + R6 backlog fix — COMPLETE
-- **Branch:** feature/phase-12-launch-post-launch (PR #47 open), PR #46 MERGED
-- **Status:** Phase 10+11+12 independent cross-verification COMPLETE (Session 118). PR #47 ready to merge. Owner action: complete Day 1–3 monitoring checklists by 2026-08-07.
-- **Feature:** Prompt 3 hardening — PR #48 open, localhost verified
-- **Branch:** feature/prompt3-hardening (PR #48), feature/codex-prompt3-docs (Copilot R11-R13)
-- **Status:** Session 120 DONE. Both branches ready for merge. Render $7/mo approved.
-- **Feature:** Prompt 3 adversarial audit — re-triage + hardening fixes
-- **Branch:** feature/prompt3-hardening
-- **Status:** Session 119 IN PROGRESS. R7+R8+R9+R10 DONE. Codex tasks R11+R12+R13 assigned.
+- **Feature:** Post-launch maintenance
+- **Branch:** main (tip: 2336e5f)
+- **Status:** Session 121 DONE. PR #48 + #49 MERGED. 401 UX fix cherry-picked to main (2336e5f). Monitoring verified. AdSense pending Google review. Render Starter $7/mo upgrade pending owner click.
 
 ---
 
@@ -24,10 +18,8 @@
 | Field      | Value                      |
 |------------|----------------------------|
 | Agent      | claude                     |
-| Started    | 2026-08-06                 |
-| Working On | Session 118 complete. All 12 phases cross-verified. |
-| Working On | PR #48 localhost verification, Render budget decision |
-| Working On | Prompt 3 re-triage, cleanup cron, language detection, backup script |
+| Started    | 2026-08-07                 |
+| Working On | Session 122 DONE — cross-check verified, SESSION_LOG updated, memory saved |
 
 ---
 
@@ -35,7 +27,17 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
-### Session 118 (Claude) — 2026-08-06
+### Session 121 (Claude) — 2026-08-07
+- **Agent:** claude
+- **Did:**
+  - **Cross-check fix:** 401 UX fix (ShareableScoreWidget) was stuck on feature branch after PR #48 squash-merge. Applied fix directly to main (2336e5f).
+  - **Ruff I001 check:** Verified — no import-sort errors with project ruff.toml config. Clean.
+  - **Monitoring review:** All 7 dashboards healthy (UptimeRobot, Sentry, Render logs/metrics, resumeai.cv, GSC, Supabase).
+  - **AdSense verified:** All 3 onboarding steps green. ads.txt "Authorized". Waiting for Google review.
+- **Files Changed:** `frontend/src/app/components/ShareableScoreWidget.tsx`, `.ai-sync/WORKLOG.md`
+- **Next:** Wait for AdSense approval. Wait for Render Starter upgrade to take effect. Monitor.
+- **Blockers:** AdSense approval (external). Render upgrade (owner action).
+
 ### Session 120 (Claude) — 2026-08-06
 - **Agent:** claude
 - **Did:**
