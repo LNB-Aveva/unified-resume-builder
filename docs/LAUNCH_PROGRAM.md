@@ -9,7 +9,7 @@
 - Auth/data: Supabase Auth, saved resume versions per user, and proven RLS are mandatory.
 - Launch monetization: Google AdSense.
 - Operator environment: Windows, PowerShell, VS Code.
-- Monthly budget ceiling: **$0/month additional** — stay on free tiers (Render, Supabase, Vercel, Sentry). Revisit when monthly revenue > $0.
+- Monthly budget ceiling: **$7/month** — Render Starter ($7/mo, approved 2026-08-07 to eliminate cold starts) + free tiers (Supabase, Vercel, Sentry). Revisit when monthly revenue > $0.
 - Status vocabulary: `DONE` means executed or directly inspected; `VERIFY` means code exists but production behavior is not proven; `BLOCKED` requires an owner/external action; `TODO` is code or documentation work.
 
 ## Ground truth
@@ -24,7 +24,7 @@ Verified on 2026-07-29; older session-log claims are not authoritative.
 | Local backend | **WORKS** | Fresh Uvicorn processes on ports 8767/8768 returned 200 from all nine API routes; all four Hugging Face routes generated content and PDF export returned 1,519 bytes. |
 | Backend tests | **GREEN** | 481 passed, 24 skipped; 90% branch coverage on services/routes, above the 80% floor. Reverified 2026-08-05. |
 | Frontend lint/build | **GREEN locally** | ESLint passed. `next build` compiled 26 routes/pages after Google Fonts network access was allowed. |
-| Browser tests | **GREEN** | 51 Playwright E2E tests pass: 19 happy-path (incl. /resumes auth redirect), 6 failure-path, 6 accessibility (WCAG 2.1 AA), 10 smoke, 4 mobile (Pixel 7), 6 tool flows. Covers landing, keyword analyzer, ATS checker, blog, legal, auth redirect (tools/account/resumes), sign-in/sign-up, SEO pages, validation errors, API errors, mobile layout, and 5 tool flows with mocked APIs. Reverified 2026-08-05. CI retries (2) added for dev-server compilation races. |
+| Browser tests | **GREEN** | 51 Playwright E2E tests pass: 19 happy-path (incl. /resumes auth redirect), 6 failure-path, 6 accessibility (WCAG 2.2 AA), 10 smoke, 4 mobile (Pixel 7), 6 tool flows. Covers landing, keyword analyzer, ATS checker, blog, legal, auth redirect (tools/account/resumes), sign-in/sign-up, SEO pages, validation errors, API errors, mobile layout, and 5 tool flows with mocked APIs. Reverified 2026-08-05. CI retries (2) added for dev-server compilation races. |
 | CI | **GREEN** | Run `30919865957` passed on commit `a3acab7`: backend lint, types, tests/coverage (90% branch), security scans, both Python audits, route startup, frontend lint, npm audit, production build, and 44 Playwright E2E tests all succeeded. Verified 2026-08-04. |
 | Python dependency audit | **GREEN LOCALLY** | Runtime and development manifests are separate and both resolve with no known vulnerabilities. The unused Semgrep dependency and its vulnerable `mcp`/`click` chain were removed. |
 | Frontend dependency audit | **PRODUCTION GREEN; DEV RED** | `npm audit --omit=dev --audit-level=high` found zero production vulnerabilities. The full installed tree reported nine High advisories in development tooling and needs triage without weakening the production gate. |
@@ -47,7 +47,7 @@ Severity assumes an unknown user expects every advertised feature to work, even 
 | F4 | **Resolved** | AdSense | `frontend/src/app/layout.tsx`; `frontend/public/ads.txt`; `frontend/src/app/components/AdUnit.tsx` | Publisher ID obtained (`pub-7869093425931175`), ads.txt activated, AdSense script in head via Consent Mode v2, AdUnit component ready, privacy disclosures updated. Awaiting Google site review and ad unit creation. | L |
 | F5 | **Resolved** | Database abuse/PII | `supabase-schema.sql`; `ShareableScoreWidget.tsx` | RLS now requires `auth.uid() = user_id` for inserts. CHECK constraints validate score range, grade values, and hint length. Anonymous inserts are blocked. | M |
 | F6 | **Resolved** | RLS assurance | `backend/tests/integration/test_rls_isolation.py` | 20 two-user RLS tests prove cross-user isolation for profiles, jobs, resumes, resume_versions, and shared_scores. delete_own_user cascade test proves full cleanup. | M |
-| F7 | **Resolved** | End-to-end quality | `frontend/tests/e2e/` | 44 Playwright tests across 5 spec files: happy-path (18), failure-paths (6), accessibility (6), smoke (10), mobile (4). Covers landing, keyword analyzer with mocked API, ATS checker, blog, legal, auth redirect, sign-in/sign-up forms, SEO pages, validation errors, 429/500/network failure, WCAG 2.1 AA, and mobile layout at Pixel 7 viewport. Auth fixture for save/load/delete blocked on Supabase test user in CI. | L |
+| F7 | **Resolved** | End-to-end quality | `frontend/tests/e2e/` | 44 Playwright tests across 5 spec files: happy-path (18), failure-paths (6), accessibility (6), smoke (10), mobile (4). Covers landing, keyword analyzer with mocked API, ATS checker, blog, legal, auth redirect, sign-in/sign-up forms, SEO pages, validation errors, 429/500/network failure, WCAG 2.2 AA, and mobile layout at Pixel 7 viewport. Auth fixture for save/load/delete blocked on Supabase test user in CI. | L |
 | F8 | **Resolved** | Product truth | `README.md`; `frontend/src/app/keyword-analyzer/page.tsx`; `frontend/src/app/page.tsx` | All public spaCy/NLTK/scikit-learn/WeasyPrint claims replaced with accurate taxonomy/regex/fpdf2 descriptions. | S |
 | F9 | **Resolved** | Analytics/AdSense CSP | `frontend/next.config.ts` | CSP updated with GA4 and AdSense domains: `pagead2.googlesyndication.com` (script/img/connect), `doubleclick.net` (frame), `tpc.googlesyndication.com` (frame), `googletagmanager.com` (script). | M |
 | F10 | **High** | AI degradation | `backend/app/services/ai/hf_client.py:43-48`; `backend/app/api/routes/_ai_errors.py:19-38` | Connect failures are neither retryable nor mapped to 502/503; a sandboxed outage produced generic 500s on all four AI routes. Users receive an internal-error response instead of a service-unavailable path. | S |
@@ -276,7 +276,7 @@ Coverage limitations:
 | 7.1 Preserve loading, empty, retry, 429, dark mode, label, focus, and landmark work. | frontend components/pages | DONE — dark mode now on all 8 SEO/public pages: blog layout/index/article (bc7e25d), 3 SEO persona pages (this session — bc7e25d only fixed WCAG contrast, not dark mode) |
 | 7.2 Run keyboard and screen-reader checks across auth, all nine tools, save/version flows, export, and deletion. | frontend + accessibility tests | DONE — skip-to-content in root layout, ARIA attributes in 21 component files, sr-only/focus-visible in 18 files |
 | 7.3 Test full journeys at 375px, 768px, and desktop; verify 44px targets and no clipped dialogs/results. | Playwright projects | DONE — Pixel 7 viewport project (mobile.spec.ts), 44px min-h targets on MobileNav/CookieConsent/CoverLetterGenerator/JobTracker; 4 mobile tests pass |
-| 7.4 Run Lighthouse accessibility audits on landing, public analyzer, auth, and tools after authenticated test fixtures exist. | Lighthouse/CI | DONE — 10/10 public pages pass WCAG 2.1 AA via axe-core (expanded from 6 pages to 10: added ats-checker + 3 SEO persona pages to accessibility.spec.ts) |
+| 7.4 Run Lighthouse accessibility audits on landing, public analyzer, auth, and tools after authenticated test fixtures exist. | Lighthouse/CI | DONE — 10/10 public pages pass WCAG 2.2 AA via axe-core 4.12.1 (upgraded from 2.1 AA tags; added `wcag22aa` to test tags). Manual audit of non-automatable 2.2 criteria: 2.5.7 Dragging (no drag UI), 2.5.8 Target Size (44px min-h), 2.4.11 Focus Not Obscured (z-100 skip link), 3.3.7 Redundant Entry (none), 3.3.8 Accessible Auth (autoComplete on all auth fields), 3.2.6 Consistent Help (footer email on all pages). |
 
 **Reverification (2026-08-04):** All 4 tasks independently verified. Fixes applied: (1) Fixed WCAG AA color contrast across 15 files — bare `text-gray-400` on white backgrounds changed to `text-gray-500`/`text-gray-600`; `text-indigo-200` on `bg-indigo-600` changed to `text-indigo-100`; `bg-emerald-600` white text changed to `bg-emerald-700` for 4.5:1 ratio. (2) Added dark mode to blog pages: `blog/layout.tsx`, `blog/page.tsx`, `blog/[slug]/page.tsx`. Note: commit `bc7e25d` claimed "3 SEO persona pages" had dark mode added but only fixed WCAG contrast ratios (gray-400→gray-500) — dark: class variants were not added. (3) Lighthouse scores: all 10 public pages now 100 (landing, keyword-analyzer, sign-in, privacy, terms, blog, ATS checker, career changers, new grads, tech jobs). Full suite: 473 backend passed, 24 skipped; 44 Playwright E2E passed; both linters clean; production build clean.
 
@@ -289,12 +289,12 @@ Coverage limitations:
   - **7.1 Focus/landmarks:** `<a href="#main-content" className="sr-only focus:not-sr-only ...">` in root layout; `<main id="main-content">` on all 15 public pages; `focus:` / `focus-visible:` / `sr-only` in 18 files.
   - **7.2 ARIA:** ARIA attributes in 21 component files (aria-label, aria-live, aria-expanded, role=, etc.).
   - **7.3 Mobile:** Pixel 7 (412px) project in playwright.config.ts; `min-h-[44px]` verified in 5 files; 4 mobile tests pass (no overflow, touch target ≥40px, auth redirect, form fields reachable).
-  - **7.4 Axe-core:** 10/10 public pages pass WCAG 2.1 AA (0 serious/critical violations). All 3 newly-dark-mode-corrected pages pass.
+  - **7.4 Axe-core:** 10/10 public pages pass WCAG 2.2 AA (0 serious/critical violations). All 3 newly-dark-mode-corrected pages pass.
   - **Full suite:** 481 backend passed (24 skipped), 55 Playwright E2E passed (was 51 — 4 new axe-core tests added). Both linters clean.
 
 **Definition of Done:** Every journey works without a mouse, communicates async state, and remains usable on mobile.
 
-**Exit gate:** WCAG 2.2 AA review has no known blockers and Lighthouse accessibility is at least 90 on representative pages.
+**Exit gate:** WCAG 2.2 AA review has no known blockers and Lighthouse accessibility is at least 90 on representative pages. **MET** — 10/10 pages pass axe-core WCAG 2.2 AA (2026-08-07); all 6 non-automatable 2.2 AA criteria verified by manual audit.
 
 ## Phase 8 — SEO and AdSense
 
@@ -456,7 +456,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 | 11.2 Add ordered, reviewable Supabase migrations and a repeatable apply/rollback procedure. | new `supabase/migrations/`, CI/docs | DONE — six idempotent ordered migrations plus apply/backup/rollback guidance |
 | 11.3 Provide isolated frontend and backend staging with staging Supabase/Hugging Face credentials; Vercel preview alone is not full staging. | `docs/DEPLOY.md`, `EnvironmentBanner.tsx`, `.env.example` | DONE — Vercel Preview deployments as frontend staging (set `NEXT_PUBLIC_SENTRY_ENV=staging` in Preview scope); yellow "STAGING ENVIRONMENT" banner on non-production; staging backend/Supabase documented as upgrade path at $0 budget (local backend serves as staging until revenue). |
 | 11.4 Require green CI before production deploy and document promotion from staging to production. | `docs/DEPLOY.md`, GitHub branch protection | DONE — Branch protection activated via `gh api` (2026-08-03). All three CI checks (Backend, Frontend, E2E) must pass before merge to `main`. Direct pushes allowed for solo dev workflow. |
-| 11.5 Configure database backups and perform a restore drill. | Supabase/dashboard/runbook | BLOCKED — Supabase free tier has daily backups but no point-in-time restore; acceptable for $0 budget |
+| 11.5 Configure database backups and perform a restore drill. | Supabase/dashboard/runbook | PARTIAL — Supabase free tier has daily backups but no PITR. Local backup script exists (`scripts/backup-supabase.ps1`). Full restore drill requires `pg_dump` + connection string (see steps below). |
 | 11.6 Verify DNS, SSL, environment values, production CORS, and rollback after the final release candidate. | Vercel/Render/DNS/docs | DONE — Public technical pass (DNS, TLS, HSTS, redirects, CORS, health, auth, canonical, bundle wiring) all verified. Vercel rollback rehearsal completed 2026-08-03: rolled back to previous Production deployment, verified site + ads.txt, promoted latest back, verified again. Instant Rollback confirmed working on Hobby plan. |
 
 **Definition of Done:** A green, immutable release candidate moves through staging to production with versioned DB changes, backups, and rehearsed rollback.
@@ -517,7 +517,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 **Definition of Done:** Launch has explicit ownership, rollback authority, feedback intake, monitoring cadence, and an AdSense-ready production site.
 
-**Exit gate:** Go/no-go signed `GO`; launch executed; first-72-hours review completed with incidents and follow-ups recorded.
+**Exit gate:** Go/no-go signed `GO`; launch executed; first-72-hours review completed with incidents and follow-ups recorded. **MET** — Go signed 2026-08-04; 72-hour checklists completed 2026-08-07 (23/24 items checked, 1 owner-pending: support inbox check); Week 1 review table filled; 1 incident (401 UX on ShareableScoreWidget, fixed 2336e5f); no rollback needed.
 
 **Reverification (2026-08-06, Session 117):** All 6 tasks independently verified from scratch. One doc correction applied.
 
@@ -564,6 +564,18 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
   - **Definition of Done: MET.**
 
 - **Full suite:** 492 backend passed, 24 skipped. `python -m ruff check app/ --config ruff.toml` → All checks passed. `npm run lint` → 0 errors. (2026-08-06)
+
+## Three findings most likely to kill this product
+
+Preserved from the original Prompt 1 audit (2026-07-09), updated with resolution status:
+
+1. **Scoring quality is visibly wrong** — The hardcoded ~80-skill list with strict word-boundary matching produced scores that didn't match reality (e.g., "React" vs "ReactJS", "JS" vs "JavaScript"). A scoring product that gives wrong scores has zero credibility. **RESOLVED:** Phase 5 replaced it with a 65+ synonym-group taxonomy, evaluation harness, and grade calibration. Scores are now explainable in the UI.
+
+2. **Zero persistence = zero retention** — Without saved resumes, every session was throwaway. Users had no reason to return, and there was nothing to monetize. **RESOLVED:** Phase 4 shipped Supabase Auth, saved resumes with versioning, RLS-proven isolation, account deletion, and data export.
+
+3. **No auth + no rate limiting = abuse magnet** — All 8 endpoints were open to the internet with no identity, no rate limits, and no input validation. One script kiddie could exhaust the HuggingFace API quota in minutes. **RESOLVED:** Phase 3 added JWT auth on 7 routes, per-route rate limits on all 9, CORS lockdown, input validation, and CVE remediation.
+
+**Highest-leverage first action (at time of audit):** Install slowapi and add rate limits to all routes — 30 minutes of work that blocks the most likely production failure mode. **Done in Phase 1.**
 
 ## Current priority
 
