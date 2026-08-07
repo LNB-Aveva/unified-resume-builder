@@ -4,6 +4,70 @@
 
 ---
 
+## Session 122 (Claude) — 2026-08-07
+
+**Branch:** `main`
+**Scope:** Independent cross-check of Claude (PR #48) + Codex (PR #49) work, cleanup
+
+### Cross-Check Results
+
+| Agent | PR | Deliverables | Verified | Status |
+|---|---|---|---|---|
+| Claude | #48 | R7 cleanup cron, R8 language detection, R9 backup script | All code + tests verified independently | PASS |
+| Codex | #49 | R11 RLS runbook, R12 rollback guide, R13 SMTP checklist | All 3 docs verified (accuracy, test counts, procedures) | PASS |
+
+### Issues Found & Resolved
+
+1. **401 UX fix missing from main** — Commit d72579a on `feature/prompt3-hardening` was not included in PR #48 squash-merge. Owner applied directly to main (2336e5f).
+2. **Ruff I001 import-sort** — 15 pre-existing errors in backend route files. Verified clean with project `ruff.toml` config (no action needed).
+3. **Local main stale** — Was 2 commits behind remote. Synced via `git pull`.
+
+### Final State
+
+- Main tip: `2336e5f`
+- PRs: #48 + #49 MERGED, 0 open PRs
+- Backend: 497 tests, lint clean
+- Frontend: ESLint clean
+- Monitoring: all healthy
+- Pending owner actions: Render Starter upgrade, AdSense Google review
+
+---
+
+## Session 121 (Claude) — 2026-08-07
+
+**Branch:** `main`
+**Scope:** Monitoring review, 401 UX fix, AdSense verification
+
+### Changes
+
+1. **401 UX fix:** ShareableScoreWidget — `if (res.status === 401)` returns "Sign in to generate a shareable score link." instead of generic server error. Applied to main (2336e5f).
+2. **Monitoring:** All 7 dashboards healthy. Sentry 1 known issue (connection closed — free tier sleep). UptimeRobot frontend 100%.
+3. **AdSense:** All 3 onboarding steps complete. ads.txt Authorized. Status "Getting ready" — Google review pending.
+
+---
+
+## Session 120 (Claude) — 2026-08-06
+
+**Branch:** `feature/prompt3-hardening` → PR #48
+**Scope:** PR creation + localhost verification of Prompt 3 hardening
+
+### Verification Evidence
+
+| Check | Method | Result |
+|---|---|---|
+| `/api/cron/cleanup` auth | `curl` with no auth, wrong secret, correct secret | 401 / 401 / 200 `{"deleted":0}` |
+| Language detection | German text via analyzer | `language_warning` field returned |
+| Language detection | English text via analyzer | `null` returned |
+| Keyword tests | `pytest test_keyword_extractor.py` | 47 passed (5 new) |
+
+### Owner Actions Communicated
+
+1. Render Starter $7/mo **APPROVED** by owner
+2. CRON_SECRET set in Vercel + GitHub Actions
+3. PR #48 created and merged
+
+---
+
 ## Session 119 — 2026-08-06
 
 **Branch:** `feature/prompt3-hardening`
