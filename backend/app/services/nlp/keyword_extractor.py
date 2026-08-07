@@ -149,6 +149,30 @@ def _extract_responsibilities(text: str) -> list[str]:
     return responsibilities
 
 
+_ENGLISH_STOP_WORDS = frozenset({
+    "the", "and", "or", "is", "are", "was", "were", "in", "to", "of", "for",
+    "with", "a", "an", "on", "at", "by", "as", "this", "that", "from", "will",
+    "be", "have", "has", "not", "but", "we", "you", "your", "our", "can",
+})
+
+_MIN_WORDS_FOR_CHECK = 20
+_MIN_STOP_WORD_RATIO = 0.08
+
+
+def _detect_non_english(text: str) -> str | None:
+    words = re.findall(r"[a-zA-Z]{2,}", text.lower())
+    if len(words) < _MIN_WORDS_FOR_CHECK:
+        return None
+    stop_count = sum(1 for w in words if w in _ENGLISH_STOP_WORDS)
+    ratio = stop_count / len(words)
+    if ratio < _MIN_STOP_WORD_RATIO:
+        return (
+            "This text may not be in English. ResumeAI is optimized for English-language "
+            "resumes and job descriptions. Results for other languages may be inaccurate."
+        )
+    return None
+
+
 def _infer_job_title(job: JobDescription) -> str:
     if job.title:
         return job.title
@@ -178,6 +202,7 @@ def extract_keywords(job: JobDescription) -> JobAnalysis:
     text = job.raw_text
     text_lower = text.lower()
 
+    language_warning = _detect_non_english(text)
     hard_skills = _match_skills(text_lower, HARD_SKILLS)
     soft_skills = _match_skills(text_lower, SOFT_SKILLS)
     context_skills = _extract_context_skills(text, hard_skills, soft_skills)
@@ -205,6 +230,7 @@ def extract_keywords(job: JobDescription) -> JobAnalysis:
         keywords=all_keywords,
         responsibilities=responsibilities,
         taxonomy_coverage=round(taxonomy_coverage, 2),
+        language_warning=language_warning,
     )
 
     _cache[key] = (now, result)

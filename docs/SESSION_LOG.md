@@ -4,6 +4,56 @@
 
 ---
 
+## Session 119 — 2026-08-06
+
+**Branch:** `feature/prompt3-hardening`
+**Scope:** Prompt 3 adversarial audit re-triage + hardening fixes
+
+### Codex Prompt 3 Re-triage
+
+Codex ran Prompt 3 against worktree branch (PR #31, now conflicting). Re-triaged all 13 findings against current `main`:
+
+| Finding | Codex Assessment | Current Status |
+|---------|-----------------|----------------|
+| Client timeout missing | Blocker | **ALREADY FIXED** — fetchWithRetry has 65s AbortController |
+| JobTracker silent data loss | Blocker | **ALREADY FIXED** — try/catch/finally + sync error message |
+| Data export ignores errors | High | **ALREADY FIXED** — auth.ts checks all 4 table + version errors |
+| Account deletion incomplete | High | **ALREADY FIXED** — delete_own_user RPC + error handling |
+| Score links indexable | Medium | **ALREADY FIXED** — noindex on share pages |
+| Retention cleanup never runs | High | **FIXED THIS SESSION** — R7 cleanup cron |
+| Non-English wrong results | Blocker | **FIXED THIS SESSION** — R8 language detection |
+| Render cold starts | Blocker | **Owner decision** — $7/mo Render Starter |
+| No Supabase backups | Blocker | **Mitigated** — R9 backup script |
+| RLS unverified in prod | Blocker | **Codex task** — R11 runbook |
+| SMTP unverified | Blocker | **Codex task** — R13 checklist |
+| Rollback CLI missing | High | **Codex task** — R12 guide |
+| Marketing claims | High | **Defensible** — "no limits" means no paywall |
+
+### Changes
+
+1. **R7 — Cleanup cron endpoint:** `frontend/src/app/api/cron/cleanup/route.ts` + keepalive workflow step
+2. **R8 — Language detection:** `_detect_non_english()` in keyword_extractor, `language_warning` field in JobAnalysis, AnalyzerDemo amber banner
+3. **R9 — Backup script:** `scripts/backup-supabase.ps1` using pg_dump
+4. **ENV_VARS.md:** Added CRON_SECRET + SUPABASE_SERVICE_ROLE_KEY documentation
+
+### Test Evidence
+
+```
+497 passed, 24 skipped, 24 warnings in 162.23s
+All checks passed!  (ruff)
+> eslint  (clean)
+```
+
+### Owner Actions
+
+1. Generate `CRON_SECRET`: `openssl rand -hex 32` (or PowerShell: `[System.Convert]::ToBase64String((1..32 | % { Get-Random -Max 256 }) -as [byte[]])`)
+2. Set `CRON_SECRET` in Vercel dashboard (Project Settings → Environment Variables → Production)
+3. Set `CRON_SECRET` as GitHub Actions secret (Settings → Secrets → Actions)
+4. Close PR #31 (Codex worktree branch — conflicts + stale findings)
+5. Consider: Render Starter upgrade ($7/mo) to eliminate cold starts
+
+---
+
 ## Session 117 — 2026-08-06
 
 **Branch:** `feature/phase-12-launch-post-launch`

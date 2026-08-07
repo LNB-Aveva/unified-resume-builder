@@ -21,3 +21,4 @@ class JobAnalysis(BaseModel):
     keywords: list[str]
     responsibilities: list[str]
     taxonomy_coverage: float = 1.0
+    language_warning: str | None = None
