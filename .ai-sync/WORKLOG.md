@@ -13,6 +13,9 @@
 - **Feature:** Prompt 3 hardening — PR #48 open, localhost verified
 - **Branch:** feature/prompt3-hardening (PR #48), feature/codex-prompt3-docs (Copilot R11-R13)
 - **Status:** Session 120 DONE. Both branches ready for merge. Render $7/mo approved.
+- **Feature:** Prompt 3 adversarial audit — re-triage + hardening fixes
+- **Branch:** feature/prompt3-hardening
+- **Status:** Session 119 IN PROGRESS. R7+R8+R9+R10 DONE. Codex tasks R11+R12+R13 assigned.
 
 ---
 
@@ -24,6 +27,7 @@
 | Started    | 2026-08-06                 |
 | Working On | Session 118 complete. All 12 phases cross-verified. |
 | Working On | PR #48 localhost verification, Render budget decision |
+| Working On | Prompt 3 re-triage, cleanup cron, language detection, backup script |
 
 ---
 
