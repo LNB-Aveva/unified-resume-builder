@@ -60,6 +60,7 @@
   - Verified all 15 PowerShell blocks parse, all referenced repository paths exist, the RLS suite contains exactly 20 tests, and no Bash commands were added.
   - Mandatory Ruff and ESLint checks passed; the existing localhost frontend returned HTTP 200 with the expected ResumeAI title. Owner approved commit and push on 2026-08-06.
   - Committed as `6db3171`, pushed `feature/codex-prompt3-docs`, and opened PR #49: https://github.com/LNB-Aveva/unified-resume-builder/pull/49
+  - Merged current `origin/main` (`55a65b4`, Prompt 3 hardening) to clear PR #49's conflict. Combined-branch validation passed: 497 backend tests passed, 24 production-credential tests skipped, and the Next.js production build generated all 32 routes.
 - **Files Changed:** `docs/RLS_VERIFICATION.md`, `docs/ROLLBACK.md`, `docs/SMTP_VERIFICATION.md`, `.ai-sync/DECISIONS.md`, `.ai-sync/WORKLOG.md`
 - **Next:** Require green CI on PR #49, then merge. Owner executes the credential- and dashboard-dependent checks from the runbooks before launch.
 - **Blockers:** Production RLS credentials, Render API/service/deploy IDs, Vercel CLI login/link, SMTP dashboard access, and the Render Starter purchase all require owner-controlled credentials or dashboards.
