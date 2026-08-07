@@ -36,6 +36,7 @@ export default function ShareableScoreWidget() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ job_text: jobText, resume_text: resumeText }),
       });
+      if (res.status === 401) throw new Error("Sign in to generate a shareable score link.");
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data: ATSScore = await res.json();
 
