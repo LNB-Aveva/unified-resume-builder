@@ -15,12 +15,12 @@ const PUBLIC_PAGES = [
 ];
 
 for (const { name, path } of PUBLIC_PAGES) {
-  test(`${name} page passes WCAG 2.1 AA`, async ({ page }) => {
+  test(`${name} page passes WCAG 2.2 AA`, async ({ page }) => {
     await page.goto(path);
     await page.waitForLoadState("domcontentloaded");
 
     const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
       .exclude(".cookie-consent")
       .analyze();
 
