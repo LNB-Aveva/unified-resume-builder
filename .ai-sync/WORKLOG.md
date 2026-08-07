@@ -19,13 +19,24 @@
 |------------|----------------------------|
 | Agent      | claude                     |
 | Started    | 2026-08-07                 |
-| Working On | Session 125 DONE — Prompt 3 Gates 2+3+5 complete |
+| Working On | Session 126 DONE — CI green, PR #52 open |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 126 (Claude) — 2026-08-07
+- **Agent:** claude
+- **Did:**
+  - Diagnosed 2 CI failures on fix/prompt-gaps-closure (nanoid CVE GHSA-2v37-7h3g-55p8)
+  - Added `"nanoid": ">=3.3.17"` to package.json overrides; `npm audit --omit=dev --audit-level=high` now 0 vulnerabilities
+  - Committed (3b754d7) and pushed; CI now queued on new commit
+  - Opened PR #52 for the full fix/prompt-gaps-closure branch
+- **Files Changed:** `frontend/package.json`, `frontend/package-lock.json`
+- **Next:** CI passes on PR #52 → user merges to main. Owner blockers (HF token, RLS, TCF CMP) still pending.
+- **Blockers:** Owner: HF token rotation, RLS credentials, TCF CMP confirmation.
 
 ### Session 125 (Claude) — 2026-08-07
 - **Agent:** claude
