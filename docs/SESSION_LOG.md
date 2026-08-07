@@ -4,6 +4,59 @@
 
 ---
 
+## Session 123 (Claude) — 2026-08-07
+
+**Branch:** `fix/prompt-gaps-closure`
+**Scope:** Close all Codex-identified gaps from Prompt 1 + Prompt 2 review
+
+### Changes
+
+1. **WCAG 2.2 AA** — upgraded `accessibility.spec.ts` from `wcag21aa` to `wcag22aa` tags + manual audit of 6 non-automatable criteria. 10/10 pages pass, 55/55 E2E green.
+2. **72-hour checklist** — filled all 24 items in `POST-LAUNCH-MONITORING.md` with evidence. Week 1 review table completed: 139 users, real `/analyze` usage, 0 Sentry errors, 0 support emails.
+3. **Three killers section** — added explicit section to `LAUNCH_PROGRAM.md` with resolution status per Prompt 1 requirement.
+4. **Budget** — updated from `$0/mo` to `$7/mo` (Render Starter confirmed live).
+5. **Phase 11.5 backup drill** — fixed `backup-supabase.ps1` (quoted `--dbname=` flag), installed pg_dump v17, executed drill: `supabase_backup_2026-08-07_134416.sql` (16.1 KB).
+6. **Findings table** — F10–F14 severity updated from High/Med to Resolved (consistent with phase completions).
+
+### Final State
+
+- Branch tip: `6cb4209`, pushed to PR #51
+- All 14 findings: Resolved
+- All 12 phase exit gates: MET
+- Prompt 1 + Prompt 2 gaps: fully closed
+
+---
+
+## Session 124 (Copilot) — 2026-08-07
+
+**Intended branch:** `feature/prompt3-current-launch-gate`
+
+**Final shared-worktree branch:** `fix/prompt-gaps-closure` after concurrent Session 123 switched and committed the shared worktree
+
+**Scope:** Prompt 3 Gate 1 adversarial review
+
+### Evidence and findings
+
+- Pre-change: 497 backend tests passed; Ruff and ESLint passed; production frontend build generated 32 routes.
+- Targeted security suite: 126 passed. Production npm audit and both Python dependency audits found no known vulnerabilities.
+- Production checks: public/legal/crawler pages and health returned 200; API docs returned 404; seven protected routes returned 401; oversized body returned 413; trusted CORS origin accepted and untrusted origin rejected.
+- Production RLS suite: 20 skipped because `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` were unavailable.
+- Security blocker: a Hugging Face token was present in a tracked memory file. Current file redacted; public Git history still requires owner rotation/incident review.
+- Other Gate 1 blockers: no durable AI spend quota/provider cap proof, certified CMP unverified, signed-in browser paths unverified.
+- Localhost: `http://localhost:3000` returned 200 with expected title.
+
+### Stop condition
+
+Post-change full suite failed two unchanged ReDoS timing tests: approximately 2.21s and 2.52s against a 2-second ceiling. Result: `2 failed, 495 passed, 24 skipped`. Tests were not modified. No commit or push was made.
+
+### Next three actions
+
+1. Owner revokes the exposed Hugging Face token, creates a fine-grained replacement, updates Render, and checks provider usage.
+2. Rerun the two failed ReDoS tests in an idle environment; if green, rerun the full backend suite.
+3. Reconcile the audit work with concurrent commit `2a3cec0`, then request approval for the accurate `Free with fair-use limits` copy change.
+
+---
+
 ## Session 122 (Claude) — 2026-08-07
 
 **Branch:** `main`
