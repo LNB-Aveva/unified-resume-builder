@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-031: Verify Current Supabase Tokens Through Project JWKS
+- **Date:** 2026-08-07
+- **Agent:** copilot
+- **Context:** The production Supabase project now issues ES256 access tokens, but the FastAPI backend verified only HS256 with the legacy shared JWT secret. Every signed-in protected API request therefore returned 401 `Invalid authentication token` before reaching application or Hugging Face logic.
+- **Decision:** Verify ES256/RS256 access tokens with the configured Supabase project's cached public JWKS, required audience, and exact issuer. Retain the existing HS256 shared-secret path temporarily as a migration/rollback fallback; reject every other algorithm.
+- **Alternatives Considered:** Ask users to sign in again — rejected because newly issued tokens still use ES256. Revert the Supabase project to legacy HS256 — rejected because it moves away from the provider's current asymmetric signing model. Derive the JWKS host from an unverified token issuer — rejected because an attacker could choose that value.
+- **Files Affected:** `backend/app/core/auth.py`, `backend/app/core/config.py`, `backend/tests/integration/test_auth.py`, `backend/.env.example`, `render.yaml`, `docs/ENV_VARS.md`
+
 ### DEC-030: Render Starter Is the Only Approved New Monthly Spend (2026-08-06)
 - **Date:** 2026-08-06
 - **Agent:** manual
