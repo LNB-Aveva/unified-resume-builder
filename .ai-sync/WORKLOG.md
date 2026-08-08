@@ -8,8 +8,8 @@
 ## Current Task
 
 - **Feature:** Prompt 3 launch-gate audit
-- **Branch:** fix/prompt-gaps-closure (tip: see session 125 commit)
-- **Status:** Session 127 localhost-approved. Auth fix verified and ready to commit/push; production Render configuration/deploy proof remains.
+- **Branch:** fix/supabase-es256-auth (tip: 27cd322); main tip: 239399e
+- **Status:** Session 128 DONE. Gate 2 patched — ES256 added as blocker, HF rotation confirmed. Audit doc committed + pushed.
 
 ---
 
@@ -17,15 +17,27 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | copilot                    |
-| Started    | 2026-08-07                 |
-| Working On | Session 127 — Supabase ES256 production auth blocker |
+| Agent      | claude                     |
+| Started    | 2026-08-08                 |
+| Working On | Session 128 DONE — Gate 2 audit patch (ES256 blocker, HF rotation status) |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 128 (Claude) — 2026-08-08
+- **Agent:** claude
+- **Did:**
+  - Confirmed Gates 2/3/5 are complete. Gate 2 had two stale items to fix.
+  - Updated Gate 2 Phase 3 row: was "PASS", now "VERIFY — pending production deploy" (ES256/JWKS fix exists in code on `fix/supabase-es256-auth` but not yet deployed to Render).
+  - Updated Gate 2 open items: added "ES256/JWKS auth fix — deploy to production" as new Blocker; updated HF token from "Blocker" to "Owner action — provider usage review" (rotation confirmed, usage check pending).
+  - No changes to Gate 3 (cost model) or Gate 5 (rollback) — both fully accurate.
+  - Committed + pushed.
+- **Files Changed:** `docs/LAUNCH_READINESS_AUDIT.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Owner: (1) add SUPABASE_URL in Render, (2) merge fix/supabase-es256-auth → main, (3) verify production AI Summary works. Codex: Gate 4 + Gate 6. Owner copy approval needed for "Unlimited" fix.
+- **Blockers:** ES256 deploy (owner). RLS credentials (owner). TCF CMP (owner). Gate 4+6 (Codex).
 
 ### Session 127 (Copilot) — 2026-08-07
 - **Agent:** copilot

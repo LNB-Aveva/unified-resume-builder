@@ -144,7 +144,7 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 |---|---|---|---|
 | **1 — Build** | Dependencies install cleanly; all 9 routes return 200; frontend build compiles without network fetches. | **PASS** | Geist/Playfair fonts self-hosted; build passes in CI (verified 2026-08-06). No outbound font fetch. |
 | **2 — Tests/CI** | CI run green; 80%+ branch coverage; Playwright happy path + failure paths pass; pip-audit and npm audit report 0 High CVEs. | **PASS** | Baseline: 497 passed, 24 skipped. Branch coverage 90%. Playwright 50 tests pass. pip-audit 0 vulns, npm audit production 0 vulns. CI passing on `main` (commit 881fbf8). |
-| **3 — Security/Privacy** | JWT auth on 7 routes; body cap enforced; Bandit 0 High; CORS strict; prompt injection sanitized; PII stripped from Sentry. | **PASS** | 80 auth tests (40 cases × asyncio+trio) pass. 1 MB body cap returns 413 in production. Bandit 0 High. Production CORS rejects `evil.example`. `_strip_pii` verified by 11 unit tests. |
+| **3 — Security/Privacy** | JWT auth on 7 routes; body cap enforced; Bandit 0 High; CORS strict; prompt injection sanitized; PII stripped from Sentry. | **VERIFY — pending production deploy** | 84 auth tests pass locally (ES256/JWKS fix, commit 27cd322). Production returned 401 on signed-in requests before the fix (ES256 vs HS256 mismatch). Fix exists in code on `fix/supabase-es256-auth`; needs Render env var `SUPABASE_URL` added + branch merged + deployed. Body cap, CORS, Sentry PII all PASS. |
 | **4 — Auth/RLS** | User A cannot read/mutate user B rows; account deletion cascades all 5 tables; data export covers all retained records. | **VERIFY** | 20-test RLS isolation suite passed against production Supabase on 2026-08-04 (recorded in LAUNCH_PROGRAM.md §4.5). All 20 **skipped in this audit** because `SUPABASE_SERVICE_ROLE_KEY` was not available to this process. Code design is correct; production proof exists but cannot be reproduced here without credentials. See Gate 1 §A for the NO-GO until re-run is confirmed. |
 | **5 — Scoring quality** | 80%+ of 25 labeled pairs within one human grade; zero obvious strong matches score F; report reproducible in CI. | **PASS** | Eval harness: 25/25 pairs pass grade calibration (≤1 grade delta from human reference). Golden-file tests for taxonomy parsing pass. Synonym map covers 65+ groups. |
 | **6 — Backend hardening** | HF circuit breaker retries + opens after 5 failures; keepalive cron every 13 min; request timeout 90s; 9 routes load-tested at bounded concurrency. | **PASS** | Circuit breaker in `hf_client.py`: opens after `_FAILURE_THRESHOLD=5`, recovers after 60s, single half-open probe. Keepalive cron in `.github/workflows/keepalive.yml`. `RequestTimeoutMiddleware` 90s. Render Starter upgrade (2026-08-07) eliminates cold starts. |
@@ -159,12 +159,13 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 
 | Item | Severity | Action |
 |---|---|---|
+| ES256/JWKS auth fix — deploy to production | **Blocker** | Owner: add `SUPABASE_URL=https://pagdtcttkviglyoeuagy.supabase.co` in Render → Environment. Merge `fix/supabase-es256-auth` → main; Render auto-deploys. Sign in at resumeai.cv, generate one AI Summary — must succeed. |
 | RLS re-verification in this audit process | **Blocker** | Run `docs/RLS_VERIFICATION.md` with `SUPABASE_SERVICE_ROLE_KEY` in a process that can reach production. Paste only the redacted pass/fail counts. |
 | TCF CMP for AdSense (Gate 1 §E) | **Blocker before ad units** | Confirm Google Privacy & messaging European regulations message is published for resumeai.cv in the AdSense dashboard. |
-| HF token rotation | **Blocker** | See Gate 1 §A owner action list. |
-| `Unlimited` / `Usage Limits: none` copy | **High** | Codex gate-1 fix: change to `Free with fair-use limits` in `frontend/src/app/page.tsx:865` and `frontend/src/app/ats-checker/page.tsx:295`. Requires owner approval of copy. |
+| HF token — provider usage review | **Owner action** | Token rotated ✓. Confirm in HF billing/usage whether any unexpected calls occurred between original commit and revocation. Tell audit: "unexpected usage: yes/no". |
+| `Unlimited` / `Usage Limits: none` copy | **High** | Change to `Free with fair-use limits` in `frontend/src/app/page.tsx:865` and `frontend/src/app/ats-checker/page.tsx:295`. **Waiting for owner copy approval.** |
 
-**Gate 2 verdict: CONDITIONAL NO-GO.** All 12 phase exit gates have been achieved by code and previous proof; three items remain unverifiable in this audit without production credentials or owner dashboard access. Gate upgrades to GO when: (a) HF token is rotated, (b) RLS re-run returns 20/20 pass, and (c) TCF CMP status is confirmed or deferred with documented accepted risk.
+**Gate 2 verdict: CONDITIONAL NO-GO.** All 12 phase exit gates have code and previous proof. Updated blockers: (a) ES256/JWKS auth fix must be deployed + production-verified, (b) RLS 20-test re-run with production credentials, (c) TCF CMP status confirmed before ad units. HF token rotation is complete; usage review pending. Gate upgrades to GO when all three blockers are closed.
 
 ---
 
