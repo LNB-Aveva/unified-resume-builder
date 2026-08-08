@@ -1,13 +1,13 @@
 # Launch Readiness Audit — Current Main Rerun
 
 > Audit date: 2026-08-07  
-> Audited base: `557e334` plus the uncommitted credential redaction documented below  
-> Branch: `feature/prompt3-current-launch-gate`  
+> Audited base: `4fc5567` plus the local ES256/JWKS authentication fix documented below
+> Branch: `fix/prompt-gaps-closure`
 > Rule: every `UNVERIFIED` launch gate is a `NO-GO` until it is proven.
 
 ## Current verdict
 
-**PROVISIONAL NO-GO.** Gates 1–3 and 5 are complete. Three blockers remain open, all requiring owner action: (a) revoke the committed HuggingFace token and verify no unexpected usage, (b) re-run the 20-test RLS isolation suite with production credentials to confirm cross-user isolation, (c) confirm or establish a Google-certified TCF CMP before ad units go live. Gate 4 (failure drills, Codex) and Gate 6 (final verdict, Codex) are pending.
+**PROVISIONAL NO-GO.** Gates 1–3 and 5 are complete. The exposed Hugging Face token is no longer present in the owner's active-token list, but the provider usage review remains unverified. Other open gates are: deploy and production-test the ES256/JWKS auth fix, re-run the 20-test RLS isolation suite with production credentials, confirm a Google-certified TCF CMP before ad units go live, and close the durable AI-spend controls. Gate 4 (failure drills) and Gate 6 (final verdict) are pending.
 
 Cost model verdict: the $7/mo budget safely handles 0–9,600 users. The first hard cliff is Supabase's 500 MB free DB at approximately 9,600 active users (~52 KB/user average footprint). HuggingFace free-tier rate limits become visible at ~1,000 users during peak hours but fail gracefully via circuit breaker.
 
@@ -26,27 +26,19 @@ Commands were run from the current branch before editing this report.
 
 | Check | Exact result |
 |---|---|
-| Full backend suite | `497 passed, 24 skipped, 28 warnings in 156.02s` |
+| Full backend suite | `501 passed, 24 skipped, 28 warnings in 161.29s` after the ES256/JWKS auth fix |
 | Backend lint | `All checks passed!` |
 | Frontend lint | `npm run lint` exit `0` |
 | Frontend production build | `Compiled successfully`; 32 routes generated |
-| Targeted auth/rate-limit/PDF/PII-log tests | `126 passed, 15 warnings in 2.93s` |
+| Focused authentication suite | `84 passed, 14 warnings in 9.51s`; includes ES256 acceptance and wrong-issuer rejection |
 | Production RLS suite | `20 skipped` — `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` were not available |
 | Production npm audit | `found 0 vulnerabilities` |
 | Runtime Python audit | `No known vulnerabilities found` |
 | Development Python audit | `No known vulnerabilities found` |
 | Bandit | 0 High; two expected Medium `B104` findings for binding the web server to `0.0.0.0` |
-| Secret scan | General scanner timed out twice; focused tracked-file scan found one committed Hugging Face token. The current file is redacted, but Git history remains exposed. |
+| Secret scan | General scanner timed out twice; focused tracked-file scan found one committed Hugging Face token. The current file is redacted, Git history still contains the dead value, and the owner's current token list no longer contains that exposed token. Provider usage review remains unverified. |
 
-Post-change verification did **not** remain green, so work stopped without editing the failing tests:
-
-```text
-FAILED tests/unit/test_adversarial.py::TestReDoSResilience::test_experience_regex_near_match_flood
-FAILED tests/unit/test_adversarial.py::TestReDoSResilience::test_skill_matching_at_50k
-2 failed, 495 passed, 24 skipped, 28 warnings in 218.61s
-```
-
-The measured calls took approximately 2.21 and 2.52 seconds against a strict 2-second ceiling. The branch changes are documentation and credential redaction only, but the failure remains a launch-gate regression until an isolated rerun establishes whether it is environmental or reproducible.
+The two ReDoS timing tests that failed during the earlier loaded run passed unchanged in isolation (`2 passed, 55 deselected in 5.01s`). The subsequent complete suite passed all 501 runnable tests, so that regression gate is closed as an environmental timing outlier.
 
 Production HTTP checks on 2026-08-07:
 
@@ -57,7 +49,7 @@ Production HTTP checks on 2026-08-07:
 - Public deterministic `/api/v1/analyze`: HTTP 200 with expected taxonomy output.
 - A request over 1 MB: HTTP 413 with a bounded error response.
 - CORS: `https://resumeai.cv` accepted; `https://evil.example` rejected.
-- Interactive signed-in browser review: **UNVERIFIED** because no browser connection was available to this audit process.
+- Interactive signed-in browser review: **LOCAL PASS / PRODUCTION UNVERIFIED**. On localhost, the owner signed in and generated a 54-word AI summary through the patched backend. Production previously returned `Invalid authentication token` and must be retested after deployment.
 
 ## Gate 1 — Five-perspective adversarial review
 
@@ -66,6 +58,7 @@ Production HTTP checks on 2026-08-07:
 | Finding | Severity | Evidence | Required closure |
 |---|---|---|---|
 | A Hugging Face token was committed in `.claude/memory/project_resume_session15_07112026.md`. | **Blocker** | Focused tracked-file scan matched a real token-shaped value. It was redacted from the current branch immediately. Public Git history still contains it. | Owner revokes it, creates a fine-grained replacement, updates Render, and confirms the old token is unusable. Decide separately whether to purge public Git history. |
+| Production Supabase tokens use ES256, but the deployed backend accepts only HS256. | **Blocker pending deploy** | Live project JWKS reports an ES256 EC key. The owner's signed-in production Summary request returned 401. The local JWKS verifier passed 84 auth tests and the owner generated a summary successfully on localhost. | Add `SUPABASE_URL` in Render, deploy this fix, and repeat the signed-in production Summary request. |
 | AI cost controls are bypassable with account creation and IP rotation. | **Blocker** | All nine routes have minute limits and the API has a 200/minute/IP global limiter, but counters are in process memory. There is no merged daily per-user quota, durable global quota, CAPTCHA proof, or verified provider-side budget cap. Public `/preview-rewrite` spends AI quota without authentication at 5/minute/IP. | Establish a hard provider budget/alert and implement a durable daily per-user plus global AI quota before paid traffic. |
 | Cross-user isolation is designed correctly but not proven in this run. | **Blocker** | Checked-in SQL enables RLS on all five user-data tables and the 20-test isolation/cascade suite exists. All 20 tests skipped because production test credentials were unavailable. | Run `docs/RLS_VERIFICATION.md` with process-scoped credentials and save the redacted result. |
 | Protected backend routes reject anonymous traffic. | Pass | Production returned 401 for score, gap, compliance, summary, rewrite, cover-letter, and PDF export. Eighty auth cases are included in the passing suite. | Preserve as a regression gate. |
@@ -86,7 +79,7 @@ Production HTTP checks on 2026-08-07:
 |---|---|---|---|
 | The site contradicts itself about usage limits. | **High** | The landing comparison says `Usage Limits: none` / `Unlimited`, and the preview says a free account provides `unlimited AI rewrites`; another section correctly says fair-use limits apply. Backend limits are real. | Replace `Unlimited`/`none` with accurate fair-use language. This is a user-visible copy decision and requires owner approval. |
 | Scope limitations are substantially clearer than in the closed audit. | Pass | Public copy states English-language and taxonomy limitations, says scoring is directional, and explains that pasted-text checks cannot inspect PDF/DOCX layout. Non-English detection now returns a warning. | Verify the actual deployed signed-in flow in Gate 4. |
-| Failures are bounded in code but signed-in UX remains unverified here. | **UNVERIFIED / NO-GO** | Frontend requests have 65-second aborts and mapped messages for network, timeout, AI, parse, and 5xx failures. No interactive browser was available in this run. | Owner follows the guided signed-in browser drill in Gate 4. |
+| Signed-in AI Summary works through the patched local stack. | **LOCAL PASS / PROD UNVERIFIED** | Frontend requests have bounded timeouts and mapped failures. The owner generated a 54-word summary on localhost with a real Supabase session and Hugging Face response. | Repeat the same test on production after deploying the ES256/JWKS verifier. |
 
 ### D. Regulator reviewing resume-data handling
 
@@ -114,14 +107,18 @@ Official policy references:
 
 ## Owner actions required before Gate 1 can be closed as launch-safe
 
-### Immediate — rotate the exposed Hugging Face token
+### Immediate — finish the exposed-token incident review
 
-1. Open <https://huggingface.co/settings/tokens> while signed in.
-2. Identify and delete/revoke the token exposed in the repository. Do not paste it into chat, a command line, or another document.
-3. Create one new fine-grained production token named for this Render service, with only the permissions required for inference.
-4. In Render, open `unified-resume-builder-api` → Environment → replace `HUGGINGFACE_API_KEY` → save and deploy.
-5. In Hugging Face billing/usage, inspect activity since the original commit date and record whether any unexpected usage or charges exist.
-6. Tell the audit only: `old token revoked`, `Render updated`, `unexpected usage: yes/no`, and whether the replacement deployment is healthy. Never provide the new token.
+1. **Complete:** the exposed token is absent from the owner's active-token list; do not paste any token into chat, a command line, or a document.
+2. Confirm the Render service uses the fine-grained `resumeai-production-v2` replacement without revealing its value.
+3. In Hugging Face billing/usage, inspect activity since the original commit date and record whether any unexpected usage or charges exist.
+4. Tell the audit only: `Render updated`, `unexpected usage: yes/no`, and whether the replacement deployment is healthy.
+
+### Immediate — deploy the Supabase ES256 verifier
+
+1. In Render, add `SUPABASE_URL=https://pagdtcttkviglyoeuagy.supabase.co`.
+2. Deploy the auth-fix commit after it is pushed/merged.
+3. Sign in at `https://resumeai.cv`, generate one AI Summary, and retain a screenshot showing success.
 
 ### Required production proof — RLS
 

@@ -4,6 +4,24 @@
 
 ---
 
+## Session 127 (Copilot) — 2026-08-07
+
+**Branch:** `fix/prompt-gaps-closure`
+
+**Scope:** Diagnose and fix production `Invalid authentication token` on protected AI routes
+
+### Evidence
+
+- Live Supabase JWKS: ES256 EC signing key; deployed backend accepted only HS256.
+- Focused auth suite: `84 passed, 14 warnings in 9.51s`.
+- Full backend suite: `501 passed, 24 skipped, 28 warnings in 161.29s`.
+- Ruff and frontend lint passed; production frontend build generated 32 routes.
+- Owner localhost approval: signed in with a real Supabase session and generated a 54-word AI Summary through the patched backend.
+
+### Remaining production step
+
+Add `SUPABASE_URL=https://pagdtcttkviglyoeuagy.supabase.co` in Render, deploy the fix, and repeat the signed-in production Summary request. No commit/push had occurred when this entry was written.
+
 ## Session 123 (Claude) — 2026-08-07
 
 **Branch:** `fix/prompt-gaps-closure`

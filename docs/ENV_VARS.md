@@ -18,7 +18,8 @@ For local dev, copy `backend/.env.example` to `backend/.env`.
 | `ENV` | Optional | Render dashboard | `""` | Alternative production detection (`ENV=production`) | Falls back to `RENDER` env var check |
 | `PYTHON_VERSION` | Yes | render.yaml | `3.11.0` | Python runtime on Render | Render picks its own default |
 | `SENTRY_DSN` | No | Render dashboard / `.env` | `""` | Sentry error tracking DSN | Error tracking disabled (no errors sent to Sentry) |
-| `SUPABASE_JWT_SECRET` | Yes (production) | Render dashboard / `.env` | `""` | Supabase JWT secret for verifying auth tokens | Protected API routes return 503 (auth not configured) |
+| `SUPABASE_URL` | Yes (production) | Render dashboard / `.env` | `""` | Supabase project URL used to fetch public ES256/RS256 signing keys | Protected routes using current Supabase tokens return 503 |
+| `SUPABASE_JWT_SECRET` | During HS256 migration only | Render dashboard / `.env` | `""` | Legacy HS256 token verification fallback | Legacy HS256 tokens cannot be verified |
 | `DEBUG` | No | `.env` | `False` | Debug mode flag | N/A — defaults to off |
 
 ## Frontend (Next.js on Vercel)
@@ -49,5 +50,6 @@ For local dev, copy `frontend/.env.example` to `frontend/.env.local`.
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | (set in Vercel — public but project-specific) |
 | `HUGGINGFACE_API_KEY` | (set in Render — secret) |
 | `FRONTEND_URL` | `https://resumeai.cv` |
-| `SUPABASE_JWT_SECRET` | (set in Render — secret; get from Supabase dashboard → Settings → API → JWT Secret) |
+| `SUPABASE_URL` | `https://pagdtcttkviglyoeuagy.supabase.co` |
+| `SUPABASE_JWT_SECRET` | (legacy HS256 fallback in Render; do not expose to the frontend) |
 | `CRON_SECRET` | (set in Vercel + GitHub Actions secret — generate with `openssl rand -hex 32`) |

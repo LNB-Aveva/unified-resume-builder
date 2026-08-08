@@ -9,7 +9,7 @@
 
 - **Feature:** Prompt 3 launch-gate audit
 - **Branch:** fix/prompt-gaps-closure (tip: see session 125 commit)
-- **Status:** Session 125 DONE. Gates 2/3/5 complete (Claude). Gates 4/6 assigned to Codex. 3 owner-action blockers remain before final GO.
+- **Status:** Session 127 localhost-approved. Auth fix verified and ready to commit/push; production Render configuration/deploy proof remains.
 
 ---
 
@@ -17,16 +17,29 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
+| Agent      | copilot                    |
 | Started    | 2026-08-07                 |
-| Working On | Session 126 DONE — CI green, PR #52 open |
-| Working On | Session 123 DONE — closed 4 Codex-identified gaps, owner data recorded, Render Starter confirmed |
+| Working On | Session 127 — Supabase ES256 production auth blocker |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 127 (Copilot) — 2026-08-07
+- **Agent:** copilot
+- **Did:**
+  - Confirmed from the live project JWKS that Supabase signs production access tokens with ES256 (`kty=EC`), while `backend/app/core/auth.py` accepted only HS256. This exactly explains the owner's production `Invalid authentication token` result.
+  - Added cached Supabase JWKS verification for ES256/RS256 with strict `aud=authenticated` and configured issuer validation; retained HS256 only as a legacy migration fallback.
+  - Added ES256 acceptance and wrong-issuer rejection integration tests.
+  - Updated Render/backend environment documentation to require the public `SUPABASE_URL` for asymmetric verification.
+  - Verification passed: live JWKS parsed through the new verifier; Ruff clean; focused auth suite 84 passed; full backend suite 501 passed/24 skipped; frontend lint clean; frontend production build generated 32 routes.
+  - Restarted localhost from this worktree; frontend and backend both return HTTP 200.
+  - Owner localhost approval: signed in with a real Supabase session and generated a 54-word AI Summary; no authentication error appeared.
+- **Files Changed:** `backend/app/core/auth.py`, `backend/app/core/config.py`, `backend/tests/integration/test_auth.py`, `backend/.env.example`, `render.yaml`, `docs/ENV_VARS.md`, `.ai-sync/WORKLOG.md`, `.ai-sync/DECISIONS.md`
+- **Next:** Commit/push the approved fix; owner adds `SUPABASE_URL=https://pagdtcttkviglyoeuagy.supabase.co` in Render; deploy/merge and rerun the production Summary test.
+- **Blockers:** Production Render configuration/deployment proof. Production RLS credentials and certified TCF CMP proof remain separate Prompt 3 launch gates.
 
 ### Session 126 (Claude) — 2026-08-07
 - **Agent:** claude

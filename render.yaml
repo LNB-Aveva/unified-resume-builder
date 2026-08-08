@@ -57,8 +57,12 @@ services:
       - key: FRONTEND_URL
         sync: false
 
-      # Supabase HS256 JWT secret — REQUIRED. Without it every authenticated
-      # route returns 503 "Authentication is not configured on this server."
+      # Public Supabase project URL — REQUIRED for current ES256 JWT verification.
+      - key: SUPABASE_URL
+        sync: false
+
+      # Legacy HS256 verification fallback. Keep during signing-key migration;
+      # current ES256 tokens are verified through the public JWKS endpoint.
       - key: SUPABASE_JWT_SECRET
         sync: false
 
