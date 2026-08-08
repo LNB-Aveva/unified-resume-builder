@@ -23,7 +23,7 @@ python-dotenv==1.2.2
 # PDF Generation
 # ============================
 # WeasyPrint was originally planned but requires libgobject/libpango (GTK)
-# which is not available on Windows dev or free-tier Linux hosts without
+# which is not available on Windows dev or minimal Linux hosts without
 # extra system packages. Replaced with fpdf2 (pure Python, no system deps).
 fpdf2==2.8.7
 

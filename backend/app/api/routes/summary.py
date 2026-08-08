@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.api.routes._ai_errors import call_ai_service
+from app.core.ai_quota import enforce_ai_quota
 from app.core.auth import require_auth
 from app.core.rate_limit import limiter
 from app.schemas.summary import SummaryRequest, SummaryResponse
@@ -28,4 +29,5 @@ async def create_summary(request: Request, request_body: SummaryRequest, _user_i
     if not request_body.experience_bullets.strip():
         raise HTTPException(status_code=422, detail="experience_bullets cannot be empty.")
 
+    await enforce_ai_quota(request, units=1)
     return await call_ai_service(generate_summary(request_body))

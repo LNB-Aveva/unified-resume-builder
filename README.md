@@ -24,7 +24,7 @@ An all-in-one platform for ATS scoring, keyword gap analysis, AI-powered resume 
 | NLP | JSON skill taxonomy + regex/synonym matching | 220+ skills, 65+ synonym groups |
 | AI | HuggingFace Inference API (Qwen2.5-7B-Instruct) | Resume rewriting, summaries, cover letters |
 | PDF | fpdf2 | Pure-Python PDF generation (no system deps) |
-| Hosting | Vercel (frontend) + Render (backend) | Free-tier deployment |
+| Hosting | Vercel (frontend) + Render Starter (backend) | $7/month fixed backend; frontend on Vercel Hobby |
 
 ## Quick Start (PowerShell)
 

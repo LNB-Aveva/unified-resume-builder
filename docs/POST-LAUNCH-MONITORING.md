@@ -80,7 +80,7 @@ After 7 days, review and record:
 | Supabase DB > 40% of 500MB | Audit data, check for runaway writes |
 | HuggingFace rate limited | Check for abuse, tighten slowapi limits |
 | User reports data loss | Priority fix, check RLS policies |
-| Cold start > 45s | Check Render free tier, consider keepalive frequency |
+| Cold-start-like delay > 45s | Confirm Render was not downgraded from Blueprint-pinned Starter; inspect deploy/health logs |
 
 ## Rollback Procedure
 

@@ -2,8 +2,8 @@ name: Keepalive
 
 on:
   schedule:
-    # Every 13 minutes — keeps Render free-tier awake (sleeps after 15 min idle).
-    # UptimeRobot handles uptime alerting; this workflow only prevents cold starts.
+    # Every 13 minutes — verifies backend health and runs retention cleanup.
+    # Render Starter does not sleep; UptimeRobot provides independent alerting.
     - cron: "*/13 * * * *"
 
 jobs:
@@ -14,8 +14,7 @@ jobs:
     steps:
       - name: Wake up Render backend
         run: |
-          # Render free-tier cold starts can take 50-90s.
-          # Retry up to 3 times with increasing timeouts before failing.
+          # Retry transient network/deploy interruptions before failing.
           for attempt in 1 2 3; do
             status=$(curl --silent --output /dev/null \
               --write-out "%{http_code}" --max-time 90 "${BACKEND_URL}/health" || true)
@@ -41,7 +40,8 @@ jobs:
           if [ "$status" = "200" ]; then
             echo "Cleanup succeeded"
           else
-            echo "::warning::Cleanup returned HTTP $status (non-fatal)"
+            echo "::error::Cleanup returned HTTP $status"
+            exit 1
           fi
         env:
           FRONTEND_URL: ${{ vars.FRONTEND_URL || 'https://resumeai.cv' }}

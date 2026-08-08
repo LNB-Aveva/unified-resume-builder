@@ -20,6 +20,22 @@
 
 ## Decisions
 
+### DEC-032: Durable Weighted AI Quotas in Supabase
+- **Date:** 2026-08-08
+- **Agent:** copilot
+- **Context:** Per-process IP rate limits reset on deploy and do not bound authenticated Hugging Face spend across workers. The approved fixed launch budget is $7/month and adding a paid Redis service is not approved.
+- **Decision:** Use an atomic Supabase SECURITY DEFINER RPC with advisory locking for daily quotas: 10 weighted units per user and 500 globally. Summary costs 1 unit, cover letter 2, and bullet rewrite 5. Production fails closed before a provider call if quota storage is unavailable; local development bypasses the quota unless explicitly enabled. The backend uses the public anon key plus the caller's JWT and never receives the service-role key.
+- **Alternatives Considered:** Redis — rejected because it adds unapproved spend and infrastructure. Process-local counters — rejected because restarts and horizontal workers bypass them. Provider-only limits — rejected because they do not provide product-level per-user fairness or a predictable global ceiling.
+- **Files Affected:** `backend/app/core/ai_quota.py`, AI routes, `backend/app/core/config.py`, `supabase/migrations/007_ai_usage_quotas.sql`, `supabase-schema.sql`, `render.yaml`
+
+### DEC-033: Public Preview Is Deterministic; Share Links Use Full UUIDs
+- **Date:** 2026-08-08
+- **Agent:** copilot
+- **Context:** The unauthenticated preview called paid inference and was vulnerable to distributed cost abuse. Share IDs truncated UUIDs to 40 bits and the creation flow offered no immediate revocation control.
+- **Decision:** Make the public preview a bounded, rule-based weak-opening transformation with no provider call. Generate share IDs with full 128-bit UUIDs and expose an owner-only revoke action that relies on RLS-backed deletion. Public copy describes fair-use limits rather than unlimited service.
+- **Alternatives Considered:** Keep paid preview with IP limits — rejected because distributed clients bypass a process-local spend guard. Add CAPTCHA — deferred because it adds user friction and still does not eliminate provider cost. Short opaque IDs — rejected because the additional URL length is negligible compared with the enumeration-resistance gain.
+- **Files Affected:** `backend/app/services/ai/preview.py`, `backend/app/api/routes/preview.py`, `frontend/src/app/components/BulletPreviewWidget.tsx`, `frontend/src/app/components/ShareableScoreWidget.tsx`, public marketing pages
+
 ### DEC-031: Verify Current Supabase Tokens Through Project JWKS
 - **Date:** 2026-08-07
 - **Agent:** copilot

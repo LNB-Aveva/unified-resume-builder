@@ -3,7 +3,7 @@
 ## Architecture
 
 ```
-User --> resumeai.cv (Vercel) --> API (Render free tier)
+User --> resumeai.cv (Vercel) --> API (Render Starter)
   |                |                    |
   |                v                    v
   |          Supabase Auth       Global IP limiter
@@ -26,7 +26,7 @@ Supabase PostgreSQL <--- RLS-scoped frontend data access
 ## What happens when you push to main
 
 1. **Frontend (Vercel):** Auto-deploys on every push to `main`. Preview deployments created for PRs.
-2. **Backend (Render):** Auto-deploys on every push to `main`. Free tier sleeps after 15 min idle.
+2. **Backend (Render):** Auto-deploys on every push to `main`. Blueprint pins the approved Starter instance so it remains always on.
 3. **CI (GitHub Actions):** Runs on every push — backend tests (492+, with 20 credential-dependent RLS tests skipped), frontend lint, frontend build.
 
 ## Deploy checklist
@@ -39,7 +39,18 @@ Before pushing to main:
 - [ ] `Set-Location ..\frontend; npm run lint` — 0 errors, 0 warnings
 - [ ] `npm run build` — clean build, no type errors
 - [ ] No secrets in committed files (`.env`, API keys, etc.)
-- [ ] Verify `SUPABASE_JWT_SECRET` is set in Render
+- [ ] Verify `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and the legacy-fallback `SUPABASE_JWT_SECRET` are set in Render
+
+### Gate 1 quota rollout order
+
+The quota-enabled backend fails closed in production if its quota database configuration is missing. Deploy in this order:
+
+1. Run `scripts/backup-supabase.ps1` and confirm a non-empty backup file.
+2. Apply `supabase/migrations/007_ai_usage_quotas.sql` in the Supabase SQL Editor.
+3. Add the public project anon key as `SUPABASE_ANON_KEY` in Render. Never put the service-role key in Render.
+4. Synchronize the Render Blueprint and confirm the service plan is **Starter** and `AI_QUOTA_ENFORCEMENT=true`.
+5. Deploy the application, confirm `/health` returns 200, then verify one allowed authenticated AI request and one controlled quota-denial response.
+6. Dispatch the protected `production-rls` workflow and retain its 20/20 result.
 
 ## Rollback
 
@@ -71,15 +82,17 @@ expose it through a `NEXT_PUBLIC_` variable or commit it to an environment file.
 
 ## Database tables
 
-All five application tables have Row Level Security (RLS) enabled:
+All seven application tables have Row Level Security (RLS) enabled:
 
 | Table | Purpose | RLS summary |
 |---|---|---|
 | `profiles` | Stores one user profile per Supabase account. | Users can select, insert, update, and delete only the row whose ID matches `auth.uid()`. |
 | `jobs` | Stores each user's tracked job applications and optional resume association. | Users can select, insert, update, and delete only their own rows. |
-| `shared_scores` | Stores expiring, shareable ATS score snapshots. | Anyone can read an unexpired score; authenticated users can insert only rows owned by their user ID. No client update or delete policy is granted. |
+| `shared_scores` | Stores expiring, shareable ATS score snapshots. | Owners can insert/select/delete their rows; public reads use a single-row SECURITY DEFINER RPC that omits `user_id`. |
 | `resumes` | Stores named, current resume documents. | Users can select, insert, update, and delete only their own resumes. |
 | `resume_versions` | Stores immutable historical snapshots linked to a resume. | A user can read, insert, and delete versions only through a resume they own; no update policy is granted. |
+| `ai_usage_daily` | Stores per-user weighted AI units by UTC day. | Direct client access is denied; only the authenticated quota RPC can consume units. |
+| `ai_global_usage_daily` | Stores global weighted AI units by UTC day. | Direct client access is denied; only the authenticated quota RPC can consume units. |
 
 RLS is the database boundary for direct Supabase access. Application code should
 still scope every query to the authenticated user and must never ship a service-role
@@ -87,12 +100,13 @@ key to the browser.
 
 ## Authentication
 
-Supabase authenticates the user and issues an HS256 access token. The frontend sends
-that token in the `Authorization: Bearer <token>` header. On protected backend routes,
-FastAPI's `require_auth` dependency verifies the signature with
-`SUPABASE_JWT_SECRET`, requires the `authenticated` audience, checks expiry, and
-returns the token's `sub` claim as the user ID. Missing, expired, malformed, or
-incorrectly signed tokens return 401; a missing server secret returns 503.
+Supabase authenticates the user and issues an access token. The frontend sends that
+token in the `Authorization: Bearer <token>` header. On protected backend routes,
+FastAPI's `require_auth` verifies current ES256/RS256 tokens against the configured
+project's JWKS with exact issuer and `authenticated` audience checks. HS256 through
+`SUPABASE_JWT_SECRET` remains only as a legacy migration fallback. Missing, expired,
+malformed, or incorrectly signed tokens return 401; missing verification
+configuration returns 503.
 
 | Access | Routes |
 |---|---|
@@ -146,10 +160,10 @@ env vars in Vercel dashboard (Project Settings → Environment Variables → Pre
 All other `NEXT_PUBLIC_*` variables inherit from Production unless overridden.
 Preview deployments show a yellow "STAGING ENVIRONMENT" banner at the top.
 
-### Backend staging ($0 constraint)
+### Backend staging (no additional-spend constraint)
 
-Render free tier allows one web service. A true staging backend requires a paid plan
-($7/mo starter) or a second free-tier account. Until revenue justifies the cost:
+The approved $7/month budget is allocated to the production Render Starter service.
+A separate always-on staging backend requires additional spend that is not approved:
 
 - Use local backend (`uvicorn app.main:app --reload`) as the staging backend
 - Preview deployments that need a live backend must use the production API URL
@@ -185,7 +199,7 @@ still work (solo developer workflow) but CI runs on every push and flags failure
 
 ## Cold start
 
-Render free tier sleeps after 15 min of inactivity. First request after sleep takes 30-60 seconds.
+Render Starter remains active between requests. If the dashboard shows Free, synchronize the Blueprint and confirm `render.yaml` still declares `plan: starter`.
 Mitigations:
 - GitHub Actions keepalive cron pings `/health` every 13 minutes
 - Frontend uses `fetchWithRetry` with 3s delay between retries

@@ -63,6 +63,10 @@ services:
       - key: SUPABASE_URL
         sync: false
 
+      # Public project key used with each user's JWT to call the atomic quota RPC.
+      - key: SUPABASE_ANON_KEY
+        sync: false
+
       # Legacy HS256 verification fallback. Keep during signing-key migration;
       # current ES256 tokens are verified through the public JWKS endpoint.
       - key: SUPABASE_JWT_SECRET
@@ -75,6 +79,10 @@ services:
       # Marks the deployment as production (enables HSTS, hides /docs).
       - key: ENV
         value: "production"
+
+      # Production fails closed before provider calls if the quota RPC is unavailable.
+      - key: AI_QUOTA_ENFORCEMENT
+        value: "true"
 
       - key: PYTHON_VERSION
         value: "3.13.0"

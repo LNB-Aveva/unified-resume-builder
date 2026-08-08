@@ -110,7 +110,7 @@ Never weaken an assertion to make production pass. Correct the deployed policy o
 
 ## Protected GitHub Actions setup
 
-The current CI workflow does not map production Supabase secrets into the RLS suite, so these tests skip. If production verification is added to Actions, create a `production-rls` GitHub Environment with a required reviewer and invoke it only with `workflow_dispatch`.
+The ordinary CI workflow does not map production Supabase secrets into the RLS suite, so those tests intentionally skip on PRs. The manual `.github/workflows/production-rls.yml` workflow declares the protected `production-rls` Environment and runs only with `workflow_dispatch`.
 
 Repository → Settings → Environments → New environment → `production-rls`:
 
@@ -128,24 +128,14 @@ gh secret set --env production-rls SUPABASE_SERVICE_ROLE_KEY
 gh secret list --env production-rls
 ```
 
-A future manual workflow job must declare `environment: production-rls`, map each secret into `env`, and run only:
+After the environment and secrets exist, dispatch the workflow from PowerShell:
 
-```yaml
-environment: production-rls
-env:
-  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-  SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-steps:
-  - uses: actions/checkout@v4
-  - uses: actions/setup-python@v5
-    with:
-      python-version: "3.13"
-  - run: python -m pip install -r backend/requirements.txt -r backend/requirements-dev.txt
-  - run: python -m pytest backend/tests/integration/test_rls_isolation.py -v
+```powershell
+gh workflow run production-rls.yml --ref main
+gh run list --workflow production-rls.yml --limit 1
 ```
 
-Do not add the service-role key to the ordinary PR test job. GitHub environment approval and a manual dispatch are part of the safety boundary.
+Approve the protected environment deployment when GitHub prompts. Do not add the service-role key to the ordinary PR test job. GitHub environment approval and manual dispatch are part of the safety boundary.
 
 ## References
 

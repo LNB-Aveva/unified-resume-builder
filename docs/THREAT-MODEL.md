@@ -1,6 +1,6 @@
 # Threat Model — ResumeAI (resumeai.cv)
 
-Last updated: 2026-08-05 (Phase 3 reverification — Session 107)
+Last updated: 2026-08-08 (Prompt 3 Gate 1 hardening — Session 129)
 
 ## System Overview
 
@@ -20,7 +20,7 @@ Last updated: 2026-08-05 (Phase 3 reverification — Session 107)
 | # | Endpoint                  | Per-Route Limit | Global Limit   | AI-Backed | Auth Required |
 |---|--------------------------|-----------------|----------------|-----------|---------------|
 | 1 | POST /api/v1/analyze      | 30/min          | 200/min/IP     | No        | No (public)   |
-| 2 | POST /api/v1/preview-rewrite | 5/min        | 200/min/IP     | Yes       | No (public)   |
+| 2 | POST /api/v1/preview-rewrite | 5/min        | 200/min/IP     | No (deterministic) | No (public)   |
 | 3 | POST /api/v1/score        | 30/min          | 200/min/IP     | No        | Yes (JWT)     |
 | 4 | POST /api/v1/gap          | 30/min          | 200/min/IP     | No        | Yes (JWT)     |
 | 5 | POST /api/v1/compliance   | 30/min          | 200/min/IP     | No        | Yes (JWT)     |
@@ -42,6 +42,8 @@ Utility endpoints (no per-route rate limit, exempt from global limiter):
 | resumes          | Yes | Owner select/insert/update/delete             |
 | resume_versions  | Yes | Owner select/insert/delete (no update = immutable) |
 | shared_scores    | Yes | Owner insert/select/delete; public read via SECURITY DEFINER RPC only |
+| ai_usage_daily   | Yes | No direct client access; authenticated SECURITY DEFINER quota RPC only |
+| ai_global_usage_daily | Yes | No direct client access; authenticated SECURITY DEFINER quota RPC only |
 
 ---
 
@@ -60,10 +62,13 @@ Utility endpoints (no per-route rate limit, exempt from global limiter):
 - Pydantic `max_length` on all string fields (50,000 char ceiling)
 - List length limits on structured arrays (e.g., `experience` max 20, `bullets` max 30)
 - HuggingFace circuit breaker: opens after 5 failures, rejects for 60s with `Retry-After`
+- Atomic database-backed AI quota: 10 weighted units/user/day and 500 units globally/day
+- AI weights reflect expected provider cost: summary 1, cover letter 2, rewrite 5
+- Quota enforcement fails closed before provider calls when production quota storage is unavailable
 - Client IP extraction: rightmost X-Forwarded-For entry (spoof-resistant, configurable via `TRUSTED_PROXY_HOPS`)
 
 **Residual risk**:
-- Rate limiting is per-process in-memory; horizontal scaling needs Redis-backed limiter
+- Burst rate limiting remains per-process in-memory; durable daily AI quotas remain effective across restarts and workers
 - Distributed attacks from many IPs bypass per-IP limits (Cloudflare WAF would mitigate)
 
 **Severity**: Medium
@@ -97,7 +102,7 @@ Utility endpoints (no per-route rate limit, exempt from global limiter):
 
 **Threat**: Attacker crafts job descriptions or resume text that manipulates the AI model to produce unintended output.
 
-**Affected endpoints**: `/summary`, `/rewrite`, `/cover-letter`, `/preview-rewrite`
+**Affected endpoints**: `/summary`, `/rewrite`, `/cover-letter`
 
 **Mitigations in place**:
 - Data delimiters (`<<<`/`>>>`) wrap all user input in AI prompts
@@ -107,6 +112,7 @@ Utility endpoints (no per-route rate limit, exempt from global limiter):
 - Output is parsed and validated through Pydantic response models
 - Rate limiting (10-15/min) limits mass probing
 - Circuit breaker prevents cascading failures from repeated AI abuse
+- Public `/preview-rewrite` is rule-based and makes no provider request
 
 **Residual risk**:
 - Regex sanitizer is defense-in-depth, not a complete injection barrier
@@ -162,7 +168,7 @@ CSP `script-src` includes `'unsafe-inline'` because Next.js requires it for fram
 **Threat**: Leaking sensitive user data (resumes, job descriptions, personal info).
 
 **Mitigations in place**:
-- Supabase RLS enforces row-level access on all 5 tables
+- Supabase RLS enforces row-level access on all 7 tables
 - Resume data stored in Supabase with owner-only RLS policies
 - Sentry PII filtering: `before_send` strips request bodies, auth headers, stack frame variables, and extras
 - `send_default_pii=False` and `include_local_variables=False` in Sentry config
@@ -170,7 +176,7 @@ CSP `script-src` includes `'unsafe-inline'` because Next.js requires it for fram
 - OpenAPI/Swagger docs disabled in production
 - HSTS enabled in production (31536000s)
 - Structured access logs record metadata only (no request bodies, no resume content)
-- Account deletion cascades through all 5 tables and auth.users via SECURITY DEFINER RPC
+- Account deletion cascades through all user-owned tables and auth.users via SECURITY DEFINER RPC
 - Data export includes all 5 tables for GDPR portability
 
 **Residual risk**:
@@ -186,20 +192,20 @@ CSP `script-src` includes `'unsafe-inline'` because Next.js requires it for fram
 **Threat**: Unauthorized access to user-specific data or protected functionality.
 
 **Mitigations in place**:
-- Supabase JWT (HS256) verification on 7 protected backend routes via `require_auth` dependency
+- Supabase JWT verification on 7 protected backend routes via `require_auth`: ES256/RS256 through project JWKS, with HS256 retained as a legacy migration fallback
 - 2 public routes retained by design: `/analyze` (PLG SEO) and `/preview-rewrite` (conversion)
-- JWT validation checks: algorithm (HS256 only), audience (`authenticated`), expiration, `sub` claim
+- JWT validation checks: allow-listed algorithm, audience (`authenticated`), expiration, issuer for asymmetric tokens, and `sub` claim
 - Missing/expired/invalid/wrong-secret/wrong-audience/missing-sub tokens all return 401
 - Algorithm confusion attacks (alg:none, HS384) are rejected
 - Frontend `authFetch` utility attaches session token to all protected API calls
-- Supabase RLS: 5 tables with owner-scoped policies (`auth.uid() = user_id`)
+- Supabase RLS: owner-scoped policies plus no direct client access to aggregate quota counters
 - Server actions filter by `user_id` in addition to RLS (defense-in-depth)
 - Resume ownership verified at application layer before mutations
 - 503 returned if server has no JWT secret configured (fail-closed)
 
 **Residual risk**:
 - JWT access tokens are not revocable server-side (lowered TTL to 900s is recommended)
-- No per-user usage quotas beyond rate limits
+- Production quota configuration and the protected 20-test RLS workflow still require fresh deployment proof
 
 **Severity**: Low
 
@@ -251,15 +257,15 @@ CSP `script-src` includes `'unsafe-inline'` because Next.js requires it for fram
 
 | Suite              | Tests | Coverage Area                                              |
 |-------------------|-------|------------------------------------------------------------|
-| Unit tests         | ~200  | ATS scorer, compliance, keyword extractor, PDF, AI parsing |
+| Unit tests         | 300+  | ATS scorer, compliance, keyword extractor, PDF, AI parsing, quotas |
 | Security tests     | ~60   | Schema bounds, header injection, path traversal, adversarial |
 | Auth tests         | 80    | JWT verification, algorithm confusion, expiry, audience    |
-| Integration tests  | ~50   | All 9 endpoints, error codes, malformed requests           |
+| Integration tests  | 100+  | All 9 endpoints, auth, quota denial, error codes, malformed requests |
 | Property-based     | ~16   | Hypothesis-generated random inputs, auth, rate limit, PDF  |
 | Rate limit         | ~15   | Global limiter, per-route limits, client IP extraction     |
 | RLS isolation      | 20    | Cross-user select/insert/update/delete on all 5 tables     |
 | E2E (Playwright)   | 50    | Landing, tools, auth, mobile, accessibility, failure paths |
-| **Total**          | **~531** | **481 backend + 24 skipped + 50 Playwright**           |
+| **Total**          | **609 executed locally** | **535 backend passed + 24 production-credential tests skipped + 50 Playwright in the established E2E suite** |
 
 ---
 
@@ -277,11 +283,13 @@ CSP `script-src` includes `'unsafe-inline'` because Next.js requires it for fram
 | AI data delimiters (<<<>>>)     | Backend    | Active    |
 | AI prompt sanitization          | Backend    | Active    |
 | HF circuit breaker              | Backend    | Active    |
+| Durable weighted AI quota       | Backend/DB | Code complete; production proof pending |
+| Deterministic public preview    | Backend    | Active in code |
 | CORS (allow-list)               | Backend    | Active    |
 | Security headers                | Both       | Active    |
 | CSP (no unsafe-eval prod)       | Frontend   | Active    |
 | HSTS                            | Backend    | Active    |
-| RLS (5 tables, Supabase)        | Database   | Active    |
+| RLS (7 tables, Supabase)        | Database   | Active in schema; fresh production proof pending |
 | Sentry PII filtering            | Both       | Active    |
 | Client IP spoof resistance      | Backend    | Active    |
 | Pre-commit hooks (ruff+eslint)  | Dev        | Active    |
@@ -315,4 +323,4 @@ CSP `script-src` includes `'unsafe-inline'` because Next.js requires it for fram
 1. **Cloudflare WAF rules** — Add rate limiting at the edge for distributed attacks
 2. **pip --require-hashes** — Pin package integrity in requirements.txt
 3. **Lower JWT access token TTL** — Set to 900s (15 min) in Supabase dashboard to limit token reuse window
-4. **Redis-backed rate limiter** — Required if horizontal scaling beyond single worker
+4. **Edge/distributed burst controls** — Add provider-level protection if traffic or abuse shows that per-process IP limits are insufficient; durable AI quotas already cover provider spend across workers

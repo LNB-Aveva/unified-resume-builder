@@ -276,7 +276,7 @@ export default function NewGradsPage() {
             Land Your First Role — Start Free Today
           </h2>
           <p className="text-violet-100 mb-8">
-            9 free AI tools for new grads. No credit card. No limits. Just results.
+            9 resume tools for new grads. No credit card. Fair-use access. Clear results.
           </p>
           <a
             href="/sign-up"

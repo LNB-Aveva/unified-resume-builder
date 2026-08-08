@@ -9,7 +9,7 @@
 
 - **Feature:** Prompt 3 launch-gate audit
 - **Branch:** `fix/render-starter-blueprint`
-- **Status:** Session 129 PAUSED for localhost approval. Production ES256 auth is proven; Render Blueprint Starter correction is verified but uncommitted.
+- **Status:** Session 129 Gate 1 code, documentation, and combined localhost approval complete; final checks/commit/push are in progress.
 
 ---
 
@@ -34,10 +34,16 @@
   - Owner production proof passed: a real signed-in Supabase user generated a 61-word AI Summary on `resumeai.cv`; the ES256/JWKS auth blocker is closed.
   - Found the Blueprint still set `plan: free`, explaining why the owner dashboard again showed Free despite the approved Starter upgrade.
   - Changed `render.yaml` to `plan: starter` and replaced stale free-tier sleep notes with DEC-030 Starter guidance.
-  - Verification passed: Blueprint parses to service `unified-resume-builder-api`, plan `starter`; Ruff and ESLint clean; localhost returned 200; diff check clean.
-- **Files Changed:** `render.yaml`, `.ai-sync/WORKLOG.md`
-- **Next:** Obtain localhost approval, commit/push/PR the Blueprint correction, then owner confirms the Render dashboard shows Starter after Blueprint sync.
-- **Blockers:** Localhost approval for the Blueprint correction. Remaining Gate 1 owner proofs after that: Hugging Face usage review, production RLS run, certified CMP status, and approval of accurate fair-use copy/quota behavior.
+  - Owner approved the Blueprint change; committed and pushed checkpoint `dc32293` on `fix/render-starter-blueprint`.
+  - Implemented durable atomic AI quotas in Supabase (10 weighted units/user/day, 500 globally/day; weights 1/2/5), production fail-closed behavior, and provider-call denial tests for all three AI routes.
+  - Replaced the public paid-inference preview with a deterministic transformation; expanded share links to full UUIDs and added owner revocation; corrected public usage copy to fair-use.
+  - Added migration 007, restricted sensitive function grants, hardened retention cleanup failure handling, and added a protected manual production RLS workflow.
+  - Reconciled the current Prompt 3 audit, launch program, deployment/runbooks, and threat model so unresolved production proofs remain explicit NO-GO items.
+  - Verification passed: focused backend `190 passed, 4 skipped`; final full backend `535 passed, 24 skipped`; Ruff; ESLint; 32-route production build; workflow YAML parse; diff check.
+  - Restarted the backend from the current worktree and proved localhost frontend 200, health 200, and deterministic preview output. Owner approved the combined localhost UI on 2026-08-08.
+- **Files Changed:** Gate 1 backend, frontend, Supabase, workflow, deployment, test, and launch-memory files on `fix/render-starter-blueprint`.
+- **Next:** Run final Ruff/ESLint/build checks, commit/push, and open the Gate 1 PR. After merge, follow the owner rollout in the documented order.
+- **Blockers:** No repository-side blocker. Production closure still requires owner-controlled migration/configuration, Starter dashboard proof, 20/20 protected RLS run, Hugging Face usage/budget review, and certified CMP proof before ads.
 
 ### Session 127 (Copilot) — 2026-08-07
 - **Agent:** copilot

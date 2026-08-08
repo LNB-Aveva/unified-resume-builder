@@ -4,6 +4,33 @@
 
 ---
 
+## Session 129 (Copilot) — 2026-08-08
+
+**Branch:** `fix/render-starter-blueprint`
+
+**Scope:** Prompt 3 Gate 1 production proof and abuse/data-control hardening
+
+### Completed
+
+- Production ES256/JWKS authentication proved by an owner-signed 61-word AI Summary on `resumeai.cv`.
+- Render Blueprint corrected from `free` to the approved `starter`; checkpoint `dc32293` pushed after localhost approval.
+- Atomic Supabase AI quota added with 1/2/5 route weights, 10 units/user/day, and 500 units globally/day; production quota failures stop provider calls.
+- Public preview made deterministic, full UUID share links and in-flow revocation added, and current product copy changed to fair-use.
+- Migration/function grants and retention cleanup hardened; protected manual production RLS workflow added.
+- Prompt 3 audit, launch program, deployment documentation, and threat model reconciled to the current strict NO-GO state.
+
+### Evidence
+
+- Focused backend: `190 passed, 4 skipped, 14 warnings in 4.87s`.
+- Full backend: `535 passed, 24 skipped, 26 warnings in 149.11s`.
+- Ruff and frontend ESLint passed.
+- Next.js production build generated all 32 routes.
+- Quota denial tests prove Hugging Face is not called for summary, cover letter, or rewrite when denied.
+
+### Pending
+
+The owner approved the combined localhost UI on 2026-08-08 after the current backend returned the deterministic preview result. Final commit/push remain. Production closure then requires migration 007 plus Render quota configuration, verified Starter status, a fresh 20/20 RLS workflow run, Hugging Face usage/budget review, and certified CMP proof before ads.
+
 ## Session 127 (Copilot) — 2026-08-07
 
 **Branch:** `fix/prompt-gaps-closure`
@@ -162,7 +189,7 @@ Codex ran Prompt 3 against worktree branch (PR #31, now conflicting). Re-triaged
 | RLS unverified in prod | Blocker | **Codex task** — R11 runbook |
 | SMTP unverified | Blocker | **Codex task** — R13 checklist |
 | Rollback CLI missing | High | **Codex task** — R12 guide |
-| Marketing claims | High | **Defensible** — "no limits" means no paywall |
+| Marketing claims | High | **Resolved later** — public copy now states fair-use limits instead of "no limits" |
 
 ### Changes
 

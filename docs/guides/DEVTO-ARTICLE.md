@@ -71,7 +71,7 @@ This was the hardest part. Resumes contain PII, so I took security seriously:
 Both hosting services have generous free tiers:
 
 - **Vercel** (frontend): Auto-deploys from `main` branch, edge CDN, custom domain support
-- **Render** (backend): Free web service, auto-sleeps after 15min inactivity (cold starts take ~30s)
+- **Render** (backend): Starter web service, pinned in the Blueprint to avoid idle cold starts
 
 Total monthly cost: $0 (domain registration excluded).
 
