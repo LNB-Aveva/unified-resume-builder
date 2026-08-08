@@ -162,11 +162,12 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 |---|---|---|
 | Quota migration/configuration | **Blocker** | Back up Supabase; apply migration 007; add Render `SUPABASE_ANON_KEY`; deploy with quota enforcement; verify allowed and denied calls. |
 | Render Starter | **Blocker** | Merge/synchronize the Blueprint and confirm the dashboard badge is Starter. |
-| RLS re-verification | **Blocker** | Configure the protected `production-rls` GitHub Environment and dispatch `.github/workflows/production-rls.yml`; retain only the 20/20 result. |
-| TCF CMP for AdSense (Gate 1 §E) | **Blocker before ad units** | Confirm Google Privacy & messaging European regulations message is published for resumeai.cv in the AdSense dashboard. |
-| HF provider incident/budget review | **Blocker** | Rotation is complete. Record unexpected usage/charges yes/no and confirm pay-as-you-go/budget settings do not exceed the approved ceiling. |
+| RLS re-verification | **CLOSED — 2026-08-08** | 20/20 pass against production Supabase confirmed by owner terminal run (all 5 tables: profiles, jobs, resumes, resume_versions, shared_scores + cascade delete). |
+| TCF CMP for AdSense (Gate 1 §E) | **DEFERRED — owner decision** | Site is ad-free; Google site review pending. European regulations message not yet created (AdSense dashboard confirmed 2026-08-08). Required before placing any ad unit slots. Not a blocker for current ad-free launch. See memory: project_future_tcf_cmp. |
+| HF provider incident/budget review | **CLOSED — 2026-08-08** | Unexpected usage: NO. HF billing shows 34 requests via Together AI, <$0.01, $0.00 charges for Aug 1–Sep 1 period. No unauthorized use. |
+| `Unlimited` / `Usage Limits: none` copy | **DEFERRED — owner decision, accepted risk** | User accepted risk of leaving current copy. If AdSense reviewer flags it, the fix is a 2-line change in `frontend/src/app/page.tsx:865` (badge text) — estimated 5 minutes. Note: Codex branch `fix/render-starter-blueprint` already removes this copy as part of Gate 1 remediation; merging that branch closes this automatically. |
 
-**Gate 2 verdict: NO-GO pending production proof.** Code-side Gate 1 remediation is complete and locally green. Gate upgrades only after quota migration/configuration, Starter confirmation, 20/20 RLS, Hugging Face incident/budget review, and certified CMP proof before ads.
+**Gate 2 verdict: CONDITIONAL NO-GO — Codex Gate 1 items remaining.** All Claude-owned Gate 2 items are closed or deferred by owner decision (RLS ✓, HF usage ✓, ES256 ✓, TCF CMP deferred, Unlimited deferred). Remaining blockers are Codex Gate 1 production items: quota migration 007, Render Starter Blueprint sync, and quota env vars. Gate 2 upgrades to GO once those are deployed and Gate 4/6 close.
 
 ---
 
