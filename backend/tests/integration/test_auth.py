@@ -5,8 +5,10 @@ import uuid
 
 import jwt
 import pytest
+from cryptography.hazmat.primitives.asymmetric import ec
 from httpx import ASGITransport, AsyncClient
 
+import app.core.auth as auth_module
 from app.main import app
 
 TEST_JWT_SECRET = "test-jwt-secret-for-unit-tests-only-must-be-32-bytes-minimum"
@@ -196,6 +198,75 @@ class TestProtectedRoutesAcceptValidToken:
             "personal": {"full_name": "Test User", "email": "t@t.com"},
         }, headers=auth_headers)
         assert r.status_code == 200
+
+
+class TestAsymmetricSupabaseTokens:
+    @pytest.fixture
+    def es256_verifier(self, monkeypatch):
+        private_key = ec.generate_private_key(ec.SECP256R1())
+        supabase_url = "https://project-ref.supabase.co"
+
+        class SigningKey:
+            key = private_key.public_key()
+
+        class JwksClient:
+            @staticmethod
+            def get_signing_key_from_jwt(_token):
+                return SigningKey()
+
+        monkeypatch.setattr(auth_module.settings, "SUPABASE_URL", supabase_url)
+        monkeypatch.setattr(auth_module, "_get_jwks_client", lambda _url: JwksClient())
+        return private_key, supabase_url
+
+    @pytest.mark.anyio
+    async def test_es256_supabase_token_is_accepted(self, client, es256_verifier):
+        private_key, supabase_url = es256_verifier
+        token = jwt.encode(
+            {
+                "sub": str(uuid.uuid4()),
+                "aud": "authenticated",
+                "role": "authenticated",
+                "iss": f"{supabase_url}/auth/v1",
+                "iat": time.time(),
+                "exp": time.time() + 3600,
+            },
+            private_key,
+            algorithm="ES256",
+            headers={"kid": "test-signing-key"},
+        )
+
+        response = await client.post(
+            "/api/v1/compliance",
+            json={"resume_text": "John Doe\njohn@test.com\nSummary\nSkills: Python"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == 200
+
+    @pytest.mark.anyio
+    async def test_es256_token_with_wrong_issuer_is_rejected(self, client, es256_verifier):
+        private_key, _supabase_url = es256_verifier
+        token = jwt.encode(
+            {
+                "sub": str(uuid.uuid4()),
+                "aud": "authenticated",
+                "role": "authenticated",
+                "iss": "https://attacker.example/auth/v1",
+                "iat": time.time(),
+                "exp": time.time() + 3600,
+            },
+            private_key,
+            algorithm="ES256",
+            headers={"kid": "test-signing-key"},
+        )
+
+        response = await client.post(
+            "/api/v1/compliance",
+            json={"resume_text": "Test resume"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert response.status_code == 401
 
 
 class TestPublicRoutesNoAuth:
