@@ -862,7 +862,7 @@ export default function Home() {
                       ["AI Summary Generator", "included", "premium"],
                       ["PDF Export (3 templates)", "included", "premium"],
                       ["Job Application Tracker", "included", "included"],
-                      ["Usage Limits", "none", "restricted"],
+                      ["Usage Limits", "fair-use", "restricted"],
                     ] as [string, string, string][]).map(([feature, us, them]) => (
                       <tr key={feature} className="border-b border-gray-50 dark:border-gray-700/50 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors">
                         <td className="px-6 py-3.5 text-sm text-gray-700 dark:text-gray-200">{feature}</td>
@@ -870,7 +870,7 @@ export default function Home() {
                           {us === "included" ? (
                             <svg className="mx-auto h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
                           ) : (
-                            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">Unlimited</span>
+                            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">Fair-use</span>
                           )}
                         </td>
                         <td className="px-6 py-3.5 text-center">

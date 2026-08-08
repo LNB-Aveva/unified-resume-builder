@@ -8,7 +8,7 @@ import { getScoreStyle } from "../lib/score-styles";
 import Spinner from "./Spinner";
 
 function generateId(): string {
-  return crypto.randomUUID().replace(/-/g, "").slice(0, 10);
+  return crypto.randomUUID().replace(/-/g, "");
 }
 
 export default function ShareableScoreWidget() {
@@ -17,8 +17,10 @@ export default function ShareableScoreWidget() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [shareId, setShareId] = useState<string | null>(null);
   const [score, setScore] = useState<ATSScore | null>(null);
   const [copied, setCopied] = useState(false);
+  const [revoking, setRevoking] = useState(false);
 
   async function handleGenerate() {
     if (!jobText.trim() || !resumeText.trim()) {
@@ -28,6 +30,7 @@ export default function ShareableScoreWidget() {
     setLoading(true);
     setError(null);
     setShareUrl(null);
+    setShareId(null);
     setScore(null);
 
     try {
@@ -63,11 +66,30 @@ export default function ShareableScoreWidget() {
 
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://resumeai.cv";
       setShareUrl(`${siteUrl}/score/${id}`);
+      setShareId(id);
       setScore(data);
     } catch (err) {
       setError(connectionError(err));
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function revokeShareLink() {
+    if (!shareId) return;
+    setRevoking(true);
+    setError(null);
+    try {
+      const supabase = createClient();
+      const { error: dbError } = await supabase.from("shared_scores").delete().eq("id", shareId);
+      if (dbError) throw new Error("Could not revoke this link. Please try again.");
+      setShareUrl(null);
+      setShareId(null);
+      setScore(null);
+    } catch (err) {
+      setError(connectionError(err));
+    } finally {
+      setRevoking(false);
     }
   }
 
@@ -174,9 +196,16 @@ export default function ShareableScoreWidget() {
               </code>
               <button
                 onClick={copyToClipboard}
-                className="shrink-0 rounded-lg bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 text-xs font-semibold text-white transition-colors duration-150"
+                className="shrink-0 min-h-11 rounded-lg bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 text-xs font-semibold text-white transition-colors duration-150"
               >
                 {copied ? "Copied!" : "Copy"}
+              </button>
+              <button
+                onClick={revokeShareLink}
+                disabled={revoking}
+                className="shrink-0 min-h-11 rounded-lg border border-red-200 dark:border-red-800 px-4 py-2.5 text-xs font-semibold text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950 disabled:opacity-50 transition-colors duration-150"
+              >
+                {revoking ? "Revoking…" : "Revoke"}
               </button>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
@@ -188,7 +217,7 @@ export default function ShareableScoreWidget() {
           {/* Sign-up nudge */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-700 pt-4">
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              Want to fix the {score.total_missing} missing keywords? Get AI rewrites, formatting checks, and PDF export — all free.
+              Want to fix the {score.total_missing} missing keywords? Get fair-use AI rewrites, formatting checks, and PDF export with a free account.
             </p>
             <a
               href="/sign-up"

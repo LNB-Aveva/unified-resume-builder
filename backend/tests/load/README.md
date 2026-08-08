@@ -21,9 +21,9 @@ python tests/load/load_test.py --base-url http://127.0.0.1:8000
 The token is sent only to the seven protected routes. It can instead be supplied with
 `--token`. Defaults are 20 requests per high-concurrency route and 5 requests per
 low-concurrency route. Adjust them deliberately with `--deterministic-requests` and
-`--ai-requests`; stay within Hugging Face and application rate limits. The preview
-route currently calls Hugging Face despite belonging to the requested 20-concurrency
-scenario, so use the default against production only with an approved quota budget.
+`--ai-requests`; stay within Hugging Face and application fair-use limits. The public
+preview route is deterministic and quota-free; authenticated summary, cover-letter,
+and rewrite requests consume durable daily AI units.
 
 Each output line reports throughput (`rps`), p50/p95/p99 response latency, non-2xx or
 transport error rate, and timeout rate. A high error rate with HTTP 429 responses means

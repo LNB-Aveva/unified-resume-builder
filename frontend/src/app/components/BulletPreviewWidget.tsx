@@ -40,7 +40,7 @@ export default function BulletPreviewWidget() {
         body: JSON.stringify({ bullet: trimmed }),
       });
       if (res.status === 429) {
-        setError("Preview limit reached. Create a free account for unlimited AI rewrites.");
+        setError("Preview limit reached. Create a free account for fair-use AI access.");
         return;
       }
       if (!res.ok) {
@@ -101,11 +101,11 @@ export default function BulletPreviewWidget() {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            Rewriting…
+            Improving…
           </>
         ) : (
           <>
-            Rewrite This Bullet
+            Preview an Improvement
             <svg className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
@@ -156,7 +156,7 @@ export default function BulletPreviewWidget() {
 
           {/* After */}
           <div className="rounded-xl border border-indigo-200 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-950/40 p-4">
-            <p className="text-xs font-semibold uppercase tracking-wider text-indigo-500 dark:text-indigo-400 mb-2">After (AI rewritten)</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-indigo-500 dark:text-indigo-400 mb-2">After (rule-based preview)</p>
             <p className="text-sm text-gray-900 dark:text-gray-100 font-medium leading-relaxed">{result.rewritten}</p>
           </div>
 
@@ -164,7 +164,7 @@ export default function BulletPreviewWidget() {
           {used && (
             <div className="mt-6 rounded-xl bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950/40 dark:to-violet-950/40 border border-indigo-100 dark:border-indigo-800/50 p-5 text-center">
               <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
-                Rewrite all your bullets with keyword targeting — free with an account.
+                Use AI to rewrite all your bullets with keyword targeting — fair-use access with a free account.
               </p>
               <a
                 href="/sign-up"

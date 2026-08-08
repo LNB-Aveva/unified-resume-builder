@@ -11,15 +11,17 @@ For local dev, copy `backend/.env.example` to `backend/.env`.
 
 | Variable | Required | Where set | Default | What it controls | What breaks without it |
 |----------|----------|-----------|---------|-----------------|----------------------|
-| `HUGGINGFACE_API_KEY` | Yes (for AI features) | Render dashboard / `.env` | `""` | Auth for HuggingFace Inference API | `/summary`, `/rewrite`, `/cover-letter`, `/preview-rewrite` return 503 |
+| `HUGGINGFACE_API_KEY` | Yes (for AI features) | Render dashboard / `.env` | `""` | Auth for HuggingFace Inference API | `/summary`, `/rewrite`, and `/cover-letter` return 503; deterministic preview remains available |
 | `FRONTEND_URL` | Yes (production) | Render dashboard | `""` | CORS allowed origins (comma-separated) | Frontend requests blocked by CORS in production |
 | `PORT` | Auto | Injected by Render | `8000` | Server listen port | N/A — Render always injects this |
 | `RENDER` | Auto | Injected by Render | `""` | Detects production (disables /docs, enables HSTS) | Swagger UI stays enabled in production |
 | `ENV` | Optional | Render dashboard | `""` | Alternative production detection (`ENV=production`) | Falls back to `RENDER` env var check |
-| `PYTHON_VERSION` | Yes | render.yaml | `3.11.0` | Python runtime on Render | Render picks its own default |
+| `PYTHON_VERSION` | Yes | render.yaml | `3.13.0` | Python runtime on Render | Render picks its own default |
 | `SENTRY_DSN` | No | Render dashboard / `.env` | `""` | Sentry error tracking DSN | Error tracking disabled (no errors sent to Sentry) |
 | `SUPABASE_URL` | Yes (production) | Render dashboard / `.env` | `""` | Supabase project URL used to fetch public ES256/RS256 signing keys | Protected routes using current Supabase tokens return 503 |
+| `SUPABASE_ANON_KEY` | Yes (production) | Render dashboard / `.env` | `""` | Calls the atomic AI quota RPC with each authenticated user's JWT | AI routes fail closed with 503 when quota enforcement is enabled |
 | `SUPABASE_JWT_SECRET` | During HS256 migration only | Render dashboard / `.env` | `""` | Legacy HS256 token verification fallback | Legacy HS256 tokens cannot be verified |
+| `AI_QUOTA_ENFORCEMENT` | Yes (production) | render.yaml / `.env` | `true` when `ENV=production`, otherwise `false` | Enables durable daily user/global AI units | Local dev bypasses the quota unless explicitly enabled; production fails closed |
 | `DEBUG` | No | `.env` | `False` | Debug mode flag | N/A — defaults to off |
 
 ## Frontend (Next.js on Vercel)
@@ -38,7 +40,7 @@ For local dev, copy `frontend/.env.example` to `frontend/.env.local`.
 | `NEXT_PUBLIC_SENTRY_DSN` | No | Vercel dashboard / `.env.local` | `""` | Sentry DSN for frontend error tracking (PII-safe) | Frontend errors not reported to Sentry |
 | `NEXT_PUBLIC_SENTRY_ENV` | No | Vercel dashboard / `.env.local` | `"production"` | Environment tag for Sentry + staging banner | Defaults to "production"; no staging indicator |
 | `CRON_SECRET` | Yes (for cleanup) | Vercel dashboard | — | Auth token for `/api/cron/cleanup` endpoint | Expired shared scores never cleaned up |
-| `SUPABASE_SERVICE_ROLE_KEY` | No | Vercel dashboard | — | Admin Supabase key for cleanup RPC (falls back to anon key) | Cleanup uses anon key (works if function has PUBLIC execute) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes (for cleanup) | Vercel dashboard | — | Server-only key for the service-role-restricted cleanup RPC | Cleanup returns 503 and the scheduled workflow fails/alerts |
 
 ## Production Values (Secrets Redacted)
 
@@ -51,5 +53,7 @@ For local dev, copy `frontend/.env.example` to `frontend/.env.local`.
 | `HUGGINGFACE_API_KEY` | (set in Render — secret) |
 | `FRONTEND_URL` | `https://resumeai.cv` |
 | `SUPABASE_URL` | `https://pagdtcttkviglyoeuagy.supabase.co` |
+| `SUPABASE_ANON_KEY` | (set in Render — public project key, but keep dashboard values out of logs) |
 | `SUPABASE_JWT_SECRET` | (legacy HS256 fallback in Render; do not expose to the frontend) |
+| `AI_QUOTA_ENFORCEMENT` | `true` |
 | `CRON_SECRET` | (set in Vercel + GitHub Actions secret — generate with `openssl rand -hex 32`) |

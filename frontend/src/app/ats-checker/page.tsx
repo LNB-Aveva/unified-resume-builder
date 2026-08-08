@@ -40,7 +40,7 @@ const faqItems = [
   },
   {
     q: "Can I check my resume for free?",
-    a: "Yes, completely free with no limits. Unlike other tools that restrict you to 2 free scans per month, ResumeAI lets you check your resume against as many job descriptions as you want. Free account, no credit card, no paywall.",
+    a: "There is currently no subscription fee, credit card, or paywall. Fair-use limits protect service availability, especially for AI features, and may be adjusted as usage grows.",
   },
   {
     q: "Does ATS check formatting too?",
@@ -292,7 +292,7 @@ export default function ATSCheckerPage() {
                   ["AI bullet rewriter", true, false, false],
                   ["AI cover letter generator", true, false, false],
                   ["PDF export (3 templates)", true, false, false],
-                  ["Unlimited free scans", true, false, false],
+                  ["Free scans with fair-use limits", true, false, false],
                   ["Free account (no credit card)", true, false, false],
                 ].map(([feature, us, jobscan, others]) => (
                   <tr key={feature as string}>

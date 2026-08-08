@@ -32,7 +32,7 @@ Verified on 2026-07-29; older session-log claims are not authoritative.
 | Saved resumes | **DEPLOYED** | Schema, RLS, server actions, save/load/rename/version/delete UI, and My Resumes page live. Migration SQL applied to production Supabase (2026-08-01). |
 | Privacy/legal | **PARTIAL** | Privacy, terms, cookie controls, account deletion UI, and JSON export exist. The current custom cookie banner is not a Google-certified TCF CMP. |
 | AdSense | **WIRED** | Publisher ID `pub-7869093425931175` obtained (2026-08-03). `ads.txt` active, AdSense script in `<head>` via Consent Mode v2, CSP covers AdSense domains. Set `NEXT_PUBLIC_ADSENSE_ID=ca-pub-7869093425931175` in Vercel to activate. Ad unit placements pending Google approval. |
-| Observability | **COMPLETE** | Backend Sentry (3,390 sessions, 1 release), frontend Sentry (@sentry/nextjs with PII-safe config, CSP fixed for US regional endpoint), structured access logs, UptimeRobot alerts (email + push), all services on free tiers with no payment methods. |
+| Observability | **PARTIAL** | Backend/frontend Sentry are PII-safe, structured logs and UptimeRobot alerts are live, and cleanup failures now fail the workflow. Render Starter and Hugging Face usage/budget status require fresh dashboard proof. |
 | Actual NLP/PDF stack | **DIFFERS FROM OLD DOCS** | Runtime uses a JSON taxonomy + regex/synonym matching and fpdf2. spaCy, NLTK, scikit-learn, and WeasyPrint are not runtime dependencies. |
 
 ## Findings — worst first
@@ -51,10 +51,10 @@ Severity assumes an unknown user expects every advertised feature to work, even 
 | F8 | **Resolved** | Product truth | `README.md`; `frontend/src/app/keyword-analyzer/page.tsx`; `frontend/src/app/page.tsx` | All public spaCy/NLTK/scikit-learn/WeasyPrint claims replaced with accurate taxonomy/regex/fpdf2 descriptions. | S |
 | F9 | **Resolved** | Analytics/AdSense CSP | `frontend/next.config.ts` | CSP updated with GA4 and AdSense domains: `pagead2.googlesyndication.com` (script/img/connect), `doubleclick.net` (frame), `tpc.googlesyndication.com` (frame), `googletagmanager.com` (script). | M |
 | F10 | **Resolved** | AI degradation | `backend/app/services/ai/hf_client.py:43-48`; `backend/app/api/routes/_ai_errors.py:19-38` | Phase 6: HF client retries (3× with backoff), 502/503 mapped correctly, graceful degradation UI. | S |
-| F11 | **Resolved** | Cold start | `.github/workflows/keepalive.yml:1-24`; `frontend/src/app/lib/fetchWithRetry.ts:1-27` | Phase 6: keepalive cron every 13 min, fetchWithRetry with timeout, 90s request timeout. Render Starter upgrade (2026-08-07) eliminates cold starts entirely. | M |
+| F11 | **Verify** | Cold start | `render.yaml`; `.github/workflows/keepalive.yml`; `frontend/src/app/lib/fetchWithRetry.ts` | Blueprint now pins Starter and health checks remain bounded, but the latest dashboard evidence showed Free. Synchronize the Blueprint and retain new Starter proof. | M |
 | F12 | **Resolved** | Dependency hygiene | `backend/requirements.txt`; `backend/requirements-dev.txt`; `frontend/package-lock.json` | Phase 2/3: runtime/dev separation, pip-audit + npm audit in CI, production gate has 0 High vulnerabilities. | M |
 | F13 | **Resolved** | Observability/privacy | `backend/app/main.py:20-27`; `docs/ENV_VARS.md:20` | Phase 10: frontend + backend Sentry wired, PII-safe beforeSend strips request bodies/auth headers, 11 unit tests prove strip. | M |
-| F14 | **Resolved** | Release engineering | `supabase/migrations/`; `docs/DEPLOY.md` | Phase 11: 6 ordered idempotent migrations, branch protection, backup drill executed 2026-08-07 (16.1 KB dump). | L |
+| F14 | **Verify** | Release engineering | `supabase/migrations/`; `docs/DEPLOY.md` | Phase 11: 7 ordered migrations and branch protection exist; migration 007 is additive but still needs backup/application proof. | L |
 | F15 | **Resolved** | Build reliability | `frontend/src/app/layout.tsx` | Fonts self-hosted via `geist` npm package and local Playfair Display woff2. Build no longer requires Google Fonts network access. | S |
 | F16 | **Med** | Content/launch | `frontend/src/app/lib/blog-posts.ts`; `frontend/src/app/blog/` | Only three articles exist. AdSense values original substantive content; approval odds are weaker until more genuinely useful content and author/contact trust signals exist. | M |
 | F17 | **Low** | Schema consistency | `backend/app/schemas/resume.py`; `backend/app/schemas/export.py` | Duplicate resume models use different field names, forcing frontend remapping and increasing save/version migration risk. | M |
@@ -150,7 +150,7 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 | 4.2 Add `resumes` and immutable `resume_versions` tables with ownership, timestamps, indexes, and cascade behavior. | `supabase-schema.sql` | DONE — resumes + resume_versions tables with full RLS (select/insert/update/delete for resumes; select/insert/delete for versions — no update = immutable), CHECK constraints, cascade delete, user_id FK |
 | 4.3 Add save, list, load, rename, version, and delete flows without silently overwriting prior versions. | `frontend/src/app/actions/resume.ts`, `(protected)/resumes/`, `ResumeExporter.tsx`, tools page | DONE — server actions (create/saveVersion/list/load/rename/delete/listVersions), My Resumes page with rename/delete, ResumeExporter save/save-version buttons, tools page loads from ?resume= param |
 | 4.4 Link tracked jobs to the selected resume version with an FK and safe deletion semantics. | `supabase-schema.sql`, `JobTracker.tsx` | DONE — `resume_id` FK on jobs with ON DELETE SET NULL; dropdown in add-job form and job cards for linking/unlinking resumes; Supabase helpers updated; backwards-compatible with existing data |
-| 4.5 Add two-user RLS integration tests covering select/insert/update/delete for profiles, jobs, resumes, and versions. | `backend/tests/integration/test_rls_isolation.py` | DONE — 20 tests (6 profiles, 4 jobs, 4 resumes, 3 versions, 2 shared_scores, 1 cascade) covering cross-user select/insert/update/delete + delete_own_user cascade. **All 20 passed against production Supabase (2026-08-04).** Skipped in CI (needs SUPABASE_SERVICE_ROLE_KEY as GitHub Actions secret). |
+| 4.5 Add two-user RLS integration tests covering select/insert/update/delete for profiles, jobs, resumes, and versions. | `test_rls_isolation.py`; `production-rls.yml` | VERIFY — 20 tests cover cross-user access and cascade deletion. A protected, manually dispatched production workflow now exists; configure its `production-rls` Environment secrets and retain a fresh 20/20 run. |
 | 4.6 Verify `delete_own_user()` in production and make account deletion remove/cascade all resume versions, jobs, profile, and auth identity. | `supabase-schema.sql`, `auth.ts`, `test_rls_isolation.py` | DONE — all tables ON DELETE CASCADE from auth.users; deleteAccount calls delete_own_user RPC which cascades through all 5 tables atomically; test_cascade_deletes_all_owned_data proves end-to-end (profiles, jobs, resumes, resume_versions, shared_scores) |
 | 4.7 Extend data export to include resumes and versions, with an automated completeness test. | `auth.ts`, `ExportDataButton.tsx` | DONE — exportUserData fetches all 5 tables (account, profiles, jobs, resumes with versions, shared_scores); confirmation text lists all data types |
 
@@ -220,8 +220,8 @@ The program now keeps all 12 requested phases separate. Earlier versions merged 
 |---|---|---|
 | 6.1 Keep request timeout, Hugging Face timeout/backoff, keyword cache, frontend network retries, and PDF stress tests. | backend middleware/services, `fetchWithRetry.ts`, tests | DONE |
 | 6.2 Retry `httpx.ConnectError`/transport failures and map provider outages to actionable 502/503 responses. | `hf_client.py`, `_ai_errors.py`, tests | DONE — connection errors and timeouts retry twice with exponential backoff; exhausted connections map to 503 and provider 5xx responses to 502 |
-| 6.3 Test an actual Render sleep/wake cycle from the browser and record time-to-usable; do not treat GitHub cron as an uptime SLA. | `keepalive.yml`, browser tests, ops log | DONE — API cold-start 31.3s (Session 72); warm browser path 2-3s with keepalive cron active (every 13 min); keyword analyzer returns correct results with smooth loading→results transition (Session 85, 2026-07-31) |
-| 6.4 Make keepalive failures fail or alert instead of emitting warnings while the workflow stays green. | `.github/workflows/keepalive.yml` | DONE — 3-attempt retry loop; curl fails the workflow on non-2xx responses or after a 90-second timeout per attempt, triggering GitHub owner notifications |
+| 6.3 Pin the approved always-on Render instance and retain historical Free cold-start evidence for regression comparison. | `render.yaml`, browser tests, ops log | VERIFY — historical Free cold start was 31.3s; Blueprint now declares Starter, but dashboard confirmation is pending. |
+| 6.4 Make health and retention-cleanup failures fail/alert instead of leaving the workflow green. | `.github/workflows/keepalive.yml` | DONE — health has a 3-attempt retry loop; non-200 cleanup emits `::error::` and exits 1, triggering GitHub owner notifications. |
 | 6.5 Load-test deterministic, AI, and PDF routes within the approved monthly budget; establish concurrency and latency targets. | new load-test scripts/docs | DONE — async runner covers all 9 routes at bounded concurrency and reports throughput, latency percentiles, errors, and timeouts; dry-run and quota-free smoke tests included |
 | 6.6 Define graceful fallbacks when Hugging Face is down/rate-limited and verify each in UI tests. | AI components, backend error mapping | DONE — backend circuit opens after 5 failures, rejects for 60s with Retry-After, admits one recovery probe, and resets on success |
 
@@ -257,7 +257,7 @@ Auxiliary measurements:
 - Auth rejection (no token → 503): p50 = 39.5 ms, p95 = 60.3 ms
 - Rate limiter saturation (c=20, n=40): 30 ok, 10 rejected — confirms 30/min enforcement
 
-Concurrency and latency targets (single-worker, free-tier):
+Concurrency and latency targets (single-worker baseline):
 - **p95 target:** < 100 ms for deterministic routes at ≤ 10 concurrent requests
 - **p99 target:** < 150 ms for deterministic routes at ≤ 10 concurrent requests
 - **Rate limiter:** per-route limits enforced correctly (30/min analyze, 10/min AI routes, 5/min preview-rewrite)
@@ -265,8 +265,8 @@ Concurrency and latency targets (single-worker, free-tier):
 
 Coverage limitations:
 - 7 of 9 routes require Supabase JWT auth — baseline requires `SUPABASE_JWT_SECRET` in the environment
-- 2 of 9 routes call HF API — baseline requires `HUGGINGFACE_API_KEY` and incurs quota
-- Production adds network latency + Render free-tier cold starts (~30 s after 15 min idle)
+- 3 of 9 routes call HF API — baseline requires `HUGGINGFACE_API_KEY`; each authenticated request consumes durable AI units
+- Production adds network latency; Render must remain on the Blueprint-pinned Starter instance to avoid the measured Free cold start
 - Single-worker deployment means no inter-worker contention; results represent best-case
 
 ## Phase 7 — UX and accessibility
@@ -304,14 +304,14 @@ Coverage limitations:
 | 8.2 Run mobile and desktop Lighthouse/Core Web Vitals against production and fix failures. | frontend, CI/report | DONE — scores below |
 | 8.3 Publish additional original, expert-reviewed content and add visible author/contact trust signals. | `blog-posts.ts`, blog/contact pages | DONE — 6 substantive guides (expanded from 3). Blog index: "Written by the team behind ResumeAI". Blog articles: JSON-LD `author: { @type: Organization, name: ResumeAI }`. Contact trust signal: `support@resumeai.cv` in footer. |
 | 8.4 Obtain AdSense publisher ID and create account/site entry. | AdSense dashboard | DONE — publisher ID `pub-7869093425931175`, account open, site `resumeai.cv` registered (2026-08-03) |
-| 8.5 Use Google’s certified CMP or another Google-certified TCF CMP; retire the custom banner for ad consent or limit it to non-ad preferences. | consent integration, privacy page | DONE — Google Consent Mode v2 in layout.tsx head (default denied for all 4 signals: ad_storage, ad_user_data, ad_personalization, analytics_storage). CookieConsent banner updates consent on Accept/Reject. AdSense script loaded statically in head, respects Consent Mode natively. Privacy page updated with advertising cookie disclosure. |
+| 8.5 Use Google’s certified CMP or another Google-certified TCF CMP; retire the custom banner for ad consent or limit it to non-ad preferences. | AdSense dashboard, consent integration, privacy page | BLOCKED BEFORE ADS — Consent Mode v2 and the custom preference banner are not evidence of a Google-certified TCF CMP. Owner must publish/verify the AdSense European regulations message before any ad units go live. |
 | 8.6 Add consent-gated AdSense script, compliant placements, reserved dimensions, and CSP directives. | layout, ad component, `next.config.ts` | DONE — AdSense script in layout.tsx head (Consent Mode v2 handles privacy). AdUnit component ready (`AdUnit.tsx`) with consent check, reserved dimensions, responsive format. CSP covers `pagead2.googlesyndication.com`, `doubleclick.net`, `tpc.googlesyndication.com`. Ad placements to be added after Google approves the site and ad units are created. |
 | 8.7 Publish correct `ads.txt` at the root and verify crawler access. | `frontend/public/ads.txt` | DONE — `google.com, pub-7869093425931175, DIRECT, f08c47fec0942fa0` active. Production verified (2026-08-05): `curl https://resumeai.cv/ads.txt` returns correct content, HTTP 200. |
 | 8.8 Validate policy, navigation, content, and ad density before submission. | production site | PARTIAL (code done; awaiting Google approval) — All owner actions now complete: `NEXT_PUBLIC_ADSENSE_ID=ca-pub-7869093425931175` set in Vercel Production+Preview (2026-08-05, 2d ago). Payments profile set up: Individual account, Laxmi Narayana Bingi, Aurora IL 60504 (2026-08-05). Site registered, ads.txt Authorized. Site status: "Requires review" → now unblocked (payments done). Canonical URL fix (PR #41) merged and live in production (commit 239f9bd). Remaining: (1) Wait for Google site review completion — external, no action needed. (2) After approval: create ad units in AdSense → Ads → By ad unit, provide slot IDs to Claude, Claude places `<AdUnit slot="..." />` on chosen pages. |
 
 **Definition of Done:** Production passes CWV targets, has substantial original content, uses a certified CMP where required, serves valid ads.txt, and contains policy-compliant ad placements.
 
-**Exit gate:** AdSense pre-submission checklist is signed off with no placeholders or blocked items. Google’s current CMP requirement: <https://support.google.com/adsense/answer/13554116>.
+**Exit gate:** **NOT MET FOR MONETIZED LAUNCH.** Public content/SEO/ads.txt are ready, but certified CMP status and live ad placement/density review remain unverified. Google’s current CMP requirement: <https://support.google.com/adsense/answer/13554116>.
 
 **Reverification (2026-08-05, Session 112):** All 8 tasks independently verified from scratch. One fix applied:
 - **8.1 canonical URL gap:** 5 pages (blog, sign-in, sign-up, privacy, terms) had no `alternates.canonical` in their metadata exports and inherited the root layout’s `canonical: "/"`, signalling to Google they were duplicates of the home page. Added correct canonical path to each page’s metadata. 12 total pages now have correct canonical URLs (all pages in sitemap).
@@ -404,7 +404,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 | 10.2 Add frontend error monitoring and release/environment tagging with PII-safe settings. | `instrumentation.ts`, `instrumentation-client.ts`, `next.config.ts` | DONE — `@sentry/nextjs` with PII-safe `beforeSend` (strips request data, auth headers, stack locals, extras). Server-side via `register()` + `onRequestError`, client-side via `instrumentation-client.ts`. CSP updated for `*.ingest.sentry.io` + `*.ingest.us.sentry.io` (US regional). NEXT_PUBLIC_SENTRY_DSN set in Vercel Production+Preview. |
 | 10.3 Keep structured request logs and add metrics for route latency, status, provider failures, and rate limits. | backend logging/monitoring | DONE — access logs retain existing fields and add matched route, response length, rate-limit/auth classifications, and AI-route classification with unit coverage |
 | 10.4 Verify UptimeRobot (or equivalent) alerts a monitored channel; GitHub keepalive is not monitoring. | external dashboard | DONE — Email alerts (bobby.bingo696@gmail.com) and push notifications both ON for Up/Down events. Weekly/Monthly reports enabled. /health pings confirmed in Render logs (2026-08-03). |
-| 10.5 Configure cost/usage alarms for Hugging Face, Vercel, Render, Supabase, Sentry, domain, and AdSense-related services. | external dashboards | DONE — All services on free tiers with NO payment methods attached (can't be charged). Vercel: Hobby plan, email notifications enabled, 8K/100K function invocations. Render: Free, $0.00 month-to-date, failure notifications on. Supabase: Free Plan, spend cap enabled, DB at 10.28% of 500MB. HuggingFace: Free, rate-limited, $0.00 usage. Verified 2026-08-03. |
+| 10.5 Configure cost/usage alarms for Hugging Face, Vercel, Render, Supabase, Sentry, domain, and AdSense-related services. | external dashboards | VERIFY — Supabase spend cap and service alerts were previously proven. Render Starter is the approved $7/month charge; current plan and Hugging Face usage/pay-as-you-go settings need fresh owner evidence. Application quotas now cap AI at 10 units/user/day and 500 globally/day. |
 
 **Definition of Done:** Client and server failures, downtime, latency, and spend are visible without collecting resume content.
 
@@ -436,9 +436,8 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
   - External evidence (Session 93, 2026-08-03): UptimeRobot email alerts (bobby.bingo696@gmail.com) + push notifications ON for Up/Down events. Weekly/Monthly reports enabled. `/health` pings confirmed in Render logs.
 
 - **10.5 Cost/usage alarms:**
-  - All services on free tiers: Vercel Hobby (email notifications enabled, function invocation alerts), Render Free ($0.00 MTD, failure alerts on), Supabase Free (spend cap enabled, DB 10.28% of 500MB), HuggingFace Free ($0.00, rate-limited), Sentry Free (no billing).
-  - No payment methods attached to any service → net charge is $0; overage is blocked rather than billed.
-  - Verified 2026-08-03 (Session 93).
+  - Historical 2026-08-03 evidence showed free tiers and $0 usage. It is superseded by DEC-030 approving Render Starter at $7/month.
+  - Current owner proof must confirm Starter remains active and record Hugging Face usage/pay-as-you-go settings; application quotas provide an additional 10-unit/user and 500-unit/global daily ceiling.
 
 - **Exit gate drills — evidence:**
   - **Backend error (PII drill):** 11 `test_sentry_pii.py` tests prove `_strip_pii()` removes all resume/auth PII from events before they leave the process. `pytest tests/unit/test_sentry_pii.py` → **11 passed** (2026-08-06).
@@ -475,13 +474,14 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
   - Both docs corrected (test count + keepalive interval). PASS.
 
 - **11.2 Supabase migrations:**
-  - 6 ordered SQL files: `001_profiles.sql` through `006_functions.sql`.
+  - 7 ordered SQL files: `001_profiles.sql` through `007_ai_usage_quotas.sql`.
   - All idempotent: `CREATE TABLE IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`, `DROP POLICY IF EXISTS` / `CREATE POLICY`, `CREATE OR REPLACE FUNCTION`, FK guards via `pg_constraint` catalog check.
   - `001_profiles.sql`: profiles table + 4 RLS policies (select/insert/update/delete by auth.uid() = id).
   - `003_shared_scores.sql`: shared_scores table + user_id FK + CHECK constraints + 3 RLS policies + `get_shared_score()` SECURITY DEFINER function (omits user_id, filters expires_at ≥ now()).
   - `004_resumes.sql`: resumes table + 4 RLS policies + user_id index + idempotent FK addition to jobs table (guarded via pg_constraint catalog).
   - `006_functions.sql`: `delete_own_user()` (SECURITY DEFINER, deletes auth.users row for CASCADE) + `cleanup_expired_scores()`.
-  - `supabase/migrations/README.md`: apply order (1–6), idempotency notes, add-migration guide, backup/rollback procedure. PASS.
+  - `007_ai_usage_quotas.sql`: atomic user/global daily AI-unit counters, strict function grants, and 31-day quota-counter retention.
+  - `supabase/migrations/README.md`: apply order (1–7), idempotency notes, add-migration guide, backup/rollback procedure. VERIFY — migration 007 needs production application.
 
 - **11.3 Staging:**
   - `EnvironmentBanner.tsx`: "use client"; renders amber `{env.toUpperCase()} ENVIRONMENT` banner when `NEXT_PUBLIC_SENTRY_ENV ≠ "production"`. Returns null in production.
@@ -508,7 +508,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 12.1 Complete a go/no-go review of every phase exit gate; any open Blocker is `NO-GO`. | this file | **GO** — Signed 2026-08-04. All 11 phases COMPLETE, zero open Blockers. Launching ad-free; AdSense ads will be placed after Google approves the site (8.8). Phase exit gate review: P1 (deps/build) PASS, P2 (tests/CI) PASS, P3 (security/privacy) PASS, P4 (auth/persistence) PASS, P5 (testing) PASS, P6 (backend hardening) PASS, P7 (a11y/mobile) PASS, P8 (SEO/monetization) PASS except 8.8 non-blocking, P9 (security) PASS, P10 (observability) PASS, P11 (release eng) PASS. |
+| 12.1 Complete a go/no-go review of every phase exit gate; any open Blocker is `NO-GO`. | this file, `LAUNCH_READINESS_AUDIT.md` | **NO-GO (current Prompt 3 rerun)** — Historical GO from 2026-08-04 is superseded until quota migration/configuration, Starter, RLS, Hugging Face usage/budget, certified CMP, and Gates 4/6 are proven. |
 | 12.2 Assign launch owner, incident owner, Sentry/uptime watchers, and escalation thresholds for the first 72 hours. | `docs/INCIDENT-RESPONSE.md`, launch runbook | DONE — Solo operator: Laxmi Narayana Bingi is launch owner, incident owner, Sentry/UptimeRobot watcher, and rollback authority. Alerts go to bobby.bingo696@gmail.com + push notifications. Escalation: investigate immediately if any critical error in first 72 hours. |
 | 12.3 Choose feedback intake (recommended: monitored support email linked site-wide plus GitHub Issues for reproducible public bugs). | footer/contact/issue templates | DONE — support@resumeai.cv for private support (Zoho Mail, already in footer/privacy/terms) + GitHub Issues for reproducible public bugs. Issue templates added (`bug_report.md` + `feature_request.md` in `.github/ISSUE_TEMPLATE/`). |
 | 12.4 Prepare and approve Product Hunt/Reddit copy; publish only after go-live approval. | `docs/guides/PRODUCT-HUNT-LISTING.md`, launch runbook | DONE — Copy fixed (removed false "open source" claim, corrected "no signup" to "free account", added maker name). Publish only after 12.1 go/no-go is signed GO. |
@@ -517,7 +517,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 **Definition of Done:** Launch has explicit ownership, rollback authority, feedback intake, monitoring cadence, and an AdSense-ready production site.
 
-**Exit gate:** Go/no-go signed `GO`; launch executed; first-72-hours review completed with incidents and follow-ups recorded. **MET** — Go signed 2026-08-04; 72-hour checklists completed 2026-08-07 (23/24 items checked, 1 owner-pending: support inbox check); Week 1 review table filled; 1 incident (401 UX on ShareableScoreWidget, fixed 2336e5f); no rollback needed.
+**Exit gate:** **HISTORICALLY MET, CURRENTLY REOPENED.** The 2026-08-04 GO and 72-hour review remain historical evidence, but the strict Prompt 3 rerun supersedes that verdict until its current blockers and Gates 4/6 close.
 
 **Reverification (2026-08-06, Session 117):** All 6 tasks independently verified from scratch. One doc correction applied.
 
@@ -579,9 +579,9 @@ Preserved from the original Prompt 1 audit (2026-07-09), updated with resolution
 
 ## Current priority
 
-1. **LAUNCHED (ad-free).** Go/no-go signed GO on 2026-08-04. All 12 phases complete or deferred.
-2. Run the first-72-hours monitoring checklist in `docs/POST-LAUNCH-MONITORING.md`.
-3. When Google AdSense approves the site: create ad units → provide slot IDs → place AdUnit components (12.5).
+1. **NO-GO under the current strict Prompt 3 rerun.** Deploy/prove Gate 1 quotas and Starter, then complete production RLS and provider incident/budget evidence.
+2. Complete Gate 4 failure drills and Gate 6 final verdict.
+3. Enable ad units only after certified CMP proof, Google approval, and placement/density review.
 
 ## Backlog
 
@@ -600,30 +600,30 @@ Items discovered during post-launch sessions. Ordered by priority.
 | D2 | Blog content engine / editorial calendar | DEFERRED | L | Content strategy |
 | D3 | SEO fat footer (150+ resume example links) | DEFERRED | L | Needs content pages first |
 | D4 | Auto-scrolling testimonial marquee | DEFERRED | M | Low priority |
-| R4 | RLS isolation tests in CI (Phase 4.5 caveat) | PARTIAL — 20/20 pass locally; CI skips | S | Needs `SUPABASE_SERVICE_ROLE_KEY` as GitHub Actions secret |
+| R4 | Protected production RLS workflow | CODE DONE / OWNER CONFIG | S | Configure `production-rls` Environment secrets and dispatch `production-rls.yml` |
 | R5 | E2E browser tests for Phase 4 auth flows (F7 caveat) | TODO | M | None — Phase 4 is complete, Playwright auth fixture can now be built |
 | R6 | Grade label / context message alignment | **DONE** (Session 117) | S | `ats_scorer.py`: B→"Good match", C→"Moderate match" — eliminates overlap with frontend "Strong match!" context message at ≥70 |
-| R7 | Expired shared scores cleanup cron | **DONE** (Session 119) | S | `/api/cron/cleanup` route + keepalive workflow calls it. Needs `CRON_SECRET` env var in Vercel + GitHub Actions. |
+| R7 | Expired score/quota cleanup cron | CODE DONE / PROD VERIFY | S | Service-role-only RPC; workflow now fails on non-200. Confirm Vercel service key + GitHub cron secret and retain a green run. |
 | R8 | Language detection warning for non-English | **DONE** (Session 119) | S | `keyword_extractor.py` + `JobAnalysis.language_warning` + AnalyzerDemo UI banner. 5 new tests. |
 | R9 | Manual Supabase backup script | **DONE** (Session 119) | S | `scripts/backup-supabase.ps1`. Needs `pg_dump` + Supabase connection string. |
 | R10 | Codex Prompt 3 adversarial audit triage | **DONE** (Session 119) | S | 5/13 findings already fixed on main. See session notes. |
-| R11 | Production RLS verification runbook | TODO (Codex) | S | Needs prod credentials + test script |
+| R11 | Production RLS verification runbook/workflow | CODE DONE | S | Owner configures protected environment secrets and dispatches the workflow |
 | R12 | Rollback CLI setup + verification | TODO (Codex) | S | Needs Render API key + Vercel link |
 | R13 | SMTP verification checklist | TODO (Codex) | S | Verify Zoho SMTP config in Supabase dashboard |
 
 ### R4 — RLS isolation tests in CI
 
-**What:** 20 two-user RLS integration tests exist in `backend/tests/integration/test_rls_isolation.py`. They cover cross-user select/insert/update/delete for `profiles`, `jobs`, `resumes`, `resume_versions`, and `shared_scores`, plus a `delete_own_user` cascade test. All 20 pass locally but are **skipped in every CI run** because they require `SUPABASE_SERVICE_ROLE_KEY` (used to create/teardown test users via the admin API).
+**What:** 20 two-user RLS integration tests exist in `backend/tests/integration/test_rls_isolation.py`. Ordinary PR CI intentionally skips them because production credentials must never be exposed to untrusted branch code. `.github/workflows/production-rls.yml` now provides a protected, manually dispatched production run.
 
-**Why it matters:** These tests are the Phase 4 exit gate proof ("user A cannot read or mutate user B's row"). Without them in CI, a future code change could break RLS and merge to `main` undetected.
+**Why it matters:** These tests are the Phase 4 exit-gate proof that user A cannot read or mutate user B's data and account deletion cascades correctly.
 
-**To implement:**
-1. Add `SUPABASE_SERVICE_ROLE_KEY` as a GitHub Actions repository secret (Settings → Secrets → Actions).
-2. Expose it in `.github/workflows/ci.yml` backend job: `env: SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}`.
-3. Verify the 20 tests run (not skip) and pass in the next CI run.
-4. The service role key is in the Supabase dashboard → Settings → API → `service_role` (secret). **Never commit it to code.**
+**Owner configuration:**
+1. Create the protected `production-rls` GitHub Environment with required reviewer and main-only deployment policy.
+2. Add `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` as environment secrets, not repository-wide PR secrets.
+3. Dispatch `production-rls.yml` manually and retain the redacted `20 passed` result.
+4. Never expose the service-role value in chat, source, workflow output, or ordinary CI.
 
-**Files:** `.github/workflows/ci.yml`, `backend/tests/integration/test_rls_isolation.py` (no code changes needed — tests already check for the env var and skip if absent).
+**Files:** `.github/workflows/production-rls.yml`, `docs/RLS_VERIFICATION.md`, `backend/tests/integration/test_rls_isolation.py`.
 
 ### R5 — E2E browser tests for Phase 4 auth flows
 

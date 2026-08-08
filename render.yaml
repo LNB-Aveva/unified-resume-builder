@@ -11,14 +11,14 @@
 #   1. Push this repo to GitHub
 #   2. Go to render.com → New → Blueprint
 #   3. Connect your GitHub repo — Render finds this file automatically
-#   4. Set the secret environment variables when prompted (HUGGINGFACE_API_KEY, FRONTEND_URL)
+#   4. Set the required environment variables when prompted
+#      (HUGGINGFACE_API_KEY, FRONTEND_URL, SUPABASE_URL, SUPABASE_JWT_SECRET)
 #   5. Deploy — Render runs buildCommand, then startCommand
 #
-# FREE TIER NOTES:
-#   - 750 hours/month free (enough for one always-on service)
-#   - Spins down after 15 min inactivity → first request takes ~30-60s to wake up
-#   - The frontend already shows loading spinners so this is handled gracefully
-#   - 512 MB RAM — sufficient for FastAPI + NLP libraries
+# STARTER PLAN NOTES:
+#   - Approved fixed launch cost: $7/month (DEC-030)
+#   - Always on; avoids the Free plan's idle spin-down and cold-start delay
+#   - 512 MB RAM — sufficient for FastAPI + the current lightweight NLP/PDF stack
 
 services:
   - type: web
@@ -39,7 +39,9 @@ services:
     # If Render ever adds more proxy hops, set TRUSTED_PROXY_HOPS accordingly.
     startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
 
-    plan: free
+    # Keep this aligned with DEC-030. Setting `free` here can downgrade the
+    # Blueprint-managed service during a sync and reintroduce cold starts.
+    plan: starter
 
     # Health check — Render pings this every 30s.
     # If it returns non-200, Render restarts the service automatically.
@@ -61,6 +63,10 @@ services:
       - key: SUPABASE_URL
         sync: false
 
+      # Public project key used with each user's JWT to call the atomic quota RPC.
+      - key: SUPABASE_ANON_KEY
+        sync: false
+
       # Legacy HS256 verification fallback. Keep during signing-key migration;
       # current ES256 tokens are verified through the public JWKS endpoint.
       - key: SUPABASE_JWT_SECRET
@@ -73,6 +79,10 @@ services:
       # Marks the deployment as production (enables HSTS, hides /docs).
       - key: ENV
         value: "production"
+
+      # Production fails closed before provider calls if the quota RPC is unavailable.
+      - key: AI_QUOTA_ENFORCEMENT
+        value: "true"
 
       - key: PYTHON_VERSION
         value: "3.13.0"

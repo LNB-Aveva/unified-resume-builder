@@ -77,8 +77,7 @@ export function connectionError(err: unknown): string {
   if (msg === "Failed to fetch" || msg === "Load failed") {
     return (
       "Could not reach the API server. " +
-      "The backend may be waking up (free tier sleeps after 15 min of inactivity). " +
-      "Please wait 30–60 seconds and try again."
+      "Check your connection, wait a moment, and try again."
     );
   }
   if (msg.includes("Request timed out")) {

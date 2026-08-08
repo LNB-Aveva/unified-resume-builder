@@ -16,6 +16,7 @@ Supabase project. Apply every numbered SQL file in ascending order:
 4. `004_resumes.sql`
 5. `005_resume_versions.sql`
 6. `006_functions.sql`
+7. `007_ai_usage_quotas.sql`
 
 In the Supabase Dashboard, open SQL Editor, paste one file, run it, confirm it
 succeeds, and then continue to the next file. With the Supabase CLI linked to
