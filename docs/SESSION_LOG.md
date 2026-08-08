@@ -29,7 +29,7 @@
 
 ### Pending
 
-The owner approved the combined localhost UI on 2026-08-08 after the current backend returned the deterministic preview result. Final commit/push remain. Production closure then requires migration 007 plus Render quota configuration, verified Starter status, a fresh 20/20 RLS workflow run, Hugging Face usage/budget review, and certified CMP proof before ads.
+The owner approved the combined localhost UI on 2026-08-08 after the current backend returned the deterministic preview result. Gate 1 commit `d341c6c` was pushed in PR #54. Production RLS then passed 20/20 and the Hugging Face usage review found no unexpected activity or charges. Production closure still requires migration 007 plus Render quota configuration, verified Starter status, and allowed/denied quota proof. Certified CMP proof remains mandatory before ads and is deferred for the current ad-free launch.
 
 ## Session 127 (Copilot) — 2026-08-07
 

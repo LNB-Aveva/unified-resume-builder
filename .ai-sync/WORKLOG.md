@@ -9,7 +9,7 @@
 
 - **Feature:** Prompt 3 launch-gate audit
 - **Branch:** `fix/render-starter-blueprint`
-- **Status:** Session 129 Gate 1 code, documentation, and combined localhost approval complete; final checks/commit/push are in progress.
+- **Status:** Session 129 Gate 1 implementation is committed/pushed in PR #54 and CI is running on the reconciled branch head.
 
 ---
 
@@ -41,9 +41,11 @@
   - Reconciled the current Prompt 3 audit, launch program, deployment/runbooks, and threat model so unresolved production proofs remain explicit NO-GO items.
   - Verification passed: focused backend `190 passed, 4 skipped`; final full backend `535 passed, 24 skipped`; Ruff; ESLint; 32-route production build; workflow YAML parse; diff check.
   - Restarted the backend from the current worktree and proved localhost frontend 200, health 200, and deterministic preview output. Owner approved the combined localhost UI on 2026-08-08.
+  - Committed Gate 1 as `d341c6c`, pushed it, and opened PR #54. Initial PR-head CI passed frontend, backend, and Playwright; a concurrent evidence-only commit triggered the current replacement run.
+  - Owner production evidence received: RLS isolation passed 20/20 and Hugging Face usage showed no unexpected activity or charges. Certified CMP was deferred for the current ad-free launch and remains mandatory before ad units.
 - **Files Changed:** Gate 1 backend, frontend, Supabase, workflow, deployment, test, and launch-memory files on `fix/render-starter-blueprint`.
-- **Next:** Run final Ruff/ESLint/build checks, commit/push, and open the Gate 1 PR. After merge, follow the owner rollout in the documented order.
-- **Blockers:** No repository-side blocker. Production closure still requires owner-controlled migration/configuration, Starter dashboard proof, 20/20 protected RLS run, Hugging Face usage/budget review, and certified CMP proof before ads.
+- **Next:** Require green CI on the final PR #54 head, then merge. Follow the owner quota rollout in order: backup/apply migration 007, add Render anon key/synchronize Starter, deploy, and prove allowed/denied quota behavior.
+- **Blockers:** Production closure requires owner-controlled quota migration/configuration and Starter dashboard proof. Certified CMP proof remains mandatory before ads, but not for the explicitly ad-free launch.
 
 ### Session 127 (Copilot) — 2026-08-07
 - **Agent:** copilot
