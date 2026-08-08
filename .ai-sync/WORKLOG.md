@@ -8,8 +8,8 @@
 ## Current Task
 
 - **Feature:** Prompt 3 launch-gate audit
-- **Branch:** fix/prompt-gaps-closure (tip: see session 125 commit)
-- **Status:** Session 127 localhost-approved. Auth fix verified and ready to commit/push; production Render configuration/deploy proof remains.
+- **Branch:** `fix/render-starter-blueprint`
+- **Status:** Session 129 PAUSED for localhost approval. Production ES256 auth is proven; Render Blueprint Starter correction is verified but uncommitted.
 
 ---
 
@@ -18,14 +18,26 @@
 | Field      | Value                      |
 |------------|----------------------------|
 | Agent      | copilot                    |
-| Started    | 2026-08-07                 |
-| Working On | Session 127 — Supabase ES256 production auth blocker |
+| Started    | 2026-08-08                 |
+| Working On | Session 129 — Gate 1 production proof and Render plan regression |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 129 (Copilot) — 2026-08-08
+- **Agent:** copilot
+- **Did:**
+  - Verified PR #53 merged to `main` as `92ad612`; all main CI jobs passed and Render `/health` returned 200.
+  - Owner production proof passed: a real signed-in Supabase user generated a 61-word AI Summary on `resumeai.cv`; the ES256/JWKS auth blocker is closed.
+  - Found the Blueprint still set `plan: free`, explaining why the owner dashboard again showed Free despite the approved Starter upgrade.
+  - Changed `render.yaml` to `plan: starter` and replaced stale free-tier sleep notes with DEC-030 Starter guidance.
+  - Verification passed: Blueprint parses to service `unified-resume-builder-api`, plan `starter`; Ruff and ESLint clean; localhost returned 200; diff check clean.
+- **Files Changed:** `render.yaml`, `.ai-sync/WORKLOG.md`
+- **Next:** Obtain localhost approval, commit/push/PR the Blueprint correction, then owner confirms the Render dashboard shows Starter after Blueprint sync.
+- **Blockers:** Localhost approval for the Blueprint correction. Remaining Gate 1 owner proofs after that: Hugging Face usage review, production RLS run, certified CMP status, and approval of accurate fair-use copy/quota behavior.
 
 ### Session 127 (Copilot) — 2026-08-07
 - **Agent:** copilot
