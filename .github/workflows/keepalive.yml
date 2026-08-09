@@ -31,9 +31,12 @@ jobs:
         env:
           BACKEND_URL: ${{ vars.BACKEND_URL || 'https://unified-resume-builder-api.onrender.com' }}
 
-      - name: Cleanup expired shared scores
-        if: success()
-        continue-on-error: true
+  cleanup:
+    name: Cleanup expired shared scores
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Delete expired rows
         run: |
           status=$(curl --silent --output /dev/null --write-out "%{http_code}" \
             --max-time 30 \
@@ -42,7 +45,8 @@ jobs:
           if [ "$status" = "200" ]; then
             echo "Cleanup succeeded"
           else
-            echo "::warning::Cleanup returned HTTP $status (non-fatal — check CRON_SECRET secret)"
+            echo "::error::Cleanup returned HTTP $status"
+            exit 1
           fi
         env:
           FRONTEND_URL: ${{ vars.FRONTEND_URL || 'https://resumeai.cv' }}

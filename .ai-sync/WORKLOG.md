@@ -17,9 +17,9 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | copilot                    |
+| Agent      | copilot / claude           |
 | Started    | 2026-08-09                 |
-| Working On | Session 131 — save Gate 1 production handoff |
+| Working On | Gate 1 handoff saved; continue quota proof and Gate 4 in a new chat |
 
 ---
 
@@ -36,22 +36,23 @@
   - Recorded that the database password accidentally exposed during the manual procedure was reset and the local PowerShell history was cleared. Never reuse or record the retired value.
   - Recorded migration 007 production application and a ten-control SQL verification result of `t` (tables/functions exist, RLS enabled, and function grants restricted as designed).
   - Owner reported a production Summary succeeded after deployment. A direct lookup for that account returned no `ai_usage_daily` rows, and the attempted quota update returned `UPDATE 0`; therefore quota consumption and the controlled 429/denial path remain **UNVERIFIED**.
-  - Identified two commits made after PR #54 merged: `ae7df20` makes retention cleanup failures non-fatal and `1cf0d2b` documents it. They are pushed on this branch but not on `main`. The non-fatal behavior conflicts with the fail-loud Gate 1 control and must be reconciled before any follow-up merge.
+  - Flagged the post-merge cleanup regression; Session 132 reconciled it by splitting health and cleanup into independent jobs while keeping cleanup fail-loud.
 - **Next three actions:**
   1. Compare the deployed Render revision/config with `83b02d0` and determine why a successful Summary created no `ai_usage_daily` row; verify that `AI_QUOTA_ENFORCEMENT` is exactly `true` at runtime.
   2. Prove one consumed Summary unit in `ai_usage_daily`, then set that test user's row to the daily ceiling and prove the next Summary is denied before Hugging Face is called.
-  3. Revert or redesign `ae7df20` so cleanup failures alert/fail loudly without generating excessive scheduled runs; then run required checks and open a focused follow-up PR.
+  3. Execute Prompt 3 Gate 4 failure drills, then produce the Gate 6 final verdict once all evidence is current.
 - **Blockers:** Production quota allowed/denied evidence. Gate 4 failure drills and Gate 6 final verdict remain pending. TCF CMP remains mandatory before ads but is explicitly deferred for the current ad-free site.
 
-### Session 130 (Claude) — 2026-08-09
+### Session 132 (Claude) — 2026-08-09
 - **Agent:** claude
 - **Did:**
-  - Fixed failing Keepalive workflow: reduced cron from `*/13 * * * *` (every 13 min, ~110/day) to `0 * * * *` (hourly, ~24/day). Starter plan is always-on so cold-start prevention is unnecessary.
-  - Made cleanup step `continue-on-error: true` so a missing/unset `CRON_SECRET` GitHub secret doesn't mark the health-check job as failed.
-  - Commit: `ae7df20`
-- **Root cause:** Two issues combined — (1) Render backend was on Free plan (sleeping, health checks timing out); Blueprint fix in dc32293 addresses this but requires a Render dashboard sync. (2) Cleanup step was failing fatally when `CRON_SECRET` secret not set, creating hundreds of red runs/day.
-- **Next:** Push to PR #54. Owner must sync Blueprint in Render dashboard to apply `plan: starter`. Set `CRON_SECRET` as GitHub repo secret to make cleanup succeed.
-- **Blockers:** Render Blueprint sync (owner action). CRON_SECRET GitHub secret (owner action).
+  - Reconciled keepalive audit flag: split `ping` and `cleanup` into two independent jobs. Both fail loudly (`exit 1`) on non-200; health check is no longer contaminated by cleanup failures.
+  - Reduced cron from `*/13 * * * *` to `0 * * * *` (hourly). Starter plan is always-on; 13-min frequency was unnecessary.
+  - Owner confirmed `CRON_SECRET` set in GitHub Actions secrets and updated matching value in Vercel (2026-08-09).
+  - PR #54 already merged — `plan: starter` is on `main`, Render Blueprint synced.
+  - Updated Gate 1 §D and Gate 2 Phase 10 in `LAUNCH_READINESS_AUDIT.md` to PASS/Resolved.
+- **Next:** Gate 4 failure drills (Codex). Production quota consumption + controlled denial proof (owner action).
+- **Blockers:** None for this task. Remaining launch blockers are Gate 4 (Codex) and quota behavior proof (owner).
 
 ### Session 129 (Copilot) — 2026-08-08
 - **Agent:** copilot

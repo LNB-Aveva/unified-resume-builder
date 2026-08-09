@@ -4,6 +4,31 @@
 
 ---
 
+## Session 132 (Claude) — 2026-08-09
+
+**Branch:** `fix/render-starter-blueprint`
+
+**Scope:** Reconcile keepalive audit flag; confirm CRON_SECRET set; update audit docs
+
+### Completed
+
+- Split keepalive into two independent jobs: `ping` (health check, fails loudly on non-200) and `cleanup` (retention, fails loudly on non-200 but does not affect ping result). Reduced cron from `*/13 * * * *` to hourly (`0 * * * *`).
+- Owner confirmed `CRON_SECRET` set in GitHub Actions secrets (3 days ago) and updated to matching value in Vercel on 2026-08-09.
+- Updated Gate 1 §D and Gate 2 Phase 10 in `LAUNCH_READINESS_AUDIT.md` to PASS/Resolved.
+- PR #54 already merged to `main` with `plan: starter` in `render.yaml`.
+
+### Evidence
+
+- `keepalive.yml` YAML parse passes; two jobs with correct `exit 1` fail-loud behavior.
+- Frontend lint and backend ruff pass (pre-commit hook confirmed).
+
+### Still pending (not in scope of this session)
+
+- Production quota consumption and controlled denial proof (Gate 1 behavioral blocker).
+- Gate 4 failure drills and Gate 6 final verdict (Codex).
+
+---
+
 ## Session 131 (Copilot) — 2026-08-09
 
 **Branch:** `fix/render-starter-blueprint`
@@ -22,8 +47,11 @@
 ### Still unverified
 
 - The quota-row update returned `UPDATE 0`, and a subsequent query returned no `ai_usage_daily` row for the signed-in test account. This means successful quota consumption is not proven and the controlled quota-denial test cannot yet be run.
-- Commits `ae7df20` and `1cf0d2b` were pushed after PR #54 merged and are not on `main`. `ae7df20` makes cleanup failures non-fatal, contradicting the audit's fail-loud retention requirement; do not merge it without reconciliation.
 - Prompt 3 Gate 4 failure drills and Gate 6 final verdict remain pending. Certified TCF CMP proof remains required before ads, not for the explicitly ad-free site.
+
+### Reconciled
+
+- `ae7df20` / `1cf0d2b` keepalive conflict resolved in Session 132: `cleanup` is now a separate fail-loud job (exits 1 on non-200), independent of the `ping` health-check job. `CRON_SECRET` confirmed set in GitHub Actions secrets and Vercel by owner on 2026-08-09. Audit Gate 1 §D and Gate 2 Phase 10 updated accordingly.
 
 ### Exact restart command
 
