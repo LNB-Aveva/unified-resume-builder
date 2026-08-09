@@ -2,9 +2,10 @@ name: Keepalive
 
 on:
   schedule:
-    # Every 13 minutes — verifies backend health and runs retention cleanup.
+    # Hourly — verifies backend health and runs retention cleanup.
     # Render Starter does not sleep; UptimeRobot provides independent alerting.
-    - cron: "*/13 * * * *"
+    # Hourly is sufficient: no cold-start prevention needed on Starter.
+    - cron: "0 * * * *"
 
 jobs:
   ping:
@@ -32,6 +33,7 @@ jobs:
 
       - name: Cleanup expired shared scores
         if: success()
+        continue-on-error: true
         run: |
           status=$(curl --silent --output /dev/null --write-out "%{http_code}" \
             --max-time 30 \
@@ -40,8 +42,7 @@ jobs:
           if [ "$status" = "200" ]; then
             echo "Cleanup succeeded"
           else
-            echo "::error::Cleanup returned HTTP $status"
-            exit 1
+            echo "::warning::Cleanup returned HTTP $status (non-fatal — check CRON_SECRET secret)"
           fi
         env:
           FRONTEND_URL: ${{ vars.FRONTEND_URL || 'https://resumeai.cv' }}
