@@ -2,9 +2,11 @@ name: Keepalive
 
 on:
   schedule:
-    # Every 13 minutes — verifies backend health and runs retention cleanup.
+    # Hourly — verifies backend health and runs retention cleanup.
     # Render Starter does not sleep; UptimeRobot provides independent alerting.
-    - cron: "*/13 * * * *"
+    # Hourly is sufficient: no cold-start prevention needed on Starter.
+    - cron: "0 * * * *"
+  workflow_dispatch:
 
 jobs:
   ping:
@@ -30,8 +32,12 @@ jobs:
         env:
           BACKEND_URL: ${{ vars.BACKEND_URL || 'https://unified-resume-builder-api.onrender.com' }}
 
-      - name: Cleanup expired shared scores
-        if: success()
+  cleanup:
+    name: Cleanup expired shared scores
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Delete expired rows
         run: |
           status=$(curl --silent --output /dev/null --write-out "%{http_code}" \
             --max-time 30 \
