@@ -4,6 +4,33 @@
 
 ---
 
+## Session 131 (Copilot) — 2026-08-09
+
+**Branch:** `fix/render-starter-blueprint`
+
+**Scope:** Save Prompt 3 Gate 1 production evidence and unresolved proof
+
+### Completed evidence
+
+- PR #54 merged to `main` at `83b02d0`; main CI passed.
+- Render Starter status and required environment-variable names were shown by owner screenshots.
+- Production Supabase backup completed: `supabase_backup_2026-08-08_193028.sql` (16.1 KB, excluded from Git).
+- The accidentally exposed database password was reset and local PowerShell history was cleared.
+- Migration 007 applied successfully in production. The combined SQL control check returned `t`, proving both quota tables and the quota function exist, RLS is enabled on both tables, and execution grants match the intended authenticated/service-role boundaries.
+- Production Summary generation was reported working after deployment.
+
+### Still unverified
+
+- The quota-row update returned `UPDATE 0`, and a subsequent query returned no `ai_usage_daily` row for the signed-in test account. This means successful quota consumption is not proven and the controlled quota-denial test cannot yet be run.
+- Commits `ae7df20` and `1cf0d2b` were pushed after PR #54 merged and are not on `main`. `ae7df20` makes cleanup failures non-fatal, contradicting the audit's fail-loud retention requirement; do not merge it without reconciliation.
+- Prompt 3 Gate 4 failure drills and Gate 6 final verdict remain pending. Certified TCF CMP proof remains required before ads, not for the explicitly ad-free site.
+
+### Exact restart command
+
+```powershell
+Set-Location "C:\My-Work-Space\AI-Resume-Generator"; git fetch origin --prune; git status --short --branch
+```
+
 ## Session 129 (Copilot) — 2026-08-08
 
 **Branch:** `fix/render-starter-blueprint`

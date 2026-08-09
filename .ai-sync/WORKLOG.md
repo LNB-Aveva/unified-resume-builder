@@ -9,7 +9,7 @@
 
 - **Feature:** Prompt 3 launch-gate audit
 - **Branch:** `fix/render-starter-blueprint`
-- **Status:** Session 129 Gate 1 implementation is committed/pushed in PR #54 and CI is running on the reconciled branch head.
+- **Status:** PR #54 is merged to `main` at `83b02d0`; migration 007, backup, Starter, RLS, and provider-usage evidence are complete. Gate 1 remains open only because production quota consumption and the controlled denial response are not yet proven.
 
 ---
 
@@ -17,15 +17,31 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
-| Started    | 2026-08-08                 |
-| Working On | Session 129 — Gate 1 production proof and Render plan regression |
+| Agent      | copilot                    |
+| Started    | 2026-08-09                 |
+| Working On | Session 131 — save Gate 1 production handoff |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 131 (Copilot) — 2026-08-09
+- **Agent:** copilot
+- **Did:**
+  - Confirmed PR #54 merged to `main` as `83b02d0`; its main CI run passed.
+  - Recorded owner proof that Render shows Starter and the required quota/Supabase environment-variable names are present.
+  - Recorded a successful Supabase backup: `backups/supabase_backup_2026-08-08_193028.sql` (16.1 KB; intentionally gitignored).
+  - Recorded that the database password accidentally exposed during the manual procedure was reset and the local PowerShell history was cleared. Never reuse or record the retired value.
+  - Recorded migration 007 production application and a ten-control SQL verification result of `t` (tables/functions exist, RLS enabled, and function grants restricted as designed).
+  - Owner reported a production Summary succeeded after deployment. A direct lookup for that account returned no `ai_usage_daily` rows, and the attempted quota update returned `UPDATE 0`; therefore quota consumption and the controlled 429/denial path remain **UNVERIFIED**.
+  - Identified two commits made after PR #54 merged: `ae7df20` makes retention cleanup failures non-fatal and `1cf0d2b` documents it. They are pushed on this branch but not on `main`. The non-fatal behavior conflicts with the fail-loud Gate 1 control and must be reconciled before any follow-up merge.
+- **Next three actions:**
+  1. Compare the deployed Render revision/config with `83b02d0` and determine why a successful Summary created no `ai_usage_daily` row; verify that `AI_QUOTA_ENFORCEMENT` is exactly `true` at runtime.
+  2. Prove one consumed Summary unit in `ai_usage_daily`, then set that test user's row to the daily ceiling and prove the next Summary is denied before Hugging Face is called.
+  3. Revert or redesign `ae7df20` so cleanup failures alert/fail loudly without generating excessive scheduled runs; then run required checks and open a focused follow-up PR.
+- **Blockers:** Production quota allowed/denied evidence. Gate 4 failure drills and Gate 6 final verdict remain pending. TCF CMP remains mandatory before ads but is explicitly deferred for the current ad-free site.
 
 ### Session 130 (Claude) — 2026-08-09
 - **Agent:** claude
