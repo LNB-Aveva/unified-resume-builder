@@ -17,7 +17,7 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | copilot                    |
+| Agent      | claude                     |
 | Started    | 2026-08-08                 |
 | Working On | Session 129 — Gate 1 production proof and Render plan regression |
 
@@ -26,6 +26,16 @@
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 130 (Claude) — 2026-08-09
+- **Agent:** claude
+- **Did:**
+  - Fixed failing Keepalive workflow: reduced cron from `*/13 * * * *` (every 13 min, ~110/day) to `0 * * * *` (hourly, ~24/day). Starter plan is always-on so cold-start prevention is unnecessary.
+  - Made cleanup step `continue-on-error: true` so a missing/unset `CRON_SECRET` GitHub secret doesn't mark the health-check job as failed.
+  - Commit: `ae7df20`
+- **Root cause:** Two issues combined — (1) Render backend was on Free plan (sleeping, health checks timing out); Blueprint fix in dc32293 addresses this but requires a Render dashboard sync. (2) Cleanup step was failing fatally when `CRON_SECRET` secret not set, creating hundreds of red runs/day.
+- **Next:** Push to PR #54. Owner must sync Blueprint in Render dashboard to apply `plan: starter`. Set `CRON_SECRET` as GitHub repo secret to make cleanup succeed.
+- **Blockers:** Render Blueprint sync (owner action). CRON_SECRET GitHub secret (owner action).
 
 ### Session 129 (Copilot) — 2026-08-08
 - **Agent:** copilot
