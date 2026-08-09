@@ -6,6 +6,7 @@ on:
     # Render Starter does not sleep; UptimeRobot provides independent alerting.
     # Hourly is sufficient: no cold-start prevention needed on Starter.
     - cron: "0 * * * *"
+  workflow_dispatch:
 
 jobs:
   ping:
