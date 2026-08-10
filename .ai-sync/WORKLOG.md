@@ -27,6 +27,17 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 135 (Copilot) — 2026-08-10
+- **Agent:** copilot
+- **Did:**
+  - Independently verified the production Turnstile deployment on `/sign-up`, `/sign-in`, and `/forgot-password`: all returned 200, shipped CAPTCHA token handling, allowed Cloudflare in CSP, and contained no test-key markers. Owner visual evidence showed the real success widget without the testing warning.
+  - Stopped the migration 008 rollout after Supabase rejected `char_length(years_experience)` because the production column is integer despite the older canonical migration declaring text.
+  - Corrected the profile constraint to validate a type-portable `years_experience::text` value in the existing UI-supported 0–50 range, synchronized the canonical schema, and added a regression contract covering both historical text and production integer schemas.
+  - Verification passed: focused quota/schema suite 6/6, Ruff, frontend ESLint, and `git diff --check`.
+- **Files Changed:** `supabase/migrations/008_abuse_controls.sql`, `supabase-schema.sql`, `backend/tests/unit/test_quota_schema.py`, `.ai-sync/WORKLOG.md`
+- **Next:** Obtain owner approval, commit/push the migration hotfix, then recopy and rerun migration 008. Require all six production verification columns true before deploying Render.
+- **Blockers:** Migration hotfix is awaiting owner approval; migration 008 and Render deployment remain incomplete. Production Gate 1(a) remains NO-GO.
+
 ### Session 134 (Copilot) — 2026-08-09
 - **Agent:** copilot
 - **Did:**
