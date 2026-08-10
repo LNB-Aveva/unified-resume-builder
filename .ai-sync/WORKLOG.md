@@ -8,8 +8,8 @@
 ## Current Task
 
 - **Feature:** Prompt 3 launch-gate audit
-- **Branch:** `fix/keepalive-improvements`
-- **Status:** Gate 1(a) repository remediation is pushed in PR #56; CI is green. Conditional NO-GO remains until the owner applies migration 008, deploys the Render service-role quota configuration, enables free Turnstile in Vercel/Supabase, and completes the 25-test plus real quota production proof. Gate 4 and Gate 6 remain pending.
+- **Branch:** `docs/gate1a-production-closeout`
+- **Status:** Prompt 3 Gate 1(a) is complete with a code-and-production PASS. Gates 2, 3, and 5 are complete. The full Prompt 3 launch verdict remains NO-GO until Gate 1(b–e), Gate 4, and Gate 6 are completed.
 
 ---
 
@@ -18,14 +18,27 @@
 | Field      | Value                      |
 |------------|----------------------------|
 | Agent      | copilot                    |
-| Started    | 2026-08-09                 |
-| Working On | Session 134 — Gate 1(a) abuse-control remediation and proof runbook |
+| Started    | 2026-08-10                 |
+| Working On | Session 138 — Gate 1(a) production closeout |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 138 (Copilot) — 2026-08-10
+- **Agent:** copilot
+- **Did:**
+  - Closed Prompt 3 Gate 1(a) with complete production evidence. Migration 008 returned all six verification booleans true; Render health reported release `ead449c1aade` and both quota safeguards true.
+  - Verified real Turnstile flows for sign-up, password sign-in, and password reset; Supabase CAPTCHA is enabled, and a tokenless password-auth request failed with HTTP 400 `captcha_failed`.
+  - Merged the CAPTCHA-safe production-test work through PRs #58 and #59. Final protected run `31430596989` passed 20/20 RLS tests plus 5/5 abuse-control tests with zero skips on main SHA `6fc4f71`.
+  - Proved durable production quota behavior: a real Summary created a one-unit daily ledger row; after setting only the throwaway account to the ten-unit ceiling, the next Summary returned HTTP 429 with the bounded fair-use message.
+  - Owner deleted the quota-proof account and two stale cascade fixtures; the final cleanup query returned zero matching Gate 1(a) test users.
+  - Updated the launch audit and runbook to mark Gate 1(a) PASS without claiming completion of Gate 1(b–e). No paid service was enabled or required.
+- **Files Changed:** `docs/LAUNCH_READINESS_AUDIT.md`, `docs/GATE1A_ABUSE_CONTROLS.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Perform Gate 1(b), the scraper and distributed-automation adversarial review; then Gate 1(c–e), Gate 4, and Gate 6.
+- **Blockers:** None for Gate 1(a). The overall Prompt 3 launch decision remains blocked by the uncompleted gates above.
 
 ### Session 137 (Copilot) — 2026-08-10
 - **Agent:** copilot
