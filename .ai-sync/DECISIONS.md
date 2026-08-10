@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-035: CAPTCHA-Safe Production Test Sessions
+- **Date:** 2026-08-10
+- **Agent:** copilot
+- **Context:** Enabling production CAPTCHA correctly blocks the password-grant calls previously used by the credential-gated RLS and abuse-control suites, so the launch proof could not authenticate its temporary users without weakening the live control.
+- **Decision:** Keep production CAPTCHA enabled. The protected tests create users through the service-role admin API, generate server-side magic links for those users, and verify the returned token hashes through the public Auth endpoint to obtain scoped user sessions. The service-role credential remains confined to the protected GitHub environment.
+- **Alternatives Considered:** Temporarily disable CAPTCHA during verification — rejected because it creates a real protection gap and invalidates the production proof. Automate a Turnstile browser challenge in CI — rejected because challenges are intentionally hostile to automation and would make the security suite flaky.
+- **Files Affected:** `backend/tests/integration/_supabase_test_auth.py`, `backend/tests/integration/test_rls_isolation.py`, `backend/tests/integration/test_abuse_controls_production.py`, `backend/tests/unit/test_supabase_test_auth.py`
+
 ### DEC-034: Backend-Only Quota Mutation and Database Abuse Ceilings
 - **Date:** 2026-08-09
 - **Agent:** copilot

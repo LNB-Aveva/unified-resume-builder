@@ -27,6 +27,18 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 136 (Copilot) — 2026-08-10
+- **Agent:** copilot
+- **Did:**
+  - Closed the migration 008 rollout failure with hotfix PR #57, merged as `ead449c`; production verification returned all six database-control booleans true, main CI passed, and Render `/health` identified release `ead449c1aade` with both quota safeguards true.
+  - Verified production Turnstile end to end: owner passed sign-up, password sign-in, and password-reset UI flows; a direct password-auth request without a CAPTCHA token returned HTTP 400 `captcha_failed`.
+  - Dispatched production workflow run `31428457961`; it failed closed before tests because all three `production-rls` GitHub environment secrets were missing.
+  - Found the production suites' password-grant fixture would be incompatible with enabled CAPTCHA. Replaced it locally with service-role-generated magic links verified through the public Auth endpoint, preserving CAPTCHA instead of disabling it for CI; added raw and client-shaped response regression tests.
+  - Verification passed: 2 new helper tests, 25 correctly credential-skipped production tests, and Ruff. No production credentials were read or logged.
+- **Files Changed:** production test auth helper, both credential-gated production suites, helper regression tests, `.ai-sync/WORKLOG.md`, `.ai-sync/DECISIONS.md`
+- **Next:** Commit/push the owner-approved CAPTCHA-safe test fix, merge after CI, then have the owner add the three protected environment secrets and rerun the 25-test workflow.
+- **Blockers:** Protected workflow cannot run until the test fix is merged and `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` exist as `production-rls` environment secrets. Gate 1(a) remains NO-GO.
+
 ### Session 135 (Copilot) — 2026-08-10
 - **Agent:** copilot
 - **Did:**
