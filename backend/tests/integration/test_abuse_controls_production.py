@@ -7,6 +7,8 @@ from datetime import UTC, datetime, timedelta
 import httpx
 import pytest
 
+from tests.integration._supabase_test_auth import access_token_from_admin_magic_link
+
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
 ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")
 SERVICE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
@@ -49,13 +51,12 @@ def abuse_user():
     create.raise_for_status()
     user_id = create.json()["id"]
 
-    sign_in = httpx.post(
-        f"{AUTH}/token?grant_type=password",
-        headers={"apikey": ANON_KEY, "Content-Type": "application/json"},
-        json={"email": email, "password": password},
-        timeout=30,
+    access_token = access_token_from_admin_magic_link(
+        auth_url=AUTH,
+        anon_key=ANON_KEY,
+        service_key=SERVICE_KEY,
+        email=email,
     )
-    sign_in.raise_for_status()
 
     profile = httpx.post(
         f"{REST}/profiles",
@@ -66,7 +67,7 @@ def abuse_user():
     profile.raise_for_status()
 
     try:
-        yield {"id": user_id, "jwt": sign_in.json()["access_token"]}
+        yield {"id": user_id, "jwt": access_token}
     finally:
         httpx.delete(
             f"{AUTH}/admin/users/{user_id}",

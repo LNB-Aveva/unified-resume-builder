@@ -21,6 +21,8 @@ import uuid
 import httpx
 import pytest
 
+from tests.integration._supabase_test_auth import access_token_from_admin_magic_link
+
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
 ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")
 SERVICE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
@@ -64,15 +66,14 @@ def _create_user(email: str, password: str) -> str:
     return r.json()["id"]
 
 
-def _sign_in(email: str, password: str) -> str:
-    """Sign in and return access token."""
-    r = httpx.post(
-        f"{AUTH}/token?grant_type=password",
-        headers={"apikey": ANON_KEY, "Content-Type": "application/json"},
-        json={"email": email, "password": password},
+def _sign_in(email: str) -> str:
+    """Create a user session without weakening production CAPTCHA protection."""
+    return access_token_from_admin_magic_link(
+        auth_url=AUTH,
+        anon_key=ANON_KEY,
+        service_key=SERVICE_KEY,
+        email=email,
     )
-    assert r.status_code == 200, f"Sign-in failed for {email}: {r.text}"
-    return r.json()["access_token"]
 
 
 def _delete_user(user_id: str) -> None:
@@ -97,8 +98,8 @@ def users():
     uid_a = _create_user(email_a, pwd)
     uid_b = _create_user(email_b, pwd)
 
-    jwt_a = _sign_in(email_a, pwd)
-    jwt_b = _sign_in(email_b, pwd)
+    jwt_a = _sign_in(email_a)
+    jwt_b = _sign_in(email_b)
 
     yield {
         "a": {"id": uid_a, "jwt": jwt_a, "email": email_a},
