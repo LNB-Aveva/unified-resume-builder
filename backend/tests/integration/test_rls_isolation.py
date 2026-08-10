@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import os
 import uuid
+from datetime import UTC, datetime, timedelta
 
 import httpx
 import pytest
@@ -446,59 +447,95 @@ class TestDeleteCascade:
         pwd = f"Cascade!Pass_{tag}"
 
         uid = _create_user(email, pwd)
-        jwt = _sign_in(email, pwd)
-        h = _user_headers(jwt)
+        try:
+            jwt = _sign_in(email)
+            h = _user_headers(jwt)
 
-        httpx.post(f"{REST}/profiles", headers=h, json={
-            "id": uid, "full_name": "Cascade User",
-        })
-        httpx.post(f"{REST}/jobs", headers=h, json={
-            "user_id": uid, "company": "C", "title": "T",
-        })
-
-        resume_id = str(uuid.uuid4())
-        httpx.post(f"{REST}/resumes", headers=h, json={
-            "id": resume_id, "user_id": uid, "title": "R",
-        })
-        httpx.post(f"{REST}/resume_versions", headers=h, json={
-            "resume_id": resume_id, "version_number": 1,
-            "resume_data": {"x": 1},
-        })
-
-        score_id = f"cascade-{uuid.uuid4().hex[:8]}"
-        httpx.post(f"{REST}/shared_scores", headers=h, json={
-            "id": score_id,
-            "user_id": uid,
-            "overall_score": 75.0,
-            "grade": "B",
-            "grade_label": "Good",
-            "total_matched": 8,
-            "total_missing": 4,
-            "total_job_keywords": 12,
-            "expires_at": "2099-12-31T00:00:00Z",
-        })
-
-        r = httpx.post(
-            f"{REST}/rpc/delete_own_user",
-            headers=h,
-            json={},
-        )
-        assert r.status_code in (200, 204)
-
-        admin_h = _admin_headers()
-        admin_h["Prefer"] = "return=representation"
-        for table in ["profiles", "jobs", "resumes", "resume_versions",
-                      "shared_scores"]:
-            if table == "profiles":
-                filter_key, filter_val = "id", uid
-            elif table == "resume_versions":
-                filter_key, filter_val = "resume_id", resume_id
-            elif table == "shared_scores":
-                filter_key, filter_val = "id", score_id
-            else:
-                filter_key, filter_val = "user_id", uid
-            r = httpx.get(
-                f"{REST}/{table}?{filter_key}=eq.{filter_val}",
-                headers=admin_h,
+            setup = httpx.post(
+                f"{REST}/profiles",
+                headers=h,
+                json={"id": uid, "full_name": "Cascade User"},
             )
-            assert r.json() == [], f"{table} still has rows after cascade delete"
+            assert setup.status_code == 201, setup.text
+
+            setup = httpx.post(
+                f"{REST}/jobs",
+                headers=h,
+                json={"user_id": uid, "company": "C", "title": "T"},
+            )
+            assert setup.status_code == 201, setup.text
+
+            resume_id = str(uuid.uuid4())
+            setup = httpx.post(
+                f"{REST}/resumes",
+                headers=h,
+                json={"id": resume_id, "user_id": uid, "title": "R"},
+            )
+            assert setup.status_code == 201, setup.text
+
+            setup = httpx.post(
+                f"{REST}/resume_versions",
+                headers=h,
+                json={
+                    "resume_id": resume_id,
+                    "version_number": 1,
+                    "resume_data": {"x": 1},
+                },
+            )
+            assert setup.status_code == 201, setup.text
+
+            score_id = f"cascade-{uuid.uuid4().hex[:8]}"
+            setup = httpx.post(
+                f"{REST}/shared_scores",
+                headers=h,
+                json={
+                    "id": score_id,
+                    "user_id": uid,
+                    "overall_score": 75.0,
+                    "grade": "B",
+                    "grade_label": "Good",
+                    "total_matched": 8,
+                    "total_missing": 4,
+                    "total_job_keywords": 12,
+                    "expires_at": (
+                        datetime.now(UTC) + timedelta(days=30)
+                    ).isoformat(),
+                },
+            )
+            assert setup.status_code == 201, setup.text
+
+            response = httpx.post(
+                f"{REST}/rpc/delete_own_user",
+                headers=h,
+                json={},
+            )
+            assert response.status_code in (200, 204)
+
+            admin_h = _admin_headers()
+            admin_h["Prefer"] = "return=representation"
+            for table in [
+                "profiles",
+                "jobs",
+                "resumes",
+                "resume_versions",
+                "shared_scores",
+            ]:
+                if table == "profiles":
+                    filter_key, filter_val = "id", uid
+                elif table == "resume_versions":
+                    filter_key, filter_val = "resume_id", resume_id
+                elif table == "shared_scores":
+                    filter_key, filter_val = "id", score_id
+                else:
+                    filter_key, filter_val = "user_id", uid
+                response = httpx.get(
+                    f"{REST}/{table}?{filter_key}=eq.{filter_val}",
+                    headers=admin_h,
+                )
+                assert response.json() == [], (
+                    f"{table} still has rows after cascade delete"
+                )
+        finally:
+            # The self-delete path should remove the Auth user. This fallback also
+            # cleans it up when a setup/assertion failure interrupts the proof.
+            _delete_user(uid)
