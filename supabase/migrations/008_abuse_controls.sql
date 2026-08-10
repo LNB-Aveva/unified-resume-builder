@@ -104,7 +104,12 @@ begin
       (full_name is null or char_length(full_name) <= 200)
       and (target_role is null or char_length(target_role) <= 200)
       and (industry is null or char_length(industry) <= 200)
-      and (years_experience is null or char_length(years_experience) <= 20)
+      -- Production uses an integer while older schema installs used text.
+      -- Cast only for regex validation so the constraint is safe on both.
+      and (
+        years_experience is null
+        or years_experience::text ~ '^(0|[1-9]|[1-4][0-9]|50)$'
+      )
     ) not valid;
   end if;
 

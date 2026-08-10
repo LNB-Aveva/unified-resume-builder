@@ -9,7 +9,10 @@ create table if not exists public.profiles (
   full_name             text check (full_name is null or char_length(full_name) <= 200),
   target_role           text check (target_role is null or char_length(target_role) <= 200),
   industry              text check (industry is null or char_length(industry) <= 200),
-  years_experience      text check (years_experience is null or char_length(years_experience) <= 20),
+  years_experience      text check (
+    years_experience is null
+    or years_experience::text ~ '^(0|[1-9]|[1-4][0-9]|50)$'
+  ),
   onboarding_completed  boolean not null default false,
   created_at            timestamptz not null default now(),
   updated_at            timestamptz not null default now()

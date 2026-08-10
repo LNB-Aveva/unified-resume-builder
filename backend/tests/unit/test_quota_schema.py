@@ -67,6 +67,16 @@ def test_storage_abuse_limits_are_database_enforced():
     assert migration.count("execute function public.enforce_user_storage_limits()") == 4
 
 
+def test_profile_years_constraint_supports_text_and_integer_schemas():
+    migration = ABUSE_MIGRATION.read_text(encoding="utf-8").lower()
+    schema = SCHEMA.read_text(encoding="utf-8").lower()
+    portable_check = "years_experience::text ~ '^(0|[1-9]|[1-4][0-9]|50)$'"
+
+    assert "char_length(years_experience)" not in migration
+    assert portable_check in migration
+    assert portable_check in schema
+
+
 def test_share_links_keep_full_uuid_entropy_and_support_revocation():
     source = SHARE_WIDGET.read_text(encoding="utf-8")
 
