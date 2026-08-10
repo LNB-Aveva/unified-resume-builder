@@ -38,6 +38,7 @@ export default function AccountForm({ defaultValues }: Props) {
             id="fullName"
             name="fullName"
             type="text"
+            maxLength={200}
             defaultValue={defaultValues.fullName}
             className="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-2 focus:outline-indigo-600 transition"
           />
@@ -54,6 +55,7 @@ export default function AccountForm({ defaultValues }: Props) {
             id="targetRole"
             name="targetRole"
             type="text"
+            maxLength={200}
             defaultValue={defaultValues.targetRole}
             placeholder="e.g. Senior Frontend Engineer"
             className="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-2 focus:outline-indigo-600 transition"
@@ -68,6 +70,7 @@ export default function AccountForm({ defaultValues }: Props) {
             id="industry"
             name="industry"
             type="text"
+            maxLength={200}
             defaultValue={defaultValues.industry}
             placeholder="e.g. Tech, Finance, Healthcare"
             className="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-2 focus:outline-indigo-600 transition"

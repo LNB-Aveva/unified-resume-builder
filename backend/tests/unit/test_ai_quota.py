@@ -5,36 +5,27 @@ from unittest.mock import AsyncMock
 import httpx
 import pytest
 from fastapi import HTTPException
-from starlette.requests import Request
 
 from app.core import ai_quota
 
-
-def _request(token: str = "signed-user-token") -> Request:
-    return Request(
-        {
-            "type": "http",
-            "method": "POST",
-            "path": "/api/v1/summary",
-            "headers": [(b"authorization", f"Bearer {token}".encode())],
-        }
-    )
-
+USER_ID = "11111111-1111-4111-8111-111111111111"
 
 @pytest.fixture
 def quota_settings(monkeypatch):
     monkeypatch.setattr(ai_quota.settings, "SUPABASE_URL", "https://project.supabase.co")
-    monkeypatch.setattr(ai_quota.settings, "SUPABASE_ANON_KEY", "public-anon-key")
+    monkeypatch.setattr(ai_quota.settings, "SUPABASE_SERVICE_ROLE_KEY", "server-secret-key")
     monkeypatch.setattr(ai_quota.settings, "AI_QUOTA_ENFORCEMENT", True)
 
 
 @pytest.mark.anyio
-async def test_consume_quota_sends_user_token_and_units(quota_settings):
+async def test_consume_quota_uses_backend_identity_and_user_id(quota_settings):
     async def handler(request: httpx.Request) -> httpx.Response:
         assert request.url.path == "/rest/v1/rpc/consume_ai_quota"
-        assert request.headers["authorization"] == "Bearer signed-user-token"
-        assert request.headers["apikey"] == "public-anon-key"
-        assert request.content == b'{"p_units":5}'
+        assert request.headers["authorization"] == "Bearer server-secret-key"
+        assert request.headers["apikey"] == "server-secret-key"
+        assert request.content == (
+            b'{"p_user_id":"11111111-1111-4111-8111-111111111111","p_units":5}'
+        )
         return httpx.Response(
             200,
             json=[{
@@ -46,7 +37,7 @@ async def test_consume_quota_sends_user_token_and_units(quota_settings):
         )
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
-        result = await ai_quota.consume_ai_quota("signed-user-token", 5, client)
+        result = await ai_quota.consume_ai_quota(USER_ID, 5, client)
 
     assert result.allowed is True
     assert result.user_remaining == 5
@@ -62,7 +53,7 @@ async def test_quota_denial_returns_429_with_retry_after(monkeypatch, quota_sett
     )
 
     with pytest.raises(HTTPException) as exc_info:
-        await ai_quota.enforce_ai_quota(_request(), units=1)
+        await ai_quota.enforce_ai_quota(USER_ID, units=1)
 
     assert exc_info.value.status_code == 429
     assert exc_info.value.headers == {"Retry-After": "7200"}
@@ -79,20 +70,20 @@ async def test_quota_transport_failure_fails_closed(monkeypatch, quota_settings)
     )
 
     with pytest.raises(HTTPException) as exc_info:
-        await ai_quota.enforce_ai_quota(_request(), units=1)
+        await ai_quota.enforce_ai_quota(USER_ID, units=1)
 
     assert exc_info.value.status_code == 503
     assert "usage controls" in exc_info.value.detail
 
 
 @pytest.mark.anyio
-async def test_quota_requires_bearer_token(quota_settings):
-    request = Request({"type": "http", "method": "POST", "path": "/", "headers": []})
+async def test_quota_missing_backend_credential_fails_closed(monkeypatch, quota_settings):
+    monkeypatch.setattr(ai_quota.settings, "SUPABASE_SERVICE_ROLE_KEY", "")
 
     with pytest.raises(HTTPException) as exc_info:
-        await ai_quota.enforce_ai_quota(request, units=1)
+        await ai_quota.enforce_ai_quota(USER_ID, units=1)
 
-    assert exc_info.value.status_code == 401
+    assert exc_info.value.status_code == 503
 
 
 @pytest.mark.anyio
@@ -101,7 +92,7 @@ async def test_quota_bypasses_network_outside_enforced_environment(monkeypatch):
     consume = AsyncMock()
     monkeypatch.setattr(ai_quota, "consume_ai_quota", consume)
 
-    await ai_quota.enforce_ai_quota(_request(), units=1)
+    await ai_quota.enforce_ai_quota(USER_ID, units=1)
 
     consume.assert_not_awaited()
 
@@ -109,7 +100,7 @@ async def test_quota_bypasses_network_outside_enforced_environment(monkeypatch):
 @pytest.mark.anyio
 async def test_invalid_unit_weight_is_rejected(quota_settings):
     with pytest.raises(ValueError, match="between 1 and 5"):
-        await ai_quota.consume_ai_quota("token", 6)
+        await ai_quota.consume_ai_quota(USER_ID, 6)
 
 
 @pytest.mark.anyio
@@ -119,4 +110,4 @@ async def test_invalid_rpc_json_fails_closed(quota_settings):
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
         with pytest.raises(RuntimeError, match="invalid JSON"):
-            await ai_quota.consume_ai_quota("token", 1, client)
+            await ai_quota.consume_ai_quota(USER_ID, 1, client)

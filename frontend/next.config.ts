@@ -17,12 +17,12 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               // GA4 domains — consent-gated in CookieConsent.tsx
-              `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com${isDev ? " 'unsafe-eval'" : ""}`,
+              `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com https://pagead2.googlesyndication.com${isDev ? " 'unsafe-eval'" : ""}`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://www.google-analytics.com https://pagead2.googlesyndication.com",
               "font-src 'self' data:",
-              `connect-src 'self' https://*.supabase.co ${_backendUrl} https://www.google-analytics.com https://analytics.google.com https://pagead2.googlesyndication.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io`,
-              "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com",
+              `connect-src 'self' https://challenges.cloudflare.com https://*.supabase.co ${_backendUrl} https://www.google-analytics.com https://analytics.google.com https://pagead2.googlesyndication.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io`,
+              "frame-src https://challenges.cloudflare.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com",
               "frame-ancestors 'none'",
             ].join("; "),
           },

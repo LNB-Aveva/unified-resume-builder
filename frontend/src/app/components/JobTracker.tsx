@@ -417,6 +417,7 @@ export default function JobTracker() {
                 id="jt-company"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
+                maxLength={200}
                 placeholder="e.g. Accenture"
                 className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900"
               />
@@ -429,6 +430,7 @@ export default function JobTracker() {
                 id="jt-title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                maxLength={200}
                 placeholder="e.g. Senior Software Engineer"
                 className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900"
               />
@@ -439,6 +441,7 @@ export default function JobTracker() {
                 id="jt-url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
+                maxLength={2000}
                 placeholder="https://..."
                 className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900"
               />
@@ -449,6 +452,7 @@ export default function JobTracker() {
                 id="jt-notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
+                maxLength={20000}
                 placeholder="e.g. Referral from John, $65k range, hybrid 2 days..."
                 rows={2}
                 className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-none"
@@ -644,6 +648,7 @@ export default function JobTracker() {
                   <textarea
                     value={job.notes}
                     onChange={(e) => handleNotesChange(job.id, e.target.value)}
+                    maxLength={20000}
                     placeholder="Add notes — salary range, referral, interview round, next steps..."
                     rows={3}
                     className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-3 py-2 text-sm text-gray-700 dark:text-gray-200 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-none"

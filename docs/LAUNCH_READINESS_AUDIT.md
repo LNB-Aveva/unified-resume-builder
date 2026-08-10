@@ -1,13 +1,13 @@
 # Launch Readiness Audit — Current Main Rerun
 
-> Audit date: 2026-08-07  
-> Audited base: `4fc5567` plus the local ES256/JWKS authentication fix documented below
-> Branch: `fix/prompt-gaps-closure`
+> Audit date: 2026-08-09
+> Audited base: `7918ee8` plus the uncommitted Gate 1(a) remediation documented below
+> Branch: `fix/keepalive-improvements`
 > Rule: every `UNVERIFIED` launch gate is a `NO-GO` until it is proven.
 
 ## Current verdict
 
-**PROVISIONAL NO-GO.** Gates 1–3 and 5 are complete. Production ES256 authentication is now proven. Gate 1 code-side remediation is complete on `fix/render-starter-blueprint`: durable atomic AI quotas, quota-free public preview, 128-bit share IDs with revocation, fail-loud retention cleanup, accurate fair-use copy, and a protected production-RLS workflow. Production closure still requires the owner actions listed below: apply migration 007 and quota environment values, restore/confirm Render Starter, run the protected 20-test RLS workflow, complete the Hugging Face usage/budget review, and prove a Google-certified TCF CMP before ads. Gate 4 and Gate 6 remain pending.
+**PROVISIONAL NO-GO.** Gates 2, 3, and 5 are complete. Gate 1(a) repository remediation is complete: backend-only quota mutation, fail-fast production configuration, observable safeguard health, database storage ceilings, and free Turnstile token wiring. Production ES256 authentication, 20/20 RLS isolation, provider-token rotation/usage review, full-entropy share links, and production IP limiting remain proven. Launch is still blocked until the owner applies migration 008, configures Render and Turnstile/Supabase, runs the protected 25-test proof, and verifies real allowed/denied quota behavior. Gate 4 and Gate 6 remain pending.
 
 Cost model verdict: the $7/mo budget safely handles 0–9,600 users. The first hard cliff is Supabase's 500 MB free DB at approximately 9,600 active users (~52 KB/user average footprint). HuggingFace free-tier rate limits become visible at ~1,000 users during peak hours but fail gracefully via circuit breaker.
 
@@ -26,12 +26,12 @@ Commands were run from the current branch before editing this report.
 
 | Check | Exact result |
 |---|---|
-| Full backend suite | `535 passed, 24 skipped, 26 warnings in 149.11s` after Gate 1 remediation |
+| Full backend suite | `539 passed, 29 skipped, 28 warnings in 149.93s` after Gate 1(a) remediation |
 | Backend lint | `All checks passed!` |
 | Frontend lint | `npm run lint` exit `0` |
 | Frontend production build | `Compiled successfully`; 32 routes generated |
-| Focused quota/preview/schema/route/auth suite | `190 passed, 4 skipped, 14 warnings in 4.87s`; includes ES256, quota denial, route weights, deterministic preview, and SQL security contracts |
-| Production RLS suite | `20 skipped` — `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` were not available |
+| Focused security/auth/API suite | `177 passed, 14 warnings`; includes ES256, backend-only quota denial, route weights, deterministic preview, and SQL security contracts |
+| Production data-control suites | 20 RLS and 5 abuse-control tests collected but skipped locally because protected production credentials were not available; retained production RLS evidence remains 20/20 |
 | Production npm audit | `found 0 vulnerabilities` |
 | Runtime Python audit | `No known vulnerabilities found` |
 | Development Python audit | `No known vulnerabilities found` |
@@ -57,13 +57,17 @@ Production HTTP checks on 2026-08-07:
 
 | Finding | Severity | Evidence | Required closure |
 |---|---|---|---|
-| A Hugging Face token was committed in `.claude/memory/project_resume_session15_07112026.md`. | **Owner verification pending** | The value is redacted and absent from the owner's active-token list; a fine-grained production replacement exists. Public Git history still contains the dead value. | Confirm Render uses the replacement and record unexpected usage/charges as yes/no. Optional destructive history rewriting remains a separate decision. |
-| Production Supabase tokens use ES256, but the deployed backend accepted only HS256. | **Resolved — production pass** | PR #53 added strict JWKS verification. Main CI passed, Render health returned 200, and a real signed-in production Summary request succeeded. | Preserve the 84-case auth regression suite. |
-| AI cost controls were bypassable with account creation and IP rotation. | **Code complete / production migration pending** | Public preview is now deterministic and makes no Hugging Face call. Authenticated AI routes atomically consume Supabase-backed units: summary 1, cover letter 2, rewrite 5; ceilings are 10/user/day and 500 globally/day. Quota failure returns 503 before provider contact. | Apply migration 007, add `SUPABASE_ANON_KEY`, deploy with `AI_QUOTA_ENFORCEMENT=true`, and verify allowed/denied production calls. Confirm provider-side usage/budget settings. |
-| Cross-user isolation is designed correctly but not proven in this run. | **Blocker** | Checked-in SQL enables RLS on all five user-data tables and the 20-test isolation/cascade suite exists. All 20 tests skipped because production test credentials were unavailable. | Run `docs/RLS_VERIFICATION.md` with process-scoped credentials and save the redacted result. |
-| Protected backend routes reject anonymous traffic. | Pass | Production returned 401 for score, gap, compliance, summary, rewrite, cover-letter, and PDF export. Eighty auth cases are included in the passing suite. | Preserve as a regression gate. |
-| Oversized and malformed request bodies have bounded handling. | Pass | ASGI middleware enforces 1 MB for declared and chunked bodies; production returned 413 for an oversized body. | Exercise malformed transport cases again in Gate 4. |
-| Public score links use only 40 bits of identifier entropy. | **Medium** | `crypto.randomUUID()` is truncated to 10 hex characters. The RPC restricts reads to one supplied ID and omits `user_id`, but longer IDs are inexpensive defense-in-depth. | Expand new share IDs to at least 128 bits and add a user-visible revoke action. Existing links can remain valid until expiry. |
+| Runtime AI quota enforcement was contradicted by the missing production ledger row. | **Code complete / production proof required** | The backend now refuses production startup if enforcement or its backend-only credential is missing. `/health` identifies the deployed release and reports both safeguard states. AI weights and 10/user/day plus 500/global/day ceilings remain atomic. | Apply migration 008, add the Render service-role value, deploy, require both health safeguards `true`, then prove one Summary increments the ledger and a ceiling request returns 429. |
+| Account rotation could bypass the per-user allowance and deny AI globally without provider calls. | **Code complete / dashboard proof required** | Migration 008 removes the authenticated RPC signature and grants the new UUID-bound quota function only to `service_role`; the verified backend supplies the authenticated user ID. Free Turnstile token handling now covers email signup, sign-in, and password reset. | Deploy the Turnstile site key, enable its secret in Supabase Auth, run the five production abuse tests, and retain CAPTCHA analytics/visible-flow evidence. Distributed real-human account rotation remains a monitored residual risk. |
+| An authenticated user could exhaust Supabase storage through direct PostgREST writes. | **Code complete / migration proof required** | Migration 008 bounds profile, job, resume-version, and shared-score content; caps 200 jobs/user, 50 resumes/user, 500 versions/user and 100/resume, 100 shared scores/user, and share expiry at 31 days. Four serialized triggers enforce counts before insert. UI profile/job limits match the database. | Apply migration 008 and require the catalog query plus five-test production abuse suite to pass. Monitor limit errors and revisit ceilings using real usage data. |
+| Cross-user reads and writes are isolated in production. | **Pass** | Owner-retained production evidence is 20/20 for profiles, jobs, resumes, resume versions, shared scores, and cascade deletion. Server actions also filter by authenticated `user_id`; the shared-score RPC returns one supplied ID and omits `user_id`. | Preserve the protected production RLS workflow as a release gate after policy/schema changes. |
+| Public score links do not expose complete resumes and are not feasibly enumerable. | **Pass with intentional disclosure** | New IDs retain the full hyphenless UUID v4 generated by `crypto.randomUUID()` (122 random bits), owners can revoke them, expired rows are rejected, and the public RPC omits `user_id` and raw resume text. Anyone who receives the link can still see matched/missing keywords and the role hint by design. | Keep the disclosure explicit in the share UI; never add raw resume text, contact details, or `user_id` to the public RPC. |
+| Protected backend routes reject anonymous or forged authentication. | **Pass** | Production returned 401 for all seven protected routes. The focused 2026-08-09 suite passed 122 quota/auth/rate-limit tests; strict ES256/RS256 issuer and audience verification is deployed. | Preserve the auth and provider-not-called-on-denial tests. |
+| Production IP-header rotation did not bypass throttling. | **Pass, edge-dependent** | A controlled quota-free probe on 2026-08-09 showed Cloudflare rejecting forged `CF-Connecting-IP`/`CF-Ray` with 403. Rotating attacker-supplied `X-Forwarded-For` values still shared one bucket: the sixth application request to the 5/minute preview route returned 429. | Alert on 429 volume. Re-run this probe if the Cloudflare/Render topology or proxy-hop count changes; in-memory limits still reset on process restart and do not stop distributed clients. |
+| The previously committed Hugging Face token is retired. | **Pass with historical residue** | The value is redacted from the current file, absent from the active-token list, and the owner found no unexpected activity or charges. Public Git history still contains the dead value. | Keep the replacement fine-grained and monitor provider usage. History rewriting remains optional and requires a separate destructive-operation plan. |
+| A stolen access token remains usable until JWT expiry even after logout. | **Medium residual** | Backend and RLS authorization are stateless JWT checks. Supabase sign-out revokes refresh capability, not an already-issued access token. No application denylist exists. This does not create an IDOR, but token theft temporarily becomes the victim's authority. | Keep access-token TTL short, preserve XSS/token-handling defenses, and document account-compromise response. Consider session revocation checks if threat or traffic increases. |
+
+**Gate 1(a) verdict: CONDITIONAL NO-GO pending owner production proof.** Repository-controlled remediation is implemented and locally verified. Launch remains blocked until migration 008, Render quota health, Turnstile/Supabase configuration, the 25-test protected run, and allowed/denied quota behavior are proven using `docs/GATE1A_ABUSE_CONTROLS.md`.
 
 ### B. Scraper and distributed automation
 
@@ -71,7 +75,7 @@ Production HTTP checks on 2026-08-07:
 |---|---|---|---|
 | Robots directives do not stop an abusive scraper. | **High** | Protected/share routes are disallowed and score pages are `noindex`, but `robots.txt` is advisory. Process-local IP limits reset on restart and do not stop distributed clients. | Add edge/provider abuse controls and durable quotas before meaningful traffic or ads. |
 | Public AI preview was a direct cost surface. | **Resolved in code** | `/api/v1/preview-rewrite` now performs a deterministic weak-opening improvement and imports no Hugging Face client. Focused tests prove representative behavior. | Deploy and preserve the no-provider regression test. |
-| Bulk Supabase reads are blocked in the checked-in design. | **UNVERIFIED / NO-GO** | `shared_scores` has owner-only SELECT and a single-row SECURITY DEFINER RPC that omits `user_id`; production behavior was not re-proven because RLS tests skipped. | Complete the production RLS runbook. |
+| Bulk cross-user Supabase reads are blocked. | **Pass; re-run after migration** | Retained production RLS evidence passed 20/20. `shared_scores` has owner-only SELECT and a single-row SECURITY DEFINER RPC that omits `user_id`. | Re-run the protected 25-test workflow after migration 008 because schema/function grants change. |
 
 ### C. Confused non-technical user
 
@@ -86,9 +90,9 @@ Production HTTP checks on 2026-08-07:
 | Finding | Severity | Evidence | Required closure |
 |---|---|---|---|
 | Current public policy describes stored resumes, versions, jobs, share keywords, IP metadata, Sentry, Hugging Face processing, retention, export, and deletion. | Pass by code/HTTP review | `/privacy` and `/terms` returned 200; policy statements match the checked-in data flows inspected in this gate. | Preserve a dated data-flow-to-policy review in Gate 2. This is not legal advice. |
-| Account export, deletion, and cross-user RLS remain unverified in this run. | **Blocker** | Server actions authenticate and filter by `user_id`; the RPC and cascade tests exist, but the production credential suite skipped. | Run the production isolation/export/delete procedure with throwaway users. |
+| Account export, deletion, and cross-user RLS cover retained account data. | **Pass; re-run after migration** | The export retrieves account, profile, jobs, resumes with all versions, and shared scores; retained production evidence passed the cascade/isolation suite 20/20. | Preserve the production procedure and re-run it after migration 008. |
 | Expired-score cleanup could fail without failing the workflow. | **Code complete / production proof pending** | Non-200 cleanup now emits `::error::` and exits 1. The RPC is restricted to `service_role`, cleans shared scores plus quota rows older than 31 days, and no longer exposes raw database errors. | Apply migrations, confirm Vercel and GitHub have the cleanup secrets, then retain a successful scheduled run. |
-| The exposed provider token is a reportable security-control failure even if no resume rows were exposed. | **Owner verification pending** | Rotation is evidenced by the active-token list, but whether the old token was used maliciously is still unknown. | Inspect Hugging Face usage/billing logs and record the result without storing any token. |
+| The exposed provider token was retired and its usage reviewed. | **Pass with historical residue** | The active-token list no longer contains the exposed value; the owner reported no unexpected usage or charges. The dead value remains in Git history. | Keep the replacement fine-grained and monitored; history rewriting is optional and separately destructive. |
 
 ### E. AdSense policy reviewer
 
@@ -104,26 +108,26 @@ Official policy references:
 - Google certified CMP requirement: <https://support.google.com/adsense/answer/13554116>
 - Google TCF integration and v2.3 transition: <https://support.google.com/adsense/answer/9804260>
 - Hugging Face token security and fine-grained production tokens: <https://huggingface.co/docs/hub/en/security-tokens>
+- Supabase CAPTCHA client and dashboard requirements: <https://supabase.com/docs/guides/auth/auth-captcha>
+- Supabase access-token behavior after sign-out: <https://supabase.com/docs/reference/javascript/auth-signout>
 
 ## Owner actions required before Gate 1 can be closed as launch-safe
 
-### Immediate — finish the exposed-token incident review
+### Closed — exposed-token incident review
 
-1. **Complete:** the exposed token is absent from the owner's active-token list; do not paste any token into chat, a command line, or a document.
-2. Confirm the Render service uses the fine-grained `resumeai-production-v2` replacement without revealing its value.
-3. In Hugging Face billing/usage, inspect activity since the original commit date and record whether any unexpected usage or charges exist.
-4. Tell the audit only: `Render updated`, `unexpected usage: yes/no`, and whether the replacement deployment is healthy.
+The old value is absent from the active-token list, Render has the fine-grained replacement, and the owner reported no unexpected usage or charges. Never paste either value into chat, a command line, or documentation.
 
-### Immediate — deploy Gate 1 quotas and restore Starter
+### Immediate — deploy and prove Gate 1(a)
 
-1. Apply `supabase/migrations/007_ai_usage_quotas.sql` after taking the documented backup.
-2. In Render, add `SUPABASE_ANON_KEY` and keep `SUPABASE_URL`; never expose the service-role key there.
-3. Merge/synchronize the Blueprint and confirm the service badge is Starter, not Free.
-4. Verify one allowed production Summary and a controlled quota-denial response.
+Follow `docs/GATE1A_ABUSE_CONTROLS.md` in order. It covers the backup, migration 008 catalog proof, Render fail-fast health proof, free Turnstile/Supabase setup, protected 25-test run, and real allowed/denied quota evidence.
 
-### Required production proof — RLS
+### Closed — production RLS proof
 
-Follow `docs/RLS_VERIFICATION.md`. Keep all credentials process-scoped, run all 20 tests, and retain only the redacted pass/fail output.
+The protected production procedure passed 20/20. Re-run `docs/RLS_VERIFICATION.md` after any table, policy, function-grant, or auth change.
+
+### Code complete — account and storage controls
+
+Browser quota mutation is revoked in migration 008, database limits are enforced by constraints/triggers, and Turnstile tokens are forwarded by all email-auth abuse surfaces. Production proof remains mandatory.
 
 ### Required AdSense dashboard proof
 
@@ -132,7 +136,7 @@ In AdSense → Privacy & messaging, verify that a Google-certified European regu
 ## Pending owner decisions discovered in Gate 1
 
 1. **Accurate usage copy:** resolved in code with fair-use wording.
-2. **Durable AI quota architecture:** resolved in code with atomic Supabase daily units; production migration/configuration remains.
+2. **Durable AI quota architecture:** direct client invocation is removed in migration 008; production deployment and behavior remain unproven.
 3. **Git-history cleanup:** optional and destructive. Rotation makes the exposed value unusable; do not rewrite history without a separate explicit authorization and collaborator plan.
 
 ## Gate 2 — Evidence-backed go/no-go checklist
@@ -144,23 +148,23 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 | Phase | Exit gate | Status | Evidence |
 |---|---|---|---|
 | **1 — Build** | Dependencies install cleanly; all 9 routes return 200; frontend build compiles without network fetches. | **PASS** | Geist/Playfair fonts self-hosted; build passes in CI (verified 2026-08-06). No outbound font fetch. |
-| **2 — Tests/CI** | CI run green; 80%+ branch coverage; Playwright happy path + failure paths pass; pip-audit and npm audit report 0 High CVEs. | **PASS** | Current branch: 535 passed, 24 production-credential tests skipped; frontend lint/build pass with 32 routes. Main CI passed on PR #53. Dependency audits remain at zero unaccepted High findings. |
-| **3 — Security/Privacy** | JWT auth on 7 routes; body cap enforced; Bandit 0 High; CORS strict; prompt injection sanitized; PII stripped from Sentry. | **VERIFY — quota deploy** | Production ES256 auth is proven. Durable quota, fail-closed behavior, deterministic preview, stricter function grants, and 34 new regression tests pass locally; migration 007 and Render quota configuration are not yet production-proven. |
+| **2 — Tests/CI** | CI run green; 80%+ branch coverage; Playwright happy path + failure paths pass; pip-audit and npm audit report 0 High CVEs. | **PASS** | Gate 1(a) focused run: 177 passed; the five credential-dependent abuse tests collect and skip locally as designed. Frontend lint/build pass with 32 routes. Dependency audits remain at zero unaccepted High findings. |
+| **3 — Security/Privacy** | JWT auth on 7 routes; body cap enforced; Bandit 0 High; CORS strict; prompt injection sanitized; PII stripped from Sentry. | **VERIFY — abuse-control deploy** | Production ES256 auth is proven. Backend-only quota mutation, fail-fast production startup, deterministic preview, storage ceilings, Turnstile token wiring, and focused regressions pass locally; migration 008 and dashboard configuration require production proof. |
 | **4 — Auth/RLS** | User A cannot read/mutate user B rows; account deletion cascades all 5 tables; data export covers all retained records. | **VERIFY** | 20-test RLS isolation suite passed against production Supabase on 2026-08-04 (recorded in LAUNCH_PROGRAM.md §4.5). All 20 **skipped in this audit** because `SUPABASE_SERVICE_ROLE_KEY` was not available to this process. Code design is correct; production proof exists but cannot be reproduced here without credentials. See Gate 1 §A for the NO-GO until re-run is confirmed. |
 | **5 — Scoring quality** | 80%+ of 25 labeled pairs within one human grade; zero obvious strong matches score F; report reproducible in CI. | **PASS** | Eval harness: 25/25 pairs pass grade calibration (≤1 grade delta from human reference). Golden-file tests for taxonomy parsing pass. Synonym map covers 65+ groups. |
 | **6 — Backend hardening** | HF circuit breaker retries + opens after 5 failures; scheduled health/cleanup check; request timeout 90s; 9 routes load-tested at bounded concurrency. | **VERIFY — Starter restore** | Circuit breaker and timeouts pass. Blueprint now pins `plan: starter`, but the latest owner dashboard screenshot showed Free; synchronize/upgrade and retain a new Starter screenshot. |
 | **7 — Accessibility/Mobile** | WCAG 2.2 AA — no known blockers; Lighthouse accessibility ≥90 on representative pages. | **PASS** | 10/10 pages pass axe-core WCAG 2.2 tags (verified 2026-08-07, Session 123). 6 non-automatable 2.2 AA criteria verified by manual audit. Lighthouse a11y 94 (was 90+ baseline). |
 | **8 — SEO/Monetization** | Sitemap/canonical/legal/content surfaces pass; certified ad consent and live placements must be proven before monetization. | **BLOCKED BEFORE ADS** | Public review surfaces and `ads.txt` pass. The custom banner is not certified TCF proof; AdSense Privacy & messaging status remains owner-only and no live placement/density review exists. |
-| **9 — Auth/Data security** | Owner-only share writes/reads, non-enumerable public RPC, high-entropy links, revocation, and quota-free preview. | **VERIFY — deploy/RLS** | New links use 128-bit UUID entropy and the owner can revoke them in-flow. Public preview is deterministic. Production cross-user policies still require the protected 20-test run. |
+| **9 — Auth/Data security** | Owner-only share writes/reads, non-enumerable public RPC, high-entropy links, revocation, and quota-free preview. | **VERIFY — abuse controls** | New links retain full UUID v4 entropy and the owner can revoke them in-flow. Public preview is deterministic. Production RLS is 20/20; migration 008 adds five production abuse proofs. |
 | **10 — Observability** | Backend/frontend Sentry are PII-safe; uptime and cleanup failures alert; approved fixed spend is monitored. | **VERIFY — dashboards** | Cleanup now fails the scheduled workflow on non-200. Owner must confirm Render Starter billing and Hugging Face usage/budget status; the prior “all free/no payment methods” evidence is obsolete. |
-| **11 — Release engineering** | 7 idempotent migrations; rollback rehearsed; backup drill executed; branch protection on `main`. | **VERIFY — migration 007** | Seven ordered migrations exist; migration 007 is additive but must be backed up/applied before the quota-enabled app deploy. Rollback and prior backup drill remain proven. |
+| **11 — Release engineering** | Ordered idempotent migrations; rollback rehearsed; backup drill executed; branch protection on `main`. | **VERIFY — migration 008** | Eight ordered migrations exist; migration 008 must be backed up/applied before the backend-only quota deployment. Rollback and prior backup drill remain proven. |
 | **12 — Go/no-go** | Current Prompt 3 strict review has no unverified blocker. | **NO-GO** | The historical 2026-08-04 GO is superseded by this rerun until the owner actions below and Gates 4/6 close. |
 
 ### Gate 2 open items requiring owner action
 
 | Item | Severity | Action |
 |---|---|---|
-| Quota migration/configuration | **Blocker** | Back up Supabase; apply migration 007; add Render `SUPABASE_ANON_KEY`; deploy with quota enforcement; verify allowed and denied calls. |
+| Gate 1(a) abuse controls | **Blocker** | Follow `docs/GATE1A_ABUSE_CONTROLS.md`: apply migration 008, add Render's server-only key, configure free Turnstile/Supabase CAPTCHA, run 25 production tests, and prove allowed/denied quota behavior. |
 | Render Starter | **Blocker** | Merge/synchronize the Blueprint and confirm the dashboard badge is Starter. |
 | RLS re-verification | **CLOSED — 2026-08-08** | 20/20 pass against production Supabase confirmed by owner terminal run (all 5 tables: profiles, jobs, resumes, resume_versions, shared_scores + cascade delete). |
 | TCF CMP for AdSense (Gate 1 §E) | **DEFERRED — owner decision** | Site is ad-free; Google site review pending. European regulations message not yet created (AdSense dashboard confirmed 2026-08-08). Required before placing any ad unit slots. Not a blocker for current ad-free launch. See memory: project_future_tcf_cmp. |

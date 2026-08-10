@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   verify:
-    name: Verify production cross-user isolation
+    name: Verify production data controls
     runs-on: ubuntu-latest
     environment: production-rls
     timeout-minutes: 20
@@ -54,3 +54,8 @@ jobs:
         shell: pwsh
         working-directory: backend
         run: python -m pytest tests/integration/test_rls_isolation.py -v --no-header
+
+      - name: Run production abuse-control suite
+        shell: pwsh
+        working-directory: backend
+        run: python -m pytest tests/integration/test_abuse_controls_production.py -v --no-header

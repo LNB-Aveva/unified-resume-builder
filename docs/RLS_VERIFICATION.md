@@ -15,7 +15,7 @@ The source of truth is `backend/tests/integration/test_rls_isolation.py`. It cur
 | Shared scores | 2 | Anonymous inserts are rejected and an authenticated user cannot create a score owned by someone else. |
 | Account-deletion cascade | 1 | `delete_own_user()` removes the Auth user and all owned profile, job, resume, version, and shared-score rows. |
 
-The gate passes only when all 20 tests pass against the production project in one run. A skipped test, unexpected row, or accepted cross-user mutation is a failed gate.
+The isolation gate passes only when all 20 tests pass against the production project in one run. Migration 008 adds a separate five-test abuse-control suite proving that browser JWTs cannot mutate AI quota, oversized/far-future writes are rejected, and the resume row ceiling executes in production. A skipped test, unexpected row, or accepted mutation is a failed gate.
 
 ## Safety requirements
 
@@ -60,7 +60,7 @@ if ($env:SUPABASE_URL -ne 'https://pagdtcttkviglyoeuagy.supabase.co') {
 Push-Location .\backend
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $logPath = Join-Path $env:TEMP "rls-production-$stamp.log"
-python -m pytest tests/integration/test_rls_isolation.py -v 2>&1 |
+python -m pytest tests/integration/test_rls_isolation.py tests/integration/test_abuse_controls_production.py -v 2>&1 |
     Tee-Object -FilePath $logPath
 $testExit = $LASTEXITCODE
 Pop-Location
@@ -79,7 +79,7 @@ Write-Host "Evidence saved to $logPath"
 Expected final summary:
 
 ```text
-============================== 20 passed in ... ==============================
+============================== 25 passed in ... ==============================
 ```
 
 The duration is variable because all requests use the production Auth and REST APIs. The saved log is evidence; inspect it before sharing and then store it with the private release record, not in Git.
@@ -91,6 +91,7 @@ In Supabase Dashboard → Authentication → Users, search for:
 - `rls-test-a-`
 - `rls-test-b-`
 - `rls-cascade-`
+- `abuse-controls-`
 
 Delete any leftover test user only after recording the failed test and its response. Deleting the Auth user should cascade its owned rows; if it does not, treat that as a deletion-compliance failure.
 

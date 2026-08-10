@@ -325,7 +325,16 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "release": os.environ.get("RENDER_GIT_COMMIT", "local")[:12],
+        "safeguards": {
+            "ai_quota_enforcement": settings.AI_QUOTA_ENFORCEMENT,
+            "ai_quota_backend_configured": bool(
+                settings.SUPABASE_URL and settings.SUPABASE_SERVICE_ROLE_KEY
+            ),
+        },
+    }
 
 
 if __name__ == "__main__":

@@ -15,10 +15,25 @@ import {
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
+function captchaToken(formData: FormData): string | undefined {
+  const value = formData.get("captchaToken");
+  return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function missingCaptcha(formData: FormData): FormState | null {
+  if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !captchaToken(formData)) {
+    return { message: "Please complete the security check and try again." };
+  }
+  return null;
+}
+
 export async function signUp(
   _state: FormState,
   formData: FormData
 ): Promise<FormState> {
+  const captchaError = missingCaptcha(formData);
+  if (captchaError) return captchaError;
+
   const validated = SignUpSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -36,6 +51,7 @@ export async function signUp(
     email: validated.data.email,
     password: validated.data.password,
     options: {
+      captchaToken: captchaToken(formData),
       emailRedirectTo: `${siteUrl}/auth/callback`,
       data: {
         newsletter_opted_in: validated.data.newsletterOptIn === "on",
@@ -55,6 +71,9 @@ export async function signIn(
   _state: FormState,
   formData: FormData
 ): Promise<FormState> {
+  const captchaError = missingCaptcha(formData);
+  if (captchaError) return captchaError;
+
   const validated = SignInSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -68,6 +87,7 @@ export async function signIn(
   const { error } = await supabase.auth.signInWithPassword({
     email: validated.data.email,
     password: validated.data.password,
+    options: { captchaToken: captchaToken(formData) },
   });
 
   if (error) {
@@ -176,6 +196,9 @@ export async function forgotPassword(
   _state: FormState,
   formData: FormData
 ): Promise<FormState> {
+  const captchaError = missingCaptcha(formData);
+  if (captchaError) return captchaError;
+
   const validated = ForgotPasswordSchema.safeParse({
     email: formData.get("email"),
   });
@@ -187,7 +210,10 @@ export async function forgotPassword(
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(
     validated.data.email,
-    { redirectTo: `${siteUrl}/auth/callback?next=/reset-password` }
+    {
+      redirectTo: `${siteUrl}/auth/callback?next=/reset-password`,
+      captchaToken: captchaToken(formData),
+    }
   );
 
   if (error) {

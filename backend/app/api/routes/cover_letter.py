@@ -21,7 +21,7 @@ router = APIRouter()
     ),
 )
 @limiter.limit("10/minute")
-async def create_cover_letter(request: Request, request_body: CoverLetterRequest, _user_id: str = Depends(require_auth)) -> CoverLetterResponse:
+async def create_cover_letter(request: Request, request_body: CoverLetterRequest, user_id: str = Depends(require_auth)) -> CoverLetterResponse:
     if not request_body.job_title.strip():
         raise HTTPException(status_code=422, detail="job_title cannot be empty.")
     if not request_body.company_name.strip():
@@ -31,5 +31,5 @@ async def create_cover_letter(request: Request, request_body: CoverLetterRequest
     if not request_body.experience_summary.strip():
         raise HTTPException(status_code=422, detail="experience_summary cannot be empty.")
 
-    await enforce_ai_quota(request, units=2)
+    await enforce_ai_quota(user_id=user_id, units=2)
     return await call_ai_service(generate_cover_letter(request_body))

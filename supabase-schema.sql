@@ -6,10 +6,10 @@
 -- -----------------------------------------------------------------------
 create table if not exists public.profiles (
   id                    uuid primary key references auth.users(id) on delete cascade,
-  full_name             text,
-  target_role           text,
-  industry              text,
-  years_experience      text,
+  full_name             text check (full_name is null or char_length(full_name) <= 200),
+  target_role           text check (target_role is null or char_length(target_role) <= 200),
+  industry              text check (industry is null or char_length(industry) <= 200),
+  years_experience      text check (years_experience is null or char_length(years_experience) <= 20),
   onboarding_completed  boolean not null default false,
   created_at            timestamptz not null default now(),
   updated_at            timestamptz not null default now()
@@ -39,12 +39,12 @@ create policy "Users delete own profile"
 create table if not exists public.jobs (
   id         uuid primary key default gen_random_uuid(),
   user_id    uuid not null references auth.users(id) on delete cascade,
-  company    text not null,
-  title      text not null,
-  url        text,
+  company    text not null check (char_length(company) <= 200),
+  title      text not null check (char_length(title) <= 200),
+  url        text check (url is null or char_length(url) <= 2000),
   status     text not null default 'Saved'
              check (status in ('Saved', 'Applied', 'Interview', 'Offer', 'Rejected')),
-  notes      text,
+  notes      text check (notes is null or char_length(notes) <= 20000),
   resume_id  uuid references public.resumes(id) on delete set null,
   date_added timestamptz not null default now(),
   created_at timestamptz not null default now()
@@ -119,8 +119,8 @@ create table if not exists public.resume_versions (
   id              uuid primary key default gen_random_uuid(),
   resume_id       uuid not null references public.resumes(id) on delete cascade,
   version_number  int not null check (version_number >= 1),
-  resume_data     jsonb not null,
-  resume_text     text,
+  resume_data     jsonb not null check (octet_length(resume_data::text) <= 524288),
+  resume_text     text check (resume_text is null or char_length(resume_text) <= 200000),
   created_at      timestamptz not null default now(),
   unique(resume_id, version_number)
 );
@@ -164,13 +164,19 @@ create index if not exists idx_resume_versions_resume_id
 -- shared_scores: authenticated ATS score snapshots for shareable links
 -- -----------------------------------------------------------------------
 create table if not exists public.shared_scores (
-  id                 text primary key,
+  id                 text primary key check (char_length(id) between 10 and 64),
   user_id            uuid not null references auth.users(id) on delete cascade,
   overall_score      numeric(5,2) not null check (overall_score >= 0 and overall_score <= 100),
   grade              text not null check (grade in ('A', 'B', 'C', 'D', 'F')),
-  grade_label        text not null,
-  matched_keywords   text[] not null default '{}',
-  missing_keywords   text[] not null default '{}',
+  grade_label        text not null check (char_length(grade_label) <= 100),
+  matched_keywords   text[] not null default '{}' check (
+    cardinality(matched_keywords) <= 500
+    and octet_length(array_to_string(matched_keywords, '')) <= 100000
+  ),
+  missing_keywords   text[] not null default '{}' check (
+    cardinality(missing_keywords) <= 500
+    and octet_length(array_to_string(missing_keywords, '')) <= 100000
+  ),
   total_matched      int not null default 0 check (total_matched >= 0),
   total_missing      int not null default 0 check (total_missing >= 0),
   total_job_keywords int not null default 0 check (total_job_keywords >= 0),
@@ -244,6 +250,102 @@ create index if not exists idx_shared_scores_expires_at
 create index if not exists idx_shared_scores_user_id
   on public.shared_scores(user_id);
 
+-- Serialize and cap direct authenticated writes so RLS ownership cannot be
+-- abused to fill the database with one user's rows.
+create or replace function public.enforce_user_storage_limits()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_user_id uuid;
+  v_count bigint;
+  v_resume_count bigint;
+begin
+  if tg_table_name = 'jobs' then
+    v_user_id := new.user_id;
+  elsif tg_table_name = 'resumes' then
+    v_user_id := new.user_id;
+  elsif tg_table_name = 'resume_versions' then
+    select r.user_id into v_user_id
+    from public.resumes r
+    where r.id = new.resume_id;
+  elsif tg_table_name = 'shared_scores' then
+    v_user_id := new.user_id;
+  else
+    raise exception 'Unsupported storage-limit table' using errcode = '22023';
+  end if;
+
+  if coalesce(auth.role(), '') <> 'service_role'
+     and v_user_id is distinct from auth.uid() then
+    raise exception 'Storage write is not permitted' using errcode = '42501';
+  end if;
+
+  perform pg_advisory_xact_lock(
+    hashtextextended('storage-limit:' || v_user_id::text || ':' || tg_table_name, 0)
+  );
+
+  if tg_table_name = 'jobs' then
+    select count(*) into v_count from public.jobs where user_id = v_user_id;
+    if v_count >= 200 then
+      raise exception 'Job storage limit reached' using errcode = 'P0001';
+    end if;
+  elsif tg_table_name = 'resumes' then
+    select count(*) into v_count from public.resumes where user_id = v_user_id;
+    if v_count >= 50 then
+      raise exception 'Resume storage limit reached' using errcode = 'P0001';
+    end if;
+  elsif tg_table_name = 'resume_versions' then
+    select count(*) into v_count
+    from public.resume_versions rv
+    join public.resumes r on r.id = rv.resume_id
+    where r.user_id = v_user_id;
+
+    select count(*) into v_resume_count
+    from public.resume_versions
+    where resume_id = new.resume_id;
+
+    if v_count >= 500 or v_resume_count >= 100 then
+      raise exception 'Resume version storage limit reached' using errcode = 'P0001';
+    end if;
+  elsif tg_table_name = 'shared_scores' then
+    if new.expires_at <= now() or new.expires_at > now() + interval '31 days' then
+      raise exception 'Shared score expiry must be within 31 days' using errcode = '22023';
+    end if;
+
+    select count(*) into v_count from public.shared_scores where user_id = v_user_id;
+    if v_count >= 100 then
+      raise exception 'Shared score storage limit reached' using errcode = 'P0001';
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+revoke all on function public.enforce_user_storage_limits() from public, anon, authenticated;
+
+drop trigger if exists enforce_jobs_storage_limit on public.jobs;
+create trigger enforce_jobs_storage_limit
+  before insert on public.jobs
+  for each row execute function public.enforce_user_storage_limits();
+
+drop trigger if exists enforce_resumes_storage_limit on public.resumes;
+create trigger enforce_resumes_storage_limit
+  before insert on public.resumes
+  for each row execute function public.enforce_user_storage_limits();
+
+drop trigger if exists enforce_resume_versions_storage_limit on public.resume_versions;
+create trigger enforce_resume_versions_storage_limit
+  before insert on public.resume_versions
+  for each row execute function public.enforce_user_storage_limits();
+
+drop trigger if exists enforce_shared_scores_storage_limit on public.shared_scores;
+create trigger enforce_shared_scores_storage_limit
+  before insert on public.shared_scores
+  for each row execute function public.enforce_user_storage_limits();
+
 -- -----------------------------------------------------------------------
 -- AI daily fair-use quota: durable, atomic user + global provider limits
 -- -----------------------------------------------------------------------
@@ -273,7 +375,7 @@ revoke all on table public.ai_usage_daily from anon, authenticated;
 revoke all on table public.ai_global_usage_daily from anon, authenticated;
 grant select on table public.ai_usage_daily to authenticated;
 
-create or replace function public.consume_ai_quota(p_units int)
+create or replace function public.consume_ai_quota(p_user_id uuid, p_units int)
 returns table (
   allowed boolean,
   user_remaining int,
@@ -285,7 +387,6 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_user_id uuid := auth.uid();
   v_date date := (now() at time zone 'utc')::date;
   v_user_used int;
   v_global_used int;
@@ -299,8 +400,8 @@ declare
     ))::int
   );
 begin
-  if v_user_id is null then
-    raise exception 'Authentication required' using errcode = '42501';
+  if p_user_id is null then
+    raise exception 'User identity is required' using errcode = '22023';
   end if;
   if p_units < 1 or p_units > 5 then
     raise exception 'Quota units must be between 1 and 5' using errcode = '22023';
@@ -311,7 +412,7 @@ begin
   perform pg_advisory_xact_lock(hashtextextended('ai-quota:' || v_date::text, 0));
 
   insert into public.ai_usage_daily (usage_date, user_id, units_used)
-  values (v_date, v_user_id, 0)
+  values (v_date, p_user_id, 0)
   on conflict (usage_date, user_id) do nothing;
 
   insert into public.ai_global_usage_daily (usage_date, units_used)
@@ -320,7 +421,7 @@ begin
 
   select units_used into v_user_used
   from public.ai_usage_daily
-  where usage_date = v_date and user_id = v_user_id
+  where usage_date = v_date and user_id = p_user_id
   for update;
 
   select units_used into v_global_used
@@ -340,7 +441,7 @@ begin
 
   update public.ai_usage_daily
   set units_used = units_used + p_units, updated_at = now()
-  where usage_date = v_date and user_id = v_user_id;
+  where usage_date = v_date and user_id = p_user_id;
 
   update public.ai_global_usage_daily
   set units_used = units_used + p_units, updated_at = now()
@@ -354,8 +455,8 @@ begin
 end;
 $$;
 
-revoke all on function public.consume_ai_quota(int) from public, anon;
-grant execute on function public.consume_ai_quota(int) to authenticated;
+revoke all on function public.consume_ai_quota(uuid, int) from public, anon, authenticated;
+grant execute on function public.consume_ai_quota(uuid, int) to service_role;
 
 -- -----------------------------------------------------------------------
 -- cleanup_expired_scores: deletes shared_scores rows past their

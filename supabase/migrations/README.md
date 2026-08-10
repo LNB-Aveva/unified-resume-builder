@@ -17,6 +17,7 @@ Supabase project. Apply every numbered SQL file in ascending order:
 5. `005_resume_versions.sql`
 6. `006_functions.sql`
 7. `007_ai_usage_quotas.sql`
+8. `008_abuse_controls.sql`
 
 In the Supabase Dashboard, open SQL Editor, paste one file, run it, confirm it
 succeeds, and then continue to the next file. With the Supabase CLI linked to
@@ -33,7 +34,7 @@ legacy database; compare such a database with `supabase-schema.sql` first.
 
 ## Add a migration
 
-Create the next zero-padded file, for example `007_descriptive_name.sql`. Make
+Create the next zero-padded file, for example `009_descriptive_name.sql`. Make
 the smallest forward-only change possible, use idempotent guards where
 PostgreSQL supports them, include related RLS policies and indexes, and update
 `supabase-schema.sql` in the same change. Test both a fresh ordered application

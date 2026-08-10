@@ -15,10 +15,10 @@ from app.main import app
 TEST_JWT_SECRET = "test-jwt-secret-for-unit-tests-only-must-be-32-bytes-minimum"
 
 
-def _auth_headers() -> dict[str, str]:
+def _auth_headers(user_id: str) -> dict[str, str]:
     token = jwt.encode(
         {
-            "sub": str(uuid.uuid4()),
+            "sub": user_id,
             "aud": "authenticated",
             "role": "authenticated",
             "iat": time.time(),
@@ -93,10 +93,11 @@ async def test_quota_denial_stops_provider_call(
     monkeypatch.setattr(route_module, "enforce_ai_quota", quota)
     monkeypatch.setattr(route_module, provider_name, provider)
 
+    user_id = str(uuid.uuid4())
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        response = await client.post(path, json=body, headers=_auth_headers())
+        response = await client.post(path, json=body, headers=_auth_headers(user_id))
 
     assert response.status_code == 429
     assert response.headers["Retry-After"] == "3600"
-    assert quota.await_args.kwargs == {"units": expected_units}
+    assert quota.await_args.kwargs == {"user_id": user_id, "units": expected_units}
     provider.assert_not_awaited()

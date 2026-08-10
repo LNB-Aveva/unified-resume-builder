@@ -19,7 +19,7 @@ For local dev, copy `backend/.env.example` to `backend/.env`.
 | `PYTHON_VERSION` | Yes | render.yaml | `3.13.0` | Python runtime on Render | Render picks its own default |
 | `SENTRY_DSN` | No | Render dashboard / `.env` | `""` | Sentry error tracking DSN | Error tracking disabled (no errors sent to Sentry) |
 | `SUPABASE_URL` | Yes (production) | Render dashboard / `.env` | `""` | Supabase project URL used to fetch public ES256/RS256 signing keys | Protected routes using current Supabase tokens return 503 |
-| `SUPABASE_ANON_KEY` | Yes (production) | Render dashboard / `.env` | `""` | Calls the atomic AI quota RPC with each authenticated user's JWT | AI routes fail closed with 503 when quota enforcement is enabled |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes (production) | Render dashboard / `.env` | `""` | Server-only credential for the backend-only atomic AI quota RPC | Production refuses to start; browser clients cannot consume quota directly |
 | `SUPABASE_JWT_SECRET` | During HS256 migration only | Render dashboard / `.env` | `""` | Legacy HS256 token verification fallback | Legacy HS256 tokens cannot be verified |
 | `AI_QUOTA_ENFORCEMENT` | Yes (production) | render.yaml / `.env` | `true` when `ENV=production`, otherwise `false` | Enables durable daily user/global AI units | Local dev bypasses the quota unless explicitly enabled; production fails closed |
 | `DEBUG` | No | `.env` | `False` | Debug mode flag | N/A — defaults to off |
@@ -35,6 +35,7 @@ For local dev, copy `frontend/.env.example` to `frontend/.env.local`.
 | `NEXT_PUBLIC_SITE_URL` | Yes (production) | Vercel dashboard / `.env.local` | `http://localhost:3000` | Canonical URL for SEO, OG tags, auth redirects | Auth callbacks redirect to localhost; SEO canonical wrong |
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Vercel dashboard / `.env.local` | — | Supabase project URL | Auth, profile, job tracker all broken |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Vercel dashboard / `.env.local` | — | Supabase anonymous API key | Same as above |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Yes (production auth abuse control) | Vercel dashboard / `.env.local` | `""` | Renders the free Cloudflare Turnstile check on email auth forms | CAPTCHA is absent; do not enable Supabase CAPTCHA until this is deployed |
 | `NEXT_PUBLIC_GA_ID` | No | Vercel dashboard / `.env.local` | `""` | GA4 measurement ID (consent-gated) | Analytics disabled |
 | `NEXT_PUBLIC_ADSENSE_ID` | No | Vercel dashboard / `.env.local` | `""` | AdSense publisher ID `ca-pub-XXX` (consent-gated) | Ads disabled; AdUnit component renders nothing |
 | `NEXT_PUBLIC_SENTRY_DSN` | No | Vercel dashboard / `.env.local` | `""` | Sentry DSN for frontend error tracking (PII-safe) | Frontend errors not reported to Sentry |
@@ -53,7 +54,8 @@ For local dev, copy `frontend/.env.example` to `frontend/.env.local`.
 | `HUGGINGFACE_API_KEY` | (set in Render — secret) |
 | `FRONTEND_URL` | `https://resumeai.cv` |
 | `SUPABASE_URL` | `https://pagdtcttkviglyoeuagy.supabase.co` |
-| `SUPABASE_ANON_KEY` | (set in Render — public project key, but keep dashboard values out of logs) |
+| `SUPABASE_SERVICE_ROLE_KEY` | (set separately in Render and Vercel — server-only; never expose) |
 | `SUPABASE_JWT_SECRET` | (legacy HS256 fallback in Render; do not expose to the frontend) |
 | `AI_QUOTA_ENFORCEMENT` | `true` |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | (set in Vercel — public Cloudflare Turnstile site key) |
 | `CRON_SECRET` | (set in Vercel + GitHub Actions secret — generate with `openssl rand -hex 32`) |

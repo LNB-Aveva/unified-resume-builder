@@ -8,8 +8,8 @@
 ## Current Task
 
 - **Feature:** Prompt 3 launch-gate audit
-- **Branch:** `fix/render-starter-blueprint`
-- **Status:** Session 129 Gate 1 implementation is committed/pushed in PR #54 and CI is running on the reconciled branch head.
+- **Branch:** `fix/keepalive-improvements`
+- **Status:** Gate 1(a) repository remediation is complete and locally green. Conditional NO-GO remains until the owner applies migration 008, deploys the Render service-role quota configuration, enables free Turnstile in Vercel/Supabase, and completes the 25-test plus real quota production proof. Gate 4 and Gate 6 remain pending.
 
 ---
 
@@ -18,14 +18,42 @@
 | Field      | Value                      |
 |------------|----------------------------|
 | Agent      | copilot                    |
-| Started    | 2026-08-08                 |
-| Working On | Session 129 — Gate 1 production proof and Render plan regression |
+| Started    | 2026-08-09                 |
+| Working On | Session 134 — Gate 1(a) abuse-control remediation and proof runbook |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 134 (Copilot) — 2026-08-09
+- **Agent:** copilot
+- **Did:**
+  - Replaced the browser-callable quota mutation with a service-role-only UUID-bound RPC; the verified backend now supplies the user ID, fails closed before provider work, refuses unsafe production startup, and exposes non-secret safeguard/release health.
+  - Added migration 008 database ceilings: bounded profile/job/resume/share content, 200 jobs, 50 resumes, 500 versions per user and 100 per resume, 100 shared scores, and share expiry no later than 31 days. Constraints validate existing rows; advisory-locked triggers serialize count enforcement.
+  - Added free Cloudflare Turnstile token handling to email signup, password sign-in, and password reset; updated CSP, environment/deployment guidance, and privacy disclosure. No paid service was enabled.
+  - Added five credential-gated production abuse tests, static auth/storage contracts, and extended the protected workflow from 20 RLS tests to 25 combined data-control tests.
+  - Wrote `docs/GATE1A_ABUSE_CONTROLS.md` with the exact backup, migration, Render, Turnstile/Supabase, workflow, ledger, and 429 proof sequence.
+  - Verification passed: full backend `539 passed, 29 skipped`; Ruff; frontend ESLint; 32-route production build. Localhost `/sign-up`, `/sign-in`, and `/forgot-password` return 200 with the official Turnstile test integration and CSP allowance active. Owner supplied screenshots and approved the rendered desktop flows on 2026-08-09.
+- **Files Changed:** Gate 1(a) backend quota/config/health/routes/tests, migration 008 and canonical schema, protected production workflow, frontend auth/CAPTCHA/CSP/privacy/job limits, deployment/security/audit docs, shared handoff files.
+- **Next:** Commit/push the approved Gate 1(a) remediation. Then merge/deploy and follow `docs/GATE1A_ABUSE_CONTROLS.md`; do not close Gate 1(a) until all production evidence passes. Continue to Gate 4, then Gate 6.
+- **Blockers:** Owner-controlled production configuration/evidence. No paid upgrade is required for Gate 1(a).
+
+### Session 133 (Copilot) — 2026-08-09
+- **Agent:** copilot
+- **Did:**
+  - Re-audited Gate 1(a) from current code, migrations, tests, retained production evidence, and controlled quota-free production probes.
+  - Confirmed cross-user isolation is not the current blocker: the owner-retained production RLS run passed 20/20 across profiles, jobs, resumes, resume versions, shared scores, and cascade deletion. Full-entropy share IDs and owner revocation are present.
+  - Confirmed production rate-limit header handling: forged `CF-Connecting-IP`/`CF-Ray` was rejected by Cloudflare with 403; rotating `X-Forwarded-For` did not mint buckets, and request six to the 5/minute deterministic preview returned 429.
+  - Focused regression run passed `122 passed, 20 skipped`; skips were the credential-dependent local RLS suite, already covered by the retained 20/20 production proof.
+  - Kept runtime AI quota enforcement as a launch blocker: a prior successful production Summary created no `ai_usage_daily` row and the attempted update returned `UPDATE 0`.
+  - Found two additional abuse gaps: authenticated clients can call the public quota RPC to exhaust the global ledger through account rotation without provider calls; direct PostgREST writes have no per-user row/storage ceiling, several unbounded text/JSON/array fields, and client-controlled far-future share expiry.
+  - Found no repository-visible CAPTCHA token integration; dashboard-side signup controls remain unverified.
+  - Updated `docs/LAUNCH_READINESS_AUDIT.md` with the Gate 1(a) NO-GO verdict, evidence, exploit paths, and closure requirements.
+- **Files Changed:** `docs/LAUNCH_READINESS_AUDIT.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Prove runtime quota consumption/denial; design and implement trusted quota reservation plus database-enforced storage/share-expiry bounds and signup bot controls; then execute Gate 4.
+- **Blockers:** Runtime quota proof, account-rotation/global-quota denial, and direct Supabase storage exhaustion. Gate 4 and Gate 6 remain pending.
 
 ### Session 129 (Copilot) — 2026-08-08
 - **Agent:** copilot
