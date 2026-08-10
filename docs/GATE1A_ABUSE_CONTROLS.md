@@ -177,3 +177,37 @@ Gate 1(a) can move from NO-GO to code-and-production PASS only when:
 - Turnstile is visible and Supabase CAPTCHA is enabled;
 - the protected workflow reports 25 passed and zero skipped;
 - one Summary creates a ledger row and the ceiling test returns 429.
+
+## Production closure evidence — 2026-08-10
+
+All closure conditions passed. No paid service or add-on was required.
+
+- **Backup:** a non-empty 20.9 KB production schema backup was retained locally
+  outside Git. It contained the seven required public-schema table markers.
+- **Migration:** the production preflight confirmed `years_experience` is an
+  integer with zero invalid rows. Migration 008 then completed, and all six
+  catalog-verification values returned `true`.
+- **Render:** `/health` returned status `ok`, release `ead449c1aade`,
+  `ai_quota_enforcement: true`, and
+  `ai_quota_backend_configured: true`.
+- **CAPTCHA:** the real production Turnstile widget passed sign-up, password
+  sign-in, and password reset. Supabase CAPTCHA is enabled. A direct password
+  authentication request without a CAPTCHA token returned HTTP 400 with
+  `captcha_failed`.
+- **Production suites:** protected workflow run
+  [31430596989](https://github.com/LNB-Aveva/unified-resume-builder/actions/runs/31430596989)
+  ran against main SHA `6fc4f71879619c58c248f39a80c63a271a3a5979` and
+  passed 20/20 RLS tests plus 5/5 abuse-control tests with zero skips.
+- **Real quota behavior:** one Summary from an owner-controlled throwaway
+  account created a current-day `ai_usage_daily` row with one unit. After only
+  that row was set to the ten-unit ceiling, the next Summary returned HTTP 429
+  and displayed: `Daily AI fair-use allowance reached. Your allowance resets
+  at 00:00 UTC.`
+- **Cleanup:** the owner deleted the quota-proof account and two stale cascade
+  fixtures. The final query returned `remaining_gate1a_test_users = 0`.
+
+**Final Gate 1(a) verdict: PASS.** The remaining accepted risks are distributed
+human or solver-backed account creation, stolen access tokens remaining usable
+until expiry, and process-local IP limits resetting or scaling independently.
+The durable database quotas bound provider spend even when those edge controls
+are bypassed.
