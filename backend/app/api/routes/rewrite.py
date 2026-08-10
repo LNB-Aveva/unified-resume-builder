@@ -22,11 +22,11 @@ router = APIRouter()
     ),
 )
 @limiter.limit("10/minute")
-async def rewrite_bullets_route(request: Request, request_body: BulletRewriteRequest, _user_id: str = Depends(require_auth)) -> BulletRewriteResponse:
+async def rewrite_bullets_route(request: Request, request_body: BulletRewriteRequest, user_id: str = Depends(require_auth)) -> BulletRewriteResponse:
     if not request_body.job_title.strip():
         raise HTTPException(status_code=422, detail="job_title cannot be empty.")
     if not request_body.bullets.strip():
         raise HTTPException(status_code=422, detail="bullets cannot be empty.")
 
-    await enforce_ai_quota(request, units=5)
+    await enforce_ai_quota(user_id=user_id, units=5)
     return await call_ai_service(rewrite_bullets(request_body))

@@ -39,18 +39,21 @@ Before pushing to main:
 - [ ] `Set-Location ..\frontend; npm run lint` — 0 errors, 0 warnings
 - [ ] `npm run build` — clean build, no type errors
 - [ ] No secrets in committed files (`.env`, API keys, etc.)
-- [ ] Verify `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and the legacy-fallback `SUPABASE_JWT_SECRET` are set in Render
+- [ ] Verify `SUPABASE_URL`, server-only `SUPABASE_SERVICE_ROLE_KEY`, and the legacy-fallback `SUPABASE_JWT_SECRET` are set in Render
 
 ### Gate 1 quota rollout order
 
 The quota-enabled backend fails closed in production if its quota database configuration is missing. Deploy in this order:
 
 1. Run `scripts/backup-supabase.ps1` and confirm a non-empty backup file.
-2. Apply `supabase/migrations/007_ai_usage_quotas.sql` in the Supabase SQL Editor.
-3. Add the public project anon key as `SUPABASE_ANON_KEY` in Render. Never put the service-role key in Render.
-4. Synchronize the Render Blueprint and confirm the service plan is **Starter** and `AI_QUOTA_ENFORCEMENT=true`.
-5. Deploy the application, confirm `/health` returns 200, then verify one allowed authenticated AI request and one controlled quota-denial response.
-6. Dispatch the protected `production-rls` workflow and retain its 20/20 result.
+2. Apply migrations through `008_abuse_controls.sql` in the Supabase SQL Editor.
+3. Add the server-only `SUPABASE_SERVICE_ROLE_KEY` in Render. Never expose it to browser code or logs.
+4. Configure and deploy the free Turnstile site key before enabling its secret in Supabase Auth.
+5. Synchronize the Render Blueprint and confirm the service plan is **Starter** and `AI_QUOTA_ENFORCEMENT=true`.
+6. Deploy, require `/health` to identify the release and report both quota safeguards `true`, then prove allowed and denied AI requests.
+7. Dispatch the protected production workflow and retain its 20/20 RLS plus 5/5 abuse-control result.
+
+Follow `docs/GATE1A_ABUSE_CONTROLS.md` for the exact safe order and verification commands.
 
 ## Rollback
 

@@ -43,9 +43,9 @@ export const ResetPasswordSchema = z
   });
 
 export const AccountSetupSchema = z.object({
-  fullName: z.string().min(2, "Name must be at least 2 characters.").trim(),
-  targetRole: z.string().optional(),
-  industry: z.string().optional(),
+  fullName: z.string().trim().min(2, "Name must be at least 2 characters.").max(200),
+  targetRole: z.string().max(200).optional(),
+  industry: z.string().max(200).optional(),
   yearsExperience: z.coerce.number().min(0).max(50).optional(),
   termsAccepted: z.literal("on", {
     message: "You must accept the Terms of Service and Privacy Policy.",
@@ -54,9 +54,9 @@ export const AccountSetupSchema = z.object({
 });
 
 export const UpdateProfileSchema = z.object({
-  fullName: z.string().min(2, "Name must be at least 2 characters.").trim(),
-  targetRole: z.string().optional(),
-  industry: z.string().optional(),
+  fullName: z.string().trim().min(2, "Name must be at least 2 characters.").max(200),
+  targetRole: z.string().max(200).optional(),
+  industry: z.string().max(200).optional(),
   yearsExperience: z.coerce.number().min(0).max(50).optional(),
 });
 

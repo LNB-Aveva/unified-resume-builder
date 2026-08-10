@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 
 import httpx
-from fastapi import HTTPException, Request, status
+from fastapi import HTTPException, status
 
 from app.core.config import settings
 
@@ -20,14 +20,14 @@ class QuotaResult:
 
 
 async def consume_ai_quota(
-    access_token: str,
+    user_id: str,
     units: int,
     client: httpx.AsyncClient | None = None,
 ) -> QuotaResult:
-    """Atomically consume AI units through the authenticated Supabase RPC."""
+    """Atomically consume AI units through the backend-only Supabase RPC."""
     if units < 1 or units > 5:
         raise ValueError("AI quota units must be between 1 and 5")
-    if not settings.SUPABASE_URL or not settings.SUPABASE_ANON_KEY:
+    if not settings.SUPABASE_URL or not settings.SUPABASE_SERVICE_ROLE_KEY:
         raise RuntimeError("Supabase AI quota is not configured")
 
     owns_client = client is None
@@ -36,11 +36,11 @@ async def consume_ai_quota(
         response = await quota_client.post(
             f"{settings.SUPABASE_URL.rstrip('/')}/rest/v1/rpc/consume_ai_quota",
             headers={
-                "apikey": settings.SUPABASE_ANON_KEY,
-                "Authorization": f"Bearer {access_token}",
+                "apikey": settings.SUPABASE_SERVICE_ROLE_KEY,
+                "Authorization": f"Bearer {settings.SUPABASE_SERVICE_ROLE_KEY}",
                 "Content-Type": "application/json",
             },
-            json={"p_units": units},
+            json={"p_user_id": user_id, "p_units": units},
         )
         response.raise_for_status()
         try:
@@ -63,29 +63,15 @@ async def consume_ai_quota(
     )
 
 
-async def enforce_ai_quota(request: Request, units: int) -> None:
+async def enforce_ai_quota(user_id: str, units: int) -> None:
     """Fail closed in production before an AI provider call can be made."""
     if not settings.AI_QUOTA_ENFORCEMENT:
         return
 
-    authorization = request.headers.get("Authorization", "")
-    scheme, _, access_token = authorization.partition(" ")
-    if scheme.lower() != "bearer" or not access_token:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication required.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
     try:
-        result = await consume_ai_quota(access_token, units)
+        result = await consume_ai_quota(user_id, units)
     except httpx.HTTPStatusError as exc:
         logger.error("Supabase AI quota RPC failed with HTTP %s", exc.response.status_code)
-        if exc.response.status_code in {401, 403}:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Your session is no longer valid. Please sign in again.",
-            ) from None
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="AI usage controls are temporarily unavailable. Please try again shortly.",

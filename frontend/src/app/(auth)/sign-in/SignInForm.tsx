@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { signIn } from "@/app/actions/auth";
 import GoogleSignInButton from "@/app/components/GoogleSignInButton";
+import TurnstileWidget from "@/app/components/TurnstileWidget";
 
 export default function SignInForm() {
   const [state, action, pending] = useActionState(signIn, undefined);
@@ -75,6 +76,8 @@ export default function SignInForm() {
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">{state.errors.password[0]}</p>
           )}
         </div>
+
+        <TurnstileWidget pending={pending} />
 
         <button
           type="submit"

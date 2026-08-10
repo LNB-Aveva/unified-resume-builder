@@ -12,7 +12,8 @@
 #   2. Go to render.com → New → Blueprint
 #   3. Connect your GitHub repo — Render finds this file automatically
 #   4. Set the required environment variables when prompted
-#      (HUGGINGFACE_API_KEY, FRONTEND_URL, SUPABASE_URL, SUPABASE_JWT_SECRET)
+#      (HUGGINGFACE_API_KEY, FRONTEND_URL, SUPABASE_URL,
+#       SUPABASE_SERVICE_ROLE_KEY, SUPABASE_JWT_SECRET)
 #   5. Deploy — Render runs buildCommand, then startCommand
 #
 # STARTER PLAN NOTES:
@@ -63,8 +64,9 @@ services:
       - key: SUPABASE_URL
         sync: false
 
-      # Public project key used with each user's JWT to call the atomic quota RPC.
-      - key: SUPABASE_ANON_KEY
+      # Server-only key used to call the backend-only atomic quota RPC.
+      # Never expose this value to the frontend or logs.
+      - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
 
       # Legacy HS256 verification fallback. Keep during signing-key migration;

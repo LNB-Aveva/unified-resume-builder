@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { signUp } from "@/app/actions/auth";
 import GoogleSignInButton from "@/app/components/GoogleSignInButton";
+import TurnstileWidget from "@/app/components/TurnstileWidget";
 
 export default function SignUpForm() {
   const [state, action, pending] = useActionState(signUp, undefined);
@@ -133,6 +134,8 @@ export default function SignUpForm() {
             )}
           </div>
         </div>
+
+        <TurnstileWidget pending={pending} />
 
         <button
           type="submit"

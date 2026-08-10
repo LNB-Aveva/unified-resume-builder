@@ -1,6 +1,6 @@
 # Threat Model — ResumeAI (resumeai.cv)
 
-Last updated: 2026-08-08 (Prompt 3 Gate 1 hardening — Session 129)
+Last updated: 2026-08-09 (Prompt 3 Gate 1(a) abuse controls)
 
 ## System Overview
 
@@ -31,7 +31,7 @@ Last updated: 2026-08-08 (Prompt 3 Gate 1 hardening — Session 129)
 
 Utility endpoints (no per-route rate limit, exempt from global limiter):
 - GET / — health message
-- GET /health — status check
+- GET /health — status, deployed release, and non-secret quota-safeguard state
 
 ### Database Tables (Supabase RLS)
 
@@ -42,8 +42,8 @@ Utility endpoints (no per-route rate limit, exempt from global limiter):
 | resumes          | Yes | Owner select/insert/update/delete             |
 | resume_versions  | Yes | Owner select/insert/delete (no update = immutable) |
 | shared_scores    | Yes | Owner insert/select/delete; public read via SECURITY DEFINER RPC only |
-| ai_usage_daily   | Yes | No direct client access; authenticated SECURITY DEFINER quota RPC only |
-| ai_global_usage_daily | Yes | No direct client access; authenticated SECURITY DEFINER quota RPC only |
+| ai_usage_daily   | Yes | Owner read only; quota mutation is service-role/backend-only |
+| ai_global_usage_daily | Yes | No direct client access; quota mutation is service-role/backend-only |
 
 ---
 
@@ -65,6 +65,10 @@ Utility endpoints (no per-route rate limit, exempt from global limiter):
 - Atomic database-backed AI quota: 10 weighted units/user/day and 500 units globally/day
 - AI weights reflect expected provider cost: summary 1, cover letter 2, rewrite 5
 - Quota enforcement fails closed before provider calls when production quota storage is unavailable
+- Production process refuses startup if quota enforcement or its backend-only credential is missing
+- Direct PostgREST storage caps: 200 jobs/user, 50 resumes/user, 500 versions/user and 100/resume, 100 shared scores/user
+- Database content-size checks and maximum 31-day public-share expiry
+- Free Turnstile CAPTCHA token path on email signup, sign-in, and password-reset requests
 - Client IP extraction: rightmost X-Forwarded-For entry (spoof-resistant, configurable via `TRUSTED_PROXY_HOPS`)
 
 **Residual risk**:

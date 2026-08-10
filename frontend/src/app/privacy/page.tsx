@@ -22,7 +22,7 @@ export default function PrivacyPolicy() {
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">
           Privacy Policy
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400">Last updated: July 30, 2026</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Last updated: August 9, 2026</p>
       </div>
 
       <div className="prose prose-gray dark:prose-invert prose-sm max-w-none space-y-8">
@@ -48,7 +48,7 @@ export default function PrivacyPolicy() {
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Usage Data</h3>
-              <p>After you consent, Google Analytics collects usage data such as pages visited, features used, and device type. For security, reliability, and rate limiting, our backend also processes request metadata including IP address, method, path, response status, and request duration. Resume and job-description content is not included in access logs.</p>
+              <p>After you consent, Google Analytics collects usage data such as pages visited, features used, and device type. For security, reliability, bot detection, and rate limiting, our service providers also process browser and request metadata such as IP address, method, path, response status, request duration, and security signals. Resume and job-description content is not included in access logs or submitted to our CAPTCHA provider.</p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Error Data</h3>
@@ -98,6 +98,7 @@ export default function PrivacyPolicy() {
             <li><strong>Supabase</strong> &mdash; Authentication and storage for account data, saved resumes, and job tracking</li>
             <li><strong>Hugging Face</strong> &mdash; AI inference for summary generation, bullet rewriting, and cover letter generation</li>
             <li><strong>Sentry</strong> &mdash; Frontend and backend error tracking with application-level PII filtering</li>
+            <li><strong>Cloudflare Turnstile</strong> &mdash; Bot and abuse detection on email authentication forms</li>
             <li><strong>Vercel</strong> &mdash; Website hosting and deployment</li>
             <li><strong>Google Analytics</strong> &mdash; Anonymous usage analytics (loaded only with your consent)</li>
           </ul>
@@ -161,7 +162,7 @@ export default function PrivacyPolicy() {
           <div className="space-y-3 text-gray-600 dark:text-gray-300 leading-relaxed">
             <p>We use the following types of cookies:</p>
             <ul className="list-disc list-inside space-y-2 mt-3">
-              <li><strong>Essential cookies</strong> &mdash; required for authentication session management (via Supabase). These cannot be disabled.</li>
+              <li><strong>Essential storage and security checks</strong> &mdash; required for authentication session management (via Supabase) and bot detection on email authentication forms (via Cloudflare Turnstile). These cannot be disabled.</li>
               <li><strong>Analytics cookies</strong> &mdash; Google Analytics (GA4) is loaded only after you choose Accept.</li>
               <li><strong>Advertising cookies</strong> &mdash; the Google AdSense site-verification script may load, but ResumeAI does not currently display ad units. Before ads are enabled, regions where Google requires a certified consent platform will use one.</li>
             </ul>

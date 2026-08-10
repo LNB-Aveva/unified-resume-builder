@@ -45,6 +45,7 @@ export default function AccountSetupForm() {
                 name="fullName"
                 type="text"
                 required
+                maxLength={200}
                 className="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-2 focus:outline-indigo-600 transition"
                 placeholder="Your full name"
               />
@@ -61,6 +62,7 @@ export default function AccountSetupForm() {
                 id="targetRole"
                 name="targetRole"
                 type="text"
+                maxLength={200}
                 className="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-2 focus:outline-indigo-600 transition"
                 placeholder="e.g. Senior Frontend Engineer"
               />
@@ -74,6 +76,7 @@ export default function AccountSetupForm() {
                 id="industry"
                 name="industry"
                 type="text"
+                maxLength={200}
                 className="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-2 focus:outline-indigo-600 transition"
                 placeholder="e.g. Tech, Finance, Healthcare"
               />

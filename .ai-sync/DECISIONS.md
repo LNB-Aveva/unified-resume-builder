@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-034: Backend-Only Quota Mutation and Database Abuse Ceilings
+- **Date:** 2026-08-09
+- **Agent:** copilot
+- **Context:** Production evidence contradicted quota execution, authenticated clients could invoke the quota RPC directly to consume the global allowance without an AI call, and RLS isolated ownership but did not limit how much data one account could store. Email-auth account creation also lacked a bot challenge.
+- **Decision:** Supersede DEC-032's browser-JWT quota call with a service-role-only RPC whose user UUID is supplied by the verified FastAPI backend. Production startup fails if quota enforcement or its server credential is missing, and health exposes non-secret safeguard state plus release identity. Database constraints and serialized insert triggers enforce content, row-count, version-count, and share-expiry ceilings. Email sign-up, password sign-in, and password reset forward free Cloudflare Turnstile tokens to Supabase Auth. The privacy policy discloses that security provider.
+- **Alternatives Considered:** Keep the authenticated RPC and rely on CAPTCHA alone — rejected because a browser could still spend the global ledger without provider work. Add paid Redis/WAF infrastructure — deferred because PostgreSQL provides atomic launch-scale limits and the owner asked to separate paid extras. Application-only storage checks — rejected because direct PostgREST clients bypass the UI and server actions.
+- **Files Affected:** `backend/app/core/ai_quota.py`, `backend/app/core/config.py`, AI routes, `backend/app/main.py`, `supabase/migrations/008_abuse_controls.sql`, `supabase-schema.sql`, auth forms/actions, `TurnstileWidget.tsx`, CSP/environment/deployment files, production data-control workflow and tests
+
 ### DEC-032: Durable Weighted AI Quotas in Supabase
 - **Date:** 2026-08-08
 - **Agent:** copilot

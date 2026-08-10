@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { forgotPassword } from "@/app/actions/auth";
+import TurnstileWidget from "@/app/components/TurnstileWidget";
 
 export default function ForgotPasswordForm() {
   const [state, action, pending] = useActionState(forgotPassword, undefined);
@@ -46,6 +47,8 @@ export default function ForgotPasswordForm() {
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">{state.errors.email[0]}</p>
           )}
         </div>
+
+        <TurnstileWidget pending={pending} />
 
         <button
           type="submit"

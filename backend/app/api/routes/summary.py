@@ -21,7 +21,7 @@ router = APIRouter()
     ),
 )
 @limiter.limit("10/minute")
-async def create_summary(request: Request, request_body: SummaryRequest, _user_id: str = Depends(require_auth)) -> SummaryResponse:
+async def create_summary(request: Request, request_body: SummaryRequest, user_id: str = Depends(require_auth)) -> SummaryResponse:
     if not request_body.job_title.strip():
         raise HTTPException(status_code=422, detail="job_title cannot be empty.")
     if not request_body.job_description.strip():
@@ -29,5 +29,5 @@ async def create_summary(request: Request, request_body: SummaryRequest, _user_i
     if not request_body.experience_bullets.strip():
         raise HTTPException(status_code=422, detail="experience_bullets cannot be empty.")
 
-    await enforce_ai_quota(request, units=1)
+    await enforce_ai_quota(user_id=user_id, units=1)
     return await call_ai_service(generate_summary(request_body))
