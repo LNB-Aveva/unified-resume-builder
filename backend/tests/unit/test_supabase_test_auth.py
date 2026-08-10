@@ -1,8 +1,13 @@
 """Regression tests for CAPTCHA-compatible production test authentication."""
 
+import ast
+from pathlib import Path
+
 import httpx
 
 from tests.integration import _supabase_test_auth
+
+RLS_SUITE = Path(__file__).resolve().parents[1] / "integration" / "test_rls_isolation.py"
 
 
 def test_access_token_uses_admin_magic_link_then_verifies_hash(monkeypatch):
@@ -64,3 +69,17 @@ def test_access_token_accepts_client_library_properties_shape(monkeypatch):
     )
 
     assert token == "nested-access-token"
+
+
+def test_every_rls_sign_in_call_uses_captcha_safe_signature():
+    tree = ast.parse(RLS_SUITE.read_text(encoding="utf-8"))
+    calls = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "_sign_in"
+    ]
+
+    assert calls
+    assert all(len(call.args) == 1 and not call.keywords for call in calls)

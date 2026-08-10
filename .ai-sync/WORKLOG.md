@@ -27,6 +27,17 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 137 (Copilot) — 2026-08-10
+- **Agent:** copilot
+- **Did:**
+  - Merged CAPTCHA-safe production test authentication as PR #58 / `df0edb3`; all branch CI checks passed.
+  - Owner configured all three protected `production-rls` environment secrets. Workflow run `31429856143` passed secret validation and 19/20 RLS tests, then failed because the cascade test retained one stale two-argument `_sign_in(email, pwd)` call; the five abuse tests consequently did not run.
+  - Corrected the cascade sign-in call, required successful creation of all five rows before testing deletion, replaced the now-invalid year-2099 share expiry with 30 days, and added unconditional Auth-user cleanup for setup/assertion failures.
+  - Added an AST regression test enforcing the one-argument CAPTCHA-safe sign-in signature across every RLS-suite call. Verification passed: 3 helper/signature tests, 20 correctly credential-skipped RLS tests, and Ruff.
+- **Files Changed:** `backend/tests/integration/test_rls_isolation.py`, `backend/tests/unit/test_supabase_test_auth.py`, `.ai-sync/WORKLOG.md`
+- **Next:** Commit/push the owner-authorized cascade correction, merge after CI, rerun the protected workflow, and require 20/20 plus 5/5 with zero skips. Remove the one possible orphan `rls-cascade-* @test.local` Auth user from the failed run.
+- **Blockers:** Production abuse suite and real quota proof remain incomplete. Gate 1(a) remains NO-GO.
+
 ### Session 136 (Copilot) — 2026-08-10
 - **Agent:** copilot
 - **Did:**
