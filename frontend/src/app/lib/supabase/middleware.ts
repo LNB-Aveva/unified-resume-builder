@@ -42,7 +42,7 @@ export async function updateSession(request: NextRequest) {
 
     return {
       supabaseResponse,
-      user: data?.claims ?? null,
+      user: data?.claims?.is_anonymous === true ? null : data?.claims ?? null,
       authUnavailable: isTemporaryAuthFailure(error),
     };
   } catch {

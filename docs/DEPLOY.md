@@ -51,7 +51,7 @@ The quota-enabled backend fails closed in production if its quota database confi
 4. Configure and deploy the free Turnstile site key before enabling its secret in Supabase Auth.
 5. Synchronize the Render Blueprint and confirm the service plan is **Starter** and `AI_QUOTA_ENFORCEMENT=true`.
 6. Deploy, require `/health` to identify the release and report both quota safeguards `true`, then prove allowed and denied AI requests.
-7. Dispatch the protected production workflow and retain its 20/20 RLS plus 5/5 abuse-control result.
+7. Dispatch the protected production workflow and retain its 20/20 RLS plus 6/6 abuse-control result.
 
 Follow `docs/GATE1A_ABUSE_CONTROLS.md` for the exact safe order and verification commands.
 

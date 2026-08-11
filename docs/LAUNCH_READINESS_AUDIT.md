@@ -73,9 +73,17 @@ Production HTTP checks on 2026-08-07:
 
 | Finding | Severity | Evidence | Required closure |
 |---|---|---|---|
-| Robots directives do not stop an abusive scraper. | **High** | Protected/share routes are disallowed and score pages are `noindex`, but `robots.txt` is advisory. Process-local IP limits reset on restart and do not stop distributed clients. | Add edge/provider abuse controls and durable quotas before meaningful traffic or ads. |
-| Public AI preview was a direct cost surface. | **Resolved in code** | `/api/v1/preview-rewrite` now performs a deterministic weak-opening improvement and imports no Hugging Face client. Focused tests prove representative behavior. | Deploy and preserve the no-provider regression test. |
-| Bulk cross-user Supabase reads are blocked. | **Pass; re-run after migration** | Retained production RLS evidence passed 20/20. `shared_scores` has owner-only SELECT and a single-row SECURITY DEFINER RPC that omits `user_id`. | Re-run the protected 25-test workflow after migration 008 because schema/function grants change. |
+| Anonymous Supabase identities bypassed the permanent-account abuse boundary. | **Blocker found; first application tranche deployed / database proof pending** | `JobTracker` contained `signInAnonymously()`. Supabase anonymous users receive the `authenticated` role, while backend auth and owner RLS did not inspect `is_anonymous`; a distributed client could therefore rotate CAPTCHA-free identities. Release `6ab30a98d53e` removes browser creation and rejects anonymous JWTs with HTTP 403. The pending closeout also treats old anonymous sessions as signed out. Migration 009 contains restrictive policies across six retained owner-data tables plus a service-role-only catalog verifier, but is not production-proven. | Disable Anonymous Sign-Ins, inventory/clean old anonymous users with backup, apply migration 009, prove six restrictive policies and a rejected rollback-only write, then rerun 26/26 production controls. |
+| Public crawling amplified into a remote Supabase Auth lookup on every page. | **Pass in deployed code** | The proxy called `getUser()` for public static and SSG routes. Supabase documents that `getUser()` always contacts Auth; `getClaims()` verifies production ES256 tokens locally against cached JWKS. Release `6ab30a98d53e` uses `getClaims()`; main CI passed and public/auth localhost routes returned 200. | Preserve the cached-claims contract and smoke-test auth refresh after related dependency changes. |
+| Sitemap timestamps falsely claimed every page changed on every request. | **Pass in production** | Bounded pre-change evidence showed the current request timestamp on every sitemap entry. Release `6ab30a98d53e` uses checked-in article dates and omits fabricated static-page dates; production now exposes only `2026-07-04` and `2026-07-30`. | Keep article `updatedAt` accurate when content materially changes. |
+| Robots directives do not stop an abusive scraper. | **Accepted residual after proof** | Protected/share routes are disallowed and score pages are `noindex`, but `robots.txt` is advisory. Public content must remain indexable. Vercel and Render provide automatic DDoS mitigation; Render is visibly behind Cloudflare (`CF-Ray` captured), and the app adds body, timeout, route, and global IP limits. | Retain the incident procedure in `docs/GATE1B_SCRAPER_CONTROLS.md`; use Vercel Attack Challenge Mode during an active attack. Process-local limits remain a documented scaling constraint. |
+| Public AI preview was a direct cost surface. | **Pass** | `/api/v1/preview-rewrite` is deterministic, has a 500-character body field and 5/minute route limit, and imports no provider client. A bounded production request returned the local transformation. | Preserve the no-provider regression test. |
+| Bulk cross-user Supabase reads are blocked. | **Pass with intentional public share lookup** | Production RLS passed 20/20. `shared_scores` has owner-only SELECT and a single-row SECURITY DEFINER RPC that omits `user_id` and resume text; full UUID share IDs are not feasibly enumerable. | Require the expanded 26/26 production verification after migration 009 and never widen the public RPC output. |
+
+**Gate 1(b) verdict: NO-GO pending production rollout and proof.** The detailed
+attack inventory, remediation, rollout SQL, bounded production observations,
+incident procedure, and residual-risk boundary are in
+`docs/GATE1B_SCRAPER_CONTROLS.md`.
 
 ### C. Confused non-technical user
 
@@ -125,9 +133,18 @@ The owner completed the backup, migration 008 catalog proof, Render fail-fast he
 
 The protected production procedure passed 20/20. Re-run `docs/RLS_VERIFICATION.md` after any table, policy, function-grant, or auth change.
 
-### Code complete — account and storage controls
+### Closed — Gate 1(a) account and storage controls
 
-Browser quota mutation is revoked in migration 008, database limits are enforced by constraints/triggers, and Turnstile tokens are forwarded by all email-auth abuse surfaces. Production proof remains mandatory.
+Browser quota mutation is revoked in migration 008, database limits are enforced by constraints/triggers, and Turnstile tokens are forwarded by all email-auth abuse surfaces. The Gate 1(a) production proof completed on 2026-08-10.
+
+### Required — Gate 1(b) scraper-control rollout
+
+Gate 1(b) found that Supabase anonymous users could reuse the `authenticated`
+role and that public crawls caused a remote Auth lookup. Follow
+`docs/GATE1B_SCRAPER_CONTROLS.md`: inventory anonymous users, disable Anonymous
+Sign-Ins, apply and prove migration 009, deploy the final backend/frontend
+controls, verify corrected sitemap dates, and rerun the protected 26-test
+workflow.
 
 ### Required AdSense dashboard proof
 
@@ -138,6 +155,7 @@ In AdSense → Privacy & messaging, verify that a Google-certified European regu
 1. **Accurate usage copy:** resolved in code with fair-use wording.
 2. **Durable AI quota architecture:** resolved and production-proven; direct client invocation is removed, quota reservation is backend-only, and a ceiling request returned HTTP 429.
 3. **Git-history cleanup:** optional and destructive. Rotation makes the exposed value unusable; do not rewrite history without a separate explicit authorization and collaborator plan.
+4. **Anonymous-user cleanup:** inspect the production count and related rows after backup. Deletion is appropriate only after the owner confirms that no retained guest data is needed; migration 009 deliberately does not delete rows.
 
 ## Gate 2 — Evidence-backed go/no-go checklist
 

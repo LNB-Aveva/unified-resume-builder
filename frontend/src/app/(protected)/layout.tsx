@@ -19,7 +19,7 @@ export default async function ProtectedLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  if (!user || user.is_anonymous) {
     redirect("/sign-in");
   }
 

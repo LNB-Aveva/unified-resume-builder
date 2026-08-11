@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-036: Permanent Accounts at the Automation Boundary
+- **Date:** 2026-08-10
+- **Agent:** copilot
+- **Context:** Gate 1(b) found that Supabase anonymous sign-ins create full `authenticated` users. The job tracker could create those identities without the permanent-account CAPTCHA flows, while FastAPI and owner RLS accepted them like any other user. Public page requests also called `getUser()`, adding a remote Supabase Auth lookup to every crawl, and the sitemap fabricated request-time modification dates.
+- **Decision:** The product no longer creates or authorizes anonymous Supabase users. Reject `is_anonymous: true` in FastAPI, treat existing anonymous sessions as signed out in frontend routing/layouts, add restrictive permanent-user RLS policies to every retained owner-data table, and require production Anonymous Sign-Ins to be disabled. Keep the Next.js proxy session-refresh pattern but use Supabase `getClaims()` so production ES256 JWT verification uses cached JWKS instead of a per-request Auth user lookup. Publish only real blog update dates in the sitemap and omit unknown static-page dates. Log the trusted rate-limit client IP plus `CF-Ray` for incident correlation. Expose catalog proof only through a service-role-only verification RPC used by the protected workflow.
+- **Alternatives Considered:** Rely only on Supabase's per-IP anonymous-signup rate limit and CAPTCHA — rejected because distributed clients rotate IPs and production settings can drift. Remove the proxy from public routes — rejected because the current SSR session-refresh flow still benefits from a single proxy boundary. Use a shared paid rate-limit store — deferred because the durable AI ceiling already bounds spend and the remaining process-local availability risk is explicit; add shared state before horizontal scaling.
+- **Files Affected:** `backend/app/core/auth.py`, `backend/app/main.py`, frontend auth/protected layouts, `frontend/src/app/components/JobTracker.tsx`, `frontend/src/app/lib/supabase/middleware.ts`, `frontend/src/app/sitemap.ts`, `supabase/migrations/009_reject_anonymous_automation.sql`, `supabase-schema.sql`, production/static tests and Gate 1(b) documentation
+
 ### DEC-035: CAPTCHA-Safe Production Test Sessions
 - **Date:** 2026-08-10
 - **Agent:** copilot

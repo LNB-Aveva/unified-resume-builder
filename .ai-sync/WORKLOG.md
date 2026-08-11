@@ -9,7 +9,7 @@
 
 - **Feature:** Prompt 3 launch-gate audit
 - **Branch:** `main`
-- **Status:** Gate 1(a) PASS (code + production). Ready to begin Gate 1(b) — scraper and distributed-automation review. Gates 2, 3, 5 also complete. Gate 1(b–e), Gate 4, Gate 6 remain NO-GO.
+- **Status:** Gate 1(b) first-tranche code is deployed and CI/localhost verified; final repository closeout is in progress. Production remains NO-GO pending migration 009, anonymous-auth dashboard proof/cleanup decision, final deployment, and the expanded 26/26 production rerun. Gate 1(a) and Gates 2, 3, 5 are complete; Gate 1(c–e), Gate 4, and Gate 6 remain pending.
 
 ---
 
@@ -17,15 +17,29 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
+| Agent      | copilot                    |
 | Started    | 2026-08-10                 |
-| Working On | Session 140 — Gate 1(a) cross-examination + commit/push/memory |
+| Working On | Session 141 — Gate 1(b) scraper and distributed-automation review |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 141 (Copilot) — 2026-08-10
+- **Agent:** copilot
+- **Did:**
+  - Completed the Gate 1(b) adversarial inventory across public Vercel pages, crawler metadata, both public FastAPI routes, protected cost/CPU routes, direct Supabase writes, public share lookups, health traffic, account rotation, and incident response.
+  - Found a launch blocker: `JobTracker` exposed `signInAnonymously()`, while anonymous Supabase users receive the normal `authenticated` role and neither backend auth nor owner RLS checked `is_anonymous`. Also found every public proxy request used remote `getUser()`, and production sitemap entries falsely used the current request timestamp.
+  - Removed browser anonymous-account creation; added FastAPI HTTP 403 rejection; added migration 009 restrictive permanent-user policies for six owner-data tables; switched the proxy to cached-JWKS `getClaims()`; corrected sitemap dates.
+  - Captured six bounded production probes: robots/sitemap/blog 200, blog `PRERENDER`, Render health 200 with safeguards true and `CF-Ray`, deterministic preview 200, anonymous compliance 401. No load/DoS test was performed.
+  - Added `docs/GATE1B_SCRAPER_CONTROLS.md` with rollout SQL, rollback-only RLS proof, production checklist, incident procedure, and accepted residual risks. Final focused tests passed 101/101; full backend passed 550 with 30 credential-gated skips; Ruff, ESLint, 32-route build, and diff check passed.
+  - During the full suite, a concurrent process committed/pushed the eight code/migration files as `cba660d`, followed by Claude handoff commit `6ab30a9`. Main CI run `31451072246` passed; Render reported release `6ab30a98d53e` with both safeguards true; production sitemap now exposes only real blog dates. No history rewrite or revert was attempted.
+  - After owner localhost approval, completed repository-side defense in depth: frontend layouts reject old anonymous sessions, logs use the trusted client IP and include `CF-Ray`, and migration 009 provides a service-role-only catalog verifier enforced as the sixth production abuse test (26 total protected tests).
+- **Files Changed:** Gate 1(b) backend auth/tests, job tracker, Supabase proxy, sitemap, migration 009/canonical schema, audit/runbook, shared handoff files.
+- **Next:** Commit/push the owner-approved repository closeout and require green main CI/deployment. Then back up production, inspect anonymous users, disable Anonymous Sign-Ins, apply/prove migration 009, rerun 26/26 production controls, and retain evidence before marking Gate 1(b) PASS.
+- **Blockers:** Production database/dashboard proof remains owner-controlled. Anonymous-user deletion requires an explicit owner decision after inventory because it is destructive.
 
 ### Session 140 (Claude) — 2026-08-10
 - **Agent:** claude

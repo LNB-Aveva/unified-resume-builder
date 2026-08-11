@@ -42,7 +42,10 @@ def access_log_client(monkeypatch):
 def test_normal_request_logs_route_and_false_classification_flags(access_log_client):
     client, latest_log = access_log_client
 
-    response = client.get("/items/42")
+    response = client.get(
+        "/items/42",
+        headers={"CF-Connecting-IP": "203.0.113.5", "CF-Ray": "gate1b-test-ray"},
+    )
     log = latest_log()
 
     assert response.status_code == 200
@@ -51,6 +54,8 @@ def test_normal_request_logs_route_and_false_classification_flags(access_log_cli
     assert log["auth_failed"] is False
     assert log["is_ai_route"] is False
     assert log["content_length"] == int(response.headers["content-length"])
+    assert log["client"] == "203.0.113.5"
+    assert log["cf_ray"] == "gate1b-test-ray"
 
 
 @pytest.mark.parametrize(

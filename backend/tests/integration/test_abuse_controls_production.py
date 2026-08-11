@@ -78,6 +78,25 @@ def abuse_user():
 
 @pytest.mark.skipif(_MISSING, reason="Production Supabase credentials are not set")
 class TestProductionAbuseControls:
+    def test_gate1b_restrictive_policy_catalog_is_active(self):
+        response = httpx.post(
+            f"{REST}/rpc/verify_gate1b_automation_controls",
+            headers=_admin_headers(),
+            json={},
+            timeout=30,
+        )
+        response.raise_for_status()
+
+        assert response.json() == [
+            {
+                "policy_count": 6,
+                "all_restrictive": True,
+                "all_authenticated": True,
+                "all_commands": True,
+                "all_claim_checks": True,
+            }
+        ]
+
     def test_old_client_callable_quota_signature_is_absent(self, abuse_user):
         response = httpx.post(
             f"{REST}/rpc/consume_ai_quota",
