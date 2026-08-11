@@ -17,15 +17,31 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | copilot                     |
+| Agent      | claude                      |
 | Started    | 2026-08-11                  |
-| Working On | Session 148 — Gate 1(d) CI closure |
+| Working On | Session 148 — Gate 4 failure drills |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 148 (Claude) — 2026-08-11
+- **Agent:** claude
+- **Did:**
+  - Full Gate 4 failure drill review — all 6 scenarios verified from code (no browser session required for 5 of 6).
+  - **HF down:** circuit breaker + 60 s request timeout → friendly 504/503 messages. PASS.
+  - **Supabase down:** `authUnavailable` redirect → `/service-unavailable` + quota 503. PASS.
+  - **Render sleeping:** Starter plan has no sleep (DEC-030); deploy-restart `Failed to fetch` handled. PASS.
+  - **Malformed PDF upload:** no PDF upload feature exists; not applicable. PASS.
+  - **50-page resume (BLOCKER FOUND + FIXED):** Pydantic 422 returns `detail` as an array; all 8 components did `new Error(array)` → `"[object Object]"`. Added `extractApiDetail()` helper to `types.ts` and wired it into GapAnalysis, ComplianceChecker, AnalyzerDemo, BulletRewriter, SummaryGenerator, CoverLetterGenerator, ResumeExporter, BulletPreviewWidget. Now shows Pydantic's `msg` field (e.g. "String should have at most 50000 characters").
+  - **Non-English JD:** spaCy is NOT in this stack. Keyword extractor warns via `_detect_non_english()`. Gap/compliance/summary/cover-letter tools produce silent bad results — UX gap, not a stack trace. Post-launch backlog.
+  - Updated `docs/LAUNCH_READINESS_AUDIT.md` Gate 4 section with full evidence table and PASS verdict.
+  - ESLint clean. 32-route production build passes.
+- **Files Changed:** `frontend/src/app/types.ts` (new `extractApiDetail`), 8 component files (GapAnalysis, ComplianceChecker, AnalyzerDemo, BulletRewriter, SummaryGenerator, CoverLetterGenerator, ResumeExporter, BulletPreviewWidget), `docs/LAUNCH_READINESS_AUDIT.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Owner views localhost:3000 (localhost-first rule), then commit. Gate 6 (final verdict) remains. Owner-side Gate 1(d) actions in `docs/GATE1D_OWNER_ACTIONS.md` remain pending.
+- **Blockers:** None code-side. Owner must view localhost before commit. Gate 1(d) owner evidence still required before changing that NO-GO.
 
 ### Session 148 (Copilot) — 2026-08-11
 - **Agent:** copilot

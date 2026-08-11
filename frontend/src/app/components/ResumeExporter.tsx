@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { API_URL } from "../types";
+import { API_URL, extractApiDetail } from "../types";
 import { authFetch } from "../lib/authFetch";
 import Spinner from "./Spinner";
 import { DEMO_PERSONAL, DEMO_SUMMARY, DEMO_EXPERIENCE, DEMO_EDUCATION, DEMO_RESUME_SKILLS } from "../lib/demoData";
@@ -322,7 +322,7 @@ export default function ResumeExporter({
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error((data as { detail?: string }).detail ?? `Server error ${res.status}`);
+        throw new Error(extractApiDetail(data, `Server error ${res.status}`));
       }
 
       // Binary download: get Blob → object URL → hidden <a> click

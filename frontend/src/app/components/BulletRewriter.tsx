@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { RewriteResponse, API_URL, connectionError } from "../types";
+import { RewriteResponse, API_URL, connectionError, extractApiDetail } from "../types";
 import { useLoadingMessages } from "../hooks/useLoadingMessages";
 import { authFetch } from "../lib/authFetch";
 import Spinner from "./Spinner";
@@ -79,7 +79,7 @@ export default function BulletRewriter() {
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail ?? `Server error ${res.status}`);
+        throw new Error(extractApiDetail(body, `Server error ${res.status}`));
       }
 
       setResult(await res.json());

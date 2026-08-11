@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { API_URL } from "../types";
+import { API_URL, extractApiDetail } from "../types";
 import { fetchWithRetry } from "../lib/fetchWithRetry";
 
 const EXAMPLES = [
@@ -45,7 +45,7 @@ export default function BulletPreviewWidget() {
       }
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error((data as { detail?: string }).detail ?? "Rewrite failed. Try again.");
+        throw new Error(extractApiDetail(data, "Rewrite failed. Try again."));
       }
       const data: PreviewResult = await res.json();
       setResult(data);

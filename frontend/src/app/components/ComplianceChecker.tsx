@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ComplianceReport, API_URL, connectionError } from "../types";
+import { ComplianceReport, API_URL, connectionError, extractApiDetail } from "../types";
 import { authFetch } from "../lib/authFetch";
 import Spinner from "./Spinner";
 import { DEMO_RESUME_TEXT } from "../lib/demoData";
@@ -36,7 +36,7 @@ export default function ComplianceChecker() {
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error((body as { detail?: string }).detail ?? `Server error: ${res.status}`);
+        throw new Error(extractApiDetail(body, `Server error: ${res.status}`));
       }
       setResult(await res.json());
     } catch (err) {

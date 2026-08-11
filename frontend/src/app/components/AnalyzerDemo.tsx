@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { JobAnalysis, API_URL, connectionError } from "../types";
+import { JobAnalysis, API_URL, connectionError, extractApiDetail } from "../types";
 import { fetchWithRetry } from "../lib/fetchWithRetry";
 import Spinner from "./Spinner";
 import { DEMO_JOB_DESCRIPTION } from "../lib/demoData";
@@ -32,7 +32,7 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error((body as { detail?: string }).detail ?? `Server error: ${res.status}`);
+        throw new Error(extractApiDetail(body, `Server error: ${res.status}`));
       }
 
       const data: JobAnalysis = await res.json();

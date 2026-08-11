@@ -72,6 +72,19 @@ export interface CoverLetterResponse {
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
+export function extractApiDetail(body: unknown, fallback: string): string {
+  if (!body || typeof body !== "object") return fallback;
+  const { detail } = body as { detail?: unknown };
+  if (typeof detail === "string" && detail) return detail;
+  if (Array.isArray(detail) && detail.length > 0) {
+    const first = detail[0];
+    if (typeof first === "object" && first !== null && "msg" in first) {
+      return String((first as { msg: unknown }).msg);
+    }
+  }
+  return fallback;
+}
+
 export function connectionError(err: unknown): string {
   const msg = err instanceof Error ? err.message : "";
   if (msg === "Failed to fetch" || msg === "Load failed") {
