@@ -1,7 +1,7 @@
 # Data Protection Impact Assessment — Pre-Launch Record
 
-**Screening date:** 2026-08-11  
-**Outcome:** DPIA required before accepting EEA/UK resume data  
+**Screening date:** 2026-08-11
+**Outcome:** DPIA required before accepting EEA/UK resume data
 **Status:** Technical assessment complete; controller/contracts/transfer evidence pending
 
 ## Why the threshold is treated as met
@@ -59,4 +59,3 @@ of the following are evidenced:
 The controller records approval/rejection, date, reviewer, and review interval in
 the private compliance register. Until then, the Gate 1(d) EEA/UK verdict remains
 NO-GO.
-

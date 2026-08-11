@@ -1,6 +1,6 @@
 # Gate 1(d) — Regulator Review of Resume-Data Handling
 
-**Review date:** 2026-08-11  
+**Review date:** 2026-08-11
 **Scope:** The checked-in application, public legal pages, production-safe HTTP
 checks, retained production security evidence, and publicly available processor
 terms. This is a launch-readiness control review, not a legal opinion.

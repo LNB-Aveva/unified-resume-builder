@@ -1,6 +1,6 @@
 # Record of Processing Activities (ROPA)
 
-**Status:** Repository inventory complete; owner evidence fields remain open  
+**Status:** Repository inventory complete; owner evidence fields remain open
 **Last reviewed:** 2026-08-11
 
 The production controller identity is supplied by `LEGAL_CONTROLLER_NAME`,
@@ -45,4 +45,3 @@ Review this record before adding a table/field, processor, SDK, log attribute,
 new AI model/provider, new country, ad unit, marketing integration, or retention
 change. A `:fastest`, `:cheapest`, or other dynamic AI provider suffix is not
 permitted without a new processor review.
-

@@ -1,7 +1,7 @@
 # Privacy Rights Request Procedure
 
-**Owner:** Launch owner / privacy request owner  
-**Intake:** `support@resumeai.cv`  
+**Owner:** Launch owner / privacy request owner
+**Intake:** `support@resumeai.cv`
 **Last reviewed:** 2026-08-11
 
 This runbook applies to access, correction, deletion, portability, restriction,
@@ -98,4 +98,3 @@ Using a synthetic permanent account:
 5. Search processor dashboards/logs within their retention windows and record
    what can and cannot be deleted.
 6. Close the case with timestamps and evidence links in the private register.
-
