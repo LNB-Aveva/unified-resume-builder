@@ -41,35 +41,36 @@ def require_auth(
         token = credentials.credentials
         algorithm = jwt.get_unverified_header(token).get("alg")
 
-        if algorithm == "HS256":
-            if not settings.SUPABASE_JWT_SECRET:
-                raise HTTPException(
-                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                    detail="Authentication is not configured on this server.",
-                )
+        if settings.SUPABASE_URL:
+            # JWKS path (production) — reject algorithm downgrade attempts: only
+            # ES256/RS256 tokens are valid here, even if SUPABASE_JWT_SECRET is
+            # also configured for local development.
+            if algorithm not in {"ES256", "RS256"}:
+                raise jwt.InvalidAlgorithmError("Unsupported JWT signing algorithm")
+            supabase_url = settings.SUPABASE_URL.rstrip("/")
+            signing_key = _get_jwks_client(supabase_url).get_signing_key_from_jwt(token)
+            payload = jwt.decode(
+                token,
+                signing_key.key,
+                algorithms=["ES256", "RS256"],
+                audience="authenticated",
+                issuer=f"{supabase_url}/auth/v1",
+            )
+        elif settings.SUPABASE_JWT_SECRET:
+            # HS256 path (local dev only, no SUPABASE_URL configured)
+            if algorithm != "HS256":
+                raise jwt.InvalidAlgorithmError("Unsupported JWT signing algorithm")
             payload = jwt.decode(
                 token,
                 settings.SUPABASE_JWT_SECRET,
                 algorithms=["HS256"],
                 audience="authenticated",
             )
-        elif algorithm in {"ES256", "RS256"}:
-            if not settings.SUPABASE_URL:
-                raise HTTPException(
-                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                    detail="Authentication is not configured on this server.",
-                )
-            supabase_url = settings.SUPABASE_URL.rstrip("/")
-            signing_key = _get_jwks_client(supabase_url).get_signing_key_from_jwt(token)
-            payload = jwt.decode(
-                token,
-                signing_key.key,
-                algorithms=[algorithm],
-                audience="authenticated",
-                issuer=f"{supabase_url}/auth/v1",
-            )
         else:
-            raise jwt.InvalidAlgorithmError("Unsupported JWT signing algorithm")
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Authentication is not configured on this server.",
+            )
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

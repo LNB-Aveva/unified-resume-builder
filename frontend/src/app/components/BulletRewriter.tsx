@@ -92,17 +92,25 @@ export default function BulletRewriter() {
   }
 
   async function handleCopyOne(text: string, index: number) {
-    await navigator.clipboard.writeText(text);
-    setCopiedIndex(index);
-    setTimeout(() => setCopiedIndex(null), 2000);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch {
+      // clipboard access denied or unavailable — no-op
+    }
   }
 
   async function handleCopyAll() {
     if (!result) return;
     const all = result.rewrites.map((r) => `• ${r.rewritten}`).join("\n");
-    await navigator.clipboard.writeText(all);
-    setCopiedAll(true);
-    setTimeout(() => setCopiedAll(false), 2000);
+    try {
+      await navigator.clipboard.writeText(all);
+      setCopiedAll(true);
+      setTimeout(() => setCopiedAll(false), 2000);
+    } catch {
+      // clipboard access denied or unavailable — no-op
+    }
   }
 
   return (

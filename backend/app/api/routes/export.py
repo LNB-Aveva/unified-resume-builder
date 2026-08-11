@@ -18,7 +18,7 @@ router = APIRouter()
 
 
 def _safe_filename(name: str) -> str:
-    safe = re.sub(r"[^\w\s-]", "", name).strip()
+    safe = re.sub(r"[^\w\s-]", "", name, flags=re.ASCII).strip()
     safe = re.sub(r"\s+", "_", safe)
     return (safe or "resume")[:60]
 

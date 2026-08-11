@@ -129,17 +129,17 @@ async function loadResumesSupabase(): Promise<ResumeBrief[]> {
   const sb = getSupabase();
   if (!sb) return [];
 
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session?.user?.id || session.user.is_anonymous) return [];
+  const userId = await getPermanentUserId();
+  if (!userId) return [];
 
   const { data, error } = await sb
     .from("resumes")
     .select("id, title")
-    .eq("user_id", session.user.id)
+    .eq("user_id", userId)
     .order("updated_at", { ascending: false });
 
-  if (error || !data) return [];
-  return data;
+  if (error) throw error;
+  return data ?? [];
 }
 
 async function updateJobSupabase(id: string, fields: Partial<{ status: string; notes: string; resume_id: string | null }>): Promise<boolean> {
@@ -315,6 +315,12 @@ export default function JobTracker() {
   }
 
   const notesTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (notesTimerRef.current) clearTimeout(notesTimerRef.current);
+    };
+  }, []);
 
   function handleNotesChange(id: string, newNotes: string) {
     const updated = jobs.map((j) => j.id === id ? { ...j, notes: newNotes } : j);

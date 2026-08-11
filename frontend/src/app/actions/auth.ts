@@ -12,6 +12,11 @@ import {
   type FormState,
 } from "@/app/lib/definitions";
 
+if (process.env.NODE_ENV === "production" && !process.env.NEXT_PUBLIC_SITE_URL) {
+  // Causes a visible build/startup error rather than silently sending
+  // password-reset emails with localhost links.
+  throw new Error("NEXT_PUBLIC_SITE_URL must be set in production.");
+}
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 

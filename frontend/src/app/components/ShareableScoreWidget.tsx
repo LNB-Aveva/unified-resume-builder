@@ -81,7 +81,13 @@ export default function ShareableScoreWidget() {
     setError(null);
     try {
       const supabase = createClient();
-      const { error: dbError } = await supabase.from("shared_scores").delete().eq("id", shareId);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("You must be signed in to revoke a share link.");
+      const { error: dbError } = await supabase
+        .from("shared_scores")
+        .delete()
+        .eq("id", shareId)
+        .eq("user_id", user.id);
       if (dbError) throw new Error("Could not revoke this link. Please try again.");
       setShareUrl(null);
       setShareId(null);

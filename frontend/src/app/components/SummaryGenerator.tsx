@@ -69,9 +69,13 @@ export default function SummaryGenerator() {
 
   async function handleCopy() {
     if (!result) return;
-    await navigator.clipboard.writeText(result.summary);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(result.summary);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard access denied or unavailable — no-op
+    }
   }
 
   const wordCountColor =

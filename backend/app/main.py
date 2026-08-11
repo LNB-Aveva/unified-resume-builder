@@ -90,9 +90,22 @@ _MAX_BODY_BYTES = 1_048_576  # 1 MB
 
 
 async def _send_413(scope, send) -> None:
+    path = scope.get("path", "")
+    method = scope.get("method", "")
+    _logger.warning(
+        "%s %s 413 body-too-large",
+        method,
+        path,
+        extra={"extra_data": {"method": method, "path": path, "status": 413, "rate_limited": False, "auth_failed": False, "is_ai_route": False}},
+    )
     response = JSONResponse(
         status_code=413,
         content={"detail": "Request body too large. Maximum size is 1 MB."},
+        headers={
+            "X-Content-Type-Options": "nosniff",
+            "X-Frame-Options": "DENY",
+            "Referrer-Policy": "strict-origin-when-cross-origin",
+        },
     )
     await response(scope, _noop_receive, send)
 
@@ -191,6 +204,8 @@ class GlobalIPRateLimitMiddleware(BaseHTTPMiddleware):
 
 _REQUEST_TIMEOUT = 60.0
 
+# Routes tagged is_ai_route=true in access logs; covers HuggingFace AI routes
+# and CPU-intensive NLP routes (/score, /gap, /compliance) for unified cost tracking.
 _AI_ROUTES = frozenset(
     {
         "/api/v1/score",
@@ -209,9 +224,20 @@ class RequestTimeoutMiddleware(BaseHTTPMiddleware):
             with anyio.fail_after(_REQUEST_TIMEOUT):
                 return await call_next(request)
         except TimeoutError:
+            _logger.warning(
+                "%s %s 504 request-timeout",
+                request.method,
+                request.url.path,
+                extra={"extra_data": {"method": request.method, "path": request.url.path, "status": 504, "rate_limited": False, "auth_failed": False, "is_ai_route": request.url.path.rstrip("/") in _AI_ROUTES}},
+            )
             return JSONResponse(
                 status_code=504,
                 content={"detail": "Request timed out. Please try again."},
+                headers={
+                    "X-Content-Type-Options": "nosniff",
+                    "X-Frame-Options": "DENY",
+                    "Referrer-Policy": "strict-origin-when-cross-origin",
+                },
             )
 
 
@@ -279,16 +305,26 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-_cors_origins = [
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:3000",
-]
+_cors_origins: list[str] = []
+if not _is_production:
+    _cors_origins += [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+    ]
 for _url in os.environ.get("FRONTEND_URL", "").split(","):
     _url = _url.strip().rstrip("/")
     if _url:
         _cors_origins.append(_url)
 
+app.add_middleware(GlobalIPRateLimitMiddleware, rate_limiter=global_ip_limiter)
+app.add_middleware(AccessLogMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RequestTimeoutMiddleware)
+app.add_middleware(BodySizeLimitMiddleware)
+# CORSMiddleware must be outermost (added last in Starlette's LIFO stack) so
+# CORS headers are present on all responses including 429 rate-limit rejections
+# that short-circuit before reaching the inner middleware chain.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
@@ -296,12 +332,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
 )
-
-app.add_middleware(GlobalIPRateLimitMiddleware, rate_limiter=global_ip_limiter)
-app.add_middleware(AccessLogMiddleware)
-app.add_middleware(SecurityHeadersMiddleware)
-app.add_middleware(RequestTimeoutMiddleware)
-app.add_middleware(BodySizeLimitMiddleware)
 
 app.include_router(analyze.router, prefix="/api/v1", tags=["Analysis"])
 app.include_router(score.router, prefix="/api/v1", tags=["Scoring"])

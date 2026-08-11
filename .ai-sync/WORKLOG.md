@@ -17,15 +17,35 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | copilot                    |
-| Started    | 2026-08-10                 |
-| Working On | Session 141 — Gate 1(b) scraper and distributed-automation review |
+| Agent      | claude                     |
+| Started    | 2026-08-11                 |
+| Working On | Session 142 — 360° code review --fix (10 findings, all fixed) |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 142 (Claude) — 2026-08-11
+- **Agent:** claude
+- **Did:**
+  - Full 360° repo audit (6 parallel finder angles: security, frontend auth, schema/types, frontend components, infra/CI, conventions).
+  - Found and fixed 10 confirmed/plausible issues across backend and frontend.
+  - **Fix 1 (CRITICAL):** `backend/app/core/auth.py` — JWT algorithm confusion: enforced algorithm by config (SUPABASE_URL → ES256/RS256 only, SUPABASE_JWT_SECRET-only → HS256 only), preventing HS256 downgrade attacks when both env vars are set.
+  - **Fix 2 (HIGH):** `backend/app/main.py` — 429 global-rate-limit responses bypassed CORSMiddleware (it was innermost). Moved CORSMiddleware to outermost position (added last) so all responses including 429s carry CORS headers.
+  - **Fix 3 (HIGH):** `backend/app/main.py` — Localhost origins (localhost:3000, localhost:5173, 127.0.0.1:3000) were unconditionally in the production CORS allowlist. Now gated on `not _is_production`.
+  - **Fix 4 (MEDIUM):** `frontend/src/app/actions/auth.ts` — `siteUrl` fallback to `http://localhost:3000` in production would silently break all password-reset emails. Added production startup error if `NEXT_PUBLIC_SITE_URL` is unset.
+  - **Fix 5 (MEDIUM):** `frontend/src/app/components/ShareableScoreWidget.tsx` — delete share link only used `.eq("id", shareId)` with no user_id constraint. Added `.eq("user_id", user.id)` as defense-in-depth.
+  - **Fix 6 (MEDIUM):** `backend/app/services/compliance/checker.py` — ALL-CAPS check falsely flagged valid section headers. Now excludes known headers before counting. (Applied by Angle C sub-agent.)
+  - **Fix 7 (MEDIUM):** `backend/app/main.py` — 413 body-too-large and 504 timeout responses bypassed AccessLogMiddleware and had no security headers. Both now log structured access entries and include X-Content-Type-Options/X-Frame-Options/Referrer-Policy. (Applied by Angle C sub-agent.)
+  - **Fix 8 (MEDIUM):** `frontend/src/app/components/JobTracker.tsx` — `loadResumesSupabase` duplicated anonymous-session logic (should use `getPermanentUserId()`) and silently swallowed errors. Fixed both.
+  - **Fix 9 (LOW):** `backend/app/api/routes/export.py` — `_safe_filename` used `\w` without `re.ASCII`, allowing Unicode characters (e.g. CJK) into `Content-Disposition` filename header. Added `flags=re.ASCII`.
+  - **Fix 10 (LOW):** `frontend/src/app/components/JobTracker.tsx`, `BulletRewriter.tsx`, `SummaryGenerator.tsx` — debounce timer not cleared on unmount; clipboard `writeText()` calls not wrapped in try-catch. Fixed all three.
+  - All backend unit tests pass (305+); frontend build + ESLint clean; ruff clean.
+- **Files Changed:** `backend/app/core/auth.py`, `backend/app/main.py`, `backend/app/api/routes/export.py`, `backend/app/services/compliance/checker.py`, `backend/tests/unit/test_quota_schema.py`, `frontend/src/app/actions/auth.ts`, `frontend/src/app/components/ShareableScoreWidget.tsx`, `frontend/src/app/components/JobTracker.tsx`, `frontend/src/app/components/BulletRewriter.tsx`, `frontend/src/app/components/SummaryGenerator.tsx`
+- **Next:** Owner shows localhost:3000 for approval before commit/push (localhost-first rule).
+- **Blockers:** None for Session 142. Overall launch still blocked by Gate 1(b) owner actions (migration 009, anonymous-auth cleanup), Gates 1(c–e), Gate 4, Gate 6.
 
 ### Session 141 (Copilot) — 2026-08-10
 - **Agent:** copilot

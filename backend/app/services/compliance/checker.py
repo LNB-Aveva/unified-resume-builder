@@ -156,11 +156,19 @@ def check_resume(resume_text: str) -> ComplianceReport:
         "No overused buzzwords found",
         f"Replace vague phrases with specific achievements: {', '.join(buzzwords_found[:3])}")
 
-    caps_lines = sum(1 for line in lines if _ALL_CAPS_LINE.match(line))
+    _all_known_headers = (
+        _EXPERIENCE_HEADERS | _EDUCATION_HEADERS | _SKILLS_HEADERS | _SUMMARY_HEADERS
+        | {"certifications", "projects", "awards", "publications", "languages", "references",
+           "contact", "professional experience", "work history", "career history"}
+    )
+    caps_lines = sum(
+        1 for line in lines
+        if _ALL_CAPS_LINE.match(line) and line.lower().rstrip(":") not in _all_known_headers
+    )
     add("No excessive ALL-CAPS body text",
-        caps_lines <= 1, "suggestion",
+        caps_lines == 0, "suggestion",
         "No excessive all-caps body text",
-        f"{caps_lines} lines in ALL-CAPS -- this can indicate copy-paste formatting issues")
+        f"{caps_lines} line{'s' if caps_lines != 1 else ''} in ALL-CAPS -- this can indicate copy-paste formatting issues")
 
     # Severity-weighted score (critical=3x, warning=2x, suggestion=1x)
     _SEVERITY_WEIGHT = {"critical": 3, "warning": 2, "suggestion": 1}

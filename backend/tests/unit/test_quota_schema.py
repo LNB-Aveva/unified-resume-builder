@@ -83,4 +83,7 @@ def test_share_links_keep_full_uuid_entropy_and_support_revocation():
     generate_id = source[source.index("function generateId"):source.index("export default function")]
     assert "crypto.randomUUID()" in generate_id
     assert ".slice(" not in generate_id
-    assert '.from("shared_scores").delete().eq("id", shareId)' in source
+    # Revocation must constrain by both share ID and owner's user_id (defense-in-depth).
+    assert '.from("shared_scores")' in source and '.delete()' in source
+    assert '.eq("id", shareId)' in source
+    assert '.eq("user_id", user.id)' in source
