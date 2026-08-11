@@ -57,7 +57,7 @@ async def test_quota_denial_returns_429_with_retry_after(monkeypatch, quota_sett
 
     assert exc_info.value.status_code == 429
     assert exc_info.value.headers == {"Retry-After": "7200"}
-    assert "00:00 UTC" in exc_info.value.detail
+    assert "credits reset daily at midnight" in exc_info.value.detail
 
 
 @pytest.mark.anyio
