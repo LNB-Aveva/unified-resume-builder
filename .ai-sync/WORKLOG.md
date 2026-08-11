@@ -8,8 +8,8 @@
 ## Current Task
 
 - **Feature:** Prompt 3 launch-gate audit
-- **Branch:** `docs/gate1a-final-report`
-- **Status:** Prompt 3 Gate 1(a) is complete with a code-and-production PASS. Gates 2, 3, and 5 are complete. The full Prompt 3 launch verdict remains NO-GO until Gate 1(b–e), Gate 4, and Gate 6 are completed.
+- **Branch:** `main`
+- **Status:** Gate 1(a) PASS (code + production). Ready to begin Gate 1(b) — scraper and distributed-automation review. Gates 2, 3, 5 also complete. Gate 1(b–e), Gate 4, Gate 6 remain NO-GO.
 
 ---
 
@@ -17,15 +17,31 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | copilot                    |
+| Agent      | claude                     |
 | Started    | 2026-08-10                 |
-| Working On | Session 139 — Gate 1(a) final report and repository verification |
+| Working On | Session 140 — Gate 1(a) cross-examination + commit/push/memory |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 140 (Claude) — 2026-08-10
+- **Agent:** claude
+- **Did:**
+  - Independent cross-examination of all Gate 1(a) Copilot work (Sessions 133–139, PRs #56–61).
+  - Verified commit chain `789bac7`→`ead449c`→`df0edb3`→`6fc4f71`→`ba93d3c`→`223449c` all present on `main`.
+  - Confirmed migration 008: `consume_ai_quota` revoked from `anon`/`authenticated`, granted only to `service_role`; advisory-lock serialization; all 6 storage ceilings match claims; `years_experience` constraint handles both integer (prod) and text column types.
+  - Confirmed `enforce_ai_quota` wired before HF call in all 3 routes (1/2/5 units). Fail-closed startup verified in `config.py`.
+  - Confirmed `TurnstileWidget.tsx` loads from Cloudflare; `auth.ts` enforces token on sign-up, sign-in, and password reset.
+  - Test counts verified: 20 RLS tests + 5 abuse tests. Protected workflow gated on `production-rls` environment secrets.
+  - `LAUNCH_READINESS_AUDIT.md` and `GATE1A_FINAL_REPORT.md` both record Gate 1(a) PASS with correct run IDs.
+  - Committed auto-generated `frontend/next-env.d.ts` path update (dev→build) that Copilot had set aside.
+  - **Verdict: Gate 1(a) fully confirmed. Cleared to begin Gate 1(b).**
+- **Files Changed:** `.ai-sync/WORKLOG.md`, `frontend/next-env.d.ts`
+- **Next:** Gate 1(b) — scraper and distributed-automation adversarial review.
+- **Blockers:** None for Gate 1(a). Overall launch blocked by Gate 1(b–e), Gate 4, Gate 6.
 
 ### Session 139 (Copilot) — 2026-08-10
 - **Agent:** copilot
