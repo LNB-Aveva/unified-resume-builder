@@ -9,7 +9,7 @@
 
 - **Feature:** Prompt 3 launch-gate audit
 - **Branch:** `main`
-- **Status:** Gate 1(b) repository/application work is complete and deployed. Production remains NO-GO pending owner-controlled migration 009, anonymous-auth dashboard proof/cleanup decision, and the expanded 26/26 production rerun. Gate 1(a) and Gates 2, 3, 5 are complete; Gate 1(c–e), Gate 4, and Gate 6 remain pending.
+- **Status:** Gate 1(b) is PASS in code and production. Backup, disabled anonymous auth, migration 009, direct RLS rejection, 26/26 protected checks, permanent-account smoke, and guarded cleanup are proven. One quarantined data-bearing legacy account is due for deletion on 2026-09-10. Gates 1(a–b) and Gates 2, 3, 5 are complete; Gate 1(c–e), Gate 4, and Gate 6 remain pending.
 
 ---
 
@@ -26,6 +26,18 @@
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 144 (Copilot) — 2026-08-11
+- **Agent:** copilot
+- **Did:**
+  - Closed the owner-controlled Gate 1(b) production checklist: verified logical/CSV backups and SHA-256 manifest, disabled Supabase Anonymous Sign-Ins, applied migration 009, and proved six restrictive permanent-user policies.
+  - Captured the expected rollback-only RLS error `42501` with zero retained probe rows. Protected workflow run `31532154382` passed 20/20 RLS and 6/6 abuse controls with zero skips and left zero test users.
+  - Recorded successful public/health checks and permanent-account Compliance Checker plus Job Tracker save-refresh-delete smoke, with zero retained smoke jobs.
+  - After explicit owner approval, verified deletion of 131 empty anonymous users. Final inventory is one quarantined anonymous user with three jobs, zero empty anonymous users, and zero test fixtures.
+  - Marked Gate 1(b) PASS in the audit and scraper-control runbook.
+- **Files Changed:** `docs/GATE1B_SCRAPER_CONTROLS.md`, `docs/LAUNCH_READINESS_AUDIT.md`, `.ai-sync/WORKLOG.md`, `.ai-sync/DECISIONS.md`
+- **Next:** Delete the retained backed-up anonymous account and its three jobs on 2026-09-10 unless ownership is resolved sooner. Continue Gate 1(c).
+- **Blockers:** None for Gate 1(b). Overall launch remains NO-GO pending Gates 1(c–e), Gate 4, and Gate 6.
 
 ### Session 142 (Claude) — 2026-08-11
 - **Agent:** claude
