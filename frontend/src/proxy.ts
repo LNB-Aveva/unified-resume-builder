@@ -18,6 +18,10 @@ export async function proxy(request: NextRequest) {
   }
 
   const { supabaseResponse, user, authUnavailable } = await updateSession(request);
+  const userMetadata = user?.user_metadata as Record<string, unknown> | undefined;
+  const hasAcceptedTerms = typeof userMetadata?.terms_accepted_at === "string";
+  const hasConfirmedAge = typeof userMetadata?.age_confirmed_at === "string";
+  const hasAcceptedEligibility = hasAcceptedTerms && hasConfirmedAge;
 
   if (isProtected && authUnavailable) {
     const url = request.nextUrl.clone();
@@ -34,9 +38,16 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if (isProtected && user && !hasAcceptedEligibility && !path.startsWith("/account-setup")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/account-setup";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
   if (isAuthRoute && user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/tools";
+    url.pathname = hasAcceptedEligibility ? "/tools" : "/account-setup";
     return NextResponse.redirect(url);
   }
 

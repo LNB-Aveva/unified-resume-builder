@@ -97,24 +97,55 @@ production proof, incident procedure, and residual-risk boundary are in
 
 | Finding | Severity | Evidence | Required closure |
 |---|---|---|---|
-| Current public policy describes stored resumes, versions, jobs, share keywords, IP metadata, Sentry, Hugging Face processing, retention, export, and deletion. | Pass by code/HTTP review | `/privacy` and `/terms` returned 200; policy statements match the checked-in data flows inspected in this gate. | Preserve a dated data-flow-to-policy review in Gate 2. This is not legal advice. |
-| Account export, deletion, and cross-user RLS cover retained account data. | **Pass; re-run after migration** | The export retrieves account, profile, jobs, resumes with all versions, and shared scores; retained production evidence passed the cascade/isolation suite 20/20. | Preserve the production procedure and re-run it after migration 008. |
-| Expired-score cleanup could fail without failing the workflow. | **Code complete / production proof pending** | Non-200 cleanup now emits `::error::` and exits 1. The RPC is restricted to `service_role`, cleans shared scores plus quota rows older than 31 days, and no longer exposes raw database errors. | Apply migrations, confirm Vercel and GitHub have the cleanup secrets, then retain a successful scheduled run. |
-| The exposed provider token was retired and its usage reviewed. | **Pass with historical residue** | The active-token list no longer contains the exposed value; the owner reported no unexpected usage or charges. The dead value remains in Git history. | Keep the replacement fine-grained and monitored; history rewriting is optional and separately destructive. |
+| Public notice and eligibility controls now match the code. | **Code complete / owner facts required** | Privacy/Terms enumerate actual categories, purposes/bases, processors, transfers, sharing, retention, rights and deletion lag. Production fails closed without controller name/address/country and minimum age; email and OAuth eligibility acceptance is recorded and route-enforced. | Owner sets/approves the four legal values and obtains qualified policy/legal-basis review. |
+| The AI and telemetry paths are now deterministic and content-reduced. | **Code complete / contracts and historical review required** | AI is pinned to Together rather than `:fastest`; Sentry receives an allowlisted generic error envelope with traces disabled; provider response bodies cannot enter exceptions; adversarial tests pass. | Owner obtains HF/Together/Vercel contract and transfer proof, resolves content restrictions, and inspects/purges historical Sentry events. |
+| Export, deletion, rights and privacy-incident operations are implemented/documented. | **Code complete / live drills required** | Export includes auth metadata/identities, quota and browser data; successful deletion clears product browser keys; copy discloses vendor/log/backup lag. DSAR, ROPA, DPIA and 72-hour incident procedures now exist. | Run and retain one signed-in rights/deletion drill and one breach tabletop; fill vendor retention/region/transfer evidence and approve the DPIA. |
+| Data isolation and scheduled cleanup are effective narrow controls. | **PASS with residual risk** | Production evidence passed 20/20 RLS checks plus six abuse controls. Cleanup workflow run `31534423206` succeeded on 2026-08-11; public shares omit raw resume text. | Preserve regression and production evidence; alert on cleanup failure and prove expired-row absence periodically. |
+| Owner-controlled privacy evidence is still missing. | **BLOCKER for EEA/UK; otherwise UNVERIFIED** | Applicable processor contracts/plans, regions, vendor retention, transfers, controller establishment, legal review, historical Sentry inspection, live account drill and incident tabletop are not repository-verifiable. | Complete `docs/GATE1D_OWNER_ACTIONS.md`; every UNVERIFIED item remains no-go. |
+
+**Gate 1(d) verdict: repository remediation complete; overall FAIL / NO-GO until
+owner evidence closes.** The full initial findings, remediation table, field-level
+inventory, and owner checklist are in `docs/GATE1D_DATA_HANDLING.md` and
+`docs/GATE1D_OWNER_ACTIONS.md`.
 
 ### E. AdSense policy reviewer
 
-| Finding | Severity | Evidence | Required closure |
+Full adversarial review completed 2026-08-11 against the actual deployed code. The initial entry in this section was based on a stale read of `layout.tsx`; the real code is materially better and two of the original three findings were already resolved.
+
+#### Consent and script architecture — what the code actually does
+
+- `layout.tsx:136` — `gtag('consent','default',{...denied...,'wait_for_update':500})` runs as a synchronous inline script, first, before any Google network requests. This is correct Consent Mode v2 ordering.
+- `CookieConsent.tsx:38-46` — `loadAdSense(adsenseId)` is called only when `preferences.advertising === true`. The adsbygoogle.js script is **never** loaded until the user explicitly enables the Advertising toggle.
+- `AdUnit.tsx:25-31` — renders only when `consent.advertising === true` and re-evaluates on the `resumeai:consent-changed` custom event.
+- `consent.ts` — v2 structured JSON with separate `analytics` and `advertising` booleans; backward-compatible with legacy "accepted"/"rejected" strings.
+- `CookieConsent.tsx` UI — separate checkboxes for Analytics and Advertising, "Reject optional", "Save choices", and "Accept all" buttons.
+
+This architecture is correct and would pass a technical Consent Mode review.
+
+#### Finding table
+
+| Finding | Severity | Evidence | Status |
 |---|---|---|---|
-| Core review surfaces exist. | Pass | Homepage, privacy, terms, robots, and ads.txt return 200; six substantive articles, contact email, sitemap, and publisher ID wiring exist. | Confirm these again in Gate 2. |
-| The checked-in cookie banner is not a Google-certified TCF CMP. | **Blocker before ads** | It stores a binary choice in `localStorage` and sends Consent Mode signals, but it does not create an IAB TCF string. Google requires a certified CMP for personalized ads in the EEA, UK, and Switzerland; TCF v2.3 is now the current framework. A Google dashboard CMP may exist, but it could not be verified here. | Owner verifies/enables Google Privacy & messaging European and US-state messages and provides non-secret evidence. Do not place ad units until proven. |
-| No real ad-placement/density review is possible yet. | **UNVERIFIED / NO-GO for monetized launch** | `AdUnit.tsx` exists, but no slot IDs or live placements exist while Google review is pending. | After approval, add proposed placements on a branch and inspect desktop/mobile before production. |
-| `Unlimited` marketing copy created reviewer and trust risk. | **Resolved in code** | Current product copy consistently says fair-use and the database-backed quota makes that statement enforceable. | Confirm deployed pages after merge. |
+| No certified TCF CMP | **BLOCKER before ad units** | Consent system sends correct Consent Mode v2 signals but generates no IAB TC string. Google requires a certified CMP for personalized ads to EEA/UK/CH users (requirement since Jan 2024; see policy reference below). `consent.ts` is a custom v2 format, not TCF. Without a certified CMP, Google either serves non-personalized ads only (50–80% CPM reduction) or disables EEA serving entirely. | Owner action: create European regulations message in AdSense → Privacy & messaging before placing any `<AdUnit>` in JSX. Not a blocker for current ad-free launch. |
+| No ad placement/density review | **UNVERIFIED — pending Google site approval** | `AdUnit.tsx` is correctly consent-gated. No slot IDs or live placements exist while Google review is pending. | After Google approval: propose placements on a branch, review desktop/mobile density (max 1 per tool page initially), then production. |
+| Privacy policy described old binary consent; now resolved | **Resolved in code — 2026-08-11** | `privacy/page.tsx` previously described "you choose Accept" (singular). Updated to describe granular Analytics/Advertising choice, lazy loading for each, and independent toggles. Date updated to 2026-08-11. | Done. |
+| No minimum age in Terms | **Resolved in code — 2026-08-11** | `terms/page.tsx` §3 now leads with "You must be at least 13 years old to use this Service." Date updated to 2026-08-11. | Done. |
+| Publisher identity infrastructure | **PASS in code — owner must set env vars** | `frontend/src/app/lib/legal.ts` reads `LEGAL_CONTROLLER_NAME`, `LEGAL_CONTROLLER_ADDRESS`, `LEGAL_CONTROLLER_COUNTRY`, `LEGAL_MINIMUM_AGE` env vars. In production (`VERCEL_ENV=production`) the server throws if any are unset — so the Vercel build will fail until the owner supplies them. Privacy and Terms now render the controller name and address from those vars. | Owner sets the 4 `LEGAL_*` env vars in Vercel → Environment Variables before next production deploy. Until set, the build will throw in production. |
+| Blog author attribution | **LOW / accepted** | JSON-LD author is `"@type": "Organization"`, no named bylines. Weakens E-E-A-T. Not a policy violation. | Accept as known weakness. Add byline post-launch. |
+| Core review surfaces | **PASS** | Homepage, privacy, terms, robots, ads.txt return 200; six original articles; contact email; sitemap; publisher ID `pub-7869093425931175` in ads.txt with correct DIRECT tag and TAG ID. | Preserve. |
+| `Unlimited` marketing copy | **PASS** | All product copy consistently states fair-use limits. Database-backed quota enforces it. | Confirmed. |
+| Consent Mode ordering | **PASS** | Inline consent-default script runs first in `<head>` with `wait_for_update:500` before any Google network calls. | Confirmed in actual code. |
+| adsbygoogle.js load gating | **PASS** | Script only loaded via `loadAdSense()` after `preferences.advertising === true`. | Confirmed in actual code. |
+| AdUnit consent gating | **PASS** | `AdUnit` only renders when `consent.advertising === true`; re-evaluates on `resumeai:consent-changed`. | Confirmed in actual code. |
+| Cookie settings accessibility | **PASS** | `CookieSettingsButton` in footer resets `CONSENT_KEY` and reloads. | Confirmed. |
+
+**Gate 1(e) verdict: PASS for ad-free launch. BLOCKED before placing any `<AdUnit>` until (a) TCF CMP is configured in AdSense dashboard and (b) 4 `LEGAL_*` Vercel env vars are set (the production build will throw without them).** All other medium findings are resolved in code (granular consent, adsbygoogle.js load-gating, minimum age, comprehensive privacy policy with controller section). The Sentry `beforeSend` type error in `sentryPrivacy.ts` was also fixed in this session (build was broken by mismatched `Event` vs `ErrorEvent` types).
 
 Official policy references:
 
 - Google certified CMP requirement: <https://support.google.com/adsense/answer/13554116>
 - Google TCF integration and v2.3 transition: <https://support.google.com/adsense/answer/9804260>
+- Consent Mode v2 developer guide: <https://developers.google.com/tag-platform/security/guides/consent>
 - Hugging Face token security and fine-grained production tokens: <https://huggingface.co/docs/hub/en/security-tokens>
 - Supabase CAPTCHA client and dashboard requirements: <https://supabase.com/docs/guides/auth/auth-captcha>
 - Supabase access-token behavior after sign-out: <https://supabase.com/docs/reference/javascript/auth-signout>
@@ -146,6 +177,19 @@ observed the expected rollback-only RLS rejection, passed protected run
 `31532154382` 26/26 with zero skips, completed permanent-account UI smoke, and
 deleted 131 empty anonymous users. One backed-up data-bearing account with three
 jobs remains quarantined for scheduled deletion on 2026-09-10.
+
+### Required: set LEGAL_* env vars in Vercel (NEW — production build will throw without these)
+
+The `frontend/src/app/lib/legal.ts` module throws on first render in production if any of these four env vars are absent. Set them in Vercel → Project Settings → Environment Variables (Production scope):
+
+| Variable | Example value | Notes |
+|---|---|---|
+| `LEGAL_CONTROLLER_NAME` | `<legal person or entity>` | Legal name of the person or entity that operates resumeai.cv |
+| `LEGAL_CONTROLLER_ADDRESS` | `<business or registered postal address>` | Owner/counsel confirms the publishable address |
+| `LEGAL_CONTROLLER_COUNTRY` | `<country of establishment>` | Country of establishment |
+| `LEGAL_MINIMUM_AGE` | `<owner-approved integer>` | Must be an integer 13–18; used in signup, OAuth onboarding, Privacy and Terms |
+
+These values appear verbatim in the live Privacy Policy and Terms. Because those pages are prerendered, a Vercel Production build fails closed while generating them if any value is absent.
 
 ### Required AdSense dashboard proof
 

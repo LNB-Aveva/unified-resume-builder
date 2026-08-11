@@ -13,6 +13,7 @@ import UserMenu from "@/app/components/UserMenu";
 import InfoTooltip from "@/app/components/InfoTooltip";
 import ToolsSidebar from "@/app/components/ToolsSidebar";
 import { loadResume, type ResumeData } from "@/app/actions/resume";
+import SensitiveDataNotice from "@/app/components/SensitiveDataNotice";
 
 export const metadata = {
   title: "Tools",
@@ -92,6 +93,8 @@ export default async function ToolsPage({
               </div>
             </div>
           </div>
+
+          <SensitiveDataNotice />
 
           <section id="keyword-extractor" className="scroll-mt-24">
             <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">

@@ -9,7 +9,7 @@
 
 - **Feature:** Prompt 3 launch-gate audit
 - **Branch:** `main`
-- **Status:** Gate 1(b) is PASS in code and production. Backup, disabled anonymous auth, migration 009, direct RLS rejection, 26/26 protected checks, permanent-account smoke, and guarded cleanup are proven. One quarantined data-bearing legacy account is due for deletion on 2026-09-10. Gates 1(a–b) and Gates 2, 3, 5 are complete; Gate 1(c–e), Gate 4, and Gate 6 remain pending.
+- **Status:** Gate 1(d) repository remediation is complete; overall NO-GO remains only for owner-controlled legal identity/age, processor contracts/content terms, vendor region/retention/transfer evidence, historical Sentry review, live rights/deletion drill, incident tabletop, and legal/DPIA approval. Gate 1(e) is PASS for ad-free launch but blocked before ad units on certified CMP proof. Gates 1(a–c) PASS; Gates 4 and 6 remain pending.
 
 ---
 
@@ -17,15 +17,54 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
-| Started    | 2026-08-11                 |
-| Working On | Session 143 — Gate 1(c) confused non-technical user adversarial review + fixes |
+| Agent      | copilot                     |
+| Started    | 2026-08-11                  |
+| Working On | Session 147 — Gate 1(d) repository remediation and owner handoff |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 147 (Copilot) — 2026-08-11
+- **Agent:** copilot
+- **Did:**
+  - Completed every repository-side Gate 1(d) remediation: pinned Hugging Face routing to Together AI; replaced backend/frontend Sentry denylists with content-free allowlists and disabled traces; removed provider bodies from exceptions; added adversarial privacy tests.
+  - Expanded product export to auth metadata/identities, AI usage and browser-only data; made deletion clear all ResumeAI browser keys only after database success; replaced universal-erasure copy with accurate log/vendor/backup boundaries.
+  - Added sensitive-data minimization notices; granular independent Analytics/Advertising consent; no GA/AdSense script before its purpose consent; age/Terms confirmation for email and OAuth users with protected-route enforcement.
+  - Added fail-closed Vercel Production configuration for controller name/address/country and owner-selected minimum age. Rewrote Privacy/Terms to enumerate actual data, purposes/bases, processors, transfers, public sharing, retention, rights and deletion lag.
+  - Added DSAR procedure, ROPA, DPIA screening, privacy-breach/72-hour response, corrected the false Supabase Free backup claim, and created a single owner-only closure checklist.
+  - Verification: focused privacy tests 38/38, full backend 555 passed/30 credential-gated skips, Ruff clean, ESLint clean, 32-route production build passed, diff check passed. Localhost HTTP checks returned 200 for Privacy/Terms/signup/home, proved revised sections/copy, and proved no AdSense script in initial HTML. Interactive browser was unavailable, so signed-in visual/network drills remain owner evidence.
+- **Files Changed:** Gate 1(d) backend/frontend controls and tests; Privacy/Terms/account/auth/consent; `docs/PRIVACY-REQUESTS.md`, `docs/ROPA.md`, `docs/DPIA.md`, `docs/GATE1D_OWNER_ACTIONS.md`, incident/retention/audit/shared records.
+- **Next:** Owner completes `docs/GATE1D_OWNER_ACTIONS.md`, then reviewer changes the Gate 1(d) verdict only after retained evidence. Continue Gate 4 and Gate 6 separately.
+- **Blockers:** No repository-side Gate 1(d) blockers remain. No commit/push until owner reviews localhost under the localhost-first rule.
+
+### Session 146 (Claude) — 2026-08-11
+- **Agent:** claude
+- **Did:**
+  - Full Gate 1(e) adversarial review from the AdSense policy reviewer perspective.
+  - Discovered that the privacy/page.tsx, terms/page.tsx, and CookieConsent.tsx were already comprehensively rewritten by Copilot Session 145 side-effects: granular consent (separate Analytics/Advertising), adsbygoogle.js loads only after advertising consent, new `legal.ts` pulls controller identity from env vars with a production fail-guard, and Terms now renders minimum age from `LEGAL_MINIMUM_AGE`.
+  - Re-assessed all 8 findings against actual current code (not stale cached versions).
+  - **Fix (BLOCKER):** `frontend/src/lib/sentryPrivacy.ts` — Sentry type mismatch: `beforeSend` expected `ErrorEvent` but function declared `Event`. Fixed type annotation and return type; `as ErrorEvent` cast for the incrementally built clean object. Frontend build was broken; now passes.
+  - **Privacy policy and Terms:** verified the new comprehensive rewrites include controller section (§1), minimum age in Terms §2, granular consent description in Cookies section, processor inventory, transfer mechanism disclosure, and COPPA/GDPR/CCPA compliance sections. No further code edits needed beyond what hooks applied.
+  - Updated `docs/LAUNCH_READINESS_AUDIT.md` Gate 1(e) with full evidence-based finding table, new `LEGAL_*` env-var owner action, and revised verdict.
+  - Build: `npm run build` PASS. ESLint PASS. Ruff PASS.
+- **Files Changed:** `frontend/src/lib/sentryPrivacy.ts` (type fix), `docs/LAUNCH_READINESS_AUDIT.md` (Gate 1(e) update), `.ai-sync/WORKLOG.md`
+- **Next:** Owner sets 4 `LEGAL_*` Vercel env vars (production build throws without them — new blocker). Owner configures AdSense → Privacy & messaging → European regulations (TCF CMP) before placing any `<AdUnit>`. Gate 4 failure drills and Gate 6 verdict remain pending.
+- **Blockers:** Gate 1(d) remains FAIL pending legal entity decision. 4 `LEGAL_*` env vars not set (production build will throw on `/privacy` or `/terms`). TCF CMP needed before any ad units.
+
+### Session 145 (Copilot) — 2026-08-11
+- **Agent:** copilot
+- **Did:**
+  - Completed Gate 1(d) as an adversarial regulator review, tracing account/auth, profile, resumes/versions, job tracker, AI prompts, public shares, quota, logs/Sentry, analytics/ads, exports, deletion, retention, processor contracts, transfers, rights, incidents, and minors handling.
+  - Replaced the earlier provisional Gate 1(d) passes with an evidence-based **FAIL / NO-GO**. Confirmed narrow passes for production RLS/share isolation and scheduled cleanup run `31534423206`.
+  - Identified launch blockers: missing controller identity and incomplete notice; uncovered/unproven Vercel and Hugging Face processor arrangements; dynamic `:fastest` inference-provider routing; incomplete deletion/export and no DSAR workflow; unsupported absolute Sentry claim; no privacy-breach runbook/ROPA/DPIA screening; incomplete retention and transfer evidence.
+  - Added `docs/GATE1D_DATA_HANDLING.md` with a regulator request list, control-by-control proof table, actual data-flow inventory, official references, and five closure packages.
+  - Live interactive browser verification was unavailable; deployed-page HTTP evidence was collected, but signed-in consent/export/deletion behavior remains explicitly UNVERIFIED.
+- **Files Changed:** `docs/GATE1D_DATA_HANDLING.md`, `docs/LAUNCH_READINESS_AUDIT.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Owner supplies legal entity/jurisdiction and target-market facts; choose EEA/UK exclusion or obtain the required processor contracts and complete all five closure packages. Then run live signed-in privacy drills. Continue Gate 1(e) separately.
+- **Blockers:** Gate 1(d) is NO-GO until the evidence table's blockers are closed. No product remediation was attempted in this diagnostic-only review.
 
 ### Session 144 (Copilot) — 2026-08-11
 - **Agent:** copilot

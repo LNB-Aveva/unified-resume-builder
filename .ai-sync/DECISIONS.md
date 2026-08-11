@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-038: Fail-Closed Legal Identity, Stable AI Provider, and Content-Free Telemetry
+- **Date:** 2026-08-11
+- **Agent:** copilot
+- **Context:** Gate 1(d) found that the public controller notice lacked an identity/address, the AI model used dynamic `:fastest` routing, and Sentry's denylist scrubber could still transmit resume-derived exception/breadcrumb/context/span content. The product also had no chosen minimum age and loaded AdSense before consent.
+- **Decision:** Require production controller identity/address/country and minimum age through fail-closed Vercel variables; record age/Terms acceptance for email and OAuth accounts; pin Hugging Face routing to Together AI; rebuild Sentry error events from a narrow non-content allowlist and disable traces; load GA and AdSense only after independent purpose consent; treat the Account download as product-data export while legal requests follow a separate DSAR runbook.
+- **Alternatives Considered:** Keep policy-only warnings — rejected because they do not make runtime behavior provable. Retain dynamic provider routing — rejected because the subprocessor could change without review. Expand a field denylist — rejected because Sentry has many content-bearing surfaces and future SDK fields could bypass it. Hardcode the owner's legal identity/age — rejected because those are owner/counsel decisions and production must not silently deploy guessed values.
+- **Files Affected:** Frontend legal/auth/consent/account/Sentry surfaces, `backend/app/services/ai/hf_client.py`, `backend/app/main.py`, privacy tests, and Gate 1(d) operational records
+
 ### DEC-037: Quarantine the Data-Bearing Legacy Anonymous Account
 - **Date:** 2026-08-11
 - **Agent:** copilot

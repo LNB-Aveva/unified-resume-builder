@@ -16,7 +16,21 @@ export default function ExportDataButton() {
         return;
       }
       if (result.json) {
-        const blob = new Blob([result.json], { type: "application/json" });
+        const exportData = JSON.parse(result.json) as Record<string, unknown>;
+        let browserJobs: unknown[] = [];
+        try {
+          const rawJobs = localStorage.getItem("resumeai_jobs");
+          const parsed = rawJobs ? JSON.parse(rawJobs) : [];
+          if (Array.isArray(parsed)) browserJobs = parsed;
+        } catch {
+          // A malformed legacy value should not prevent the cloud-data export.
+        }
+        exportData.browser_storage = {
+          job_tracker_entries: browserJobs,
+          cookie_consent: localStorage.getItem("cookie_consent"),
+          theme: localStorage.getItem("theme"),
+        };
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;

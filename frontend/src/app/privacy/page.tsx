@@ -1,209 +1,200 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getLegalConfig } from "@/app/lib/legal";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "ResumeAI privacy policy. Learn how we handle your data, what we collect, and how we protect your privacy.",
-  openGraph: {
-    title: "Privacy Policy — ResumeAI",
-    description:
-      "How ResumeAI handles saved resumes, AI processing, analytics, advertising, retention, export, and account deletion.",
-  },
-  alternates: {
-    canonical: "/privacy",
-  },
+  description: "How ResumeAI collects, uses, shares, retains, exports, and deletes personal data.",
+  alternates: { canonical: "/privacy" },
 };
 
+const heading = "font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3";
+const text = "text-gray-600 dark:text-gray-300 leading-relaxed";
+const list = "list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed mt-3";
+
 export default function PrivacyPolicy() {
+  const legal = getLegalConfig();
+
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-16">
       <div className="mb-12">
-        <Link href="/" className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition mb-6 inline-block">&larr; Back to home</Link>
+        <Link href="/" className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline mb-6 inline-block">
+          &larr; Back to home
+        </Link>
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">
           Privacy Policy
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400">Last updated: August 9, 2026</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Last updated: August 11, 2026</p>
       </div>
 
       <div className="prose prose-gray dark:prose-invert prose-sm max-w-none space-y-8">
         <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Overview</h2>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-            ResumeAI (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) is committed to protecting your privacy.
-            This Privacy Policy explains how we collect, use, and safeguard your information when you use our website
-            at resumeai.cv and our ATS resume tools.
+          <h2 className={heading}>1. Controller and contact</h2>
+          <p className={text}>
+            The controller for ResumeAI at resumeai.cv is <strong>{legal.controllerName}</strong>,
+            located at <strong>{legal.controllerAddress}</strong>, {legal.controllerCountry}. Privacy
+            and rights requests may be sent to{" "}
+            <a href="mailto:support@resumeai.cv" className="text-indigo-600 dark:text-indigo-400 underline">
+              support@resumeai.cv
+            </a>.
           </p>
         </section>
 
         <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Information We Collect</h2>
-          <div className="space-y-4 text-gray-600 dark:text-gray-300 leading-relaxed">
-            <div>
-              <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Account Information</h3>
-              <p>When you create an account, we collect your email address and password (hashed). This is managed securely through Supabase Authentication.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Resume Content</h3>
-              <p>Text you paste into our tools (job descriptions, resume content, bullet points) is processed in your browser or sent to our backend API for analysis and AI features. We store resume content only when you explicitly use the saved-resume feature. When you use the shareable ATS score feature, we store the matched and missing keyword lists (not your resume text) for up to 30 days so the share link remains accessible.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Usage Data</h3>
-              <p>After you consent, Google Analytics collects usage data such as pages visited, features used, and device type. For security, reliability, bot detection, and rate limiting, our service providers also process browser and request metadata such as IP address, method, path, response status, request duration, and security signals. Resume and job-description content is not included in access logs or submitted to our CAPTCHA provider.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Error Data</h3>
-              <p>We use Sentry for frontend and backend error tracking. Our Sentry configuration removes request bodies, authentication headers, cookies, stack-frame variables, and other fields that could contain resume content before an event is sent.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Browser Storage</h3>
-              <p>Resume drafts and preferences may be stored in your browser&apos;s localStorage. Job tracker data normally uses Supabase. If cloud storage is unavailable when the tracker opens, new browser-only entries may be stored locally and the page displays a warning. A failed cloud write is reported and is not presented as saved.</p>
-            </div>
-          </div>
+          <h2 className={heading}>2. Data we collect</h2>
+          <ul className={list}>
+            <li><strong>Account and authentication:</strong> user ID, email, optional phone, password hash, authentication provider, identity/profile metadata, confirmation and sign-in timestamps, sessions, newsletter choice, age confirmation, and Terms acceptance timestamp.</li>
+            <li><strong>Profile:</strong> full name, target role, industry, years of experience, and onboarding status.</li>
+            <li><strong>Resume and job-search content:</strong> contact details, summaries, employment, education, skills, resume text and versions, job descriptions, company/title/URL, application status, notes, and linked resume.</li>
+            <li><strong>AI inputs and outputs:</strong> text supplied for summaries, cover letters, bullet rewrites, and the generated response. ResumeAI does not intentionally persist these request/response bodies unless you separately save them as product data.</li>
+            <li><strong>Shared scores:</strong> score, grade, labels, matched and missing keywords, counts, and optional role hint. Raw resume text is not stored in a share record.</li>
+            <li><strong>Usage and security:</strong> daily AI units, IP address, request method/path/status/duration, request ID, content length, authentication/rate-limit outcome, security signals, device/browser data, and consented analytics or advertising events.</li>
+            <li><strong>Browser storage:</strong> cookie preferences, theme, and browser-only job tracker entries when cloud storage is unavailable.</li>
+          </ul>
+          <p className={`${text} mt-3`}>
+            Resume text and free-form notes can reveal sensitive information. Do not submit Social
+            Security or government ID numbers, financial credentials, medical or disability details,
+            or other information that is not needed for the requested task.
+          </p>
         </section>
 
         <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">How We Use Your Information</h2>
-          <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed">
-            <li>To provide and maintain our ATS resume tools</li>
-            <li>To authenticate your account and manage sessions</li>
-            <li>To process summary generation, bullet rewriting, and cover letter generation through our FastAPI backend using Hugging Face as the AI inference provider</li>
-            <li>To analyze resume matches using a curated skill taxonomy with synonym matching and generate PDF exports with fpdf2</li>
-            <li>To improve our website and user experience through anonymized analytics</li>
+          <h2 className={heading}>3. Purposes and legal bases</h2>
+          <ul className={list}>
+            <li><strong>Contract/service delivery:</strong> create and secure accounts; save, version, export, and delete product data; analyze resumes; create PDFs; track applications; and provide requested AI output.</li>
+            <li><strong>Legitimate interests:</strong> prevent abuse, enforce fair-use limits, troubleshoot reliability, maintain bounded security logs, and defend the service, balanced against user privacy.</li>
+            <li><strong>Consent:</strong> optional analytics, advertising, and newsletter choices. These choices can be withdrawn without affecting account functionality.</li>
+            <li><strong>Legal obligations:</strong> preserve or disclose limited records when required by valid law, enforce legal claims, or respond to authorities.</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Data Processing &amp; AI Features</h2>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-            When you use AI-powered tools (Summary Generator, Cover Letter Generator, Bullet Rewriter), your text is sent
-            to our FastAPI backend and forwarded to Hugging Face&apos;s inference API for processing. This data is:
+          <h2 className={heading}>4. AI processing</h2>
+          <p className={text}>
+            AI features send the submitted text over HTTPS to the ResumeAI backend on Render, then
+            through the Hugging Face inference router to the pinned Together AI provider for the
+            requested generation. The model/provider selection is code-controlled rather than using
+            automatic fastest-provider routing. ResumeAI does not use inputs or outputs to train its
+            own models. Hugging Face and Together AI may process limited operational records under
+            their contracts, settings, and privacy terms. Local keyword, scoring, and compliance tools
+            do not use the generative AI provider.
           </p>
-          <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
-            <li>Not intentionally persisted by ResumeAI after the request completes; infrastructure and inference providers may retain limited operational data under their own policies</li>
-            <li>Not used by ResumeAI to train our own models</li>
-            <li>Transmitted securely over HTTPS</li>
-            <li>Submitted by ResumeAI only to generate your requested output and operate or secure the service</li>
+        </section>
+
+        <section>
+          <h2 className={heading}>5. Recipients and processors</h2>
+          <ul className={list}>
+            <li><strong>Supabase:</strong> authentication, email delivery, PostgreSQL product data, and quota records.</li>
+            <li><strong>Vercel:</strong> frontend hosting, server actions, deployment, and platform logs.</li>
+            <li><strong>Render:</strong> backend API hosting and application/platform logs.</li>
+            <li><strong>Hugging Face and Together AI:</strong> routed AI inference.</li>
+            <li><strong>Sentry:</strong> content-reduced error diagnostics.</li>
+            <li><strong>Cloudflare Turnstile:</strong> authentication-form bot and abuse checks.</li>
+            <li><strong>Google:</strong> OAuth sign-in; and, only after the relevant choice, Analytics and AdSense.</li>
           </ul>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
-            When our AI provider experiences sustained outages, the system temporarily pauses AI requests to prevent degraded responses, automatically recovering when service is restored.
-          </p>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
-            Hugging Face and the inference provider it routes the request to process the submitted text under their own terms and privacy practices. Do not submit information you do not want processed by those providers.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Third-Party Services</h2>
-          <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed">
-            <li><strong>Supabase</strong> &mdash; Authentication and storage for account data, saved resumes, and job tracking</li>
-            <li><strong>Hugging Face</strong> &mdash; AI inference for summary generation, bullet rewriting, and cover letter generation</li>
-            <li><strong>Sentry</strong> &mdash; Frontend and backend error tracking with application-level PII filtering</li>
-            <li><strong>Cloudflare Turnstile</strong> &mdash; Bot and abuse detection on email authentication forms</li>
-            <li><strong>Vercel</strong> &mdash; Website hosting and deployment</li>
-            <li><strong>Google Analytics</strong> &mdash; Anonymous usage analytics (loaded only with your consent)</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Data Security</h2>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-            We implement appropriate security measures including HTTPS encryption, secure authentication via Supabase,
-            Content Security Policy headers, and regular security audits. Tool endpoints have route-specific request limits,
-            and the backend also applies a global limit of 200 requests per minute per IP address.
+          <p className={`${text} mt-3`}>
+            We do not sell personal information. Public-by-link score sharing is an intentional
+            disclosure initiated by the user; anyone who obtains the link can view its score and
+            keyword findings until revocation or expiry.
           </p>
         </section>
 
         <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Data Retention</h2>
-          <div className="space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed">
-            <p>We retain your data according to the following schedule:</p>
-            <ul className="list-disc list-inside space-y-2 mt-3">
-              <li><strong>Account data</strong> (email, profile) &mdash; retained while your account is active and deleted when account deletion completes.</li>
-              <li><strong>Job tracker entries</strong> &mdash; retained while your account is active. Deleted when you delete your account.</li>
-              <li><strong>Saved resumes and versions</strong> &mdash; retained until you explicitly delete the resume or delete your account.</li>
-              <li><strong>Shareable ATS score links</strong> &mdash; become inaccessible 30 days after creation. The underlying expired record may remain until maintenance cleanup or account deletion.</li>
-            </ul>
-          </div>
+          <h2 className={heading}>6. International transfers</h2>
+          <p className={text}>
+            These providers can process personal data in the United States and other countries where
+            they or their subprocessors operate. Where required, transfers rely on an applicable
+            adequacy decision, standard contractual clauses, or another lawful transfer mechanism.
+            Contact us to request information about safeguards applicable to your data.
+          </p>
         </section>
 
         <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Saved Resumes and Version History</h2>
-          <div className="space-y-3 text-gray-600 dark:text-gray-300 leading-relaxed">
-            <p>
-              When you save a resume, we store its content, including personal information, work history, education,
-              and skills, in Supabase&apos;s PostgreSQL database on the same infrastructure used for your other account data.
-            </p>
-            <p>
-              Each save creates a new, immutable version snapshot with a timestamp. Previous versions cannot be changed
-              and remain available to you until you delete the resume or your account. Deleting a resume removes that
-              resume and all of its version snapshots.
-            </p>
-            <p>
-              Deleting your account removes all saved resumes, all version snapshots, job tracker entries, profile data,
-              and your authentication identity. Your JSON data export includes every saved resume and every version snapshot.
-            </p>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Your Rights</h2>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">You have the right to:</p>
-          <ul className="list-disc list-inside space-y-2 text-gray-600 dark:text-gray-300 leading-relaxed mt-3">
-            <li>Access your account information via the Account page</li>
-            <li>Delete your account and all associated data (saved resumes and versions, job tracker entries, profile, and authentication identity) from the Account page</li>
-            <li>Export your account email and creation date, profile, job tracker entries, saved-resume metadata, and every resume version snapshot from the Account page</li>
-            <li>Withdraw cookie consent at any time by clicking the cookie settings link in the footer</li>
-            <li>Clear your browser localStorage at any time</li>
+          <h2 className={heading}>7. Retention</h2>
+          <ul className={list}>
+            <li><strong>Account, profile, jobs, saved resumes and versions:</strong> until you delete the item or account, subject to backup and legal-retention lag.</li>
+            <li><strong>Shared scores:</strong> public access ends after 30 days or immediate owner revocation; hourly maintenance removes expired database records.</li>
+            <li><strong>AI usage ledger:</strong> rolling 31-day retention, or account deletion if earlier.</li>
+            <li><strong>Browser-only data:</strong> until cleared in browser settings or by the account-deletion flow on that browser.</li>
+            <li><strong>Application and platform logs, Sentry, Analytics, AI routing/provider records, and backups:</strong> according to the configured vendor retention and any shorter deletion request that the provider supports. Current settings are recorded in ResumeAI&apos;s internal processing register.</li>
+            <li><strong>Legal/security hold:</strong> limited records may be retained longer when reasonably necessary for fraud, security, disputes, or law.</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Cookies</h2>
-          <div className="space-y-3 text-gray-600 dark:text-gray-300 leading-relaxed">
-            <p>We use the following types of cookies:</p>
-            <ul className="list-disc list-inside space-y-2 mt-3">
-              <li><strong>Essential storage and security checks</strong> &mdash; required for authentication session management (via Supabase) and bot detection on email authentication forms (via Cloudflare Turnstile). These cannot be disabled.</li>
-              <li><strong>Analytics cookies</strong> &mdash; Google Analytics (GA4) is loaded only after you choose Accept.</li>
-              <li><strong>Advertising cookies</strong> &mdash; the Google AdSense site-verification script may load, but ResumeAI does not currently display ad units. Before ads are enabled, regions where Google requires a certified consent platform will use one.</li>
-            </ul>
-            <p>Your accepted or rejected choice is stored in your browser&apos;s localStorage under <code>cookie_consent</code>. You can reset that choice at any time using the cookie settings link in the site footer.</p>
-            <p>
-              If advertising is enabled, Google and other third-party vendors may use cookies to serve ads based on prior visits to this or other websites. You can manage personalized advertising in{" "}
-              <a href="https://adssettings.google.com/" className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2" rel="noopener noreferrer">
-                Google Ads Settings
-              </a>{" "}
-              or review additional opt-out choices at{" "}
-              <a href="https://www.aboutads.info/choices/" className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2" rel="noopener noreferrer">
-                YourAdChoices
-              </a>.
-            </p>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">GDPR (European Users)</h2>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-            If you are in the European Economic Area, you have additional rights under the General Data Protection Regulation, including
-            the right to access, rectify, port, and erase your personal data. Our legal basis for processing is your consent (for analytics and advertising)
-            and legitimate interest (for providing and securing the service). To exercise your rights, use the Account page
-            or contact us at the email below.
+          <h2 className={heading}>8. Security and error reporting</h2>
+          <p className={text}>
+            Controls include HTTPS, Supabase authentication and row-level security, restrictive share
+            payloads, request/body limits, rate and quota controls, security headers, and tested
+            account cascades. Application access logs exclude request bodies. Sentry receives an
+            allowlisted error envelope: exception text, requests, headers, user data, breadcrumbs,
+            contexts, tags, extras, and performance traces are removed or disabled. Source location
+            and generic error type may be retained. No system can guarantee absolute security.
           </p>
         </section>
 
         <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">CCPA (California Users)</h2>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-            If you are a California resident, you have the right to know what personal information we collect, request its deletion,
-            and opt out of the sale of personal information. We do not sell your personal information. To exercise your rights,
-            use the Account page or contact us at the email below.
+          <h2 className={heading}>9. Cookies and optional storage</h2>
+          <p className={text}>
+            Authentication and security storage is necessary for the service. Google Analytics and
+            Google AdSense are separate optional choices. Their scripts are not loaded until the
+            corresponding choice is granted. Choices are stored in local storage under
+            <code> cookie_consent</code> and can be changed from Cookie Settings in the footer.
+            A browser Global Privacy Control signal disables advertising consent.
+            Withdrawing a choice stops future optional loading after the page reloads; it does not
+            erase data already held by a provider.
           </p>
         </section>
 
         <section>
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-3">Contact</h2>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-            If you have questions about this Privacy Policy, please email us at{" "}
-            <a href="mailto:support@resumeai.cv" className="text-indigo-600 dark:text-indigo-400 underline underline-offset-2">
+          <h2 className={heading}>10. Export, correction and deletion</h2>
+          <p className={text}>
+            The Account page downloads product-held account/authentication metadata, profile, jobs,
+            resumes and versions, shares, AI usage records, and browser-only tracker data. Profile and
+            saved product data can be corrected in the product. Account deletion removes the active
+            Supabase identity and cascades through owned database records, signs out, and clears
+            ResumeAI browser storage on the browser used for deletion. It does not promise immediate
+            erasure from security/legal records, vendor systems, or backups; those follow the schedule
+            and provider capabilities above.
+          </p>
+        </section>
+
+        <section>
+          <h2 className={heading}>11. Privacy rights</h2>
+          <p className={text}>
+            Depending on applicable law, you may request access, correction, deletion, portability,
+            restriction, objection, withdrawal of consent, information about recipients, or an appeal
+            of a denied request. You may also have the right to complain to your local data-protection
+            authority. California residents may have rights to know, correct, delete, opt out of sale
+            or sharing, limit certain sensitive-data uses, and receive equal service where the relevant
+            law applies. ResumeAI does not discriminate for exercising privacy rights.
+          </p>
+          <p className={`${text} mt-3`}>
+            Submit a request from the account email to{" "}
+            <a href="mailto:support@resumeai.cv?subject=Privacy%20rights%20request" className="text-indigo-600 dark:text-indigo-400 underline">
+              support@resumeai.cv
+            </a>. We will verify identity, acknowledge the request, search applicable systems and
+            processors, and respond within the legally required period. Authorized agents must provide
+            proof of authority. If we deny or limit a request, we will explain why and provide any
+            available appeal route.
+          </p>
+        </section>
+
+        <section>
+          <h2 className={heading}>12. Age eligibility</h2>
+          <p className={text}>
+            ResumeAI is not directed to children. You must be at least {legal.minimumAge} to create an
+            account. If we learn that an account was created below the configured minimum age, we will
+            disable it and delete the associated product data, subject to legal and security retention.
+          </p>
+        </section>
+
+        <section>
+          <h2 className={heading}>13. Changes and contact</h2>
+          <p className={text}>
+            Material changes will be dated here and, when required, communicated in the product or by
+            email. Questions, complaints, and rights requests should be sent to{" "}
+            <a href="mailto:support@resumeai.cv" className="text-indigo-600 dark:text-indigo-400 underline">
               support@resumeai.cv
             </a>.
           </p>

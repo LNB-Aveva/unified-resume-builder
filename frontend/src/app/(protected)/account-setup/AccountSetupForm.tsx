@@ -4,7 +4,13 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { setupAccount } from "@/app/actions/auth";
 
-export default function AccountSetupForm() {
+export default function AccountSetupForm({
+  requiresTermsAcceptance,
+  minimumAge,
+}: {
+  requiresTermsAcceptance: boolean;
+  minimumAge: number;
+}) {
   const [state, action, pending] = useActionState(setupAccount, undefined);
 
   return (
@@ -98,7 +104,7 @@ export default function AccountSetupForm() {
             </div>
 
             <div className="space-y-3 pt-2 border-t border-gray-100 dark:border-gray-700">
-              <div>
+              {requiresTermsAcceptance && <div>
                 <div className="flex items-start gap-3">
                   <input
                     id="termsAccepted"
@@ -107,7 +113,7 @@ export default function AccountSetupForm() {
                     className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800"
                   />
                   <label htmlFor="termsAccepted" className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                    I agree to the{" "}
+                    I confirm I am at least {minimumAge} and agree to the{" "}
                     <Link href="/terms" className="text-indigo-600 dark:text-indigo-400 hover:underline">Terms of Service</Link>
                     {" "}and{" "}
                     <Link href="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline">Privacy Policy</Link>
@@ -117,7 +123,7 @@ export default function AccountSetupForm() {
                 {state?.errors?.termsAccepted && (
                   <p className="mt-1.5 text-xs text-red-600 dark:text-red-400 pl-7">{state.errors.termsAccepted[0]}</p>
                 )}
-              </div>
+              </div>}
 
               <div>
                 <div className="flex items-start gap-3">
@@ -147,11 +153,11 @@ export default function AccountSetupForm() {
             </button>
           </form>
 
-          <p className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+          {!requiresTermsAcceptance && <p className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
             <Link href="/tools" className="hover:text-gray-600 dark:hover:text-gray-300 transition">
               Skip for now &rarr;
             </Link>
-          </p>
+          </p>}
         </div>
       </div>
     </div>

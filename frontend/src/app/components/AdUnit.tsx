@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-const CONSENT_KEY = "cookie_consent";
+import {
+  CONSENT_KEY,
+  isGlobalPrivacyControlEnabled,
+  parseConsent,
+} from "@/app/lib/consent";
 
 interface AdUnitProps {
   slot: string;
@@ -23,10 +26,13 @@ export default function AdUnit({
 
   useEffect(() => {
     if (!adsenseId) return;
-    const consent = localStorage.getItem(CONSENT_KEY);
-    if (consent !== "accepted") return;
-    const raf = requestAnimationFrame(() => setReady(true));
-    return () => cancelAnimationFrame(raf);
+    const syncConsent = () => {
+      const consent = parseConsent(localStorage.getItem(CONSENT_KEY));
+      setReady(consent?.advertising === true && !isGlobalPrivacyControlEnabled());
+    };
+    syncConsent();
+    window.addEventListener("resumeai:consent-changed", syncConsent);
+    return () => window.removeEventListener("resumeai:consent-changed", syncConsent);
   }, [adsenseId]);
 
   useEffect(() => {

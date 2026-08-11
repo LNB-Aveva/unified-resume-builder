@@ -6,7 +6,7 @@ import { signUp } from "@/app/actions/auth";
 import GoogleSignInButton from "@/app/components/GoogleSignInButton";
 import TurnstileWidget from "@/app/components/TurnstileWidget";
 
-export default function SignUpForm() {
+export default function SignUpForm({ minimumAge }: { minimumAge: number }) {
   const [state, action, pending] = useActionState(signUp, undefined);
 
   return (
@@ -104,7 +104,7 @@ export default function SignUpForm() {
                 className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-800"
               />
               <label htmlFor="termsAccepted" className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                I agree to the{" "}
+                I confirm I am at least {minimumAge} and agree to the{" "}
                 <Link href="/terms" className="text-indigo-600 dark:text-indigo-400 hover:underline">Terms of Service</Link>
                 {" "}and{" "}
                 <Link href="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline">Privacy Policy</Link>

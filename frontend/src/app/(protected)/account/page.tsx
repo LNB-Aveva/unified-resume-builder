@@ -81,7 +81,8 @@ export default async function AccountPage() {
             Your Data
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            Download a copy of your profile, resumes, job tracker entries, and shared scores as a JSON file.
+            Download the product data linked to your account, including profile and authentication metadata,
+            resumes, job tracker entries, shared scores, AI usage records, and browser-only tracker entries.
           </p>
           <ExportDataButton />
         </div>
@@ -91,7 +92,8 @@ export default async function AccountPage() {
             Danger Zone
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            Permanently delete your account and all associated data (profile, resumes, job tracker entries, shared scores).
+            Delete your account and product data from the active database, then clear ResumeAI data stored in this browser.
+            Infrastructure logs, security records, backups, and provider records follow the retention periods in our Privacy Policy.
           </p>
           <DeleteAccountButton />
         </div>

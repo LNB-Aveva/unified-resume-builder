@@ -1,6 +1,6 @@
 # Incident Response Plan — ResumeAI
 
-Last updated: 2026-08-04
+Last updated: 2026-08-11
 
 ## Scope
 
@@ -64,12 +64,52 @@ This plan covers security incidents for resumeai.cv (frontend on Vercel, backend
 3. Verify DNS (Cloudflare) pointing correctly
 4. Check Vercel status page for platform issues
 
+### 6. Suspected Personal-Data Breach
+
+Start this procedure for lost credentials/backups, cross-user access, public
+resume exposure, processor notification, telemetry containing resume content, or
+any unauthorized destruction, loss, alteration, access, or disclosure.
+
+1. **Open an incident record immediately.** Record discovery time in UTC, reporter,
+   systems, data categories, approximate people/records, and known containment.
+   Preserve relevant logs and configuration without copying resume bodies into
+   the incident channel.
+2. **Contain without destroying evidence.** Revoke shares/tokens, disable the
+   affected route or processor, preserve access controls and hashes, and deploy a
+   rollback only after recording the affected version/configuration.
+3. **Start the notification assessment clock at awareness.** Where GDPR/UK GDPR
+   applies, target a documented supervisory-authority decision within 72 hours.
+   A processor notification does not reset that clock.
+4. **Contact processors.** Use the retained security/privacy contacts for
+   Supabase, Vercel, Render, Hugging Face, Together AI, Sentry, Google, and
+   Cloudflare as applicable. Record ticket IDs, facts requested, and responses.
+5. **Assess risk to people:** sensitivity, identifiability, volume, public access,
+   encryption, malicious acquisition, likely consequences, children/vulnerable
+   people, and effective containment.
+6. **Decide and document notifications.** Record the legal reviewer, decision,
+   reasoning, authority/jurisdiction, deadline, and content. If facts are
+   incomplete, make staged notifications where permitted. High-risk affected
+   people receive plain-language notice without undue delay where required.
+7. **User notice must include:** what happened and when; affected data; likely
+   consequences; containment; concrete protective steps; contact; and complaint
+   route. Do not minimize uncertainty or make unsupported “no data accessed” claims.
+8. **Recover and validate.** Run isolation tests, check retained fixtures, inspect
+   Sentry/logs for content, verify provider actions, and monitor recurrence.
+9. **Close with evidence.** Preserve timeline, decisions, notices, processor
+   responses, affected versions, corrective actions, and deletion dates in the
+   restricted incident register.
+
+If the incident is not reported, the record must still explain why notification
+was not legally required. Silence is not a decision record.
+
 ## Post-Incident
 
 1. Document what happened, timeline, and root cause
 2. Update threat model if new threat category identified
 3. Add regression test if applicable
 4. Update this plan if response was inadequate
+5. Link any privacy request/deletion follow-up cases created under
+   `docs/PRIVACY-REQUESTS.md`
 
 ## Contacts
 

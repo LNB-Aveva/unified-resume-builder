@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import SignUpForm from "./SignUpForm";
+import { getLegalConfig } from "@/app/lib/legal";
 
 export const metadata: Metadata = {
   title: "Sign Up Free",
@@ -16,5 +17,6 @@ export const metadata: Metadata = {
 };
 
 export default function SignUpPage() {
-  return <SignUpForm />;
+  const { minimumAge } = getLegalConfig();
+  return <SignUpForm minimumAge={minimumAge} />;
 }

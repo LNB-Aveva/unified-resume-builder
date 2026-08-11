@@ -6,6 +6,7 @@ import { fetchWithRetry } from "../lib/fetchWithRetry";
 import Spinner from "./Spinner";
 import { DEMO_JOB_DESCRIPTION } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
+import SensitiveDataNotice from "./SensitiveDataNotice";
 
 export default function AnalyzerDemo({ publicMode = false }: { publicMode?: boolean }) {
   const [jobText, setJobText] = useState("");
@@ -47,6 +48,7 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
     <div className="space-y-6">
       {/* Input area */}
       <div className="space-y-3">
+        {publicMode && <SensitiveDataNotice compact />}
         <textarea
           value={jobText}
           onChange={(e) => setJobText(e.target.value)}

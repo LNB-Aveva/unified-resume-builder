@@ -25,30 +25,71 @@ from app.services.ai.hf_client import close_client
 
 
 def _strip_pii(event: dict, hint: dict) -> dict:
-    """Remove PII from Sentry events before transmission.
+    """Return an allowlisted Sentry error envelope.
 
-    Strips request body/data, auth/cookie headers, stack-frame local variables,
-    and the event-level extras dict so resume text, AI prompts, and auth tokens
-    never leave the process.
+    Resume and job text can reach exception messages, breadcrumbs, request
+    metadata, contexts, tags, and performance spans. Removing a few known
+    fields is therefore not a sufficient boundary. This filter rebuilds the
+    event from non-content diagnostics only: release/environment metadata,
+    exception type, and source locations. Exception values are always generic.
     """
-    request = event.get("request", {})
-    request.pop("data", None)
-    request.pop("body", None)
-    headers = request.get("headers", {})
-    for key in ("authorization", "cookie", "set-cookie"):
-        headers.pop(key, None)
+    clean = {
+        key: event[key]
+        for key in (
+            "event_id",
+            "timestamp",
+            "platform",
+            "level",
+            "logger",
+            "release",
+            "environment",
+            "server_name",
+        )
+        if key in event
+    }
+
+    clean_values: list[dict] = []
     for exc in event.get("exception", {}).get("values", []):
-        for frame in exc.get("stacktrace", {}).get("frames", []):
-            frame.pop("vars", None)
-    event.pop("extra", None)
-    return event
+        clean_exc: dict = {"value": "Application error details redacted"}
+        exc_type = exc.get("type")
+        if isinstance(exc_type, str) and exc_type.replace("_", "").replace(".", "").isalnum():
+            clean_exc["type"] = exc_type
+
+        frames = exc.get("stacktrace", {}).get("frames", [])
+        clean_frames: list[dict] = []
+        for frame in frames:
+            clean_frame = {
+                key: frame[key]
+                for key in (
+                    "filename",
+                    "function",
+                    "module",
+                    "lineno",
+                    "colno",
+                    "in_app",
+                )
+                if key in frame
+            }
+            clean_frames.append(clean_frame)
+        if clean_frames:
+            clean_exc["stacktrace"] = {"frames": clean_frames}
+        clean_values.append(clean_exc)
+
+    if clean_values:
+        clean["exception"] = {"values": clean_values}
+    elif event.get("message") or event.get("logentry"):
+        clean["message"] = "Application error details redacted"
+
+    return clean
 
 
 _sentry_dsn = os.environ.get("SENTRY_DSN", "")
 if _sentry_dsn:
     sentry_sdk.init(
         dsn=_sentry_dsn,
-        traces_sample_rate=0.1,
+        # Performance spans can capture URLs, query strings, and attributes
+        # outside before_send's error-event boundary.
+        traces_sample_rate=0.0,
         environment=os.environ.get("ENV", "production"),
         before_send=_strip_pii,
         send_default_pii=False,

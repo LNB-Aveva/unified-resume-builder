@@ -94,6 +94,29 @@ def _server_error_response() -> httpx.Response:
     return httpx.Response(503, request=request, text="provider outage")
 
 
+@pytest.mark.anyio
+async def test_unexpected_provider_response_does_not_leak_content(monkeypatch) -> None:
+    request = httpx.Request("POST", hf_client.API_URL)
+    private_content = "Jane Doe medical leave and SSN 123-45-6789"
+    response = httpx.Response(200, request=request, json={"provider_output": private_content})
+    post = AsyncMock(return_value=response)
+
+    monkeypatch.setattr(hf_client, "_get_api_key", lambda: "test-key")
+    monkeypatch.setattr(hf_client, "_get_client", lambda: type("Client", (), {"post": post})())
+    monkeypatch.setattr(hf_client, "_MAX_RETRIES", 0)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        await hf_client.call_hf([], max_tokens=10, temperature=0.1)
+
+    assert str(exc_info.value) == "Unexpected response shape from AI provider"
+    assert private_content not in str(exc_info.value)
+
+
+def test_model_is_pinned_to_reviewed_provider() -> None:
+    assert hf_client.MODEL.endswith(":together")
+    assert not hf_client.MODEL.endswith(":fastest")
+
+
 async def _trip_circuit(monkeypatch, post: AsyncMock) -> None:
     monkeypatch.setattr(hf_client, "_get_api_key", lambda: "test-key")
     monkeypatch.setattr(hf_client, "_get_client", lambda: type("Client", (), {"post": post})())

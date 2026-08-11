@@ -39,13 +39,22 @@ export default function DeleteAccountButton() {
           onClick={() => {
             startTransition(async () => {
               const result = await deleteAccount();
-              if (result?.message) setError(result.message);
+              if (result?.message) {
+                setError(result.message);
+                return;
+              }
+              if (result?.success) {
+                for (const key of ["resumeai_jobs", "cookie_consent", "theme"]) {
+                  localStorage.removeItem(key);
+                }
+                window.location.assign("/");
+              }
             });
           }}
           disabled={isPending}
           className="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700 transition disabled:opacity-50"
         >
-          {isPending ? "Deleting..." : "Yes, Delete Everything"}
+          {isPending ? "Deleting..." : "Delete Account Data"}
         </button>
       </div>
     </div>

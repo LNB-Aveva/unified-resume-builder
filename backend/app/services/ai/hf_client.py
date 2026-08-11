@@ -6,7 +6,10 @@ import time
 import anyio
 import httpx
 
-MODEL = "Qwen/Qwen2.5-7B-Instruct:fastest"
+# Keep the inference subprocessor stable and auditable. Do not use routing
+# policies such as :fastest or :cheapest here: those can change the provider
+# without a code review or privacy-notice update.
+MODEL = "Qwen/Qwen2.5-7B-Instruct:together"
 API_URL = "https://router.huggingface.co/v1/chat/completions"
 
 _MAX_RETRIES = 2
@@ -138,7 +141,9 @@ async def call_hf(
             try:
                 content = data["choices"][0]["message"]["content"]
             except (KeyError, IndexError, TypeError):
-                raise RuntimeError(f"Unexpected response shape from HuggingFace: {data}") from None
+                # Provider responses can contain generated, resume-derived
+                # content. Never copy them into exception text or logs.
+                raise RuntimeError("Unexpected response shape from AI provider") from None
             _record_success()
             return content
 

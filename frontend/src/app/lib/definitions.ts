@@ -10,7 +10,7 @@ export const SignUpSchema = z
       .regex(/[0-9]/, "Must contain at least one number."),
     confirmPassword: z.string(),
     termsAccepted: z.literal("on", {
-      message: "You must accept the Terms of Service and Privacy Policy.",
+      message: "You must confirm your age and accept the Terms and Privacy Policy.",
     }),
     newsletterOptIn: z.literal("on").optional(),
   })
@@ -47,9 +47,9 @@ export const AccountSetupSchema = z.object({
   targetRole: z.string().max(200).optional(),
   industry: z.string().max(200).optional(),
   yearsExperience: z.coerce.number().min(0).max(50).optional(),
-  termsAccepted: z.literal("on", {
-    message: "You must accept the Terms of Service and Privacy Policy.",
-  }),
+  // Email sign-up records acceptance before this optional profile step.
+  // OAuth users are checked against auth metadata in the server action.
+  termsAccepted: z.literal("on").optional(),
   newsletterOptIn: z.literal("on").optional(),
 });
 

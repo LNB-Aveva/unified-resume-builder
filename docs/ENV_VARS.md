@@ -40,6 +40,10 @@ For local dev, copy `frontend/.env.example` to `frontend/.env.local`.
 | `NEXT_PUBLIC_ADSENSE_ID` | No | Vercel dashboard / `.env.local` | `""` | AdSense publisher ID `ca-pub-XXX` (consent-gated) | Ads disabled; AdUnit component renders nothing |
 | `NEXT_PUBLIC_SENTRY_DSN` | No | Vercel dashboard / `.env.local` | `""` | Sentry DSN for frontend error tracking (PII-safe) | Frontend errors not reported to Sentry |
 | `NEXT_PUBLIC_SENTRY_ENV` | No | Vercel dashboard / `.env.local` | `"production"` | Environment tag for Sentry + staging banner | Defaults to "production"; no staging indicator |
+| `LEGAL_CONTROLLER_NAME` | Yes (Vercel Production) | Vercel dashboard / `.env.local` | Local-development label only | Public legal controller identity | Vercel Production build fails closed |
+| `LEGAL_CONTROLLER_ADDRESS` | Yes (Vercel Production) | Vercel dashboard / `.env.local` | Local-development label only | Public controller postal/business address | Vercel Production build fails closed |
+| `LEGAL_CONTROLLER_COUNTRY` | Yes (Vercel Production) | Vercel dashboard / `.env.local` | Local-development label only | Controller establishment/country | Vercel Production build fails closed |
+| `LEGAL_MINIMUM_AGE` | Yes (Vercel Production) | Vercel dashboard / `.env.local` | `18` locally | Owner-approved account minimum age, integer 13–18 | Vercel Production build fails closed; signup eligibility is undefined |
 | `CRON_SECRET` | Yes (for cleanup) | Vercel dashboard | — | Auth token for `/api/cron/cleanup` endpoint | Expired shared scores never cleaned up |
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes (for cleanup) | Vercel dashboard | — | Server-only key for the service-role-restricted cleanup RPC | Cleanup returns 503 and the scheduled workflow fails/alerts |
 
@@ -59,3 +63,7 @@ For local dev, copy `frontend/.env.example` to `frontend/.env.local`.
 | `AI_QUOTA_ENFORCEMENT` | `true` |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | (set in Vercel — public Cloudflare Turnstile site key) |
 | `CRON_SECRET` | (set in Vercel + GitHub Actions secret — generate with `openssl rand -hex 32`) |
+| `LEGAL_CONTROLLER_NAME` | (owner supplies non-secret public legal identity) |
+| `LEGAL_CONTROLLER_ADDRESS` | (owner supplies non-secret public business/postal address) |
+| `LEGAL_CONTROLLER_COUNTRY` | (owner supplies non-secret country) |
+| `LEGAL_MINIMUM_AGE` | (owner/counsel-approved integer 13–18) |

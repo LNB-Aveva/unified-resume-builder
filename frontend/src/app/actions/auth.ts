@@ -11,6 +11,7 @@ import {
   UpdateProfileSchema,
   type FormState,
 } from "@/app/lib/definitions";
+import { getLegalConfig } from "@/app/lib/legal";
 
 if (process.env.NODE_ENV === "production" && !process.env.NEXT_PUBLIC_SITE_URL) {
   // Causes a visible build/startup error rather than silently sending
@@ -51,6 +52,7 @@ export async function signUp(
     return { errors: validated.error.flatten().fieldErrors };
   }
 
+  const { minimumAge } = getLegalConfig();
   const supabase = await createClient();
   const { error } = await supabase.auth.signUp({
     email: validated.data.email,
@@ -61,6 +63,8 @@ export async function signUp(
       data: {
         newsletter_opted_in: validated.data.newsletterOptIn === "on",
         terms_accepted_at: new Date().toISOString(),
+        minimum_age_confirmed: minimumAge,
+        age_confirmed_at: new Date().toISOString(),
       },
     },
   });
@@ -154,7 +158,7 @@ export async function deleteAccount(): Promise<FormState> {
   }
 
   await supabase.auth.signOut();
-  redirect("/");
+  return { success: true };
 }
 
 export async function exportUserData(): Promise<{ json?: string; error?: string }> {
@@ -167,18 +171,20 @@ export async function exportUserData(): Promise<{ json?: string; error?: string 
     return { error: "Not authenticated." };
   }
 
-  const [profileResult, jobsResult, resumesResult, sharedScoresResult] = await Promise.all([
+  const [profileResult, jobsResult, resumesResult, sharedScoresResult, usageResult] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
     supabase.from("jobs").select("*").eq("user_id", user.id).order("date_added", { ascending: false }),
     supabase.from("resumes").select("id, title, created_at, updated_at").eq("user_id", user.id).order("updated_at", { ascending: false }),
     supabase.from("shared_scores").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
+    supabase.from("ai_usage_daily").select("usage_date, units_used, updated_at").eq("user_id", user.id).order("usage_date", { ascending: false }),
   ]);
 
   if (
     profileResult.error ||
     jobsResult.error ||
     resumesResult.error ||
-    sharedScoresResult.error
+    sharedScoresResult.error ||
+    usageResult.error
   ) {
     return {
       error: "We could not retrieve all of your data. Nothing was downloaded; please try again.",
@@ -208,13 +214,23 @@ export async function exportUserData(): Promise<{ json?: string; error?: string 
   const exportData = {
     exported_at: new Date().toISOString(),
     account: {
+      id: user.id,
       email: user.email,
+      phone: user.phone || null,
       created_at: user.created_at,
+      updated_at: user.updated_at,
+      confirmed_at: user.confirmed_at,
+      last_sign_in_at: user.last_sign_in_at,
+      role: user.role,
+      app_metadata: user.app_metadata,
+      user_metadata: user.user_metadata,
+      identities: user.identities ?? [],
     },
     profile: profileResult.data ?? null,
     jobs: jobsResult.data ?? [],
     resumes: resumesWithVersions,
     shared_scores: sharedScoresResult.data ?? [],
+    ai_usage_daily: usageResult.data ?? [],
   };
 
   return { json: JSON.stringify(exportData, null, 2) };
@@ -302,10 +318,29 @@ export async function setupAccount(
     return { message: "Not authenticated." };
   }
 
+  const existingTermsAcceptedAt = user.user_metadata?.terms_accepted_at;
+  const existingAgeConfirmedAt = user.user_metadata?.age_confirmed_at;
+  if (
+    (!existingTermsAcceptedAt || !existingAgeConfirmedAt) &&
+    validated.data.termsAccepted !== "on"
+  ) {
+    return {
+      errors: {
+        termsAccepted: ["You must accept the Terms of Service and Privacy Policy."],
+      },
+    };
+  }
+
+  const { minimumAge } = getLegalConfig();
+
   const { error: metadataError } = await supabase.auth.updateUser({
     data: {
-      newsletter_opted_in: validated.data.newsletterOptIn === "on",
-      terms_accepted_at: new Date().toISOString(),
+      newsletter_opted_in:
+        validated.data.newsletterOptIn === "on" ||
+        user.user_metadata?.newsletter_opted_in === true,
+      terms_accepted_at: existingTermsAcceptedAt ?? new Date().toISOString(),
+      minimum_age_confirmed: user.user_metadata?.minimum_age_confirmed ?? minimumAge,
+      age_confirmed_at: existingAgeConfirmedAt ?? new Date().toISOString(),
     },
   });
 

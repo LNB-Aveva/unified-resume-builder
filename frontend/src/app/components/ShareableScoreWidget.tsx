@@ -6,6 +6,7 @@ import { authFetch } from "../lib/authFetch";
 import { createClient } from "../lib/supabase/client";
 import { getScoreStyle } from "../lib/score-styles";
 import Spinner from "./Spinner";
+import SensitiveDataNotice from "./SensitiveDataNotice";
 
 function generateId(): string {
   return crypto.randomUUID().replace(/-/g, "");
@@ -111,6 +112,7 @@ export default function ShareableScoreWidget() {
 
   return (
     <div className="space-y-5">
+      <SensitiveDataNotice compact />
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="ssw-jd" className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">

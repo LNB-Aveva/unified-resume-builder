@@ -45,7 +45,7 @@ class TestRewriteBullets:
         assert resp.rewrites[0].keywords_woven == ["leadership", "microservices"]
         assert resp.rewrites[1].keywords_woven == ["AWS"]
         assert "REST APIs" in resp.rewrites[1].rewritten
-        assert resp.model_used == "Qwen/Qwen2.5-7B-Instruct:fastest"
+        assert resp.model_used == "Qwen/Qwen2.5-7B-Instruct:together"
         assert resp.tip  # a non-empty coaching tip is always attached
 
     @pytest.mark.anyio
@@ -95,7 +95,7 @@ class TestGenerateSummary:
         assert not resp.summary.startswith('"')  # surrounding quotes stripped
         assert resp.word_count == len(resp.summary.split())
         assert resp.word_count > 0
-        assert resp.model_used == "Qwen/Qwen2.5-7B-Instruct:fastest"
+        assert resp.model_used == "Qwen/Qwen2.5-7B-Instruct:together"
 
     @pytest.mark.anyio
     async def test_empty_model_output_raises(self, monkeypatch):
