@@ -40,7 +40,10 @@ export default function GapAnalysis() {
         body: JSON.stringify({ job_text: jobText, resume_text: resumeText }),
       });
 
-      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error((body as { detail?: string }).detail ?? `Server error: ${res.status}`);
+      }
       setResult(await res.json());
     } catch (err) {
       setError(connectionError(err));

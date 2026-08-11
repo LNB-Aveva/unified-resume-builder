@@ -18,13 +18,13 @@ export default async function ServiceUnavailablePage({
     <main className="mx-auto flex min-h-[70vh] max-w-xl items-center px-6 py-20">
       <section className="w-full rounded-2xl border border-amber-200 bg-amber-50 p-8 text-center dark:border-amber-900 dark:bg-amber-950/40">
         <p className="text-sm font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">
-          Temporary service interruption
+          Temporary hiccup
         </p>
         <h1 className="mt-3 text-3xl font-bold text-gray-950 dark:text-white">
-          Your account data is unavailable
+          Connection issue — your data is safe
         </h1>
         <p className="mt-4 text-sm leading-6 text-gray-700 dark:text-gray-300">
-          We could not safely verify your session. No changes were made. Wait a minute and try again.
+          We couldn&apos;t reach your account right now. Your data is safe — this usually clears up in a few seconds.
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link

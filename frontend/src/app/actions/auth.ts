@@ -69,7 +69,30 @@ export async function signUp(
     return { message: "Something went wrong. Please try again." };
   }
 
-  redirect("/verify-email");
+  redirect(`/verify-email?email=${encodeURIComponent(validated.data.email)}`);
+}
+
+export async function resendVerification(
+  _state: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const email = formData.get("email");
+  if (typeof email !== "string" || !email.includes("@")) {
+    return { message: "Please enter a valid email address." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email: email.trim(),
+    options: { emailRedirectTo: `${siteUrl}/auth/callback` },
+  });
+
+  if (error) {
+    return { message: "Could not resend the email. Please try again in a moment." };
+  }
+
+  return { message: "Confirmation email sent! Check your inbox (and spam folder)." };
 }
 
 export async function signIn(

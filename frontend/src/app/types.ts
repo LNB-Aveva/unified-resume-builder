@@ -101,5 +101,13 @@ export function connectionError(err: unknown): string {
   if (/^Server error:?\s*5\d\d$/.test(msg)) {
     return "The server encountered a temporary error. Please try again shortly.";
   }
+  if (
+    msg.includes("Not authenticated") ||
+    msg.includes("Invalid authentication token") ||
+    msg.includes("Could not validate credentials") ||
+    /^Server error:?\s*401$/.test(msg)
+  ) {
+    return "Your session has expired. Please refresh the page and sign in again.";
+  }
   return msg || "Something went wrong. Please try again.";
 }

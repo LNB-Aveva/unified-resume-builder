@@ -87,8 +87,8 @@ async def enforce_ai_quota(user_id: str, units: int) -> None:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail=(
-                "Daily AI fair-use allowance reached. "
-                "Your allowance resets at 00:00 UTC."
+                "You've used today's AI credits. "
+                "Come back tomorrow — credits reset daily at midnight."
             ),
             headers={"Retry-After": str(result.retry_after_seconds)},
         )

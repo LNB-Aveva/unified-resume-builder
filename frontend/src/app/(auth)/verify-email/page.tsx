@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ResendVerificationForm from "./ResendVerificationForm";
 
 export const metadata: Metadata = {
   title: "Verify Your Email",
@@ -7,7 +8,13 @@ export const metadata: Metadata = {
     "Check your inbox for a confirmation link to activate your ResumeAI account.",
 };
 
-export default function VerifyEmailPage() {
+export default async function VerifyEmailPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ email?: string }>;
+}) {
+  const { email } = await searchParams;
+
   return (
     <div className="text-center">
       <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/50">
@@ -23,16 +30,18 @@ export default function VerifyEmailPage() {
         We sent you a confirmation link. Click it to activate your account and start using all 9 ATS tools.
       </p>
 
-      <div className="rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-600 dark:text-gray-300">
+      <div className="rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-600 dark:text-gray-300 mb-6">
         <p className="mb-2">Didn&apos;t receive an email?</p>
-        <ul className="text-left space-y-1 text-gray-500 dark:text-gray-400">
+        <ul className="text-left space-y-1 text-gray-500 dark:text-gray-400 mb-4">
           <li>Check your spam or junk folder</li>
           <li>Make sure you entered the correct email</li>
-          <li>Wait a few minutes and try again</li>
+          <li>Wait a few minutes — it can take up to 5 minutes</li>
         </ul>
+
+        <ResendVerificationForm email={email} />
       </div>
 
-      <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
+      <p className="text-sm text-gray-500 dark:text-gray-400">
         <Link href="/sign-up" className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
           Try with a different email
         </Link>

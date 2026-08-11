@@ -30,7 +30,8 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
       });
 
       if (!res.ok) {
-        throw new Error(`Server returned ${res.status}`);
+        const body = await res.json().catch(() => ({}));
+        throw new Error((body as { detail?: string }).detail ?? `Server error: ${res.status}`);
       }
 
       const data: JobAnalysis = await res.json();
