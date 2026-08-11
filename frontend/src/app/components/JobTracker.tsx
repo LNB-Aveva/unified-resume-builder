@@ -61,25 +61,21 @@ function saveJobsLocal(jobs: TrackedJob[]): boolean {
 
 // ── Supabase helpers ──
 
-async function ensureAnonSession(): Promise<string | null> {
+async function getPermanentUserId(): Promise<string | null> {
   const sb = getSupabase();
   if (!sb) return null;
 
   const { data: { session }, error: sessionError } = await sb.auth.getSession();
   if (sessionError) throw sessionError;
-  if (session?.user?.id) return session.user.id;
-
-  const { data, error } = await sb.auth.signInAnonymously();
-  if (error) throw error;
-  if (!data.user) return null;
-  return data.user.id;
+  if (!session?.user?.id || session.user.is_anonymous) return null;
+  return session.user.id;
 }
 
 async function loadJobsSupabase(): Promise<TrackedJob[]> {
   const sb = getSupabase();
   if (!sb) return [];
 
-  const userId = await ensureAnonSession();
+  const userId = await getPermanentUserId();
   if (!userId) return [];
 
   const { data, error } = await sb
@@ -108,7 +104,7 @@ async function insertJobSupabase(job: TrackedJob): Promise<boolean> {
     const sb = getSupabase();
     if (!sb) return false;
 
-    const userId = await ensureAnonSession();
+    const userId = await getPermanentUserId();
     if (!userId) return false;
 
     const { error } = await sb.from("jobs").insert({
@@ -151,7 +147,7 @@ async function updateJobSupabase(id: string, fields: Partial<{ status: string; n
     const sb = getSupabase();
     if (!sb) return false;
 
-    const userId = await ensureAnonSession();
+    const userId = await getPermanentUserId();
     if (!userId) return false;
 
     const { error } = await sb.from("jobs").update(fields).eq("id", id).eq("user_id", userId);
@@ -166,7 +162,7 @@ async function deleteJobSupabase(id: string): Promise<boolean> {
     const sb = getSupabase();
     if (!sb) return false;
 
-    const userId = await ensureAnonSession();
+    const userId = await getPermanentUserId();
     if (!userId) return false;
 
     const { error } = await sb.from("jobs").delete().eq("id", id).eq("user_id", userId);
@@ -201,7 +197,7 @@ export default function JobTracker() {
     async function init() {
       try {
         if (supabaseEnabled) {
-          const sessionReady = await ensureAnonSession();
+          const sessionReady = await getPermanentUserId();
           const sbJobs = sessionReady ? await loadJobsSupabase() : [];
           if (sessionReady) {
             // Migrate browser-only rows without overwriting cloud rows.

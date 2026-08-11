@@ -19,6 +19,7 @@ def _make_token(
     exp: float | None = None,
     aud: str = "authenticated",
     secret: str = TEST_JWT_SECRET,
+    is_anonymous: bool | None = None,
 ) -> str:
     payload: dict = {
         "aud": aud,
@@ -28,6 +29,8 @@ def _make_token(
     }
     if sub is not None:
         payload["sub"] = sub
+    if is_anonymous is not None:
+        payload["is_anonymous"] = is_anonymous
     return jwt.encode(payload, secret, algorithm="HS256")
 
 
@@ -164,6 +167,18 @@ class TestProtectedRoutesReject401:
             headers={"Authorization": f"Bearer {token}"},
         )
         assert r.status_code == 401
+
+    @pytest.mark.anyio
+    async def test_anonymous_supabase_user_returns_403(self, client):
+        token = _make_token(sub=str(uuid.uuid4()), is_anonymous=True)
+        r = await client.post(
+            "/api/v1/compliance",
+            json={"resume_text": "Test resume"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        assert r.status_code == 403
+        assert r.json() == {"detail": "A permanent account is required."}
 
 
 class TestProtectedRoutesAcceptValidToken:

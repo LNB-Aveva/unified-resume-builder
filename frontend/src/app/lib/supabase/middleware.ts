@@ -6,8 +6,7 @@ function isTemporaryAuthFailure(error: unknown): boolean {
   const candidate = error as { name?: string; status?: number };
   return (
     candidate.name === "AuthRetryableFetchError" ||
-    candidate.status === undefined ||
-    candidate.status >= 500
+    (candidate.status !== undefined && candidate.status >= 500)
   );
 }
 
@@ -37,13 +36,13 @@ export async function updateSession(request: NextRequest) {
 
   try {
     const {
-      data: { user },
+      data,
       error,
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getClaims();
 
     return {
       supabaseResponse,
-      user,
+      user: data?.claims ?? null,
       authUnavailable: isTemporaryAuthFailure(error),
     };
   } catch {

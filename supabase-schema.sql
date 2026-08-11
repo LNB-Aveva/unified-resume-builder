@@ -512,3 +512,43 @@ $$;
 
 revoke all on function public.delete_own_user() from public, anon;
 grant execute on function public.delete_own_user() to authenticated;
+
+-- -----------------------------------------------------------------------
+-- Permanent-account boundary: anonymous Supabase users also receive the
+-- `authenticated` role, so restrictive policies must reject their JWT claim.
+-- -----------------------------------------------------------------------
+drop policy if exists "Permanent users only" on public.profiles;
+create policy "Permanent users only"
+  on public.profiles as restrictive for all to authenticated
+  using (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false)
+  with check (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false);
+
+drop policy if exists "Permanent users only" on public.jobs;
+create policy "Permanent users only"
+  on public.jobs as restrictive for all to authenticated
+  using (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false)
+  with check (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false);
+
+drop policy if exists "Permanent users only" on public.resumes;
+create policy "Permanent users only"
+  on public.resumes as restrictive for all to authenticated
+  using (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false)
+  with check (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false);
+
+drop policy if exists "Permanent users only" on public.resume_versions;
+create policy "Permanent users only"
+  on public.resume_versions as restrictive for all to authenticated
+  using (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false)
+  with check (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false);
+
+drop policy if exists "Permanent users only" on public.shared_scores;
+create policy "Permanent users only"
+  on public.shared_scores as restrictive for all to authenticated
+  using (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false)
+  with check (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false);
+
+drop policy if exists "Permanent users only" on public.ai_usage_daily;
+create policy "Permanent users only"
+  on public.ai_usage_daily as restrictive for all to authenticated
+  using (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false)
+  with check (coalesce((select (auth.jwt()->>'is_anonymous')::boolean), false) is false);

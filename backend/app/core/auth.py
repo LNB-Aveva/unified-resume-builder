@@ -105,4 +105,14 @@ def require_auth(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    # Supabase anonymous sign-ins receive the same ``authenticated`` role as
+    # permanent accounts. Without an explicit claim check, a bot can create
+    # throw-away identities without completing the email/OAuth signup controls
+    # and use each identity as a fresh application account.
+    if payload.get("is_anonymous") is True:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="A permanent account is required.",
+        )
+
     return user_id
