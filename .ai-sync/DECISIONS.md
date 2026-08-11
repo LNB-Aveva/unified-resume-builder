@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-037: Quarantine the Data-Bearing Legacy Anonymous Account
+- **Date:** 2026-08-11
+- **Agent:** copilot
+- **Context:** The pre-cleanup Gate 1(b) inventory found 132 legacy anonymous Auth users. One user owned three saved jobs and could not be confidently attributed; the other 131 users owned no retained application data. A verified logical backup and CSV inventory exist outside the repository.
+- **Decision:** Delete the 131 empty anonymous users now, but retain the single data-bearing user and its three jobs through 2026-09-10 unless ownership is resolved sooner. Production Anonymous Sign-Ins remains disabled, and application plus restrictive RLS controls quarantine the retained account. Delete the retained user and cascading jobs on the due date and verify the anonymous-user count reaches zero.
+- **Alternatives Considered:** Delete all 132 immediately — rejected because ownership of the three jobs was uncertain. Retain every anonymous user indefinitely — rejected because 131 were empty attack-surface residue and indefinite retention lacks a defined purpose.
+- **Files Affected:** Production Supabase Auth/database operational state and Gate 1(b) audit/handoff documentation
+
 ### DEC-036: Permanent Accounts at the Automation Boundary
 - **Date:** 2026-08-10
 - **Agent:** copilot

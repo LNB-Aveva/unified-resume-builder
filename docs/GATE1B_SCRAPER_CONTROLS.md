@@ -2,14 +2,14 @@
 
 ## Current verdict
 
-**Code deployed; production remains NO-GO until database rollout and proof.** The review
-found a CAPTCHA-free identity-rotation path through Supabase anonymous sign-in
-and a crawler amplification path through a remote Auth lookup on every public
-page. Main CI run `31451072246` passed and the frontend/backend release
-Application release `2ffc8f91b4d1` is live and main CI run `31453917828`
-passed frontend, backend/security, and desktop/mobile E2E. Migration 009, the
-Anonymous Sign-Ins setting, the anonymous-user inventory, and the post-migration
-26/26 workflow remain unverified.
+**PASS in code and production as of 2026-08-11.** The review found and closed a
+CAPTCHA-free identity-rotation path through Supabase anonymous sign-in and a
+crawler amplification path through a remote Auth lookup on every public page.
+Application release `2ffc8f91b4d1` deployed the application controls; migration
+009 and disabled Anonymous Sign-Ins close the production database/auth boundary.
+Protected workflow run `31532154382` passed all 20 RLS and 6 abuse-control tests
+with zero skips. The owner retained the backup, rollback-only rejection proof,
+signed-in smoke proof, and anonymous-user cleanup result described below.
 
 ## Adversarial inventory
 
@@ -20,7 +20,7 @@ Anonymous Sign-Ins setting, the anonymous-user inventory, and the post-migration
 | Public keyword analysis | Consume backend CPU without an account | 50,000-character schema cap, 30/minute route limit, 1 MB body cap, 60-second timeout, 200/minute process-wide IP limit, and Render's automatic Cloudflare-backed DDoS protection | Distributed clients evade any IP-local threshold and can contend for the single Starter CPU. The route has no provider or database spend. |
 | Public rewrite preview | Try to turn an unauthenticated demo into provider spend | Deterministic local transformation, 500-character input cap, 5/minute route limit, and no provider client import | Distributed calls can consume CPU, but not LLM quota or spend. |
 | Protected backend routes | Rotate accounts and IPs to invoke paid AI or PDF/CPU work | Signed JWT, permanent-account claim check, per-route IP limits, durable per-user/global AI quota, body limits, and provider-not-called-on-denial tests | Solver-backed permanent account farms can consume the bounded 500-unit daily global allowance and deny service to legitimate users. |
-| Supabase anonymous sign-in | Mint throw-away `authenticated` users without the email/OAuth controls, then write rows or invoke AI | Browser creation removed, API rejects `is_anonymous: true`, and migration 009 adds restrictive policies to all retained owner-data tables | Production Anonymous Sign-Ins setting and old anonymous-user count remain unverified. Existing anonymous Auth rows are not automatically cleaned by Supabase. |
+| Supabase anonymous sign-in | Mint throw-away `authenticated` users without the email/OAuth controls, then write rows or invoke AI | Browser creation removed, API rejects `is_anonymous: true`, production Anonymous Sign-Ins is disabled, and migration 009 adds restrictive policies to all retained owner-data tables | One data-bearing legacy anonymous account with three jobs is quarantined until its scheduled deletion on 2026-09-10; application and RLS controls reject it. |
 | Direct PostgREST writes | Bypass the UI and fill tables | RLS ownership, restrictive permanent-user policy, validated content constraints, and per-user row ceilings | CAPTCHA/identity farms can multiply the per-user ceiling; total database usage must still be monitored. |
 | Public shared-score RPC/page | Enumerate or bulk-read other users' resumes | Full UUID v4 IDs, single-row RPC, expiry/revocation, `noindex`, robots disallow, and response omits owner identity and raw resume text | Anyone with a valid link can see the intentionally shared score and keyword summary. Random invalid IDs still cause cheap indexed lookups. |
 | Health endpoint | Hammer the rate-limit-exempt route | Constant small JSON response and Render edge protection | It remains intentionally exempt so Render and external uptime checks cannot lock themselves out. |
@@ -71,11 +71,37 @@ After the concurrent main push, CI run `31451072246` passed on head
 `6ab30a98d53e`. Render `/health` reported that release with both safeguards
 `true`. Production `sitemap.xml` then exposed only the real blog dates
 `2026-07-04` and `2026-07-30`; localhost homepage, blog, sign-in, sitemap, and
-backend health all returned 200. The database proof below is still mandatory.
+backend health all returned 200.
 
-## Required rollout and proof
+Production closure evidence retained on 2026-08-11:
 
-Do not mark Gate 1(b) PASS until every item below is retained as evidence.
+- Before cleanup, the inventory contained 132 anonymous Auth users. One owned
+  three `jobs`; no anonymous owner rows existed in the other retained tables.
+- Because the Supabase Free plan provides no scheduled backups, the owner made
+  schema, data, and role SQL dumps plus CSV exports of all 132 users and the
+  three jobs. A five-entry SHA-256 manifest was generated and independently
+  verified outside the repository.
+- Anonymous Sign-Ins was disabled while normal email signup and confirmation
+  remained enabled.
+- Migration 009 returned `policy_count = 6` and all four catalog booleans as
+  `true`: restrictive, authenticated-role, all-commands, and claim checks.
+- An anonymous-claim insert was rejected with PostgreSQL error `42501` by policy
+  `Permanent users only`; rollback verification found zero retained probe rows.
+- Protected workflow run `31532154382` passed 20/20 RLS and 6/6 abuse-control
+  tests with zero skips. The workflow left zero test users.
+- Public routes and health returned expected responses. A permanent account used
+  the Compliance Checker and saved, refreshed, and deleted a temporary job; the
+  final database check found zero retained smoke jobs.
+- With explicit owner approval, 131 empty anonymous Auth users were deleted.
+  Final inventory: one anonymous user, three associated jobs, zero empty
+  anonymous users, and zero retained test users. The remaining data-bearing
+  account is blocked by application and RLS controls and is scheduled for
+  deletion on 2026-09-10 unless ownership is resolved sooner.
+
+## Completed rollout and proof
+
+Every item below was completed and retained as evidence on 2026-08-11. The SQL
+and steps remain here as the reproducible verification runbook.
 
 ### 1. Back up and inspect anonymous users
 
@@ -202,6 +228,11 @@ Preserve these checks after migration 009:
   global quota, but cannot exceed the configured daily provider ceiling.
 - Random public share-ID probes still reach an indexed database lookup; they do
   not reveal owner identity or resume text.
+- One backed-up legacy anonymous account and its three jobs remain quarantined
+  until 2026-09-10 because ownership could not be established. Missing that
+  scheduled deletion would violate the recorded retention decision, but the
+  account cannot authenticate through the product or pass the restrictive RLS
+  policy in the interim.
 
 Official platform references:
 

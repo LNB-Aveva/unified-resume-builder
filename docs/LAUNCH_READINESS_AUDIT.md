@@ -1,19 +1,19 @@
 # Launch Readiness Audit — Current Main Rerun
 
-> Audit date: 2026-08-10
+> Audit date: 2026-08-11
 > Audited base: `6fc4f71` on `main`
 > Branch: `docs/gate1a-production-closeout`
 > Rule: every `UNVERIFIED` launch gate is a `NO-GO` until it is proven.
 
 ## Current verdict
 
-**NO-GO for the full Prompt 3 launch decision.** Gates 2, 3, and 5 are complete, and Gate 1(a) is now a code-and-production **PASS**. The production proof covers migration 008, backend-only quota mutation, fail-fast Render configuration, durable quota accounting and denial, database storage ceilings, Turnstile/Supabase CAPTCHA, 20/20 RLS isolation, and 5/5 abuse-control tests. This does not close the whole adversarial review: Gates 1(b–e), 4, and 6 remain pending.
+**NO-GO for the full Prompt 3 launch decision.** Gates 2, 3, and 5 are complete, and Gates 1(a–b) are now code-and-production **PASS**. Gate 1(b) production proof covers disabled Anonymous Sign-Ins, migration 009, six restrictive permanent-user policies, a rejected rollback-only anonymous write, 26/26 protected checks, permanent-user UI smoke, and guarded legacy-user cleanup. This does not close the whole adversarial review: Gates 1(c–e), 4, and 6 remain pending.
 
 Cost model verdict: the $7/mo budget safely handles 0–9,600 users. The first hard cliff is Supabase's 500 MB free DB at approximately 9,600 active users (~52 KB/user average footprint). HuggingFace free-tier rate limits become visible at ~1,000 users during peak hours but fail gracefully via circuit breaker.
 
 | Gate | Owner | Status |
 |---|---|---|
-| 1. Five-perspective adversarial review | Codex | **IN PROGRESS — 1(a) PASS; 1(b–e) pending** |
+| 1. Five-perspective adversarial review | Codex | **IN PROGRESS — 1(a–b) PASS; 1(c–e) pending** |
 | 2. Evidence-backed go/no-go checklist | Claude | **COMPLETE — CONDITIONAL NO-GO (3 owner items required)** |
 | 3. 100 / 1,000 / 10,000-user cost model | Claude | **COMPLETE — cliff at ~9,600 users (Supabase DB)** |
 | 4. Failure drills | Codex | **TODO** |
@@ -73,16 +73,16 @@ Production HTTP checks on 2026-08-07:
 
 | Finding | Severity | Evidence | Required closure |
 |---|---|---|---|
-| Anonymous Supabase identities bypassed the permanent-account abuse boundary. | **Application controls deployed / database proof pending** | `JobTracker` contained `signInAnonymously()`. Supabase anonymous users receive the `authenticated` role, while backend auth and owner RLS did not inspect `is_anonymous`; a distributed client could therefore rotate CAPTCHA-free identities. Release `2ffc8f91b4d1` removes browser creation, rejects anonymous JWTs with HTTP 403, and treats old anonymous sessions as signed out. Migration 009 contains restrictive policies across six retained owner-data tables plus a service-role-only catalog verifier, but is not production-proven. | Disable Anonymous Sign-Ins, inventory/clean old anonymous users with backup, apply migration 009, prove six restrictive policies and a rejected rollback-only write, then rerun 26/26 production controls. |
+| Anonymous Supabase identities bypassed the permanent-account abuse boundary. | **Pass in production** | Release `2ffc8f91b4d1` removes browser creation, rejects anonymous JWTs with HTTP 403, and treats old anonymous sessions as signed out. Anonymous Sign-Ins is disabled; migration 009 proved six restrictive policies; the rollback-only anonymous insert failed with RLS error `42501`; and run `31532154382` passed 26/26 with zero skips. A verified logical/CSV backup preceded deletion of 131 empty anonymous users. One data-bearing user with three jobs is quarantined until 2026-09-10. | Delete the retained account and three jobs on 2026-09-10 unless ownership is resolved sooner; preserve the controls and protected workflow. |
 | Public crawling amplified into a remote Supabase Auth lookup on every page. | **Pass in deployed code** | The proxy called `getUser()` for public static and SSG routes. Supabase documents that `getUser()` always contacts Auth; `getClaims()` verifies production ES256 tokens locally against cached JWKS. Release `2ffc8f91b4d1` uses `getClaims()`; main CI passed and public/auth localhost routes returned 200. | Preserve the cached-claims contract and smoke-test auth refresh after related dependency changes. |
 | Sitemap timestamps falsely claimed every page changed on every request. | **Pass in production** | Bounded pre-change evidence showed the current request timestamp on every sitemap entry. The deployed sitemap uses checked-in article dates and omits fabricated static-page dates; production now exposes only `2026-07-04` and `2026-07-30`. | Keep article `updatedAt` accurate when content materially changes. |
 | Robots directives do not stop an abusive scraper. | **Accepted residual after proof** | Protected/share routes are disallowed and score pages are `noindex`, but `robots.txt` is advisory. Public content must remain indexable. Vercel and Render provide automatic DDoS mitigation; Render is visibly behind Cloudflare (`CF-Ray` captured), and the app adds body, timeout, route, and global IP limits. | Retain the incident procedure in `docs/GATE1B_SCRAPER_CONTROLS.md`; use Vercel Attack Challenge Mode during an active attack. Process-local limits remain a documented scaling constraint. |
 | Public AI preview was a direct cost surface. | **Pass** | `/api/v1/preview-rewrite` is deterministic, has a 500-character body field and 5/minute route limit, and imports no provider client. A bounded production request returned the local transformation. | Preserve the no-provider regression test. |
-| Bulk cross-user Supabase reads are blocked. | **Pass with intentional public share lookup** | Production RLS passed 20/20. `shared_scores` has owner-only SELECT and a single-row SECURITY DEFINER RPC that omits `user_id` and resume text; full UUID share IDs are not feasibly enumerable. | Require the expanded 26/26 production verification after migration 009 and never widen the public RPC output. |
+| Bulk cross-user Supabase reads are blocked. | **Pass with intentional public share lookup** | Post-migration production run `31532154382` passed 20/20 RLS and 6/6 abuse-control tests with zero skips. `shared_scores` has owner-only SELECT and a single-row SECURITY DEFINER RPC that omits `user_id` and resume text; full UUID share IDs are not feasibly enumerable. | Preserve the 26-test production verification and never widen the public RPC output. |
 
-**Gate 1(b) verdict: NO-GO pending production rollout and proof.** The detailed
-attack inventory, remediation, rollout SQL, bounded production observations,
-incident procedure, and residual-risk boundary are in
+**Gate 1(b) verdict: PASS in code and production on 2026-08-11.** The detailed
+attack inventory, remediation, backup and cleanup evidence, rollout SQL,
+production proof, incident procedure, and residual-risk boundary are in
 `docs/GATE1B_SCRAPER_CONTROLS.md`.
 
 ### C. Confused non-technical user
@@ -137,14 +137,15 @@ The protected production procedure passed 20/20. Re-run `docs/RLS_VERIFICATION.m
 
 Browser quota mutation is revoked in migration 008, database limits are enforced by constraints/triggers, and Turnstile tokens are forwarded by all email-auth abuse surfaces. The Gate 1(a) production proof completed on 2026-08-10.
 
-### Required — Gate 1(b) scraper-control rollout
+### Closed — Gate 1(b) scraper-control rollout
 
 Gate 1(b) found that Supabase anonymous users could reuse the `authenticated`
-role and that public crawls caused a remote Auth lookup. Follow
-`docs/GATE1B_SCRAPER_CONTROLS.md`: inventory anonymous users, disable Anonymous
-Sign-Ins, apply and prove migration 009, deploy the final backend/frontend
-controls, verify corrected sitemap dates, and rerun the protected 26-test
-workflow.
+role and that public crawls caused a remote Auth lookup. The owner retained a
+verified backup, disabled Anonymous Sign-Ins, applied and proved migration 009,
+observed the expected rollback-only RLS rejection, passed protected run
+`31532154382` 26/26 with zero skips, completed permanent-account UI smoke, and
+deleted 131 empty anonymous users. One backed-up data-bearing account with three
+jobs remains quarantined for scheduled deletion on 2026-09-10.
 
 ### Required AdSense dashboard proof
 
@@ -189,7 +190,7 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 | HF provider incident/budget review | **CLOSED — 2026-08-08** | Unexpected usage: NO. HF billing shows 34 requests via Together AI, <$0.01, $0.00 charges for Aug 1–Sep 1 period. No unauthorized use. |
 | Usage-limit copy | **CLOSED IN BRANCH** | The current branch already replaces `Unlimited` and `Usage Limits: none` with accurate fair-use wording across the landing, ATS-checker, preview, and new-grad surfaces. Confirm the deployed copy after merge. |
 
-**Gate 2 verdict: checklist evidence recorded; full Prompt 3 remains NO-GO.** Gate 1(a)'s production rollout, RLS, provider-usage review, ES256 authentication, and usage-limit copy are closed. The certified CMP is explicitly deferred for the current ad-free launch and remains mandatory before any ad units. The overall decision still depends on Gate 1(b–e), Gate 4, and Gate 6.
+**Gate 2 verdict: checklist evidence recorded; full Prompt 3 remains NO-GO.** Gates 1(a–b) production rollout, RLS, provider-usage review, ES256 authentication, and usage-limit copy are closed. The certified CMP is explicitly deferred for the current ad-free launch and remains mandatory before any ad units. The overall decision still depends on Gates 1(c–e), Gate 4, and Gate 6.
 
 ---
 
