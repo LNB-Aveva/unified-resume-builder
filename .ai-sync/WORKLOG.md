@@ -9,7 +9,7 @@
 
 - **Feature:** Prompt 3 launch-gate audit
 - **Branch:** `main`
-- **Status:** Gate 1(b) first-tranche code is deployed and CI/localhost verified; final repository closeout is in progress. Production remains NO-GO pending migration 009, anonymous-auth dashboard proof/cleanup decision, final deployment, and the expanded 26/26 production rerun. Gate 1(a) and Gates 2, 3, 5 are complete; Gate 1(c–e), Gate 4, and Gate 6 remain pending.
+- **Status:** Gate 1(b) repository/application work is complete and deployed. Production remains NO-GO pending owner-controlled migration 009, anonymous-auth dashboard proof/cleanup decision, and the expanded 26/26 production rerun. Gate 1(a) and Gates 2, 3, 5 are complete; Gate 1(c–e), Gate 4, and Gate 6 remain pending.
 
 ---
 
@@ -37,8 +37,9 @@
   - Added `docs/GATE1B_SCRAPER_CONTROLS.md` with rollout SQL, rollback-only RLS proof, production checklist, incident procedure, and accepted residual risks. Final focused tests passed 101/101; full backend passed 550 with 30 credential-gated skips; Ruff, ESLint, 32-route build, and diff check passed.
   - During the full suite, a concurrent process committed/pushed the eight code/migration files as `cba660d`, followed by Claude handoff commit `6ab30a9`. Main CI run `31451072246` passed; Render reported release `6ab30a98d53e` with both safeguards true; production sitemap now exposes only real blog dates. No history rewrite or revert was attempted.
   - After owner localhost approval, completed repository-side defense in depth: frontend layouts reject old anonymous sessions, logs use the trusted client IP and include `CF-Ray`, and migration 009 provides a service-role-only catalog verifier enforced as the sixth production abuse test (26 total protected tests).
+  - Committed/pushed the closeout as `2ffc8f9`. Main CI run `31453917828` passed frontend, backend/security, and desktop/mobile E2E. Vercel deployment status succeeded; Render `/health` reported release `2ffc8f91b4d1` with both quota safeguards true.
 - **Files Changed:** Gate 1(b) backend auth/tests, job tracker, Supabase proxy, sitemap, migration 009/canonical schema, audit/runbook, shared handoff files.
-- **Next:** Commit/push the owner-approved repository closeout and require green main CI/deployment. Then back up production, inspect anonymous users, disable Anonymous Sign-Ins, apply/prove migration 009, rerun 26/26 production controls, and retain evidence before marking Gate 1(b) PASS.
+- **Next:** Owner backs up production, inspects anonymous users, disables Anonymous Sign-Ins, applies/proves migration 009, reruns 26/26 production controls, and retains evidence before Gate 1(b) can be marked PASS.
 - **Blockers:** Production database/dashboard proof remains owner-controlled. Anonymous-user deletion requires an explicit owner decision after inventory because it is destructive.
 
 ### Session 140 (Claude) — 2026-08-10

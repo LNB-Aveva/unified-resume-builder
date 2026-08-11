@@ -6,10 +6,10 @@
 found a CAPTCHA-free identity-rotation path through Supabase anonymous sign-in
 and a crawler amplification path through a remote Auth lookup on every public
 page. Main CI run `31451072246` passed and the frontend/backend release
-`6ab30a98d53e` contains the first remediation tranche. Migration 009, the
-Anonymous Sign-Ins setting, the anonymous-user inventory, the final
-anonymous-session/logging release, and the post-migration 26/26 workflow remain
-unverified.
+Application release `2ffc8f91b4d1` is live and main CI run `31453917828`
+passed frontend, backend/security, and desktop/mobile E2E. Migration 009, the
+Anonymous Sign-Ins setting, the anonymous-user inventory, and the post-migration
+26/26 workflow remain unverified.
 
 ## Adversarial inventory
 
@@ -160,8 +160,8 @@ exists afterward.
 
 ### 5. Recheck the deployed release
 
-The backend permanent-account check and frontend proxy/job/sitemap changes are
-live at release `6ab30a98d53e`. Preserve these checks after migration 009:
+The complete application-side controls are live at release `2ffc8f91b4d1`.
+Preserve these checks after migration 009:
 
 - Render `/health` reports the new release and both quota safeguards `true`.
 - `sitemap.xml` contains real 2026-07-04/2026-07-30 blog dates and no current
