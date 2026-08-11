@@ -32,6 +32,14 @@ test.describe("Mobile layout & flows", () => {
     );
 
     await page.goto("/keyword-analyzer");
+
+    // The consent dialog intentionally blocks page interaction until the user
+    // makes a choice. Exercise the privacy-preserving path before the analyzer.
+    await page
+      .getByRole("alertdialog", { name: "Cookie preferences" })
+      .getByRole("button", { name: "Reject optional" })
+      .click();
+
     const textarea = page.locator('textarea[aria-label="Job description text"]');
     await expect(textarea).toBeVisible();
 
