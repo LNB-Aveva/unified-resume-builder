@@ -159,7 +159,7 @@ _MIN_WORDS_FOR_CHECK = 20
 _MIN_STOP_WORD_RATIO = 0.08
 
 
-def _detect_non_english(text: str) -> str | None:
+def detect_non_english(text: str) -> str | None:
     words = re.findall(r"[a-zA-Z]{2,}", text.lower())
     if len(words) < _MIN_WORDS_FOR_CHECK:
         return None
@@ -171,6 +171,10 @@ def _detect_non_english(text: str) -> str | None:
             "resumes and job descriptions. Results for other languages may be inaccurate."
         )
     return None
+
+
+# Keep the private alias so existing tests importing _detect_non_english continue to work.
+_detect_non_english = detect_non_english
 
 
 def _infer_job_title(job: JobDescription) -> str:

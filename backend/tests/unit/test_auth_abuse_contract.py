@@ -9,6 +9,8 @@ TURNSTILE = ROOT / "frontend" / "src" / "app" / "components" / "TurnstileWidget.
 DEFINITIONS = ROOT / "frontend" / "src" / "app" / "lib" / "definitions.ts"
 ACCOUNT_FORM = ROOT / "frontend" / "src" / "app" / "(protected)" / "account" / "AccountForm.tsx"
 SETUP_FORM = ROOT / "frontend" / "src" / "app" / "(protected)" / "account-setup" / "AccountSetupForm.tsx"
+SETUP_PAGE = ROOT / "frontend" / "src" / "app" / "(protected)" / "account-setup" / "page.tsx"
+PROXY = ROOT / "frontend" / "src" / "proxy.ts"
 CONFIG = ROOT / "backend" / "app" / "core" / "config.py"
 HEALTH = ROOT / "backend" / "app" / "main.py"
 
@@ -52,3 +54,31 @@ def test_profile_ui_and_actions_match_database_text_boundaries():
     assert definitions.count("industry: z.string().max(200).optional()") == 2
     assert definitions.count(".max(200)") >= 6
     assert forms.count("maxLength={200}") == 6
+
+
+def test_account_setup_cannot_skip_required_terms_or_repeat_acceptance():
+    actions = AUTH_ACTIONS.read_text(encoding="utf-8")
+    form = SETUP_FORM.read_text(encoding="utf-8")
+    page = SETUP_PAGE.read_text(encoding="utf-8")
+    proxy = PROXY.read_text(encoding="utf-8")
+
+    assert "!user.user_metadata?.terms_accepted_at" in page
+    assert "!user.user_metadata?.age_confirmed_at" in page
+    assert "{requiresTermsAcceptance && <div>" in form
+    assert "{!requiresTermsAcceptance && <p" in form
+    assert "validated.data.termsAccepted !== \"on\"" in actions
+    assert "!hasAcceptedEligibility && !path.startsWith(\"/account-setup\")" in proxy
+    assert "refreshEligibilityIfMissing: isProtected || isAuthRoute" in proxy
+
+
+def test_account_setup_refreshes_jwt_claims_before_tools_redirect():
+    actions = AUTH_ACTIONS.read_text(encoding="utf-8")
+    setup_action = actions[actions.index("export async function setupAccount"):]
+
+    metadata_update = setup_action.index("const { error: metadataError }")
+    session_refresh = setup_action.index("supabase.auth.refreshSession()")
+    profile_write = setup_action.index('.from("profiles").upsert')
+    tools_redirect = setup_action.index('redirect("/tools")')
+
+    assert metadata_update < session_refresh < profile_write < tools_redirect
+    assert "Your preferences were saved, but your session could not be refreshed." in setup_action

@@ -90,6 +90,28 @@ test.beforeEach(async ({ context }) => {
   ]);
 });
 
+test("steps 1–3 reuse the job description and resume without storing another copy", async ({
+  page,
+}) => {
+  await page.goto("/tools");
+
+  const jobDescription = "Senior platform engineer with Python, AWS, and Kubernetes experience.";
+  const resume = "Platform engineer with five years of Python and AWS experience.";
+
+  await page.getByLabel("Job description text").fill(jobDescription);
+  await expect(page.locator("#gap-job-desc")).toHaveValue(jobDescription);
+  await expect(page.getByText("Job description: ready")).toBeVisible();
+
+  await page.locator("#gap-resume").fill(resume);
+  await expect(page.locator("#compliance-resume")).toHaveValue(resume);
+  await expect(page.getByText("Resume: ready")).toBeVisible();
+
+  await page.getByRole("button", { name: "Clear both" }).click();
+  await expect(page.getByLabel("Job description text")).toHaveValue("");
+  await expect(page.locator("#gap-resume")).toHaveValue("");
+  await expect(page.locator("#compliance-resume")).toHaveValue("");
+});
+
 // ─── Gap Analysis ────────────────────────────────────────────────────
 
 test.describe("Tool flow — Gap Analysis", () => {
@@ -121,6 +143,9 @@ test.describe("Tool flow — Gap Analysis", () => {
     await expect(page.getByText("Good Match")).toBeVisible();
     await expect(page.getByText("Found in your resume").first()).toBeVisible();
     await expect(page.getByText("Add to your resume").first()).toBeVisible();
+
+    await page.getByLabel("Job description text").fill("A different role requiring Go.");
+    await expect(page.getByText("Good Match")).not.toBeVisible();
   });
 });
 
@@ -153,6 +178,9 @@ test.describe("Tool flow — Compliance Checker", () => {
     await expect(page.getByText("13 of 15 checks passed")).toBeVisible();
     await expect(page.getByText("Contact Information")).toBeVisible();
     await expect(page.getByText("1 warnings")).toBeVisible();
+
+    await page.locator("#gap-resume").fill("A different resume draft.");
+    await expect(page.getByText("13 of 15 checks passed")).not.toBeVisible();
   });
 });
 

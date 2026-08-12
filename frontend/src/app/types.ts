@@ -25,6 +25,7 @@ export interface ATSScore {
   total_matched: number;
   total_missing: number;
   domain_warning?: string | null;
+  language_warning?: string | null;
 }
 
 export interface ComplianceCheck {
@@ -42,6 +43,7 @@ export interface ComplianceReport {
   passed_count: number;
   total_checks: number;
   checks: ComplianceCheck[];
+  language_warning?: string | null;
 }
 
 export interface SummaryResponse {

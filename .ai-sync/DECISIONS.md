@@ -20,6 +20,22 @@
 
 ## Decisions
 
+### DEC-040: Refresh Eligibility Claims Without Reopening Public Auth Amplification
+- **Date:** 2026-08-11
+- **Agent:** copilot
+- **Context:** Account setup updated the authoritative Supabase user metadata, but the signed access-token claims remained stale long enough for the proxy to redirect an eligible user from `/tools` back to `/account-setup`. A direct Skip navigation had the same risk. Gate 1(b) prohibits returning to a remote Auth lookup for every public request.
+- **Decision:** Explicitly refresh the session token after account eligibility metadata changes. In the proxy helper, continue verifying every request with cached signed claims and perform an authoritative `getUser()` fallback only when an authenticated request to a protected/auth route has missing eligibility claims. Anonymous public requests never enter the fallback.
+- **Alternatives Considered:** Use `getUser()` for every proxy request — rejected because it restores crawler-driven Supabase Auth amplification. Rely only on token expiry — rejected because it creates a visible onboarding loop. Fix only the Continue action — rejected because Skip and direct navigation could still loop during the stale-token window.
+- **Files Affected:** `frontend/src/app/actions/auth.ts`, `frontend/src/app/lib/supabase/middleware.ts`, `frontend/src/proxy.ts`, account and scraper contract tests, and launch evidence
+
+### DEC-039: Ephemeral Shared Inputs for the Three ATS Analysis Steps
+- **Date:** 2026-08-11
+- **Agent:** copilot
+- **Context:** Gate 1(c) left a confused-user friction item: steps 1–3 asked users to paste the same job description and resume repeatedly. Persisting raw resume text in browser storage would create an unnecessary privacy and stale-data risk, while the AI Summary and Cover Letter forms have smaller input limits than the analysis routes.
+- **Decision:** Keep one in-memory working set for the full-length job description and resume used by Keyword Extraction, Gap Analysis, and Compliance Checker. Synchronize edits across those fields, prefill the working resume from a deliberately loaded saved resume, show live ready/not-added state, and provide one clear-both action. Do not persist this working set in localStorage or automatically copy it into the shorter AI-generation fields.
+- **Alternatives Considered:** Store a cross-page draft in localStorage — rejected because resume data would outlive the page without an explicit save. Synchronize every tool — rejected because smaller AI route limits would turn a valid analysis input into immediate validation errors. Leave manual re-pasting as post-launch friction — rejected because the owner requested closure of every actionable Gate 1(c) item.
+- **Files Affected:** `frontend/src/app/components/ToolWorkspace.tsx`, the first three tool components, the protected tools page, and tool-flow E2E coverage
+
 ### DEC-038: Fail-Closed Legal Identity, Stable AI Provider, and Content-Free Telemetry
 - **Date:** 2026-08-11
 - **Agent:** copilot

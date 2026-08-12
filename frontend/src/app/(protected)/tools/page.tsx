@@ -14,11 +14,45 @@ import InfoTooltip from "@/app/components/InfoTooltip";
 import ToolsSidebar from "@/app/components/ToolsSidebar";
 import { loadResume, type ResumeData } from "@/app/actions/resume";
 import SensitiveDataNotice from "@/app/components/SensitiveDataNotice";
+import {
+  ToolWorkspaceProvider,
+  ToolWorkspaceStatus,
+} from "@/app/components/ToolWorkspace";
 
 export const metadata = {
   title: "Tools",
   description: "Access all 9 free ATS resume tools.",
 };
+
+function resumeDataToPlainText(data: ResumeData): string {
+  const contact = [
+    data.personal.full_name,
+    data.personal.email,
+    data.personal.phone,
+    data.personal.location,
+    data.personal.linkedin,
+    data.personal.website,
+  ].filter(Boolean);
+  const experience = data.experience.flatMap((entry) => [
+    `${entry.title}${entry.company ? ` — ${entry.company}` : ""}`,
+    [entry.start_date, entry.end_date].filter(Boolean).join(" – "),
+    ...entry.bullets.map((bullet) => `- ${bullet}`),
+  ]).filter(Boolean);
+  const education = data.education.flatMap((entry) => [
+    [entry.degree, entry.field].filter(Boolean).join(" in "),
+    [entry.institution, entry.year].filter(Boolean).join(" — "),
+  ]).filter(Boolean);
+
+  return [
+    contact.join("\n"),
+    data.summary && `Professional Summary\n${data.summary}`,
+    experience.length > 0 && `Experience\n${experience.join("\n")}`,
+    education.length > 0 && `Education\n${education.join("\n")}`,
+    data.skills && `Skills\n${data.skills}`,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}
 
 export default async function ToolsPage({
   searchParams,
@@ -37,6 +71,7 @@ export default async function ToolsPage({
   let loadedTitle: string | undefined;
   let loadedData: ResumeData | undefined;
   let loadedVersion: number | undefined;
+  let loadedResumeText: string | undefined;
 
   if (resumeParam) {
     const result = await loadResume(resumeParam);
@@ -45,6 +80,8 @@ export default async function ToolsPage({
       loadedTitle = result.resume.title;
       loadedData = result.version.resume_data;
       loadedVersion = result.version.version_number;
+      loadedResumeText =
+        result.version.resume_text?.trim() || resumeDataToPlainText(result.version.resume_data);
     }
   }
 
@@ -76,25 +113,32 @@ export default async function ToolsPage({
       <div className="mx-auto max-w-7xl px-4 py-12 flex gap-8">
         <ToolsSidebar />
 
-        <main id="main-content" className="flex-1 max-w-5xl space-y-16">
-          <div className="text-center mb-8">
-            <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">
-              Your ATS Toolkit
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">
-              All 9 tools ready to use. Follow the steps or jump to any section.
-            </p>
-            <div className="inline-flex items-start gap-6 rounded-2xl border border-indigo-100 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/30 px-6 py-4 text-left text-sm text-gray-600 dark:text-gray-400">
-              <div className="flex flex-col gap-1">
-                <span className="font-semibold text-gray-900 dark:text-white text-xs uppercase tracking-wider">Quick start</span>
-                <span>1. Paste a job description below to extract keywords</span>
-                <span>2. Paste your resume to see your match score</span>
-                <span>3. Use AI tools to close the gaps</span>
+        <main id="main-content" className="flex-1 max-w-5xl">
+          <ToolWorkspaceProvider
+            key={`${loadedResumeId ?? "new"}-${loadedVersion ?? 0}`}
+            initialResumeText={loadedResumeText}
+          >
+            <div className="space-y-16">
+              <div className="text-center mb-8">
+                <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">
+                  Your ATS Toolkit
+                </h1>
+                <p className="text-gray-500 dark:text-gray-400 mb-6">
+                  All 9 tools ready to use. Follow the steps or jump to any section.
+                </p>
+                <div className="inline-flex items-start gap-6 rounded-2xl border border-indigo-100 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/30 px-6 py-4 text-left text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-semibold text-gray-900 dark:text-white text-xs uppercase tracking-wider">Quick start</span>
+                    <span>1. Paste a job description below to extract keywords</span>
+                    <span>2. Paste your resume to see your match score</span>
+                    <span>3. Use AI tools to close the gaps</span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <SensitiveDataNotice />
+              <SensitiveDataNotice />
+
+              <ToolWorkspaceStatus />
 
           <section id="keyword-extractor" className="scroll-mt-24">
             <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
@@ -171,7 +215,9 @@ export default async function ToolsPage({
               <InfoTooltip tip="Track all your job applications in one place — save jobs, update status, stay organized." />
             </h2>
             <JobTracker />
-          </section>
+              </section>
+            </div>
+          </ToolWorkspaceProvider>
         </main>
       </div>
     </div>

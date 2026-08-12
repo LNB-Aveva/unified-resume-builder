@@ -22,3 +22,4 @@ class ComplianceReport(BaseModel):
     passed_count: int
     total_checks: int
     checks: list[ComplianceCheck]
+    language_warning: str | None = None

@@ -7,7 +7,7 @@ from app.core.rate_limit import limiter
 from app.schemas.gap import GapRequest
 from app.schemas.job import JobDescription
 from app.schemas.score import ATSScore
-from app.services.nlp.keyword_extractor import extract_keywords
+from app.services.nlp.keyword_extractor import detect_non_english, extract_keywords
 from app.services.scoring.ats_scorer import score_from_text
 
 router = APIRouter()
@@ -30,4 +30,8 @@ async def analyze_gap(request: Request, gap_req: GapRequest, _user_id: str = Dep
         raise HTTPException(status_code=422, detail="resume_text cannot be empty.")
 
     job_analysis = extract_keywords(JobDescription(raw_text=gap_req.job_text))
-    return score_from_text(job_analysis, gap_req.resume_text)
+    result = score_from_text(job_analysis, gap_req.resume_text)
+    warning = detect_non_english(f"{gap_req.job_text}\n{gap_req.resume_text}")
+    if warning:
+        result = result.model_copy(update={"language_warning": warning})
+    return result

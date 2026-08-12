@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ComplianceReport, API_URL, connectionError, extractApiDetail } from "../types";
 import { authFetch } from "../lib/authFetch";
 import Spinner from "./Spinner";
 import { DEMO_RESUME_TEXT } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
+import { useWorkspaceResumeText } from "./ToolWorkspace";
 
 const SEVERITY_STYLES: Record<string, { badge: string; row: string; dot: string }> = {
   critical:   { badge: "bg-red-100 text-red-700",    row: "border-red-100 bg-red-50",    dot: "bg-red-500"   },
@@ -14,10 +15,18 @@ const SEVERITY_STYLES: Record<string, { badge: string; row: string; dot: string 
 };
 
 export default function ComplianceChecker() {
-  const [resumeText, setResumeText] = useState("");
+  const [resumeText, setResumeText, sharesWorkspace] = useWorkspaceResumeText();
   const [result, setResult] = useState<ComplianceReport | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setResult(null);
+      setError(null);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [resumeText]);
 
   async function handleCheck() {
     if (!resumeText.trim()) {
@@ -64,6 +73,11 @@ export default function ComplianceChecker() {
           rows={10}
           className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
         />
+        {sharesWorkspace && (
+          <p className="text-xs text-indigo-700 dark:text-indigo-300">
+            Synced with the resume in Gap Analysis.
+          </p>
+        )}
       </div>
 
       {error && (
@@ -92,6 +106,13 @@ export default function ComplianceChecker() {
       {/* Results */}
       {result && (
         <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-6 space-y-5">
+
+          {/* Language detection warning */}
+          {result.language_warning && (
+            <div className="rounded-xl bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
+              {result.language_warning}
+            </div>
+          )}
 
           {/* Score row */}
           <div className="flex items-center gap-4">

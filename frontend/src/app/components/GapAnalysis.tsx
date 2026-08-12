@@ -1,11 +1,15 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { ATSScore, API_URL, connectionError, extractApiDetail } from "../types";
 import { authFetch } from "../lib/authFetch";
 import Spinner from "./Spinner";
 import { DEMO_JOB_DESCRIPTION, DEMO_RESUME_TEXT } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
+import {
+  useWorkspaceJobDescription,
+  useWorkspaceResumeText,
+} from "./ToolWorkspace";
 
 const GRADE_STYLES: Record<string, { bg: string; text: string; ring: string }> = {
   A: { bg: "bg-emerald-50", text: "text-emerald-700", ring: "ring-emerald-200" },
@@ -16,13 +20,21 @@ const GRADE_STYLES: Record<string, { bg: string; text: string; ring: string }> =
 };
 
 export default function GapAnalysis() {
-  const [jobText, setJobText] = useState("");
-  const [resumeText, setResumeText] = useState("");
+  const [jobText, setJobText, sharesJobDescription] = useWorkspaceJobDescription();
+  const [resumeText, setResumeText, sharesResumeText] = useWorkspaceResumeText();
   const [result, setResult] = useState<ATSScore | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const jobWordCount = useMemo(() => jobText.trim().split(/\s+/).filter(Boolean).length, [jobText]);
   const resumeWordCount = useMemo(() => resumeText.trim().split(/\s+/).filter(Boolean).length, [resumeText]);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setResult(null);
+      setError(null);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [jobText, resumeText]);
 
   async function handleAnalyze() {
     if (!jobText.trim() || !resumeText.trim()) {
@@ -75,6 +87,7 @@ export default function GapAnalysis() {
           />
           <p className="text-xs text-gray-500 dark:text-gray-400">
             {jobWordCount} words
+            {sharesJobDescription && jobText.trim() && " · Synced from step 1"}
           </p>
         </div>
 
@@ -92,6 +105,7 @@ export default function GapAnalysis() {
           />
           <p className="text-xs text-gray-500 dark:text-gray-400">
             {resumeWordCount} words
+            {sharesResumeText && " · Reused in step 3"}
           </p>
         </div>
       </div>
@@ -171,6 +185,13 @@ export default function GapAnalysis() {
               </div>
             </div>
           </div>
+
+          {/* Language detection warning */}
+          {result.language_warning && (
+            <div className="rounded-xl bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
+              {result.language_warning}
+            </div>
+          )}
 
           {/* Domain coverage warning */}
           {result.domain_warning && (

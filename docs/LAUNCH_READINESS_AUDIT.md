@@ -7,18 +7,22 @@
 
 ## Current verdict
 
-**NO-GO for the full Prompt 3 launch decision.** Gates 2, 3, and 5 are complete, and Gates 1(a–b) are now code-and-production **PASS**. Gate 1(b) production proof covers disabled Anonymous Sign-Ins, migration 009, six restrictive permanent-user policies, a rejected rollback-only anonymous write, 26/26 protected checks, permanent-user UI smoke, and guarded legacy-user cleanup. This does not close the whole adversarial review: Gates 1(c–e), 4, and 6 remain pending.
+**NO-GO pending a bounded Gate 1(c) localhost retest.** Owner review found that account setup redirected back to itself because the proxy read stale eligibility metadata from the access-token JWT. The session-refresh fix passes all automated checks, but this audit's rule keeps the gate closed until the signed-in owner confirms the form now lands on `/tools`. After that proof, the prior conditional-go posture still requires the four `LEGAL_*` values and the Gate 1(d) owner decision.
 
 Cost model verdict: the $7/mo budget safely handles 0–9,600 users. The first hard cliff is Supabase's 500 MB free DB at approximately 9,600 active users (~52 KB/user average footprint). HuggingFace free-tier rate limits become visible at ~1,000 users during peak hours but fail gracefully via circuit breaker.
 
 | Gate | Owner | Status |
 |---|---|---|
-| 1. Five-perspective adversarial review | Codex | **IN PROGRESS — 1(a–b) PASS; 1(c–e) pending** |
-| 2. Evidence-backed go/no-go checklist | Claude | **COMPLETE — CONDITIONAL NO-GO (3 owner items required)** |
+| 1(a). Abusive user — spend amplification and resume theft | Claude + Copilot | **PASS** — production-proven 2026-08-10 |
+| 1(b). Scraper and distributed automation | Claude + Copilot | **PASS** — production-proven 2026-08-11 |
+| 1(c). Confused non-technical user | Claude + Copilot | **FIXED IN CODE / OWNER RETEST REQUIRED** — stale JWT redirect loop found during localhost review |
+| 1(d). Regulator reviewing resume-data handling | Copilot | **FAIL / NO-GO** — code complete; owner legal decisions required |
+| 1(e). AdSense policy reviewer | Claude | **PASS for ad-free launch** — blocked before ad units by TCF CMP + 4 LEGAL_* env vars |
+| 2. Evidence-backed go/no-go checklist | Claude | **COMPLETE** |
 | 3. 100 / 1,000 / 10,000-user cost model | Claude | **COMPLETE — cliff at ~9,600 users (Supabase DB)** |
-| 4. Failure drills | Claude | **PASS** (1 blocker fixed: `[object Object]` 422 error; non-English warning gap → post-launch backlog) |
+| 4. Failure drills | Claude | **PASS** — 1 blocker fixed; non-English gap → post-launch backlog |
 | 5. Independent rollback verification | Claude | **COMPLETE — PASS** |
-| 6. Final verdict and top three accepted risks | Codex | **TODO (after Gate 4)** |
+| 6. Final verdict and top three accepted risks | Claude | **NO-GO — Gate 1(c) owner retest, then 2 owner actions** |
 
 ## Baseline evidence
 
@@ -92,6 +96,15 @@ production proof, incident procedure, and residual-risk boundary are in
 | The site contradicted itself about usage limits. | **Resolved in code** | Landing, ATS-checker, preview, and new-grad copy now consistently state fair-use access; `Unlimited`, `no limits`, and the unlimited-rewrite error were removed from current product UI. | Recheck production copy after deployment. |
 | Scope limitations are substantially clearer than in the closed audit. | Pass | Public copy states English-language and taxonomy limitations, says scoring is directional, and explains that pasted-text checks cannot inspect PDF/DOCX layout. Non-English detection now returns a warning. | Verify the actual deployed signed-in flow in Gate 4. |
 | Signed-in AI Summary works through the deployed production stack. | Pass | The owner generated a 61-word summary on production with a real Supabase session and Hugging Face response. | Preserve as a release smoke test. |
+| Terms/age acceptance could be repeated or bypassed through the legacy Skip path. | **Pass** | Account setup now renders acceptance only when metadata is missing, renders Skip only after acceptance, rejects unchecked required acceptance in the server action, and redirects ineligible protected-route users back to setup. The combined account/eligibility contract passes 5/5. | Preserve the eligibility contract test. |
+| Steps 1–3 required users to re-paste the same job description and resume. | **Pass in code** | An in-memory working set now synchronizes the full-length inputs across Keyword Extraction, Gap Analysis, and Compliance Checker, prefills a deliberately loaded saved resume, shows live state, and clears both fields on request. It does not use browser storage. The new flow passes in the full 56/56 desktop/mobile E2E suite. | Owner reviews localhost, then repeat this smoke once after deployment. |
+| Continue to Tools redirected back to account setup after eligibility was saved. | **Fixed in code / owner retest required** | The setup page used the current Auth user, but the proxy read older `user_metadata` embedded in the signed access token. The setup action now explicitly refreshes the session before redirecting. As a fallback for Continue, Skip, or direct navigation during the stale-token window, the proxy fetches the current user only when an authenticated protected/auth request has missing eligibility claims, then refreshes the token cookie when current eligibility is confirmed; anonymous public requests remain claim-only. Regression contracts preserve both behavior and the scraper boundary. | Owner retries the localhost form and confirms the URL becomes `/tools`; then preserve the post-deploy onboarding smoke. |
+
+**Gate 1(c) verdict: FIXED IN CODE / OWNER RETEST REQUIRED.** All known
+repository-side blockers and the previously deferred F1–F3 friction items are
+closed, including the stale-claim redirect loop found during localhost review.
+Gate 1(c) returns to PASS only after the owner confirms that Continue to Tools
+lands on `/tools` and verifies the step 1–3 synchronization there.
 
 ### D. Regulator reviewing resume-data handling
 
@@ -215,7 +228,7 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 | **3 — Security/Privacy** | JWT auth on 7 routes; body cap enforced; Bandit 0 High; CORS strict; prompt injection sanitized; PII stripped from Sentry. | **PASS for Gate 1(a)** | Production ES256 auth, backend-only quota mutation, fail-fast production startup, deterministic preview, storage ceilings, Turnstile/Supabase CAPTCHA, quota accounting, and denial are production-proven. The remaining Gate 1 perspectives are assessed separately. |
 | **4 — Auth/RLS** | User A cannot read/mutate user B rows; account deletion cascades all 5 tables; data export covers all retained records. | **PASS** | Protected production run `31430596989` passed all 20 RLS isolation and cascade tests with zero skips on 2026-08-10. |
 | **5 — Scoring quality** | 80%+ of 25 labeled pairs within one human grade; zero obvious strong matches score F; report reproducible in CI. | **PASS** | Eval harness: 25/25 pairs pass grade calibration (≤1 grade delta from human reference). Golden-file tests for taxonomy parsing pass. Synonym map covers 65+ groups. |
-| **6 — Backend hardening** | HF circuit breaker retries + opens after 5 failures; scheduled health/cleanup check; request timeout 90s; 9 routes load-tested at bounded concurrency. | **VERIFY — Starter restore** | Circuit breaker and timeouts pass. Blueprint now pins `plan: starter`, but the latest owner dashboard screenshot showed Free; synchronize/upgrade and retain a new Starter screenshot. |
+| **6 — Backend hardening** | HF circuit breaker retries + opens after 5 failures; scheduled health/cleanup check; request timeout 90s; 9 routes load-tested at bounded concurrency. | **PASS** | Circuit breaker, timeouts, and Blueprint `plan: starter` confirmed. Owner confirmed Render Starter plan active 2026-08-11. |
 | **7 — Accessibility/Mobile** | WCAG 2.2 AA — no known blockers; Lighthouse accessibility ≥90 on representative pages. | **PASS** | 10/10 pages pass axe-core WCAG 2.2 tags (verified 2026-08-07, Session 123). 6 non-automatable 2.2 AA criteria verified by manual audit. Lighthouse a11y 94 (was 90+ baseline). |
 | **8 — SEO/Monetization** | Sitemap/canonical/legal/content surfaces pass; certified ad consent and live placements must be proven before monetization. | **BLOCKED BEFORE ADS** | Public review surfaces and `ads.txt` pass. The custom banner is not certified TCF proof; AdSense Privacy & messaging status remains owner-only and no live placement/density review exists. |
 | **9 — Auth/Data security** | Owner-only share writes/reads, non-enumerable public RPC, high-entropy links, revocation, and quota-free preview. | **VERIFY — abuse controls** | New links retain full UUID v4 entropy and the owner can revoke them in-flow. Public preview is deterministic. Production RLS is 20/20; migration 008 adds five production abuse proofs. |
@@ -228,7 +241,7 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 | Item | Severity | Action |
 |---|---|---|
 | Gate 1(a) abuse controls | **CLOSED — 2026-08-10** | Migration, Render safeguards, real CAPTCHA flows, tokenless-auth rejection, 25/25 production tests, quota ledger creation, HTTP 429 denial, and fixture cleanup are proven. |
-| Render Starter | **Blocker** | Merge/synchronize the Blueprint and confirm the dashboard badge is Starter. |
+| Render Starter | **CLOSED — 2026-08-11** | Blueprint pinned to `plan: starter`; owner confirmed Starter plan active in dashboard. |
 | RLS re-verification | **CLOSED — 2026-08-08** | 20/20 pass against production Supabase confirmed by owner terminal run (all 5 tables: profiles, jobs, resumes, resume_versions, shared_scores + cascade delete). |
 | TCF CMP for AdSense (Gate 1 §E) | **DEFERRED — owner decision** | Site is ad-free; Google site review pending. European regulations message not yet created (AdSense dashboard confirmed 2026-08-08). Required before placing any ad unit slots. Not a blocker for current ad-free launch. See memory: project_future_tcf_cmp. |
 | HF provider incident/budget review | **CLOSED — 2026-08-08** | Unexpected usage: NO. HF billing shows 34 requests via Together AI, <$0.01, $0.00 charges for Aug 1–Sep 1 period. No unauthorized use. |
@@ -324,13 +337,17 @@ All six scenarios verified from code. One blocker found and fixed.
 | Render sleeping | Render Starter plan (DEC-030) has no cold sleep. During deploy restart (seconds): `Failed to fetch` → connectionError → "Could not reach the API server. Check your connection, wait a moment, and try again." No spinner that never resolves. | **PASS** |
 | Malformed PDF upload | No PDF upload feature exists. Users paste plain text only. Binary garbage pasted into a textarea returns low/empty scores — no error, no stack trace. User expectation gap (PDF upload) is a product scope decision, not a launch blocker. | **PASS (not applicable)** |
 | 50-page resume (>50 000 chars) | **Was:** Pydantic 422 with array `detail` → `new Error(array)` → `new Error("[object Object]")` → user saw `[object Object]`. **Fixed (this session):** `extractApiDetail()` helper added to `types.ts`; all 8 components updated. Now extracts `detail[0].msg` → user sees "String should have at most 50000 characters." | **FIXED — PASS** |
-| Non-English JD (no spaCy — pure regex) | spaCy is not in this stack. All NLP is regex + English skills taxonomy. Keyword extractor `/analyze` calls `_detect_non_english()` and shows an amber warning in `AnalyzerDemo.tsx`. Gap analysis, compliance checker, summary generator, cover letter: no language detection — non-English input returns low/empty results with no warning. Not a stack trace; a UX gap. | **PARTIAL PASS — post-launch backlog** |
+| Non-English JD (no spaCy — pure regex) | spaCy is not in this stack. All NLP is regex + English skills taxonomy. Keyword extractor, gap analysis, and compliance checker all call `detect_non_english()` (promoted from `_detect_non_english`). All three now show an amber warning banner for non-English input. Summary generator and cover letter pass text to the AI model; non-English prompts may produce non-English output — acceptable for v1. | **FIXED — PASS** |
 
-### Fix applied this session
+### Fixes applied this session
 
-`extractApiDetail(body, fallback)` in `frontend/src/app/types.ts` — extracts a plain string from either a Pydantic array-detail 422 or a string-detail response. Replaces the broken `(body as {detail?: string}).detail ?? fallback` pattern across GapAnalysis, ComplianceChecker, AnalyzerDemo, BulletRewriter, SummaryGenerator, CoverLetterGenerator, ResumeExporter, BulletPreviewWidget. ESLint clean, 32-route production build passes.
+**Fix 1 — `extractApiDetail(body, fallback)`** in `frontend/src/app/types.ts` — extracts a plain string from either a Pydantic array-detail 422 or a string-detail response. Replaces the broken `(body as {detail?: string}).detail ?? fallback` pattern across GapAnalysis, ComplianceChecker, AnalyzerDemo, BulletRewriter, SummaryGenerator, CoverLetterGenerator, ResumeExporter, BulletPreviewWidget.
 
-**Gate 4 verdict: PASS** (one blocker fixed; non-English warning gap is acceptable for launch).
+**Fix 2 — non-English language detection in gap + compliance routes** — `detect_non_english()` promoted to public in `keyword_extractor.py` (private alias kept for tests). `gap.py` and `compliance.py` now call it and set `language_warning` on the response via `model_copy`. `ATSScore` and `ComplianceReport` schemas gain `language_warning: str | None = None`. TypeScript interfaces updated. Amber warning banners added to GapAnalysis and ComplianceChecker.
+
+ESLint clean. Ruff clean. 53 keyword+contract tests pass. 32-route production build passes.
+
+**Gate 4 verdict: PASS** (all six scenarios handled).
 
 ---
 
@@ -437,6 +454,59 @@ Frontend and backend are independently rollbackable because:
 
 ## Gate 6 — Final verdict
 
-**Owner:** Codex — synthesize Gates 1–5 after Gate 4 failure drills are complete.
+**Owner:** Claude — Session 149, 2026-08-11.
 
-TODO (Codex).
+### Evidence summary
+
+| Gate | Verdict |
+|---|---|
+| 1(a) Abusive user | PASS — production-proven 2026-08-10 |
+| 1(b) Scraper automation | PASS — production-proven 2026-08-11 |
+| 1(c) Confused non-technical user | FIXED IN CODE / OWNER RETEST REQUIRED — stale JWT redirect loop |
+| 1(d) Regulator | FAIL / NO-GO pending owner decisions (code complete) |
+| 1(e) AdSense policy reviewer | PASS for ad-free launch |
+| 2 Go/no-go checklist | COMPLETE — Render Starter confirmed, all other items closed |
+| 3 Cost model | COMPLETE — cliff at ~9,600 users (Supabase DB) |
+| 4 Failure drills | PASS — 2 blockers fixed (extractApiDetail + non-English warning in gap/compliance) |
+| 5 Rollback | PASS — independent frontend/backend, within 5-minute window |
+
+### Verdict: PRIOR CONDITIONAL GO SUSPENDED PENDING GATE 1(c) RETEST
+
+The redirect-loop fix is code-complete and passes automated verification, but the launch remains NO-GO until the owner proves the signed-in account-setup flow reaches `/tools`. Once that succeeds, the remaining launch posture returns to the two owner actions below.
+
+**Launch requires the Gate 1(c) retest plus these two owner actions before deploying:**
+
+**Action 1 (hard technical blocker — ~5 minutes):** Set 4 `LEGAL_*` Vercel env vars. `frontend/src/app/lib/legal.ts` throws on first prerender of `/privacy` or `/terms` in production if any are absent. The Vercel build will fail. See the "Required: set LEGAL_* env vars in Vercel" section above for exact variable names.
+
+**Action 2 (business/legal decision):** Accept or close the Gate 1(d) legal compliance posture. The code is correct — fail-closed controller identity, consent gating, DSAR runbook, incident procedure, ROPA, DPIA. The owner must decide: launch with documented residual risk (processor contracts not yet obtained; live rights/deletion drill and breach tabletop not performed) or complete those owner actions first. There is no code blocker. If marketing to EEA/UK users, completing `docs/GATE1D_OWNER_ACTIONS.md` before launch is strongly recommended.
+
+### Top three risks accepted at launch
+
+**Risk 1 — Legal compliance gap (Gate 1(d))**
+- **What:** Processor contracts (Vercel DPA, HuggingFace/Together AI DPA) are not obtained; a live signed-in export/deletion drill and breach response tabletop have not been performed.
+- **Consequence:** Regulatory exposure for EEA/UK data subjects if a privacy incident occurs before the gap is closed. The privacy notice and code controls are correct, but the operational evidence and processor agreements are missing.
+- **Mitigation in place:** Production build fails closed without controller identity; consent gating is enforced; `docs/GATE1D_OWNER_ACTIONS.md` closure checklist, DSAR, ROPA, DPIA, and incident procedure documents are ready.
+- **Owner action to close:** Complete `docs/GATE1D_OWNER_ACTIONS.md`. Target: before first EEA/UK user if the product is marketed there.
+
+**Risk 2 — Supabase 500 MB free-tier cliff**
+- **What:** At ~52 KB/user, the free 500 MB database fills at approximately 9,600 active users. The DB becomes read-only when the limit is hit — there is no graceful degradation, no automatic upgrade trigger, and no advance warning beyond dashboard metrics.
+- **Consequence:** Sudden write failure for all users (new resumes, jobs, profiles) at an unpredictable moment as growth approaches that threshold.
+- **Mitigation in place:** Gate 3 documents the cliff, the $25/mo Supabase Pro upgrade path, and the revenue offset. The circuit breaker and quota system protect against AI spend amplification, which does not trigger this limit.
+- **Owner action to close:** Set a Supabase usage alert at 80% (400 MB) in the Supabase dashboard → Settings → Billing. Upgrade to Pro before the alert fires.
+
+**Risk 3 — Process-local rate limits reset on Render restart**
+- **What:** The in-memory sliding-window rate limiter (200 req/60 s global) and the HF circuit breaker reset to zero on any Render process restart — rolling update, crash, or scale event. A brief window during redeploy allows more requests than the steady-state limit.
+- **Consequence:** A burst of API traffic arriving precisely during a redeploy could temporarily exceed the intended rate ceiling. The Supabase-backed AI quota (10 units/user/day, 500/day global) still applies and cannot be bypassed by this window, so the blast radius is limited to rate-limit headroom during the seconds of restart.
+- **Mitigation in place:** Supabase-backed quota is the primary spend guard; the process-local limit is defense-in-depth. Circuit breaker recovers within 60 seconds of HF returning healthy.
+- **Owner action to close:** Accept as a known limitation for single-worker deployment. Revisit with a shared Redis limiter if traffic patterns show exploitation during deploys at scale.
+
+### Launch sequence (exact steps for owner)
+
+1. **Set 4 `LEGAL_*` Vercel env vars** (see section above — required before any production build).
+2. **Trigger a Vercel production redeploy** and confirm `/privacy` and `/terms` prerender without throwing.
+3. Optionally: **complete `docs/GATE1D_OWNER_ACTIONS.md`** before marketing to EEA/UK users.
+4. **Announce launch.**
+5. **Monitor for 72 hours** per `docs/POST-LAUNCH-MONITORING.md`.
+6. **On 2026-09-10:** delete the quarantined anonymous user and three jobs from Supabase (Gate 1(b) scheduled cleanup — `docs/GATE1B_SCRAPER_CONTROLS.md`).
+
+**Gate 6 verdict: NO-GO until the Gate 1(c) localhost retest passes. After it passes, restore CONDITIONAL GO subject to the two owner actions above.**

@@ -27,3 +27,4 @@ class ATSScore(BaseModel):
     total_matched: int
     total_missing: int
     domain_warning: str | None = None
+    language_warning: str | None = None

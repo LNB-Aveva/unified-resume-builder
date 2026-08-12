@@ -1,18 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { JobAnalysis, API_URL, connectionError, extractApiDetail } from "../types";
 import { fetchWithRetry } from "../lib/fetchWithRetry";
 import Spinner from "./Spinner";
 import { DEMO_JOB_DESCRIPTION } from "../lib/demoData";
 import TryDemoButton from "./TryDemoButton";
 import SensitiveDataNotice from "./SensitiveDataNotice";
+import { useWorkspaceJobDescription } from "./ToolWorkspace";
 
 export default function AnalyzerDemo({ publicMode = false }: { publicMode?: boolean }) {
-  const [jobText, setJobText] = useState("");
+  const [jobText, setJobText, sharesWorkspace] = useWorkspaceJobDescription();
   const [result, setResult] = useState<JobAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setResult(null);
+      setError(null);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [jobText]);
 
   async function handleAnalyze() {
     if (!jobText.trim()) {
@@ -57,6 +66,11 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
           aria-label="Job description text"
           className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
         />
+        {sharesWorkspace && (
+          <p className="text-xs text-indigo-700 dark:text-indigo-300">
+            Reused automatically in Gap Analysis.
+          </p>
+        )}
 
         {error && (
           <p role="alert" className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg px-4 py-2">

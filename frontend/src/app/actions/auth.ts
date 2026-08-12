@@ -348,6 +348,17 @@ export async function setupAccount(
     return { message: "Failed to save account preferences. Please try again." };
   }
 
+  // updateUser writes the authoritative Auth record, but the access-token JWT
+  // can still contain the previous user_metadata. proxy.ts reads those signed
+  // claims, so refresh before redirecting or it can send a newly eligible user
+  // straight back to /account-setup until the old token expires.
+  const { error: refreshError } = await supabase.auth.refreshSession();
+  if (refreshError) {
+    return {
+      message: "Your preferences were saved, but your session could not be refreshed. Please try again.",
+    };
+  }
+
   const { error } = await supabase.from("profiles").upsert({
     id: user.id,
     full_name: validated.data.fullName,

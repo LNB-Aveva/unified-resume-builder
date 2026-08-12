@@ -17,7 +17,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next({ request });
   }
 
-  const { supabaseResponse, user, authUnavailable } = await updateSession(request);
+  const { supabaseResponse, user, authUnavailable } = await updateSession(request, {
+    refreshEligibilityIfMissing: isProtected || isAuthRoute,
+  });
   const userMetadata = user?.user_metadata as Record<string, unknown> | undefined;
   const hasAcceptedTerms = typeof userMetadata?.terms_accepted_at === "string";
   const hasConfirmedAge = typeof userMetadata?.age_confirmed_at === "string";

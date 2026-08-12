@@ -10,7 +10,10 @@ function isTemporaryAuthFailure(error: unknown): boolean {
   );
 }
 
-export async function updateSession(request: NextRequest) {
+export async function updateSession(
+  request: NextRequest,
+  options: { refreshEligibilityIfMissing?: boolean } = {},
+) {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -40,9 +43,40 @@ export async function updateSession(request: NextRequest) {
       error,
     } = await supabase.auth.getClaims();
 
+    const user = data?.claims?.is_anonymous === true ? null : data?.claims ?? null;
+    const userMetadata = user?.user_metadata as Record<string, unknown> | undefined;
+    const hasAcceptedEligibility =
+      typeof userMetadata?.terms_accepted_at === "string" &&
+      typeof userMetadata?.age_confirmed_at === "string";
+
+    // Claims are the fast, signed identity check. Only authenticated users with
+    // missing eligibility claims need an authoritative lookup; this closes the
+    // short stale-JWT window after account setup without adding Auth traffic to
+    // anonymous requests for public pages.
+    if (options.refreshEligibilityIfMissing && user && !hasAcceptedEligibility) {
+      const { data: freshData, error: freshError } = await supabase.auth.getUser();
+      if (
+        !freshError &&
+        freshData.user &&
+        !freshData.user.is_anonymous &&
+        typeof freshData.user.user_metadata?.terms_accepted_at === "string" &&
+        typeof freshData.user.user_metadata?.age_confirmed_at === "string"
+      ) {
+        // Best-effort self-heal: set a new JWT cookie so later protected
+        // requests return to local claim verification instead of repeating the
+        // authoritative lookup until the old access token expires.
+        await supabase.auth.refreshSession();
+      }
+      return {
+        supabaseResponse,
+        user: freshData.user?.is_anonymous ? null : freshData.user,
+        authUnavailable: isTemporaryAuthFailure(freshError),
+      };
+    }
+
     return {
       supabaseResponse,
-      user: data?.claims?.is_anonymous === true ? null : data?.claims ?? null,
+      user,
       authUnavailable: isTemporaryAuthFailure(error),
     };
   } catch {

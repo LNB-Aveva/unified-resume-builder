@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Prompt 3 launch-gate audit
+- **Feature:** Gate 1(c) localhost redirect-loop closeout
 - **Branch:** `main`
-- **Status:** Gate 1(d) repository remediation is complete; overall NO-GO remains only for owner-controlled legal identity/age, processor contracts/content terms, vendor region/retention/transfer evidence, historical Sentry review, live rights/deletion drill, incident tabletop, and legal/DPIA approval. Gate 1(e) is PASS for ad-free launch but blocked before ad units on certified CMP proof. Gates 1(a–c) PASS; Gates 4 and 6 remain pending.
+- **Status:** Gate 1(c) redirect loop is fixed in code and all automated checks pass, but the launch verdict is temporarily NO-GO until the owner confirms the signed-in localhost form lands on `/tools`. Gate 1(d) and the 4 `LEGAL_*` values remain separate owner actions.
 
 ---
 
@@ -17,15 +17,40 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                      |
+| Agent      | copilot                     |
 | Started    | 2026-08-11                  |
-| Working On | Session 148 — Gate 4 failure drills |
+| Working On | Session 150 — Gate 1(c) final friction closeout |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 150 (Copilot) — 2026-08-11
+- **Agent:** copilot
+- **Did:**
+  - Re-audited the three deferred Gate 1(c) friction items. Confirmed later privacy work already prevents duplicate Terms/age presentation and prevents the legacy Skip link from bypassing required acceptance.
+  - Added a retained eligibility contract proving protected-route enforcement, server-action enforcement, conditional acceptance UI, and post-acceptance-only Skip rendering.
+  - Closed the remaining repeated-input friction with an ephemeral working set shared by Keyword Extraction, Gap Analysis, and Compliance Checker. It prefills from a deliberately loaded saved resume, exposes ready/not-added state and clear-both, and does not persist raw text in browser storage.
+  - Owner localhost review exposed a blocker: submitting account setup redirected to `/tools`, but the proxy immediately returned the user to `/account-setup` because its verified JWT still contained pre-update eligibility metadata. Added an explicit session refresh before redirect plus a self-healing authoritative-user fallback restricted to authenticated protected/auth requests with missing eligibility claims. This also prevents the visible Skip link from looping, refreshes the stale token after proof, and keeps anonymous public requests claim-only.
+  - Verification after the redirect-loop fix: backend Ruff clean; combined account/scraper contracts 10/10; frontend ESLint clean; 32-route production build passed; full desktop/mobile Playwright suite 56/56 passed; diff check passed.
+- **Files Changed:** Gate 1(c) tool components/provider/page and E2E/contract tests; launch audit; shared worklog and decision record.
+- **Next:** Owner resubmits `http://localhost:3000/account-setup`, confirms it lands on `/tools`, then reviews the step 1–3 synchronization. After approval, run final lints, commit with the required prefix, deploy, and repeat both bounded smokes in production.
+- **Blockers:** Interactive localhost retest remains owner-side because the browser connector cannot attach to the signed-in Chrome tab. Gate 1(c) is fixed in code but stays pending until that retest passes.
+
+### Session 149 (Claude) — 2026-08-11
+- **Agent:** claude
+- **Did:**
+  - Wrote Gate 6 final verdict — synthesised all Gates 1(a–e), 2, 3, 4, 5 into a CONDITIONAL GO.
+  - Updated overall verdict at top of `docs/LAUNCH_READINESS_AUDIT.md` from NO-GO → CONDITIONAL GO.
+  - Updated Gate status table at top to reflect all current PASS verdicts.
+  - Closed Render Starter "VERIFY" row in Gate 2 table → PASS (owner confirmed 2026-08-11).
+  - Closed Render Starter in Gate 2 open-items table.
+  - Gate 6 documents: 2 owner actions before deploy, top 3 accepted risks (Gate 1(d) legal gap, Supabase 500MB cliff, process-local rate limit reset), and exact launch sequence.
+- **Files Changed:** `docs/LAUNCH_READINESS_AUDIT.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Owner completes 2 actions: (1) set 4 `LEGAL_*` Vercel env vars, (2) decide on Gate 1(d) legal posture. Then launch.
+- **Blockers:** Owner actions only — no code blockers remain.
 
 ### Session 148 (Claude) — 2026-08-11
 - **Agent:** claude
@@ -36,12 +61,12 @@
   - **Render sleeping:** Starter plan has no sleep (DEC-030); deploy-restart `Failed to fetch` handled. PASS.
   - **Malformed PDF upload:** no PDF upload feature exists; not applicable. PASS.
   - **50-page resume (BLOCKER FOUND + FIXED):** Pydantic 422 returns `detail` as an array; all 8 components did `new Error(array)` → `"[object Object]"`. Added `extractApiDetail()` helper to `types.ts` and wired it into GapAnalysis, ComplianceChecker, AnalyzerDemo, BulletRewriter, SummaryGenerator, CoverLetterGenerator, ResumeExporter, BulletPreviewWidget. Now shows Pydantic's `msg` field (e.g. "String should have at most 50000 characters").
-  - **Non-English JD:** spaCy is NOT in this stack. Keyword extractor warns via `_detect_non_english()`. Gap/compliance/summary/cover-letter tools produce silent bad results — UX gap, not a stack trace. Post-launch backlog.
-  - Updated `docs/LAUNCH_READINESS_AUDIT.md` Gate 4 section with full evidence table and PASS verdict.
-  - ESLint clean. 32-route production build passes.
-- **Files Changed:** `frontend/src/app/types.ts` (new `extractApiDetail`), 8 component files (GapAnalysis, ComplianceChecker, AnalyzerDemo, BulletRewriter, SummaryGenerator, CoverLetterGenerator, ResumeExporter, BulletPreviewWidget), `docs/LAUNCH_READINESS_AUDIT.md`, `.ai-sync/WORKLOG.md`
-- **Next:** Owner views localhost:3000 (localhost-first rule), then commit. Gate 6 (final verdict) remains. Owner-side Gate 1(d) actions in `docs/GATE1D_OWNER_ACTIONS.md` remain pending.
-- **Blockers:** None code-side. Owner must view localhost before commit. Gate 1(d) owner evidence still required before changing that NO-GO.
+  - **Non-English JD (FIXED):** Promoted `_detect_non_english()` to public `detect_non_english()` in `keyword_extractor.py` (private alias kept for existing tests). Gap analysis and compliance checker routes now call it and attach `language_warning` to the response via `model_copy`. `ATSScore` and `ComplianceReport` schemas updated. TypeScript interfaces updated. Amber warning banners added to `GapAnalysis.tsx` and `ComplianceChecker.tsx`. Gate 4 full PASS.
+  - Updated `docs/LAUNCH_READINESS_AUDIT.md` Gate 4 section with full evidence table + both fixes. Updated Gate 6 evidence table.
+  - ESLint clean. Ruff clean. 53 keyword+contract tests pass. 32-route production build passes.
+- **Files Changed:** `frontend/src/app/types.ts`, 8 component files (GapAnalysis, ComplianceChecker, AnalyzerDemo, BulletRewriter, SummaryGenerator, CoverLetterGenerator, ResumeExporter, BulletPreviewWidget), `backend/app/services/nlp/keyword_extractor.py`, `backend/app/schemas/score.py`, `backend/app/schemas/compliance.py`, `backend/app/api/routes/gap.py`, `backend/app/api/routes/compliance.py`, `docs/LAUNCH_READINESS_AUDIT.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Owner views localhost:3000 (localhost-first rule) before commit. Owner-side: Gate 1(c) localhost retest, Gate 1(d) legal decisions, 4 `LEGAL_*` Vercel env vars.
+- **Blockers:** None code-side. All code-completable Gate 4 items done. Owner must view localhost before commit.
 
 ### Session 148 (Copilot) — 2026-08-11
 - **Agent:** copilot

@@ -6,6 +6,7 @@ from app.core.auth import require_auth
 from app.core.rate_limit import limiter
 from app.schemas.compliance import ComplianceReport, ComplianceRequest
 from app.services.compliance.checker import check_resume
+from app.services.nlp.keyword_extractor import detect_non_english
 
 router = APIRouter()
 
@@ -24,4 +25,8 @@ async def check_compliance(request: Request, comp_req: ComplianceRequest, _user_
     if not comp_req.resume_text.strip():
         raise HTTPException(status_code=422, detail="resume_text cannot be empty.")
 
-    return check_resume(comp_req.resume_text)
+    result = check_resume(comp_req.resume_text)
+    warning = detect_non_english(comp_req.resume_text)
+    if warning:
+        result = result.model_copy(update={"language_warning": warning})
+    return result
