@@ -114,7 +114,7 @@ was not legally required. Silence is not a decision record.
 ## Contacts
 
 - **Launch owner / incident owner:** Laxmi Narayana Bingi
-- **Email:** support@resumeai.cv (public), bobby.bingo696@gmail.com (alerts)
+- **Email:** support@resumeai.cv (public); private alert mailbox retained outside Git
 - **Monitoring:** UptimeRobot (email + push), Sentry (backend + frontend), GitHub Actions CI
 - **Rollback authority:** Laxmi Narayana Bingi (solo operator)
 - Render support: dashboard.render.com

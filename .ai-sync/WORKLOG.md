@@ -17,9 +17,9 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | claude                     |
+| Agent      | copilot                     |
 | Started    | 2026-08-12                  |
-| Working On | Session 155 — AI-assisted compliance review + Privacy/Terms redlines |
+| Working On | Session 156 — consolidate compliance closeout |
 
 ---
 
@@ -27,11 +27,18 @@
 
 <!-- Most recent on top. Keep last 10 sessions. -->
 
+### Session 156 (Copilot) — 2026-08-12
+- **Agent:** copilot
+- **Did:** Reconciled the concurrent compliance-review commit against current primary-source guidance and the repository's evidence rules. Preserved the useful Privacy/Terms minimization, complaint-route, governing-law, and liability wording while removing unsupported legal-clearance claims, correcting the current CCPA revenue threshold, separating fact-dependent state/EEA/UK conclusions, generalizing the unverified transfer language, and removing a private alert address from the incident runbook. Kept the private competitive-research folder local and ignored because it contains raw third-party/tool-attributed working material and account PDFs that do not belong in product history.
+- **Files Changed:** Privacy/Terms accuracy cleanup, internal compliance record, incident contacts, `.gitignore`, and shared worklog.
+- **Next:** Owner completes the remaining account-specific provider evidence and operational drills in `docs/GATE1D_OWNER_ACTIONS.md`; qualified legal review remains unavailable and must not be represented as complete.
+- **Blockers:** Gate 1(d) remains NO-GO pending owner-controlled evidence and qualified review. No additional independently executable repository remediation is known.
+
 ### Session 155 (Claude) — 2026-08-12
 - **Agent:** claude
-- **Did:** Full AI-assisted internal compliance review against primary US statutory sources (FTC Act, COPPA, Illinois PIPA, CCPA thresholds, GDPR territorial scope). Applied 5 redlines: Privacy Policy §§ 2/6/11 and Terms §§ 4/10. Fixes: immigration documents added to prohibited list (both pages), international-transfers section rewritten to remove SCC implication, FTC complaint route added, Illinois governing law + liability cap added to Terms. Created docs/COMPLIANCE-REVIEW-20260812.md. Both lint checks pass.
+- **Did:** Completed an internal compliance issue-spotting review against primary US statutory sources and regulator guidance. Applied five text updates across Privacy Policy §§ 2/6/11 and Terms §§ 4/10, and created `docs/COMPLIANCE-REVIEW-20260812.md`. Both lint checks passed at the time of the change.
 - **Files Changed:** `frontend/src/app/privacy/page.tsx`, `frontend/src/app/terms/page.tsx`, `docs/COMPLIANCE-REVIEW-20260812.md`, `.ai-sync/WORKLOG.md`
-- **Next:** Owner completes GATE1D_OWNER_ACTIONS.md §§ 2–6 (processor contracts, drills, tabletop). Gate 1(d) residual risks are documented and accepted for US-focused ad-free launch.
+- **Next:** Owner completes `GATE1D_OWNER_ACTIONS.md` §§ 2–6. The internal review does not replace qualified legal review or accept unresolved risks as a matter of law.
 - **Blockers:** None for repository. Owner-controlled evidence items remain in GATE1D_OWNER_ACTIONS.md.
 
 ### Session 154 (Copilot) — 2026-08-12

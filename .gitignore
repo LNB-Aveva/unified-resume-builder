@@ -98,3 +98,6 @@ backups/
 # ============================
 *.pdf
 !docs/**/*.pdf
+
+# Private working research and account evidence
+/ResumeAI-Work related files/

@@ -105,9 +105,9 @@ export default function PrivacyPolicy() {
           <p className={text}>
             These providers may process personal data in the United States and other countries where
             they or their subprocessors operate. ResumeAI is operated from the United States and its
-            initial launch is US-focused. Where a provider makes an applicable transfer mechanism
-            available—such as an adequacy decision or standard contractual clauses—ResumeAI relies on
-            that processor&apos;s arrangement. Contact{" "}
+            initial launch is US-focused. Safeguards depend on the provider, account plan, service
+            configuration, and applicable law, and may include contractual transfer mechanisms.
+            Contact{" "}
             <a href="mailto:support@resumeai.cv" className="text-indigo-600 dark:text-indigo-400 underline">
               support@resumeai.cv
             </a>{" "}
@@ -187,7 +187,7 @@ export default function PrivacyPolicy() {
           <p className={`${text} mt-3`}>
             You may also file a complaint with the US Federal Trade Commission at{" "}
             <a href="https://reportfraud.ftc.gov" className="text-indigo-600 dark:text-indigo-400 underline" rel="noopener noreferrer" target="_blank">
-              ftc.gov/complaint
+              reportfraud.ftc.gov
             </a>
             , or with your state&apos;s attorney general or data-protection authority.
           </p>

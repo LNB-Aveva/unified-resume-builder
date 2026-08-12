@@ -135,7 +135,7 @@ export default function TermsOfService() {
             These Terms are governed by the laws of the State of Illinois, United States, except
             where mandatory consumer or data-protection law in your jurisdiction provides stronger
             rights. Any dispute arising from these Terms or the service is subject to the
-            non-exclusive jurisdiction of courts in Cook County, Illinois, except where mandatory
+            non-exclusive jurisdiction of state and federal courts located in Illinois, except where mandatory
             local law provides otherwise. To the fullest extent permitted by applicable law, our
             aggregate liability for any claim arising from these Terms or the service is limited to
             the greater of: (a) amounts you paid us in the twelve months before the claim, or

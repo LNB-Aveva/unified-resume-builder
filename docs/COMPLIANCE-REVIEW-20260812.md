@@ -1,4 +1,4 @@
-# AI-Assisted Internal Compliance Review — ResumeAI
+# Internal Compliance Issue-Spotting Review — ResumeAI
 
 **Product:** ResumeAI (resumeai.cv)
 **Review date:** 2026-08-12
@@ -6,25 +6,25 @@
 **Materials reviewed:** GATE1D_LAUNCH_SCOPE_DECISION.md, GATE1D_DATA_HANDLING.md,
 GATE1D_PUBLIC_PROCESSOR_EVIDENCE.md, ROPA.md, DPIA.md, PRIVACY-REQUESTS.md,
 INCIDENT-RESPONSE.md, production Privacy Policy, production Terms of Service
-**Method:** Document analysis against primary US statutory sources and regulator guidance.
+**Method:** Internal document analysis against primary statutory sources and regulator guidance.
 Primary sources are cited with direct links.
 
-This is an AI-assisted internal compliance analysis. It does not constitute legal
-advice, does not create an attorney-client relationship, and does not substitute for a
-determination by a licensed attorney on jurisdiction-specific questions.
+This is an internal issue-spotting record, not legal advice or counsel approval. It does
+not create an attorney-client relationship or determine jurisdiction-specific legal
+questions. Gate 1(d)'s qualified-review and owner-evidence items remain open.
 
 ---
 
 ## A. Executive Verdict
 
-**ACCEPTABLE WITH DOCUMENTED RESIDUAL RISK** for the US-focused, ad-free launch.
+**INTERNAL CONDITIONAL ASSESSMENT — NOT LEGAL CLEARANCE** for the US-focused,
+ad-free launch.
 
 Five accuracy issues were identified in the Privacy Policy and Terms. All five were
-corrected on 2026-08-12. After correction, the public legal pages accurately describe
-the service's documented processing. Procedures for rights requests, incidents,
-processing records, and impact assessment are in place. Residual risks in Section H
-are owner-controlled, acknowledged, and do not create an immediate FTC or Illinois
-PIPA enforcement risk at current scale.
+corrected on 2026-08-12. The changes improve alignment between the public pages and
+documented processing. Procedures for rights requests, incidents, processing records,
+and impact assessment are in place. This review does not establish that every law is
+inapplicable or that the remaining owner-controlled risks are legally accepted.
 
 ---
 
@@ -33,15 +33,15 @@ PIPA enforcement risk at current scale.
 | Law | Threshold | Applies? | Factual basis |
 |---|---|---|---|
 | FTC Act § 5 (15 U.S.C. § 45) | All US businesses — no threshold | **YES** | Controller in Illinois; service operates in US commerce |
-| COPPA (15 U.S.C. § 6501; 16 C.F.R. Part 312) | Service directed to children under 13, OR actual knowledge of under-13 user | **NO** | Resume/career service not directed to children; age-16 gate enforced at sign-up |
+| COPPA (15 U.S.C. § 6501; 16 C.F.R. Part 312) | Service directed to children under 13, OR actual knowledge of under-13 user | **Not indicated on documented facts; monitor** | Resume/career service is not designed for children; age-16 self-attestation is enforced at sign-up, but actual knowledge would require reassessment |
 | Illinois PIPA (815 ILCS 530) | Collects PI of Illinois residents — no revenue floor | **YES** | Controller established in Illinois; breach-notification obligation applies |
 | Illinois BIPA (740 ILCS 14) | Collection of biometric identifiers or information | **NO** | No biometric data collected |
-| CCPA/CPRA (Cal. Civ. Code § 1798.100) | >$25M revenue; OR buys/sells PI of 100,000+ CA consumers; OR 50%+ revenue from data sale | **NO** (current scale) | Free SaaS, zero revenue; below all three thresholds. California rights language in policy is voluntary best practice |
+| CCPA/CPRA (Cal. Civ. Code § 1798.100) | $26.625M annual gross revenue (effective 2025); OR buys, sells, or shares PI of 100,000+ CA consumers/households; OR 50%+ revenue from selling or sharing PI | **Not indicated on recorded metrics** | Reassess against actual annual revenue, California volume, and sale/sharing facts |
 | Virginia CDPA (Va. Code § 59.1-575) | PI of 100,000+ VA consumers, or 25,000+ with 50%+ data revenue | **NO** | Below threshold |
-| Colorado CPA, Texas TDPSA, CT CTDPA | 100,000+ consumer thresholds | **NO** | Below threshold |
+| Other state comprehensive privacy laws | Thresholds, exemptions, and duties vary by state | **Not determined collectively** | Maintain actual state/consumer/revenue metrics and reassess individually; do not use one 100,000-consumer test for every state |
 | Nevada SB 220 | Sale of covered information | **NO** | No sale of personal information occurs |
-| GDPR (EU 2016/679, Art. 3(2)) | Offering goods/services to EEA persons OR monitoring EEA behavior | **NOT YET** | Active EEA marketing deferred per GATE1D_LAUNCH_SCOPE_DECISION.md; incidental organic access does not constitute "offering" per EDPB Guidelines 3/2018 §§ 18–22 |
-| UK GDPR (retained by EU Withdrawal Act 2018) | Same targeting analysis | **NOT YET** | Same — UK marketing deferred |
+| GDPR (EU 2016/679, Art. 3(2)) | Offering goods/services to EEA persons OR monitoring EEA behavior | **Targeting not established on recorded facts; qualified review pending** | Active EEA marketing is deferred; reassess actual users, marketing, monitoring, and regional features |
+| UK GDPR | Similar territorial-scope analysis | **Targeting not established on recorded facts; qualified review pending** | Active UK marketing is deferred; reassess before regional activity |
 
 Primary sources:
 - FTC Act: https://www.ftc.gov/legal-library/browse/statutes/federal-trade-commission-act (accessed 2026-08-12)
@@ -57,11 +57,11 @@ Primary sources:
 | # | Severity | Area | Controlling authority | Finding | Launch block? | Status |
 |---|---|---|---|---|---|---|
 | F1 | Moderate | Privacy Policy § 6 | FTC Act § 5 deception standard | "Where required, transfers rely on…standard contractual clauses" implied operator-executed SCCs. Transfer mechanisms are processor-level only; operator has not documented executed SCCs. Statement could mislead users into believing their data has protections not verified to be in place. | No | **CORRECTED 2026-08-12** |
-| F2 | Moderate | Terms § 10 | FTC Act § 5; Illinois contract law | No governing law or jurisdiction specified. Creates ambiguity if a dispute arises; higher litigation risk for individual operator. | No | **CORRECTED 2026-08-12** |
-| F3 | Moderate | Terms § 10 | Contract law; FTC § 5 | No liability cap. Individual operator has uncapped personal financial exposure for claims from free-tier users. | No | **CORRECTED 2026-08-12** |
-| F4 | Low | Privacy Policy § 11 | FTC business guidance on privacy notices | No reference to FTC or state AG complaint channels. FTC guidance on privacy notices recommends disclosing complaint routes. | No | **CORRECTED 2026-08-12** |
-| F5 | Low | Privacy § 2, Terms § 4 | FTC § 5; Illinois PIPA § 5 definition of PI | Immigration status and work-authorization documents absent from prohibited-data list. These are sensitive under Illinois PIPA's PI definition and commonly found in non-citizen job-seeker resumes. | No | **CORRECTED 2026-08-12** |
-| F6 | Low/operational | INCIDENT-RESPONSE.md | Operational hygiene | Private Gmail address committed to internal repository document. Not a public page; low immediate risk. | No | Owner decision |
+| F2 | Moderate | Terms § 10 | Contract drafting | Governing-law and non-exclusive Illinois forum language was added with mandatory-law carve-outs. Its enforceability remains a qualified-review question. | No | **TEXT ADDED; REVIEW PENDING** |
+| F3 | Moderate | Terms § 10 | Contract drafting | A US $50 minimum aggregate-liability cap was added with a non-waivable-rights carve-out. Its enforceability and suitability remain qualified-review questions. | No | **TEXT ADDED; REVIEW PENDING** |
+| F4 | Low | Privacy Policy § 11 | Transparency | FTC and state complaint routes were added as optional user guidance; this review does not claim the sentence is universally required. | No | **ADDED 2026-08-12** |
+| F5 | Low | Privacy § 2, Terms § 4 | Data minimization | Immigration/work-authorization documents may contain government identifiers or other sensitive content even though immigration status itself is not categorically covered by Illinois PIPA's breach definition. The warnings now discourage submission. | No | **IMPROVED 2026-08-12** |
+| F6 | Low/operational | INCIDENT-RESPONSE.md | Operational hygiene | A private alert address appeared in a tracked runbook. The current file now refers only to an out-of-repository private alert mailbox; prior Git history is unchanged. | No | **CURRENT FILE CORRECTED 2026-08-12** |
 | F7 | Owner-controlled | Processor contracts | FTC § 5 accuracy | HF/Together DPA for routed traffic not documented; Vercel Hobby plan may not be covered by Vercel DPA; Sentry historical events not reviewed. Items documented in GATE1D_OWNER_ACTIONS.md. | No (EEA gating required) | Open — owner |
 | F8 | Owner-controlled | Operational drills | FTC § 5 accuracy | DSAR, consent/GPC, and incident tabletop not yet completed. Policy accurately describes procedures; gap is operational, not disclosure. | No | Open — owner |
 
@@ -89,7 +89,7 @@ Added "immigration status or work-authorization documents" to the prohibited-con
 ### Terms — Section 10 (Disclaimers and liability)
 Replaced vague "governing law and forum" sentence with:
 - Express Illinois governing law with mandatory-law carve-out
-- Non-exclusive Cook County jurisdiction with mandatory-law carve-out
+- Non-exclusive Illinois jurisdiction with mandatory-law carve-out
 - Aggregate liability cap: greater of amounts paid in prior 12 months or US $50
 
 ### Terms — Last updated date
@@ -99,7 +99,8 @@ Updated from August 11, 2026 to August 12, 2026.
 
 ## E. Minors and COPPA
 
-**Conclusion: COPPA does not apply. Minimum age 16 is legally defensible.**
+**Internal conclusion: COPPA applicability is not indicated by the documented product
+design; age 16 is a conservative product boundary, not a legal clearance.**
 
 COPPA (15 U.S.C. § 6501 et seq.; 16 C.F.R. Part 312, amended effective 2025-06-23,
 90 Fed. Reg. 2460) applies to operators of websites or online services that are directed
@@ -111,19 +112,17 @@ subject matter, visual/audio content, use of animated characters, celebrities or
 popular with children, language, advertising, and whether empirical evidence shows a
 significant portion of users are children. A resume/career/job-search service meets none
 of these factors. The service's subject matter — professional resume building, ATS
-analysis, job application tracking — is inherently adult- and career-oriented.
+analysis, and job application tracking — is oriented toward careers rather than children.
 
 The 2025 COPPA amendment expanded parental-consent protections for under-13 children in
 targeted advertising contexts. It does not extend COPPA's requirements to career services
 or require parental consent for teen users aged 13–17.
 
-Age 16 exceeds COPPA's 13-year floor, aligns with common professional-service minimums,
-and corresponds to US minimum working age for most employment categories (29 U.S.C.
-§ 203(l); 29 C.F.R. Part 570). Sign-up records age confirmation; OAuth onboarding gates
-tools until acceptance; the deletion procedure for under-age accounts is documented.
-
-No parental consent mechanism is required. The choice of minimum age 16 is appropriate
-and defensible.
+Age 16 exceeds COPPA's under-13 boundary. Sign-up records a self-attestation rather than
+a date of birth, and OAuth onboarding gates tools until acceptance. Actual knowledge of
+an under-13 user, product changes directed toward children, or applicable state teen-
+privacy rules would require reassessment. No test should fabricate a birth year because
+the product does not collect one.
 
 Sources:
 - COPPA Rule text: https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312 (accessed 2026-08-12)
@@ -134,7 +133,8 @@ Sources:
 
 ## F. Sensitive-Data Conclusion
 
-**Conclusion: PASS for US-focused launch. Immigration-document gap corrected.**
+**Internal conclusion: minimization warnings improved; processor and jurisdictional
+questions remain open.**
 
 Under CCPA/CPRA (Cal. Civ. Code § 1798.121), "sensitive personal information" is a
 defined category comprising: SSN, driver's license/state ID/passport number, financial
@@ -152,10 +152,9 @@ eligibility, work permit numbers) can contain SSNs or government ID numbers that
 trigger Illinois PIPA breach notification if exposed. These are now listed in the
 prohibited-data warnings in both the Privacy Policy and Terms (F5 corrected).
 
-The service's current approach — warnings at data collection points plus Sentry allowlist
-scrubbing — is legally adequate for US law at this scale and subject matter. No technical
-block is legally required; the warning plus user responsibility allocation is standard US
-SaaS practice.
+Warnings at collection points and Sentry allowlist scrubbing reduce risk, but warnings do
+not prove that each processor contract permits incidental sensitive content or determine
+whether additional technical controls are required under every applicable law.
 
 For EEA expansion (deferred): GDPR Article 9 requires an explicit legal condition for
 processing special-category data (racial/ethnic origin, health, religious beliefs, union
@@ -170,7 +169,8 @@ Sources:
 
 ## G. EEA/UK Territorial Scope, Representative, and DPO
 
-**Conclusion: No DPO, EEA representative, or UK representative is currently required.**
+**Internal conclusion: current records do not establish EEA/UK targeting; representative
+and DPO determinations remain subject to qualified review and actual operating facts.**
 
 **GDPR territorial scope (Art. 3(2)):** GDPR applies to non-EU controllers that "offer
 goods or services" to EEA data subjects or monitor their behavior in the Union. EDPB
@@ -180,17 +180,18 @@ EU-language content, EU TLD, and direct mentions of EU users. None of these are 
 The US-focused scope decision is recorded in GATE1D_LAUNCH_SCOPE_DECISION.md. Incidental
 organic access by EEA users does not constitute targeting.
 
-**UK GDPR (Art. 3(2), as retained):** Same analysis. UK marketing is deferred. Not
-applicable.
+**UK GDPR:** The recorded scope similarly defers UK marketing. Actual UK offering or
+monitoring facts must be reassessed.
 
 **DPO (GDPR Art. 37):** Required for public authorities, large-scale systematic
-monitoring of individuals, or large-scale processing of special-category data. This small
-US SaaS meets none of these criteria. No DPO is required.
+monitoring of individuals, or large-scale processing of special-category data. The
+documented current scale does not indicate those triggers, but this is not a final legal
+determination.
 
-**EEA Article 27 representative:** Required for non-EU controllers meeting the targeting
-test. Targeting test is not met. Not required.
+**EEA Article 27 representative:** The recorded US-focused scope does not establish the
+targeting predicate. Reassess before EEA activity or if actual operating facts change.
 
-**UK Article 27 representative:** Same analysis. Not required.
+**UK representative:** Apply the same fact-dependent reassessment for UK activity.
 
 **Mandatory reassessment trigger:** Any EU/UK-targeted advertisement, EU-language landing
 page, EU-currency pricing, or EU-region product decision requires reopening this analysis
@@ -203,21 +204,21 @@ Sources:
 
 ---
 
-## H. Accepted Residual Risks
+## H. Open and Unresolved Risks
 
-The following risks are known, documented, and accepted for the US-focused, ad-free
-launch. They do not create immediate enforcement risk but must be addressed per the owner
-timeline in GATE1D_OWNER_ACTIONS.md.
+The following risks are known and documented. This internal review does not accept them
+as a matter of law or establish that they present no enforcement risk. Address them using
+the evidence requirements in GATE1D_OWNER_ACTIONS.md.
 
 | Risk | Reference | Priority |
 |---|---|---|
 | HF/Together AI contracts for routed traffic not yet documented | GATE1D_PUBLIC_PROCESSOR_EVIDENCE.md | Before EEA marketing |
 | Vercel Hobby plan / DPA coverage not resolved | GATE1D_PUBLIC_PROCESSOR_EVIDENCE.md | Before EEA marketing |
-| Sentry pre-allowlist historical events not reviewed or purged | GATE1D_DATA_HANDLING.md | Within 30 days of launch |
-| Live DSAR drill not yet completed | GATE1D_OWNER_ACTIONS.md § 4 | Before first external DSAR |
-| Consent/GPC browser drill not yet completed | GATE1D_OWNER_ACTIONS.md § 5 | Within 14 days of launch |
-| Incident tabletop not yet run | GATE1D_OWNER_ACTIONS.md § 6 | Within 60 days of launch |
-| Individual operator (no LLC) — personal liability | Advisory | Before reaching 1,000 active users |
+| Sentry pre-allowlist historical events not reviewed or purged | GATE1D_DATA_HANDLING.md | Owner checklist |
+| Live DSAR drill not yet completed | GATE1D_OWNER_ACTIONS.md § 4 | Owner checklist |
+| Consent/GPC browser drill not yet completed | GATE1D_OWNER_ACTIONS.md § 5 | Owner checklist |
+| Incident tabletop not yet run | GATE1D_OWNER_ACTIONS.md § 6 | Owner checklist |
+| Individual operator structure and liability | Qualified business/legal advice unavailable | Unresolved |
 
 ---
 
@@ -228,8 +229,8 @@ timeline in GATE1D_OWNER_ACTIONS.md.
 - [x] Privacy Policy § 11 — Added FTC and state AG complaint route
 - [x] Privacy Policy — Last updated date: August 12, 2026
 - [x] Terms § 4 — Added immigration documents to prohibited-content list
-- [x] Terms § 10 — Added Illinois governing law, non-exclusive Cook County jurisdiction, and US $50 aggregate liability cap
+- [x] Terms § 10 — Added Illinois governing law, non-exclusive Illinois jurisdiction, and US $50 aggregate liability cap; qualified review remains pending
 - [x] Terms — Last updated date: August 12, 2026
-- [x] This review document created at docs/COMPLIANCE-REVIEW-20260812.md
-- [ ] Owner: Set LEGAL_CONTROLLER_ADDRESS to a non-home postal address
+- [x] This internal review document created at docs/COMPLIANCE-REVIEW-20260812.md
+- [ ] Owner: Privately confirm that the published controller address is suitable and intentionally public; use an authorized business mailing address if desired
 - [ ] Owner: Complete items in GATE1D_OWNER_ACTIONS.md §§ 2–6
