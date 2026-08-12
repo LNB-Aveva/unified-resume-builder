@@ -29,9 +29,9 @@
 
 ### Session 152 (Copilot) — 2026-08-12
 - **Agent:** copilot
-- **Did:** Rechecked the Gate 1(d)/Gate 2 documentation scope and owner-approved save request. Prepared the retained launch-scope decision, public processor evidence, ROPA/DPIA updates, owner checklist, reconciled Gate 2 verdict, and shared records for commit/push while excluding the unrelated untracked work folder.
+- **Did:** Rechecked the Gate 1(d)/Gate 2 documentation scope and owner-approved save request. Committed and pushed the retained launch-scope decision, public processor evidence, ROPA/DPIA updates, owner checklist, reconciled Gate 2 verdict, and shared records as `ca09a56`. Required CI run `31606344486` passed Backend, Frontend, and desktop/mobile Playwright. The unrelated untracked work folder remained excluded and untouched.
 - **Files Changed:** Gate 1(d)/Gate 2 audit and evidence documents plus shared worklog/decision record.
-- **Next:** Commit and push the verified documentation set; confirm remote branch state.
+- **Next:** Owner/counsel completes the remaining unchecked Gate 1(d) evidence. Keep the launch US-focused and ad-free until the applicable legal review and certified CMP are complete.
 - **Blockers:** None for repository save/publish. Owner/counsel-only Gate 1(d) evidence remains separately tracked.
 
 ### Session 151 (Copilot) — 2026-08-11
