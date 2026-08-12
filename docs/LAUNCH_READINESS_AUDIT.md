@@ -7,7 +7,7 @@
 
 ## Current verdict
 
-**NO-GO pending a bounded Gate 1(c) localhost retest.** Owner review found that account setup redirected back to itself because the proxy read stale eligibility metadata from the access-token JWT. The session-refresh fix passes all automated checks, but this audit's rule keeps the gate closed until the signed-in owner confirms the form now lands on `/tools`. After that proof, the prior conditional-go posture still requires the four `LEGAL_*` values and the Gate 1(d) owner decision.
+**CONDITIONAL GO for ad-free launch.** Gate 1(c) is closed: after the stale-eligibility JWT fix, the owner completed account setup and retained production evidence of the signed-in `/tools` destination on 2026-08-11. The shared step 1–3 flow is covered by the passing browser suite. The remaining launch conditions are the four `LEGAL_*` values and the Gate 1(d) owner decision.
 
 Cost model verdict: the $7/mo budget safely handles 0–9,600 users. The first hard cliff is Supabase's 500 MB free DB at approximately 9,600 active users (~52 KB/user average footprint). HuggingFace free-tier rate limits become visible at ~1,000 users during peak hours but fail gracefully via circuit breaker.
 
@@ -15,14 +15,14 @@ Cost model verdict: the $7/mo budget safely handles 0–9,600 users. The first h
 |---|---|---|
 | 1(a). Abusive user — spend amplification and resume theft | Claude + Copilot | **PASS** — production-proven 2026-08-10 |
 | 1(b). Scraper and distributed automation | Claude + Copilot | **PASS** — production-proven 2026-08-11 |
-| 1(c). Confused non-technical user | Claude + Copilot | **FIXED IN CODE / OWNER RETEST REQUIRED** — stale JWT redirect loop found during localhost review |
+| 1(c). Confused non-technical user | Claude + Copilot | **PASS** — production onboarding proof + 557 backend and 56/56 E2E tests |
 | 1(d). Regulator reviewing resume-data handling | Copilot | **FAIL / NO-GO** — code complete; owner legal decisions required |
 | 1(e). AdSense policy reviewer | Claude | **PASS for ad-free launch** — blocked before ad units by TCF CMP + 4 LEGAL_* env vars |
 | 2. Evidence-backed go/no-go checklist | Claude | **COMPLETE** |
 | 3. 100 / 1,000 / 10,000-user cost model | Claude | **COMPLETE — cliff at ~9,600 users (Supabase DB)** |
 | 4. Failure drills | Claude | **PASS** — 1 blocker fixed; non-English gap → post-launch backlog |
 | 5. Independent rollback verification | Claude | **COMPLETE — PASS** |
-| 6. Final verdict and top three accepted risks | Claude | **NO-GO — Gate 1(c) owner retest, then 2 owner actions** |
+| 6. Final verdict and top three accepted risks | Claude | **CONDITIONAL GO — 2 owner actions before deploy** |
 
 ## Baseline evidence
 
@@ -97,14 +97,17 @@ production proof, incident procedure, and residual-risk boundary are in
 | Scope limitations are substantially clearer than in the closed audit. | Pass | Public copy states English-language and taxonomy limitations, says scoring is directional, and explains that pasted-text checks cannot inspect PDF/DOCX layout. Non-English detection now returns a warning. | Verify the actual deployed signed-in flow in Gate 4. |
 | Signed-in AI Summary works through the deployed production stack. | Pass | The owner generated a 61-word summary on production with a real Supabase session and Hugging Face response. | Preserve as a release smoke test. |
 | Terms/age acceptance could be repeated or bypassed through the legacy Skip path. | **Pass** | Account setup now renders acceptance only when metadata is missing, renders Skip only after acceptance, rejects unchecked required acceptance in the server action, and redirects ineligible protected-route users back to setup. The combined account/eligibility contract passes 5/5. | Preserve the eligibility contract test. |
-| Steps 1–3 required users to re-paste the same job description and resume. | **Pass in code** | An in-memory working set now synchronizes the full-length inputs across Keyword Extraction, Gap Analysis, and Compliance Checker, prefills a deliberately loaded saved resume, shows live state, and clears both fields on request. It does not use browser storage. The new flow passes in the full 56/56 desktop/mobile E2E suite. | Owner reviews localhost, then repeat this smoke once after deployment. |
-| Continue to Tools redirected back to account setup after eligibility was saved. | **Fixed in code / owner retest required** | The setup page used the current Auth user, but the proxy read older `user_metadata` embedded in the signed access token. The setup action now explicitly refreshes the session before redirecting. As a fallback for Continue, Skip, or direct navigation during the stale-token window, the proxy fetches the current user only when an authenticated protected/auth request has missing eligibility claims, then refreshes the token cookie when current eligibility is confirmed; anonymous public requests remain claim-only. Regression contracts preserve both behavior and the scraper boundary. | Owner retries the localhost form and confirms the URL becomes `/tools`; then preserve the post-deploy onboarding smoke. |
+| Steps 1–3 required users to re-paste the same job description and resume. | **Pass** | An in-memory working set now synchronizes the full-length inputs across Keyword Extraction, Gap Analysis, and Compliance Checker, prefills a deliberately loaded saved resume, shows live state, and clears both fields on request. It does not use browser storage. The flow passes in the full 56/56 desktop/mobile E2E suite, and the owner retained the deployed working-set surface. | Preserve the synchronization-and-clear E2E regression. |
+| Continue to Tools redirected back to account setup after eligibility was saved. | **Pass in production** | The setup page used the current Auth user, but the proxy read older `user_metadata` embedded in the signed access token. The setup action now explicitly refreshes the session before redirecting. As a fallback for Continue, Skip, or direct navigation during the stale-token window, the proxy fetches the current user only when an authenticated protected/auth request has missing eligibility claims, then refreshes the token cookie when current eligibility is confirmed; anonymous public requests remain claim-only. On 2026-08-11 the owner completed account setup and retained a signed-in production screenshot at `resumeai.cv/tools`. | Preserve the account/scraper contracts and production onboarding smoke. |
 
-**Gate 1(c) verdict: FIXED IN CODE / OWNER RETEST REQUIRED.** All known
+**Gate 1(c) verdict: PASS.** All known
 repository-side blockers and the previously deferred F1–F3 friction items are
 closed, including the stale-claim redirect loop found during localhost review.
-Gate 1(c) returns to PASS only after the owner confirms that Continue to Tools
-lands on `/tools` and verifies the step 1–3 synchronization there.
+Final verification is Ruff clean, 557 backend tests passed with 30
+credential-gated skips, ESLint clean, a successful 32-route production build,
+and 56/56 desktop/mobile Playwright tests.
+The owner then confirmed the corrected onboarding flow landed on the signed-in
+production `/tools` page. No Gate 1(c) action remains.
 
 ### D. Regulator reviewing resume-data handling
 
@@ -462,7 +465,7 @@ Frontend and backend are independently rollbackable because:
 |---|---|
 | 1(a) Abusive user | PASS — production-proven 2026-08-10 |
 | 1(b) Scraper automation | PASS — production-proven 2026-08-11 |
-| 1(c) Confused non-technical user | FIXED IN CODE / OWNER RETEST REQUIRED — stale JWT redirect loop |
+| 1(c) Confused non-technical user | PASS — production onboarding proof retained 2026-08-11 |
 | 1(d) Regulator | FAIL / NO-GO pending owner decisions (code complete) |
 | 1(e) AdSense policy reviewer | PASS for ad-free launch |
 | 2 Go/no-go checklist | COMPLETE — Render Starter confirmed, all other items closed |
@@ -470,11 +473,11 @@ Frontend and backend are independently rollbackable because:
 | 4 Failure drills | PASS — 2 blockers fixed (extractApiDetail + non-English warning in gap/compliance) |
 | 5 Rollback | PASS — independent frontend/backend, within 5-minute window |
 
-### Verdict: PRIOR CONDITIONAL GO SUSPENDED PENDING GATE 1(c) RETEST
+### Verdict: CONDITIONAL GO for ad-free launch
 
-The redirect-loop fix is code-complete and passes automated verification, but the launch remains NO-GO until the owner proves the signed-in account-setup flow reaches `/tools`. Once that succeeds, the remaining launch posture returns to the two owner actions below.
+The redirect-loop fix is code-complete, passes automated verification, and is proven by the owner's signed-in production `/tools` evidence. The remaining launch posture is limited to the two owner actions below.
 
-**Launch requires the Gate 1(c) retest plus these two owner actions before deploying:**
+**Launch requires these two owner actions before deploying:**
 
 **Action 1 (hard technical blocker — ~5 minutes):** Set 4 `LEGAL_*` Vercel env vars. `frontend/src/app/lib/legal.ts` throws on first prerender of `/privacy` or `/terms` in production if any are absent. The Vercel build will fail. See the "Required: set LEGAL_* env vars in Vercel" section above for exact variable names.
 
@@ -509,4 +512,4 @@ The redirect-loop fix is code-complete and passes automated verification, but th
 5. **Monitor for 72 hours** per `docs/POST-LAUNCH-MONITORING.md`.
 6. **On 2026-09-10:** delete the quarantined anonymous user and three jobs from Supabase (Gate 1(b) scheduled cleanup — `docs/GATE1B_SCRAPER_CONTROLS.md`).
 
-**Gate 6 verdict: NO-GO until the Gate 1(c) localhost retest passes. After it passes, restore CONDITIONAL GO subject to the two owner actions above.**
+**Gate 6 verdict: CONDITIONAL GO — Gate 1(c) is closed; launch remains subject to the two owner actions above.**

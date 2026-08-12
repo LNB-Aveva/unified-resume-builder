@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Gate 1(c) localhost redirect-loop closeout
+- **Feature:** Gate 1(c) confused-user adversarial review — COMPLETE
 - **Branch:** `main`
-- **Status:** Gate 1(c) redirect loop is fixed in code and all automated checks pass, but the launch verdict is temporarily NO-GO until the owner confirms the signed-in localhost form lands on `/tools`. Gate 1(d) and the 4 `LEGAL_*` values remain separate owner actions.
+- **Status:** Gate 1(c) PASS in code, tests, and production owner proof. The owner completed account setup and reached the signed-in `resumeai.cv/tools` page. Remaining launch conditions are Gate 1(d) and the 4 `LEGAL_*` values.
 
 ---
 
@@ -34,10 +34,11 @@
   - Added a retained eligibility contract proving protected-route enforcement, server-action enforcement, conditional acceptance UI, and post-acceptance-only Skip rendering.
   - Closed the remaining repeated-input friction with an ephemeral working set shared by Keyword Extraction, Gap Analysis, and Compliance Checker. It prefills from a deliberately loaded saved resume, exposes ready/not-added state and clear-both, and does not persist raw text in browser storage.
   - Owner localhost review exposed a blocker: submitting account setup redirected to `/tools`, but the proxy immediately returned the user to `/account-setup` because its verified JWT still contained pre-update eligibility metadata. Added an explicit session refresh before redirect plus a self-healing authoritative-user fallback restricted to authenticated protected/auth requests with missing eligibility claims. This also prevents the visible Skip link from looping, refreshes the stale token after proof, and keeps anonymous public requests claim-only.
-  - Verification after the redirect-loop fix: backend Ruff clean; combined account/scraper contracts 10/10; frontend ESLint clean; 32-route production build passed; full desktop/mobile Playwright suite 56/56 passed; diff check passed.
+  - Final verification after the self-healing redirect-loop fix: backend Ruff clean; full backend suite 557 passed/30 credential-gated skips (including combined account/scraper contracts 10/10); frontend ESLint clean; 32-route production build passed; full desktop/mobile Playwright suite 56/56 passed; diff check passed.
+  - Owner supplied production proof after account setup: signed-in `resumeai.cv/tools` loaded with the shared step 1–3 working-set UI. Gate 1(c) marked PASS.
 - **Files Changed:** Gate 1(c) tool components/provider/page and E2E/contract tests; launch audit; shared worklog and decision record.
-- **Next:** Owner resubmits `http://localhost:3000/account-setup`, confirms it lands on `/tools`, then reviews the step 1–3 synchronization. After approval, run final lints, commit with the required prefix, deploy, and repeat both bounded smokes in production.
-- **Blockers:** Interactive localhost retest remains owner-side because the browser connector cannot attach to the signed-in Chrome tab. Gate 1(c) is fixed in code but stays pending until that retest passes.
+- **Next:** Commit/push the Gate 1(c) evidence closeout and verify CI. Continue owner-side Gate 1(d) and `LEGAL_*` work separately.
+- **Blockers:** None for Gate 1(c).
 
 ### Session 149 (Claude) — 2026-08-11
 - **Agent:** claude
