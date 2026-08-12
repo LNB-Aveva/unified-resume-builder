@@ -7,7 +7,7 @@
 
 ## Current verdict
 
-**CONDITIONAL GO for ad-free launch.** Gate 1(c) is closed: after the stale-eligibility JWT fix, the owner completed account setup and retained production evidence of the signed-in `/tools` destination on 2026-08-11. The shared step 1–3 flow is covered by the passing browser suite. The remaining launch conditions are the four `LEGAL_*` values and the Gate 1(d) owner decision.
+**CONDITIONAL GO for ad-free launch.** Gate 1(c) is closed: after the stale-eligibility JWT fix, the owner completed account setup and retained production evidence of the signed-in `/tools` destination on 2026-08-11. The shared step 1–3 flow is covered by the passing browser suite. The four `LEGAL_*` values are deployed and production-proven. The remaining launch condition is the Gate 1(d) owner legal-posture decision.
 
 Cost model verdict: the $7/mo budget safely handles 0–9,600 users. The first hard cliff is Supabase's 500 MB free DB at approximately 9,600 active users (~52 KB/user average footprint). HuggingFace free-tier rate limits become visible at ~1,000 users during peak hours but fail gracefully via circuit breaker.
 
@@ -17,7 +17,7 @@ Cost model verdict: the $7/mo budget safely handles 0–9,600 users. The first h
 | 1(b). Scraper and distributed automation | Claude + Copilot | **PASS** — production-proven 2026-08-11 |
 | 1(c). Confused non-technical user | Claude + Copilot | **PASS** — production onboarding proof + 557 backend and 56/56 E2E tests |
 | 1(d). Regulator reviewing resume-data handling | Copilot | **FAIL / NO-GO** — code complete; owner legal decisions required |
-| 1(e). AdSense policy reviewer | Claude | **PASS for ad-free launch** — blocked before ad units by TCF CMP + 4 LEGAL_* env vars |
+| 1(e). AdSense policy reviewer | Claude | **PASS for ad-free launch** — blocked before ad units only by TCF CMP |
 | 2. Evidence-backed go/no-go checklist | Claude | **COMPLETE** |
 | 3. 100 / 1,000 / 10,000-user cost model | Claude | **COMPLETE — cliff at ~9,600 users (Supabase DB)** |
 | 4. Failure drills | Claude | **PASS** — 1 blocker fixed; non-English gap → post-launch backlog |
@@ -113,11 +113,11 @@ production `/tools` page. No Gate 1(c) action remains.
 
 | Finding | Severity | Evidence | Required closure |
 |---|---|---|---|
-| Public notice and eligibility controls now match the code. | **Code complete / owner facts required** | Privacy/Terms enumerate actual categories, purposes/bases, processors, transfers, sharing, retention, rights and deletion lag. Production fails closed without controller name/address/country and minimum age; email and OAuth eligibility acceptance is recorded and route-enforced. | Owner sets/approves the four legal values and obtains qualified policy/legal-basis review. |
+| Public notice and eligibility controls now match the code. | **Production-proven / legal review required** | Privacy/Terms enumerate actual categories, purposes/bases, processors, transfers, sharing, retention, rights and deletion lag. The four owner-supplied legal values are deployed; both pages returned 200 and rendered the controller identity, United States, a non-placeholder address, and minimum age 16. Email and OAuth eligibility acceptance is recorded and route-enforced. | Obtain qualified policy/legal-basis review, including the publishable address and chosen minimum age. |
 | The AI and telemetry paths are now deterministic and content-reduced. | **Code complete / contracts and historical review required** | AI is pinned to Together rather than `:fastest`; Sentry receives an allowlisted generic error envelope with traces disabled; provider response bodies cannot enter exceptions; adversarial tests pass. | Owner obtains HF/Together/Vercel contract and transfer proof, resolves content restrictions, and inspects/purges historical Sentry events. |
 | Export, deletion, rights and privacy-incident operations are implemented/documented. | **Code complete / live drills required** | Export includes auth metadata/identities, quota and browser data; successful deletion clears product browser keys; copy discloses vendor/log/backup lag. DSAR, ROPA, DPIA and 72-hour incident procedures now exist. | Run and retain one signed-in rights/deletion drill and one breach tabletop; fill vendor retention/region/transfer evidence and approve the DPIA. |
 | Data isolation and scheduled cleanup are effective narrow controls. | **PASS with residual risk** | Production evidence passed 20/20 RLS checks plus six abuse controls. Cleanup workflow run `31534423206` succeeded on 2026-08-11; public shares omit raw resume text. | Preserve regression and production evidence; alert on cleanup failure and prove expired-row absence periodically. |
-| Owner-controlled privacy evidence is still missing. | **BLOCKER for EEA/UK; otherwise UNVERIFIED** | Applicable processor contracts/plans, regions, vendor retention, transfers, controller establishment, legal review, historical Sentry inspection, live account drill and incident tabletop are not repository-verifiable. | Complete `docs/GATE1D_OWNER_ACTIONS.md`; every UNVERIFIED item remains no-go. |
+| Owner-controlled privacy evidence is still missing. | **BLOCKER for EEA/UK; otherwise UNVERIFIED** | Controller establishment, US-focused scope and public legal values are proven. Applicable processor contracts/plans, account-specific regions/retention/transfers, legal review, historical Sentry inspection, live account drill and incident tabletop remain outside repository proof. | Complete `docs/GATE1D_OWNER_ACTIONS.md`; every applicable UNVERIFIED item remains no-go. |
 
 **Gate 1(d) verdict: repository remediation complete; overall FAIL / NO-GO until
 owner evidence closes.** The full initial findings, remediation table, field-level
@@ -146,7 +146,7 @@ This architecture is correct and would pass a technical Consent Mode review.
 | No ad placement/density review | **UNVERIFIED — pending Google site approval** | `AdUnit.tsx` is correctly consent-gated. No slot IDs or live placements exist while Google review is pending. | After Google approval: propose placements on a branch, review desktop/mobile density (max 1 per tool page initially), then production. |
 | Privacy policy described old binary consent; now resolved | **Resolved in code — 2026-08-11** | `privacy/page.tsx` previously described "you choose Accept" (singular). Updated to describe granular Analytics/Advertising choice, lazy loading for each, and independent toggles. Date updated to 2026-08-11. | Done. |
 | No minimum age in Terms | **Resolved in code — 2026-08-11** | `terms/page.tsx` §3 now leads with "You must be at least 13 years old to use this Service." Date updated to 2026-08-11. | Done. |
-| Publisher identity infrastructure | **PASS in code — owner must set env vars** | `frontend/src/app/lib/legal.ts` reads `LEGAL_CONTROLLER_NAME`, `LEGAL_CONTROLLER_ADDRESS`, `LEGAL_CONTROLLER_COUNTRY`, `LEGAL_MINIMUM_AGE` env vars. In production (`VERCEL_ENV=production`) the server throws if any are unset — so the Vercel build will fail until the owner supplies them. Privacy and Terms now render the controller name and address from those vars. | Owner sets the 4 `LEGAL_*` env vars in Vercel → Environment Variables before next production deploy. Until set, the build will throw in production. |
+| Publisher identity infrastructure | **PASS in production** | `frontend/src/app/lib/legal.ts` reads `LEGAL_CONTROLLER_NAME`, `LEGAL_CONTROLLER_ADDRESS`, `LEGAL_CONTROLLER_COUNTRY`, and `LEGAL_MINIMUM_AGE` and fails closed if any is absent. Owner dashboard evidence showed all four in Production and Preview; the deployed Privacy and Terms pages returned 200 and rendered the configured values on 2026-08-11. | Preserve the fail-closed configuration and recheck both legal pages after changing any value. |
 | Blog author attribution | **LOW / accepted** | JSON-LD author is `"@type": "Organization"`, no named bylines. Weakens E-E-A-T. Not a policy violation. | Accept as known weakness. Add byline post-launch. |
 | Core review surfaces | **PASS** | Homepage, privacy, terms, robots, ads.txt return 200; six original articles; contact email; sitemap; publisher ID `pub-7869093425931175` in ads.txt with correct DIRECT tag and TAG ID. | Preserve. |
 | `Unlimited` marketing copy | **PASS** | All product copy consistently states fair-use limits. Database-backed quota enforces it. | Confirmed. |
@@ -155,7 +155,7 @@ This architecture is correct and would pass a technical Consent Mode review.
 | AdUnit consent gating | **PASS** | `AdUnit` only renders when `consent.advertising === true`; re-evaluates on `resumeai:consent-changed`. | Confirmed in actual code. |
 | Cookie settings accessibility | **PASS** | `CookieSettingsButton` in footer resets `CONSENT_KEY` and reloads. | Confirmed. |
 
-**Gate 1(e) verdict: PASS for ad-free launch. BLOCKED before placing any `<AdUnit>` until (a) TCF CMP is configured in AdSense dashboard and (b) 4 `LEGAL_*` Vercel env vars are set (the production build will throw without them).** All other medium findings are resolved in code (granular consent, adsbygoogle.js load-gating, minimum age, comprehensive privacy policy with controller section). The Sentry `beforeSend` type error in `sentryPrivacy.ts` was also fixed in this session (build was broken by mismatched `Event` vs `ErrorEvent` types).
+**Gate 1(e) verdict: PASS for ad-free launch. BLOCKED before placing any `<AdUnit>` until the TCF CMP is configured in the AdSense dashboard.** The four `LEGAL_*` values are deployed and production-proven. All other medium findings are resolved in code (granular consent, adsbygoogle.js load-gating, minimum age, comprehensive privacy policy with controller section). The Sentry `beforeSend` type error in `sentryPrivacy.ts` was also fixed in this session (build was broken by mismatched `Event` vs `ErrorEvent` types).
 
 Official policy references:
 
@@ -194,9 +194,9 @@ observed the expected rollback-only RLS rejection, passed protected run
 deleted 131 empty anonymous users. One backed-up data-bearing account with three
 jobs remains quarantined for scheduled deletion on 2026-09-10.
 
-### Required: set LEGAL_* env vars in Vercel (NEW — production build will throw without these)
+### Closed — LEGAL_* env vars deployed and production-proven
 
-The `frontend/src/app/lib/legal.ts` module throws on first render in production if any of these four env vars are absent. Set them in Vercel → Project Settings → Environment Variables (Production scope):
+The `frontend/src/app/lib/legal.ts` module throws on first render in production if any of these four env vars are absent. On 2026-08-11 the owner supplied dashboard evidence showing all four in Production and Preview:
 
 | Variable | Example value | Notes |
 |---|---|---|
@@ -205,7 +205,10 @@ The `frontend/src/app/lib/legal.ts` module throws on first render in production 
 | `LEGAL_CONTROLLER_COUNTRY` | `<country of establishment>` | Country of establishment |
 | `LEGAL_MINIMUM_AGE` | `<owner-approved integer>` | Must be an integer 13–18; used in signup, OAuth onboarding, Privacy and Terms |
 
-These values appear verbatim in the live Privacy Policy and Terms. Because those pages are prerendered, a Vercel Production build fails closed while generating them if any value is absent.
+The deployed Privacy Policy and Terms both returned 200 and rendered the exact
+controller name, United States, a non-placeholder address, and minimum age 16.
+The address was verified without printing or copying it into repository
+evidence. The fail-closed production behavior remains required.
 
 ### Required AdSense dashboard proof
 
@@ -220,7 +223,7 @@ In AdSense → Privacy & messaging, verify that a Google-certified European regu
 
 ## Gate 2 — Evidence-backed go/no-go checklist
 
-Rule: every item that is `UNVERIFIED` or `NO-GO` blocks launch. Items marked `VERIFY` are proven by code inspection and previous pass; a new run with access to production credentials would upgrade them to `PASS`.
+Rule: every item that is `UNVERIFIED` or `NO-GO` blocks its applicable launch scope. An item blocked specifically before ads does not block the current ad-free launch.
 
 Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, git log, and the baseline evidence section at the top of this document.
 
@@ -231,13 +234,13 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 | **3 — Security/Privacy** | JWT auth on 7 routes; body cap enforced; Bandit 0 High; CORS strict; prompt injection sanitized; PII stripped from Sentry. | **PASS for Gate 1(a)** | Production ES256 auth, backend-only quota mutation, fail-fast production startup, deterministic preview, storage ceilings, Turnstile/Supabase CAPTCHA, quota accounting, and denial are production-proven. The remaining Gate 1 perspectives are assessed separately. |
 | **4 — Auth/RLS** | User A cannot read/mutate user B rows; account deletion cascades all 5 tables; data export covers all retained records. | **PASS** | Protected production run `31430596989` passed all 20 RLS isolation and cascade tests with zero skips on 2026-08-10. |
 | **5 — Scoring quality** | 80%+ of 25 labeled pairs within one human grade; zero obvious strong matches score F; report reproducible in CI. | **PASS** | Eval harness: 25/25 pairs pass grade calibration (≤1 grade delta from human reference). Golden-file tests for taxonomy parsing pass. Synonym map covers 65+ groups. |
-| **6 — Backend hardening** | HF circuit breaker retries + opens after 5 failures; scheduled health/cleanup check; request timeout 90s; 9 routes load-tested at bounded concurrency. | **PASS** | Circuit breaker, timeouts, and Blueprint `plan: starter` confirmed. Owner confirmed Render Starter plan active 2026-08-11. |
+| **6 — Backend hardening** | HF circuit breaker retries + opens after 5 failures; scheduled health/cleanup check; request timeout 60s; 9 routes load-tested at bounded concurrency. | **PASS** | Circuit breaker, timeouts, and Blueprint `plan: starter` confirmed. Owner confirmed Render Starter plan active 2026-08-11. |
 | **7 — Accessibility/Mobile** | WCAG 2.2 AA — no known blockers; Lighthouse accessibility ≥90 on representative pages. | **PASS** | 10/10 pages pass axe-core WCAG 2.2 tags (verified 2026-08-07, Session 123). 6 non-automatable 2.2 AA criteria verified by manual audit. Lighthouse a11y 94 (was 90+ baseline). |
 | **8 — SEO/Monetization** | Sitemap/canonical/legal/content surfaces pass; certified ad consent and live placements must be proven before monetization. | **BLOCKED BEFORE ADS** | Public review surfaces and `ads.txt` pass. The custom banner is not certified TCF proof; AdSense Privacy & messaging status remains owner-only and no live placement/density review exists. |
-| **9 — Auth/Data security** | Owner-only share writes/reads, non-enumerable public RPC, high-entropy links, revocation, and quota-free preview. | **VERIFY — abuse controls** | New links retain full UUID v4 entropy and the owner can revoke them in-flow. Public preview is deterministic. Production RLS is 20/20; migration 008 adds five production abuse proofs. |
-| **10 — Observability** | Backend/frontend Sentry are PII-safe; uptime and cleanup failures alert; approved fixed spend is monitored. | **VERIFY — dashboards** | Cleanup now fails the scheduled workflow on non-200. Owner must confirm Render Starter billing and Hugging Face usage/budget status; the prior “all free/no payment methods” evidence is obsolete. |
-| **11 — Release engineering** | Ordered idempotent migrations; rollback rehearsed; backup drill executed; branch protection on `main`. | **VERIFY — migration 008** | Eight ordered migrations exist; migration 008 must be backed up/applied before the backend-only quota deployment. Rollback and prior backup drill remain proven. |
-| **12 — Go/no-go** | Current Prompt 3 strict review has no unverified blocker. | **NO-GO** | The historical 2026-08-04 GO is superseded by this rerun until the owner actions below and Gates 4/6 close. |
+| **9 — Auth/Data security** | Owner-only share writes/reads, non-enumerable public RPC, high-entropy links, revocation, and quota-free preview. | **PASS** | New links retain full UUID v4 entropy and owner revocation. Public preview is deterministic. Post-migration run `31532154382` passed 20/20 RLS plus 6/6 abuse controls with zero skips. |
+| **10 — Observability** | Backend/frontend Sentry are PII-safe; uptime and cleanup failures alert; approved fixed spend is monitored. | **PASS** | Content-free Sentry envelopes have adversarial tests. Cleanup run `31534423206` passed. Owner confirmed Render Starter and reviewed Hugging Face usage: 34 Together requests, under $0.01 usage and $0.00 charged, with no unexpected activity. Account-specific privacy evidence remains tracked in Gate 1(d), not this operational gate. |
+| **11 — Release engineering** | Ordered idempotent migrations; rollback rehearsed; backup drill executed; branch protection on `main`. | **PASS** | Nine ordered SQL migrations exist. Verified backup/manifest evidence preceded migrations 008 and 009; both were applied and production-proven. Rollback and branch protection remain proven. |
+| **12 — Go/no-go** | Current Prompt 3 strict review has no unverified blocker for the intended launch scope. | **CONDITIONAL GO — ad-free** | Gates 1(a–c), 2–5 and the legal-variable deployment are closed. Gate 1(d) still requires the owner's legal-posture decision; Gate 1(e)'s CMP is required only before ads. Gate 6 records the same conditional verdict. |
 
 ### Gate 2 open items requiring owner action
 
@@ -245,12 +248,12 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 |---|---|---|
 | Gate 1(a) abuse controls | **CLOSED — 2026-08-10** | Migration, Render safeguards, real CAPTCHA flows, tokenless-auth rejection, 25/25 production tests, quota ledger creation, HTTP 429 denial, and fixture cleanup are proven. |
 | Render Starter | **CLOSED — 2026-08-11** | Blueprint pinned to `plan: starter`; owner confirmed Starter plan active in dashboard. |
-| RLS re-verification | **CLOSED — 2026-08-08** | 20/20 pass against production Supabase confirmed by owner terminal run (all 5 tables: profiles, jobs, resumes, resume_versions, shared_scores + cascade delete). |
+| RLS re-verification | **CLOSED — 2026-08-11** | Post-migration run `31532154382` passed 20/20 RLS plus 6/6 abuse controls with zero skips and no retained test users. |
 | TCF CMP for AdSense (Gate 1 §E) | **DEFERRED — owner decision** | Site is ad-free; Google site review pending. European regulations message not yet created (AdSense dashboard confirmed 2026-08-08). Required before placing any ad unit slots. Not a blocker for current ad-free launch. See memory: project_future_tcf_cmp. |
 | HF provider incident/budget review | **CLOSED — 2026-08-08** | Unexpected usage: NO. HF billing shows 34 requests via Together AI, <$0.01, $0.00 charges for Aug 1–Sep 1 period. No unauthorized use. |
-| Usage-limit copy | **CLOSED IN BRANCH** | The current branch already replaces `Unlimited` and `Usage Limits: none` with accurate fair-use wording across the landing, ATS-checker, preview, and new-grad surfaces. Confirm the deployed copy after merge. |
+| Usage-limit copy | **CLOSED IN PRODUCTION — 2026-08-11** | Read-only production checks returned 200 for the landing, ATS checker, new-grad, tech-job and career-changer pages; each contained fair-use wording and none contained the superseded unlimited/no-limits claims. |
 
-**Gate 2 verdict: checklist evidence recorded; full Prompt 3 remains NO-GO.** Gates 1(a–b) production rollout, RLS, provider-usage review, ES256 authentication, and usage-limit copy are closed. The certified CMP is explicitly deferred for the current ad-free launch and remains mandatory before any ad units. The overall decision still depends on Gates 1(c–e), Gate 4, and Gate 6.
+**Gate 2 verdict: COMPLETE for the current ad-free launch scope.** Phases 1–7 and 9–11 are PASS. Phase 8 is blocked only before advertising, and Phase 12 correctly inherits the overall CONDITIONAL GO pending the Gate 1(d) owner legal-posture decision. Production RLS/abuse controls, cleanup, provider-usage review, Render Starter, ES256 authentication, migrations/backups, and fair-use copy are all closed. A certified CMP remains mandatory before any ad units.
 
 ---
 
@@ -475,13 +478,19 @@ Frontend and backend are independently rollbackable because:
 
 ### Verdict: CONDITIONAL GO for ad-free launch
 
-The redirect-loop fix is code-complete, passes automated verification, and is proven by the owner's signed-in production `/tools` evidence. The remaining launch posture is limited to the two owner actions below.
+The redirect-loop fix is code-complete, passes automated verification, and is proven by the owner's signed-in production `/tools` evidence. The legal values and subsequent production render are also proven. The remaining launch posture is limited to the owner legal decision below.
 
-**Launch requires these two owner actions before deploying:**
+**Launch requires one owner legal-posture decision:**
 
-**Action 1 (hard technical blocker — ~5 minutes):** Set 4 `LEGAL_*` Vercel env vars. `frontend/src/app/lib/legal.ts` throws on first prerender of `/privacy` or `/terms` in production if any are absent. The Vercel build will fail. See the "Required: set LEGAL_* env vars in Vercel" section above for exact variable names.
+**Closed 2026-08-11 — former Action 1:** All four `LEGAL_*` values are present in Vercel Production and Preview. A production deployment completed, and `/privacy` plus `/terms` returned 200 with the configured public values.
 
 **Action 2 (business/legal decision):** Accept or close the Gate 1(d) legal compliance posture. The code is correct — fail-closed controller identity, consent gating, DSAR runbook, incident procedure, ROPA, DPIA. The owner must decide: launch with documented residual risk (processor contracts not yet obtained; live rights/deletion drill and breach tabletop not performed) or complete those owner actions first. There is no code blocker. If marketing to EEA/UK users, completing `docs/GATE1D_OWNER_ACTIONS.md` before launch is strongly recommended.
+
+**Scope decision recorded 2026-08-11:** The operator is established in
+Illinois, United States. The owner approved a US-focused initial launch and
+deferred active EEA/UK marketing until the applicable Gate 1(d) package is
+complete. This closes the launch-country checklist item, but it does not by
+itself close the remaining legal-posture decision or Gate 1(d).
 
 ### Top three risks accepted at launch
 
@@ -505,11 +514,10 @@ The redirect-loop fix is code-complete, passes automated verification, and is pr
 
 ### Launch sequence (exact steps for owner)
 
-1. **Set 4 `LEGAL_*` Vercel env vars** (see section above — required before any production build).
-2. **Trigger a Vercel production redeploy** and confirm `/privacy` and `/terms` prerender without throwing.
-3. Optionally: **complete `docs/GATE1D_OWNER_ACTIONS.md`** before marketing to EEA/UK users.
-4. **Announce launch.**
-5. **Monitor for 72 hours** per `docs/POST-LAUNCH-MONITORING.md`.
-6. **On 2026-09-10:** delete the quarantined anonymous user and three jobs from Supabase (Gate 1(b) scheduled cleanup — `docs/GATE1B_SCRAPER_CONTROLS.md`).
+1. **Closed:** The 4 `LEGAL_*` values are deployed; `/privacy` and `/terms` return 200 with the configured public values.
+2. **Accept or close the remaining Gate 1(d) legal posture.**
+3. **Announce launch.**
+4. **Monitor for 72 hours** per `docs/POST-LAUNCH-MONITORING.md`.
+5. **On 2026-09-10:** delete the quarantined anonymous user and three jobs from Supabase (Gate 1(b) scheduled cleanup — `docs/GATE1B_SCRAPER_CONTROLS.md`).
 
-**Gate 6 verdict: CONDITIONAL GO — Gate 1(c) is closed; launch remains subject to the two owner actions above.**
+**Gate 6 verdict: CONDITIONAL GO — Gate 1(c) and the legal-variable deployment are closed; launch remains subject to the owner Gate 1(d) legal-posture decision above.**

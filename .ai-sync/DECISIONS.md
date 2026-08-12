@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-041: US-Focused Phased Launch Before EEA/UK Marketing
+- **Date:** 2026-08-11
+- **Agent:** copilot
+- **Context:** Gate 1(d) required the owner to define the operator's establishment and intended launch markets before assessing processor contracts, transfers, consent evidence, and representative obligations.
+- **Decision:** Record the operator as established in Illinois, United States. Use a US-focused initial launch and defer active EEA/UK marketing until the applicable processor, transfer, operational-evidence, DPIA, and legal-review work is complete. Re-open the decision before any region-targeted campaign or material regional offering.
+- **Alternatives Considered:** Actively market to EEA/UK users at initial launch — rejected because the required processor and transfer evidence, live rights drill, incident tabletop, and final legal review are not yet complete. Claim that worldwide website accessibility is equivalent to intentional worldwide targeting — rejected because accessibility and launch intent must be recorded separately.
+- **Files Affected:** `docs/GATE1D_LAUNCH_SCOPE_DECISION.md`, `docs/GATE1D_OWNER_ACTIONS.md`, `docs/LAUNCH_READINESS_AUDIT.md`
+
 ### DEC-040: Refresh Eligibility Claims Without Reopening Public Auth Amplification
 - **Date:** 2026-08-11
 - **Agent:** copilot

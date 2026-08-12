@@ -5,11 +5,16 @@ NO-GO until every applicable item below has retained, non-secret evidence.
 
 ## 1. Legal identity and market decision
 
-- [ ] Decide launch countries: US-only, named US states, EEA, UK, and/or others.
-- [ ] Set Vercel Production variables: `LEGAL_CONTROLLER_NAME`,
+- [x] Decide launch countries: US-focused initial launch from Illinois, United
+  States; defer active EEA/UK marketing until the applicable Gate 1(d) closure
+  work is complete. Retained decision: `docs/GATE1D_LAUNCH_SCOPE_DECISION.md`.
+- [x] Set Vercel Production variables: `LEGAL_CONTROLLER_NAME`,
   `LEGAL_CONTROLLER_ADDRESS`, `LEGAL_CONTROLLER_COUNTRY`, and
   `LEGAL_MINIMUM_AGE` (integer 13–18). Production builds now fail closed without
-  them.
+  them. Owner dashboard evidence showed all four in Production and Preview on
+  2026-08-11. The deployed Privacy and Terms pages returned 200 and rendered
+  the exact controller name, United States, a non-placeholder address, and
+  minimum age 16; the address value was not copied into repository evidence.
 - [ ] Have qualified counsel/privacy reviewer confirm controller identity,
   governing law, jurisdiction-specific scope, legal bases, Article 9/sensitive
   data handling, minimum age, representative/DPO need, and the revised public
@@ -20,6 +25,10 @@ non-sensitive values. Do not publish a home address without confirming the
 appropriate business/postal address.
 
 ## 2. Processor and transfer chain
+
+Current public terms, plan boundaries, default retention statements, and the
+remaining account-specific evidence are recorded in
+`docs/GATE1D_PUBLIC_PROCESSOR_EVIDENCE.md`.
 
 - [ ] Move Vercel to a plan/agreement covered by its DPA before EEA/UK data, and
   resolve the DPA's sensitive-data prohibition; an upgrade alone is not enough.
@@ -36,6 +45,10 @@ screenshots, region/settings screenshots, subprocessor lists and transfer memo.
 
 ## 3. Retention and deletion evidence
 
+Public retention baselines are recorded in
+`docs/GATE1D_PUBLIC_PROCESSOR_EVIDENCE.md`; the unchecked items below require
+the actual account settings or private operational register.
+
 - [ ] Record actual Render and Vercel log retention, Supabase Auth/database backup
   behavior, Sentry retention/region, GA retention, Hugging Face/Together settings,
   Cloudflare retention, and email/support retention.
@@ -49,14 +62,18 @@ screenshots, region/settings screenshots, subprocessor lists and transfer memo.
 
 ## 4. Live rights drill
 
-- [ ] Deploy the repository changes after localhost approval.
+- [x] Deploy the repository changes after localhost approval. The configured
+  legal pages and current eligibility flow are live in production.
 - [ ] Use a synthetic permanent account to run the complete drill in
   `docs/PRIVACY-REQUESTS.md`: create each data category, export, correct, delete,
   prove database zero rows, prove browser keys cleared, and record processor/log
   limitations.
 - [ ] Verify email and Google OAuth users cannot enter tools without the
   configured age/Terms confirmation.
-- [ ] Verify Privacy and Terms display the correct controller facts.
+- [x] Verify Privacy and Terms display the configured controller facts. Both
+  returned 200 on 2026-08-11 and rendered the exact controller name, United
+  States, a non-placeholder address, and minimum age 16 without copying the
+  address into repository evidence.
 
 **Evidence:** redacted screenshots, case timestamps, export category checklist,
 queries showing zero owned rows, and cleanup confirmation. Never retain the test

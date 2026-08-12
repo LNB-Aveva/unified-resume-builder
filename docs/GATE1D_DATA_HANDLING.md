@@ -7,17 +7,20 @@ terms. This is a launch-readiness control review, not a legal opinion.
 
 ## Verdict
 
-**NO-GO for a launch that accepts resume data from EEA/UK users.** The product has
-credible database isolation controls, but it cannot presently demonstrate a
-complete controller notice, a stable and contractually covered processor chain,
-or fulfillment of the deletion promise shown in the account UI. The Sentry
-disclosure is also stronger than the implemented scrubber can prove.
+**Repository remediation is complete; strict Gate 1(d) remains NO-GO pending
+owner-controlled evidence and qualified review.** The individual controller is
+established in Illinois, United States. All four legal values are deployed and
+production-proven, including minimum age 16. The owner approved a US-focused
+initial launch and deferred active EEA/UK marketing.
 
-**US-only launch is also UNVERIFIED.** CCPA applicability cannot be decided from
-the repository because the legal entity, revenue, California record counts, and
-sale/share facts are absent. Other state-law scope cannot be assessed for the
-same reason. Even where a privacy statute does not apply, inaccurate public
-privacy promises remain an FTC/deception risk.
+The current product now has a complete code-derived notice, a stable pinned AI
+provider, content-free Sentry envelopes, accurate export/deletion boundaries,
+and documented DSAR, ROPA, DPIA and breach procedures. It still cannot prove
+account-specific processor coverage/settings, historical Sentry cleanup, a live
+rights/deletion drill, a breach tabletop, or qualified legal approval from the
+repository. Active EEA/UK marketing remains NO-GO until the applicable package
+is complete. US-law applicability and policy accuracy still require qualified
+review of business thresholds, actual practices, and jurisdictional scope.
 
 No item below is treated as passing merely because the product is small or the
 service is on a free plan.
@@ -80,7 +83,7 @@ FAIL/UNVERIFIED items remain open.
 
 | Area | Repository status | Owner-controlled closure still required |
 |---|---|---|
-| Controller identity and age | **Code complete / owner blocker** | `legal.ts` makes Vercel Production fail closed until controller name, address, country, and minimum age are configured. Owner/counsel must supply and approve the facts. |
+| Controller identity and age | **Production-proven / qualified review pending** | The individual controller is established in Illinois, United States. Both legal pages returned 200 with the exact controller name, United States, a non-placeholder address, and minimum age 16. A qualified reviewer still confirms the publishable address, age and jurisdictional accuracy. |
 | Notice, purposes, recipients, transfers, retention | **Code complete / legal review pending** | Privacy and Terms now enumerate the actual data and processor chain, map purposes/bases, disclose transfers and deletion lag, and avoid absolute Sentry/deletion claims. Owner/counsel approves jurisdictional accuracy and vendor settings. |
 | AI provider stability | **Code complete / contract pending** | Model routing is pinned to `Qwen/Qwen2.5-7B-Instruct:together`; tests prohibit `:fastest`. Owner obtains Hugging Face/Together contract, region, retention, ZDR/training and transfer proof. |
 | Sentry content exclusion | **Code complete / historical review pending** | Backend and frontend rebuild events from a content-free allowlist, genericize exception values, disable traces, and test that adversarial sentinel data is absent. Owner inspects/purges historical events and records Sentry plan/region/retention. |
@@ -92,8 +95,8 @@ FAIL/UNVERIFIED items remain open.
 | Incident response | **Procedure complete / tabletop pending** | Incident plan now includes awareness time, 72-hour decision path, processor escalation, authority/user notices, evidence and non-reporting records. Owner runs a tabletop. |
 | ROPA and DPIA | **Drafts complete / approval pending** | `docs/ROPA.md` and `docs/DPIA.md` record processing and risk. Owner fills vendor evidence and obtains qualified review/sign-off. |
 | Backup statement | **Corrected / inventory pending** | Monitoring no longer claims Supabase Free scheduled backups. Owner inventories, protects, expires and proves destruction/restoration of manual backups. |
-| Minors | **Code complete / age choice pending** | Production requires an owner-selected age from 13–18; sign-up and OAuth onboarding record confirmation and protected routes enforce it. Owner/counsel chooses the age and runs the under-age response drill. |
-| Live behavior | **UNVERIFIED / NO-GO** | Local and then deployed signed-in export, deletion, OAuth eligibility, consent/network and policy/controller checks still require retained evidence. |
+| Minors | **Code and configured age complete / review pending** | Production uses minimum age 16; sign-up and OAuth onboarding record confirmation and protected routes enforce it. Qualified review and the under-age response drill remain owner work. |
+| Live behavior | **PARTIAL PASS / owner drills pending** | Production Privacy and Terms/controller facts and the signed-in eligibility destination are proven. Export/deletion, both auth-provider paths, consent/network combinations and GPC still require retained interactive evidence. |
 
 ## Initial data-flow inventory found in code (pre-remediation snapshot)
 
@@ -180,9 +183,12 @@ FAIL/UNVERIFIED items remain open.
 
 ## Gate result
 
-Gate 1(d) remains **FAIL / NO-GO** as of 2026-08-11. Repository remediation is
-complete and verified by focused tests, lint, and production build, but the
-owner-controlled contracts, controller facts, vendor settings, live rights drill,
+Gate 1(d) remains **FAIL / NO-GO** as of 2026-08-11. Repository remediation,
+public processor research, launch scope, legal-variable deployment, public legal
+pages, and production onboarding proof are complete. Owner-controlled contracts,
+account-specific vendor settings, live rights/deletion and consent drills,
 historical Sentry review, incident tabletop, and formal legal/DPIA approval are
-not yet proven. `docs/GATE1D_OWNER_ACTIONS.md` is the closure checklist. Statements
-from an operator or unchecked dashboard assumptions do not count as proof.
+not yet proven. `docs/GATE1D_OWNER_ACTIONS.md` is the closure checklist and
+`docs/GATE1D_PUBLIC_PROCESSOR_EVIDENCE.md` records the public evidence already
+collected. Statements from an operator or unchecked dashboard assumptions do
+not count as proof.

@@ -2,7 +2,7 @@
 
 **Screening date:** 2026-08-11
 **Outcome:** DPIA required before accepting EEA/UK resume data
-**Status:** Technical assessment complete; controller/contracts/transfer evidence pending
+**Status:** Technical assessment and US-focused launch scope complete; contracts/transfer evidence and formal approval pending
 
 ## Why the threshold is treated as met
 
@@ -37,7 +37,7 @@ business exception.
 | Processor contract does not permit data | High / severe | User minimization warning; documented processor inventory | Vercel covered plan/contract and content restriction decision; HF/Together DPA; no EEA/UK data until closed |
 | Incomplete deletion/access response | High / high | Export expanded; browser data included/cleared; cascade deletion; DSAR runbook | Run full drill and record processor/back-up deletion capability |
 | Excess retention/backups | Medium / high | 30-day shares, hourly cleanup, 31-day quota, category schedule | Prove vendor settings and manual backup register/destruction |
-| Child account | Medium / high | Production-configured minimum age, recorded confirmation, OAuth onboarding blocks tools until acceptance | Owner chooses lawful age and documents under-age response drill |
+| Child account | Medium / high | Production minimum age 16, recorded confirmation, OAuth onboarding blocks tools until acceptance | Qualified reviewer confirms age choice and owner documents under-age response drill |
 | Optional tracking before consent | Medium / high | GA/AdSense scripts load only for the independent granted purpose | Certified CMP/GPC and regional messages remain Gate 1(e) owner work |
 | Breach response misses deadline | Medium / severe | Privacy incident procedure and case log requirements added | Tabletop with owner; retain processor contacts and notification templates |
 
@@ -47,8 +47,9 @@ The repository controls materially reduce disclosure and telemetry risk, but the
 controller must not sign this DPIA as acceptable for EEA/UK processing until all
 of the following are evidenced:
 
-1. Controller identity, establishment, representative/DPO decision, and target
-   jurisdictions.
+1. Qualified review of the production-proven individual controller identity,
+   Illinois/United States establishment, minimum age 16, US-focused initial
+   scope, and any representative/DPO implications before regional expansion.
 2. Covered processor contracts, permitted-content terms, subprocessors, regions,
    transfer mechanisms, and retention settings.
 3. One completed rights/deletion drill and one privacy-breach tabletop.

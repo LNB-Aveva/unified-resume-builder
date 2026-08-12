@@ -1,11 +1,14 @@
 # Record of Processing Activities (ROPA)
 
-**Status:** Repository inventory complete; owner evidence fields remain open
+**Status:** Repository inventory and public provider evidence complete; account-specific owner evidence remains open
 **Last reviewed:** 2026-08-11
 
 The production controller identity is supplied by `LEGAL_CONTROLLER_NAME`,
 `LEGAL_CONTROLLER_ADDRESS`, and `LEGAL_CONTROLLER_COUNTRY`. Vercel production
 builds fail closed when these values or `LEGAL_MINIMUM_AGE` are absent.
+Production verification on 2026-08-11 proved the individual controller name,
+United States, a non-placeholder address, and minimum age 16 on both legal
+pages. The address is deliberately omitted from this repository record.
 
 ## Processing inventory
 
@@ -30,14 +33,14 @@ builds fail closed when these values or `LEGAL_MINIMUM_AGE` are absent.
 
 | Processor | Role | Data location / transfer mechanism | Contract status |
 |---|---|---|---|
-| Supabase | Auth/database processor | **OWNER: record project region, subprocessors and transfer mechanism** | Public DPA located; retain effective copy and plan evidence |
-| Vercel | Frontend/server-action processor | Primarily US/global; **OWNER: record deployment region and safeguards** | Public DPA covers Pro/Enterprise, not documented Hobby; upgrade/contract required for EEA/UK |
-| Render | Backend processor | **OWNER: record service region/workspace plan** | Public DPA located; retain effective copy |
-| Hugging Face | AI router processor/subprocessor | **OWNER: record routing location and Enterprise DPA** | DPA advertised through Enterprise; contract evidence required for EEA/UK |
-| Together AI | Pinned inference provider | North America per current provider documentation; **OWNER: retain DPA/settings/subprocessors** | Unverified |
-| Sentry | Error processor | **OWNER: record region, plan, retention and subprocessor list** | Public DPA located; sensitive data contractually prohibited; allowlist control implemented |
-| Google | OAuth plus consented analytics/advertising | Global; **OWNER: retain applicable terms/settings/transfer basis** | Unverified for this controller/account |
-| Cloudflare | CAPTCHA/security processor | Global; **OWNER: retain applicable DPA/settings** | Unverified |
+| Supabase | Auth/database processor | One selected AWS project region; **OWNER: record actual region and transfer mechanism** | 2026-06-01 public DPA located; Free public baseline is one-day logs and no included automatic backups; retain account evidence |
+| Vercel | Frontend/server-action processor | Primarily US with possible global processing; **OWNER: record runtime regions** | Current public DPA covers Pro/Enterprise and prohibits sensitive data; dashboard shows Hobby, so covered-plan/content decision remains open |
+| Render | Backend processor | **OWNER: record service region and workspace plan** | Public DPA includes SCC/UK terms; public log retention is 7/14/30 days by workspace plan, not service instance type |
+| Hugging Face | AI router processor/subprocessor | Router path to selected provider; **OWNER: confirm transfer path** | Router publicly states no body/response storage and up-to-30-day content-free debug logs; DPA advertised through Enterprise |
+| Together AI | Pinned inference provider | North America per current provider documentation; **OWNER: retain applicable routed-service terms** | Public docs state default no input/output storage and optional ZDR, but HF-routed applicability requires written confirmation |
+| Sentry | Error processor | US or Germany selectable; **OWNER: record actual region, plan and retention** | Public DPA/transfer materials located; allowlist control implemented; historical inspection/purge remains open |
+| Google | OAuth plus consented analytics/advertising | Global; **OWNER: retain applicable terms/settings/transfer basis** | GA public retention choices are 2 or 14 months; actual property setting and AdSense regional status remain open |
+| Cloudflare | CAPTCHA/security processor | Global; **OWNER: retain applicable account evidence** | Public self-serve DPA v6.4 and Turnstile privacy addendum located; account/version/subprocessor evidence remains open |
 
 ## Review triggers
 
@@ -45,3 +48,6 @@ Review this record before adding a table/field, processor, SDK, log attribute,
 new AI model/provider, new country, ad unit, marketing integration, or retention
 change. A `:fastest`, `:cheapest`, or other dynamic AI provider suffix is not
 permitted without a new processor review.
+
+See `docs/GATE1D_PUBLIC_PROCESSOR_EVIDENCE.md` for dated official links and the
+boundary between public facts and owner-controlled account evidence.

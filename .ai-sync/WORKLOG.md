@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Gate 1(c) confused-user adversarial review — COMPLETE
+- **Feature:** Gate 1(d) agent closeout and Gate 2 evidence reconciliation
 - **Branch:** `main`
-- **Status:** Gate 1(c) PASS in code, tests, and production owner proof. The owner completed account setup and reached the signed-in `resumeai.cv/tools` page. Remaining launch conditions are Gate 1(d) and the 4 `LEGAL_*` values.
+- **Status:** All repository-verifiable Gate 1(d) work is complete; public processor evidence is retained and legal values are production-proven. Gate 2 is complete for the ad-free scope. Gate 1(d) remains NO-GO only for owner/counsel-controlled evidence and acceptance.
 
 ---
 
@@ -18,14 +18,28 @@
 | Field      | Value                      |
 |------------|----------------------------|
 | Agent      | copilot                     |
-| Started    | 2026-08-11                  |
-| Working On | Session 150 — Gate 1(c) final friction closeout |
+| Started    | 2026-08-12                  |
+| Working On | Session 152 — Gate 1(d)/Gate 2 save and publish |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 152 (Copilot) — 2026-08-12
+- **Agent:** copilot
+- **Did:** Rechecked the Gate 1(d)/Gate 2 documentation scope and owner-approved save request. Prepared the retained launch-scope decision, public processor evidence, ROPA/DPIA updates, owner checklist, reconciled Gate 2 verdict, and shared records for commit/push while excluding the unrelated untracked work folder.
+- **Files Changed:** Gate 1(d)/Gate 2 audit and evidence documents plus shared worklog/decision record.
+- **Next:** Commit and push the verified documentation set; confirm remote branch state.
+- **Blockers:** None for repository save/publish. Owner/counsel-only Gate 1(d) evidence remains separately tracked.
+
+### Session 151 (Copilot) — 2026-08-11
+- **Agent:** copilot
+- **Did:** Owner approved and retained the Gate 1(d) launch-scope decision: operator established in Illinois, United States; US-focused initial launch; active EEA/UK marketing deferred. All four `LEGAL_*` variables are deployed and production-proven. Completed current public processor/DPA/retention research, updated the ROPA/DPIA/current regulator verdict, and separated public facts from account-specific owner proof. Reconciled Gate 2: phases 9–11 are PASS, timeout is correctly 60 seconds, five production pages prove fair-use copy, and Gate 2 is complete for the ad-free scope. Focused privacy/contracts passed 29 with 4 credential-gated skips; Ruff and ESLint are clean.
+- **Files Changed:** Gate 1(d) launch-scope and public-processor evidence; owner checklist, data-handling report, ROPA, DPIA, launch audit/Gate 2, shared worklog and decision record.
+- **Next:** Owner/counsel completes the unchecked Gate 1(d) account-specific contracts/settings, historical Sentry review, live rights/consent drills, incident tabletop, and legal/DPIA acceptance. Keep ad units disabled until the certified CMP is proven.
+- **Blockers:** No repository or Gate 2 blocker. Strict Gate 1(d) closure still requires owner/counsel evidence that cannot be inferred from code or public provider pages.
 
 ### Session 150 (Copilot) — 2026-08-11
 - **Agent:** copilot
