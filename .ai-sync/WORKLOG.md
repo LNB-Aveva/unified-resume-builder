@@ -17,15 +17,36 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | copilot                     |
+| Agent      | claude                     |
 | Started    | 2026-08-12                  |
-| Working On | Session 152 — Gate 1(d)/Gate 2 save and publish |
+| Working On | Session 155 — AI-assisted compliance review + Privacy/Terms redlines |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 155 (Claude) — 2026-08-12
+- **Agent:** claude
+- **Did:** Full AI-assisted internal compliance review against primary US statutory sources (FTC Act, COPPA, Illinois PIPA, CCPA thresholds, GDPR territorial scope). Applied 5 redlines: Privacy Policy §§ 2/6/11 and Terms §§ 4/10. Fixes: immigration documents added to prohibited list (both pages), international-transfers section rewritten to remove SCC implication, FTC complaint route added, Illinois governing law + liability cap added to Terms. Created docs/COMPLIANCE-REVIEW-20260812.md. Both lint checks pass.
+- **Files Changed:** `frontend/src/app/privacy/page.tsx`, `frontend/src/app/terms/page.tsx`, `docs/COMPLIANCE-REVIEW-20260812.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Owner completes GATE1D_OWNER_ACTIONS.md §§ 2–6 (processor contracts, drills, tabletop). Gate 1(d) residual risks are documented and accepted for US-focused ad-free launch.
+- **Blockers:** None for repository. Owner-controlled evidence items remain in GATE1D_OWNER_ACTIONS.md.
+
+### Session 154 (Copilot) — 2026-08-12
+- **Agent:** copilot
+- **Did:** Re-audited the Gate 1(d) repository/owner boundary and current first-party provider guidance. Confirmed no independently executable repository remediation remains. Converted the 16 unchecked closure items into an ordered owner evidence procedure, separating US-focused ad-free launch work from EEA/UK and advertising prerequisites. The final reviewer verdict update remains dependency-gated on retained owner/counsel evidence.
+- **Files Changed:** `.ai-sync/WORKLOG.md` only (status record).
+- **Next:** Owner begins with qualified scope/legal review and a private evidence register, then works through provider settings/contracts, retention/Sentry, live rights/auth, consent/GPC, incident tabletop, and DPIA sign-off. Copilot validates each redacted evidence package and closes the final review item.
+- **Blockers:** Account dashboards, contracts, private operational evidence, and qualified legal acceptance are owner-controlled and cannot be inferred or completed from repository access.
+
+### Session 153 (Copilot) — 2026-08-12
+- **Agent:** copilot
+- **Did:** Reconciled the current Gate 1(d) verdict against the owner-only closure checklist, regulator evidence report, launch audit, shared decisions, recent commits, and clean tracked-file diff. Confirmed all independently repository-verifiable remediation and public-provider research are complete and published. Confirmed Gate 1(d) itself remains FAIL / NO-GO because 16 owner/counsel/reviewer evidence items remain unchecked.
+- **Files Changed:** `.ai-sync/WORKLOG.md` only (status record).
+- **Next:** Owner/counsel completes and retains evidence for the unchecked items in `docs/GATE1D_OWNER_ACTIONS.md`; reviewer then validates that evidence and updates the FAIL/UNVERIFIED rows and final verdict.
+- **Blockers:** No independent repository blocker. Strict Gate 1(d) closure is blocked on owner-controlled contracts/settings, operational drills, historical Sentry review, and qualified legal/DPIA acceptance.
 
 ### Session 152 (Copilot) — 2026-08-12
 - **Agent:** copilot

@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">
           Privacy Policy
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400">Last updated: August 11, 2026</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Last updated: August 12, 2026</p>
       </div>
 
       <div className="prose prose-gray dark:prose-invert prose-sm max-w-none space-y-8">
@@ -54,7 +54,8 @@ export default function PrivacyPolicy() {
           <p className={`${text} mt-3`}>
             Resume text and free-form notes can reveal sensitive information. Do not submit Social
             Security or government ID numbers, financial credentials, medical or disability details,
-            or other information that is not needed for the requested task.
+            immigration status or work-authorization documents, or other information that is not
+            needed for the requested task.
           </p>
         </section>
 
@@ -102,10 +103,15 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className={heading}>6. International transfers</h2>
           <p className={text}>
-            These providers can process personal data in the United States and other countries where
-            they or their subprocessors operate. Where required, transfers rely on an applicable
-            adequacy decision, standard contractual clauses, or another lawful transfer mechanism.
-            Contact us to request information about safeguards applicable to your data.
+            These providers may process personal data in the United States and other countries where
+            they or their subprocessors operate. ResumeAI is operated from the United States and its
+            initial launch is US-focused. Where a provider makes an applicable transfer mechanism
+            available—such as an adequacy decision or standard contractual clauses—ResumeAI relies on
+            that processor&apos;s arrangement. Contact{" "}
+            <a href="mailto:support@resumeai.cv" className="text-indigo-600 dark:text-indigo-400 underline">
+              support@resumeai.cv
+            </a>{" "}
+            to request information about the transfer arrangements applicable to your data.
           </p>
         </section>
 
@@ -177,6 +183,13 @@ export default function PrivacyPolicy() {
             processors, and respond within the legally required period. Authorized agents must provide
             proof of authority. If we deny or limit a request, we will explain why and provide any
             available appeal route.
+          </p>
+          <p className={`${text} mt-3`}>
+            You may also file a complaint with the US Federal Trade Commission at{" "}
+            <a href="https://reportfraud.ftc.gov" className="text-indigo-600 dark:text-indigo-400 underline" rel="noopener noreferrer" target="_blank">
+              ftc.gov/complaint
+            </a>
+            , or with your state&apos;s attorney general or data-protection authority.
           </p>
         </section>
 

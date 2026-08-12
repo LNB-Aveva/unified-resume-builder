@@ -24,7 +24,7 @@ export default function TermsOfService() {
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold text-gray-900 dark:text-white mb-3">
           Terms of Service
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400">Last updated: August 11, 2026</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Last updated: August 12, 2026</p>
       </div>
 
       <div className="prose prose-gray dark:prose-invert prose-sm max-w-none space-y-8">
@@ -64,8 +64,9 @@ export default function TermsOfService() {
           <p className={text}>
             You retain responsibility for content you submit and confirm that you have permission to
             process it. Do not submit Social Security or government ID numbers, financial credentials,
-            medical or disability information, another person&apos;s confidential resume, or content not
-            needed for the requested task. You grant ResumeAI and its processors the limited right to
+            medical or disability information, immigration status or work-authorization documents,
+            another person&apos;s confidential resume, or content not needed for the requested task.
+            You grant ResumeAI and its processors the limited right to
             process submitted content solely to provide, secure, and support the service as described
             in the Privacy Policy.
           </p>
@@ -128,8 +129,17 @@ export default function TermsOfService() {
             The service is provided “as is” and “as available” to the extent permitted by law. ResumeAI
             does not guarantee uninterrupted availability, a particular ATS result, employment, or the
             accuracy of AI output. Nothing in these Terms excludes rights or liability that cannot
-            lawfully be excluded. Governing law and forum must be read consistently with mandatory
-            consumer and data-protection law in the user&apos;s jurisdiction.
+            lawfully be excluded.
+          </p>
+          <p className={text}>
+            These Terms are governed by the laws of the State of Illinois, United States, except
+            where mandatory consumer or data-protection law in your jurisdiction provides stronger
+            rights. Any dispute arising from these Terms or the service is subject to the
+            non-exclusive jurisdiction of courts in Cook County, Illinois, except where mandatory
+            local law provides otherwise. To the fullest extent permitted by applicable law, our
+            aggregate liability for any claim arising from these Terms or the service is limited to
+            the greater of: (a) amounts you paid us in the twelve months before the claim, or
+            (b) US $50.
           </p>
         </section>
 
