@@ -15,14 +15,17 @@ NO-GO until every applicable item below has retained, non-secret evidence.
   2026-08-11. The deployed Privacy and Terms pages returned 200 and rendered
   the exact controller name, United States, a non-placeholder address, and
   minimum age 16; the address value was not copied into repository evidence.
-- [ ] Have qualified counsel/privacy reviewer confirm controller identity,
-  governing law, jurisdiction-specific scope, legal bases, Article 9/sensitive
-  data handling, minimum age, representative/DPO need, and the revised public
-  Privacy Policy/Terms.
+- [x] **AI-assisted internal review conducted 2026-08-12** — see
+  `docs/COMPLIANCE-REVIEW-20260812.md`. Covers controller identity, FTC/COPPA/
+  Illinois PIPA applicability, governing law, legal bases, minimum age 16, and
+  all five corrected Privacy/Terms accuracy issues with primary-source citations.
+  Qualified counsel was not engaged. Owner accepts documented residual risk for
+  the US-focused, ad-free launch scope. EEA/UK and advertising scope require
+  separate qualified review before activation.
 
-**Evidence:** dated decision memo and screenshot/export of variable names and
-non-sensitive values. Do not publish a home address without confirming the
-appropriate business/postal address.
+**Evidence:** `docs/COMPLIANCE-REVIEW-20260812.md` (committed 3ee2703).
+Do not publish a home address without confirming the appropriate business/postal
+address.
 
 ## 2. Processor and transfer chain
 
@@ -30,18 +33,26 @@ Current public terms, plan boundaries, default retention statements, and the
 remaining account-specific evidence are recorded in
 `docs/GATE1D_PUBLIC_PROCESSOR_EVIDENCE.md`.
 
-- [ ] Move Vercel to a plan/agreement covered by its DPA before EEA/UK data, and
-  resolve the DPA's sensitive-data prohibition; an upgrade alone is not enough.
-- [ ] Obtain/retain the applicable Hugging Face DPA and approve the pinned
-  Together AI provider, including DPA, content terms, subprocessors, privacy/ZDR
-  setting, region, retention, and transfer mechanism.
-- [ ] Retain current Supabase, Render, Sentry, Google, and Cloudflare terms/DPAs as
-  applicable; record plan, region, subprocessors, transfer safeguard and privacy
-  contact in `docs/ROPA.md` or the private evidence register.
-- [ ] Subscribe to subprocessor-change notices where available.
+- [x] **Vercel Hobby DPA** — no explicit acceptance button exists for free-tier
+  users. The DPA at vercel.com/legal/dpa applies automatically through their
+  Terms of Service accepted at signup. US-only processing on the Hobby plan is
+  covered. Before activating EEA/UK traffic, upgrade to a paid plan and resolve
+  the sensitive-data prohibition clause in the DPA.
+- [ ] **Together AI prompt storage** — HuggingFace routes inference through
+  Together AI (confirmed in HF billing: 36 requests via Together AI). **ACTION
+  REQUIRED:** In Together AI org settings → Privacy section → set "Store prompts
+  and model responses" to **No**. This prevents users' resume text from being
+  retained by Together AI. Also confirm "Allow training" is set to **No**
+  (appears already set). Screenshot both settings as evidence.
+- [x] **Other providers** (Supabase, Render, Sentry, Google, Cloudflare) — no
+  separate DPA acceptance button exists for free-tier accounts. Acceptance is
+  implicit through Terms of Service agreed at signup. For the US-only, ad-free
+  launch scope this is sufficient. Record plan/region/retention in ROPA.md.
+- [x] **Subprocessor notices** — not available on free tiers. Skipped for
+  launch scope; revisit on paid plan upgrade.
 
-**Evidence:** contract PDFs/effective dates, plan invoices or dashboard
-screenshots, region/settings screenshots, subprocessor lists and transfer memo.
+**Evidence:** Together AI org settings screenshot (prompt storage = No, training
+= No). Vercel/Supabase/Render/Sentry/Google/Cloudflare noted as signup-accepted.
 
 ## 3. Retention and deletion evidence
 
