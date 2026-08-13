@@ -17,15 +17,22 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | codex                       |
-| Started    | 2026-08-12                  |
-| Working On | Session 156 — consolidate compliance closeout |
+| Agent      | claude                      |
+| Started    | 2026-08-13                  |
+| Working On | Session 157 — Gate 1(d) owner guidance + §1/§2 checklist updates |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 157 (Claude) — 2026-08-13
+- **Agent:** claude
+- **Did:** Answered owner Gate 1(d) status questions. Marked §1 legal identity as complete via AI-assisted review (no counsel available; owner accepts residual risk — `docs/COMPLIANCE-REVIEW-20260812.md`). Updated §2 to reflect free-tier DPA reality: Vercel/Supabase/Render/Sentry/Google/Cloudflare DPAs apply via signup; no accept button. Identified Together AI prompt storage as the one remaining §2 action (org settings → Privacy → "Store prompts" → No). Committed a25c555, pushed.
+- **Files Changed:** `docs/GATE1D_OWNER_ACTIONS.md`, `.ai-sync/WORKLOG.md`
+- **Next:** Owner sets Together AI "Store prompts and model responses" → No (2-min task). Then continue §3–§6 owner drills.
+- **Blockers:** Together AI prompt storage setting (owner must do in browser).
 
 ### Session 156 (Copilot) — 2026-08-12
 - **Agent:** copilot
