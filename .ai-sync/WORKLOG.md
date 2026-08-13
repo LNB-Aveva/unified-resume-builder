@@ -1,4 +1,4 @@
-# Work Log — Shared Context for Claude Code & GitHub Copilot
+# Work Log — Shared Context for Claude Code & Codex
 
 > ALL agents: READ this file at session start. UPDATE before ending your session.
 > Keep entries concise — this is a handoff doc, not a journal.
@@ -17,7 +17,7 @@
 
 | Field      | Value                      |
 |------------|----------------------------|
-| Agent      | copilot                     |
+| Agent      | codex                       |
 | Started    | 2026-08-12                  |
 | Working On | Session 156 — consolidate compliance closeout |
 

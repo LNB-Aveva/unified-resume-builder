@@ -2,13 +2,13 @@
 
 ## Identity
 You are working on **resumeai.cv** — an AI-powered resume builder SaaS.
-You work alongside **GitHub Copilot** on this repo.
+You work alongside **Codex** on this repo.
 Always check shared context before starting any task.
 
 ## Startup Checklist (EVERY session)
 1. Read `.ai-sync/WORKLOG.md` — current task state and session history
 2. Read `.ai-sync/DECISIONS.md` — design decisions by any agent
-3. Run `git log --oneline -15` — look for `[copilot]` prefixes
+3. Run `git log --oneline -15` — look for `[codex]` prefixes
 4. Run `git diff --stat` — see uncommitted changes
 
 ## After Completing Work
@@ -18,7 +18,7 @@ Always check shared context before starting any task.
 
 ## Commit Convention
 - `[claude]`  — work done by Claude Code
-- `[copilot]` — work done by GitHub Copilot
+- `[codex]`   — work done by Codex
 - `[manual]`  — manual human edits
 
 ## Tech Stack
