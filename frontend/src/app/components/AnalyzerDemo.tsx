@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { JobAnalysis, API_URL, connectionError, extractApiDetail } from "../types";
 import { fetchWithRetry } from "../lib/fetchWithRetry";
 import Spinner from "./Spinner";
@@ -11,9 +11,36 @@ import { useWorkspaceJobDescription } from "./ToolWorkspace";
 
 export default function AnalyzerDemo({ publicMode = false }: { publicMode?: boolean }) {
   const [jobText, setJobText, sharesWorkspace] = useWorkspaceJobDescription();
+  const jobTextRef = useRef<HTMLTextAreaElement>(null);
+  const minimumTextareaHeight = useRef(0);
   const [result, setResult] = useState<JobAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const resizeJobTextarea = useCallback(() => {
+    const textarea = jobTextRef.current;
+    if (!textarea) return;
+
+    if (!minimumTextareaHeight.current) {
+      minimumTextareaHeight.current = textarea.getBoundingClientRect().height;
+    }
+
+    textarea.style.height = "auto";
+    const borderHeight = textarea.offsetHeight - textarea.clientHeight;
+    textarea.style.height = `${Math.max(
+      textarea.scrollHeight + borderHeight,
+      minimumTextareaHeight.current,
+    )}px`;
+  }, []);
+
+  useLayoutEffect(() => {
+    resizeJobTextarea();
+  }, [jobText, resizeJobTextarea]);
+
+  useEffect(() => {
+    window.addEventListener("resize", resizeJobTextarea);
+    return () => window.removeEventListener("resize", resizeJobTextarea);
+  }, [resizeJobTextarea]);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -59,12 +86,13 @@ export default function AnalyzerDemo({ publicMode = false }: { publicMode?: bool
       <div className="space-y-3">
         {publicMode && <SensitiveDataNotice compact />}
         <textarea
+          ref={jobTextRef}
           value={jobText}
           onChange={(e) => setJobText(e.target.value)}
           placeholder="Paste a full job description here — title, requirements, responsibilities, everything..."
           rows={10}
           aria-label="Job description text"
-          className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-y"
+          className="w-full overflow-y-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-sm text-gray-800 dark:text-gray-100 shadow-sm outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900 resize-none"
         />
         {sharesWorkspace && (
           <p className="text-xs text-indigo-700 dark:text-indigo-300">

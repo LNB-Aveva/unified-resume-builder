@@ -71,8 +71,16 @@ the actual account settings or private operational register.
   Cloudflare retention, and email/support retention.
 - [ ] Inventory every manual production backup: creator, UTC time, encrypted
   location, hash, authorized users, purpose, expiry date, and destruction proof.
-- [ ] Set a maximum retention for the private DSAR and incident registers and
-  temporary exports.
+  The Git-ignored private register now records every discovered local dump,
+  device encryption, owner-only access, UTC metadata, hashes, purpose and fixed
+  action dates. The owner confirmed there are no off-workspace copies. Retain
+  destruction proof when each copy expires before checking this item.
+- [x] Set a maximum retention for the private DSAR and incident registers and
+  temporary exports. Owner approved three years after case/incident closure for
+  minimal register metadata and deletion of temporary exports, identity-
+  verification material and working attachments at closure and no later than
+  seven days after secure delivery. Legal holds require a documented exception;
+  incident-register extensions are reviewed at least annually.
 - [x] Inspect and purge historical Sentry events that may contain request,
   exception, breadcrumb, context, tag, extra, or span content from before the
   allowlist deployment.

@@ -20,6 +20,14 @@
 
 ## Decisions
 
+### DEC-042: Fixed Retention for Privacy Operations and Manual Backups
+- **Date:** 2026-08-15
+- **Agent:** manual
+- **Context:** Gate 1(d) required fixed maximum retention for the private DSAR and incident registers, temporary exports, and owner-controlled production backups. The existing runbooks required deletion but did not set auditable maximum periods.
+- **Decision:** Retain only minimal DSAR and incident-register metadata for three years after closure. Delete temporary exports, identity-verification material and working attachments at closure and no later than seven days after secure delivery. A documented legal hold may extend an affected record; incident-register extensions require annual review. Keep the current encrypted, owner-only manual backups until the safe restore rehearsal, using the fixed action dates and destruction/extension log in the Git-ignored private register.
+- **Alternatives Considered:** Indefinite register retention — rejected as unnecessary and inconsistent with data minimization. Immediate deletion of all backups — rejected because the required safe restore rehearsal is not complete. A relative-only backup deadline — rejected because the owner checklist requires auditable action dates.
+- **Files Affected:** `docs/PRIVACY-REQUESTS.md`, `docs/INCIDENT-RESPONSE.md`, `docs/ROPA.md`, `docs/GATE1D_OWNER_ACTIONS.md`, private Git-ignored backup register
+
 ### DEC-041: US-Focused Phased Launch Before EEA/UK Marketing
 - **Date:** 2026-08-11
 - **Agent:** copilot

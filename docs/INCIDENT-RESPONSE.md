@@ -102,6 +102,11 @@ any unauthorized destruction, loss, alteration, access, or disclosure.
 If the incident is not reported, the record must still explain why notification
 was not legally required. Silence is not a decision record.
 
+Retain only minimal incident-register metadata for three years after closure;
+do not copy resume bodies into the register. A documented legal or regulatory
+hold may extend the affected record, but the owner must review the extension at
+least annually and record the reason, approver and next review/deletion date.
+
 ## Post-Incident
 
 1. Document what happened, timeline, and root cause

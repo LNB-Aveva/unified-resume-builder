@@ -27,7 +27,7 @@ pages. The address is deliberately omitted from this repository record.
 | Analytics | Consenting visitors; device/client identifiers and interaction events | Product measurement: consent | Google Analytics | Property setting; **OWNER EVIDENCE REQUIRED** |
 | Advertising | Consenting visitors; advertising storage/signals and ad events | Advertising: consent | Google AdSense | Account/property setting; **OWNER EVIDENCE REQUIRED**; no ad units until Gate 1(e) closes |
 | Authentication bot checks | Email-auth visitors; IP/browser/security signals, token outcome | Abuse prevention/security: legitimate interests | Cloudflare Turnstile; Supabase | Vendor retention; **OWNER EVIDENCE REQUIRED** |
-| Support and rights | Users/requesters; email, request, case metadata, response evidence | Support: contract; rights/legal compliance: legal obligation | Zoho Mail and relevant processors | Delete ordinary support email 12 months after case closure; DSAR, incident and legal-hold records follow the separate restricted-register schedule; delete working exports after closure |
+| Support and rights | Users/requesters; email, request, case metadata, response evidence | Support: contract; rights/legal compliance: legal obligation | Zoho Mail and relevant processors | Delete ordinary support email 12 months after case closure; retain minimal DSAR and incident-register metadata for three years after closure; delete temporary exports, identity-verification material and working attachments at closure and no later than seven days after secure delivery; documented legal holds may extend affected records with annual review |
 
 ## Systems and transfer register
 

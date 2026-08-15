@@ -11,8 +11,11 @@ the JSON download button.
 
 Ordinary support email that is not part of a privacy-rights request, incident,
 legal hold, or other documented exception is deleted 12 months after case
-closure. Privacy-rights and incident records follow the separate restricted
-register schedule, and working exports are deleted when the case closes.
+closure. The access-restricted privacy-request register retains only minimal
+case metadata for three years after closure. Temporary exports, identity-
+verification material and working attachments are deleted at case closure and
+no later than seven days after secure delivery. A documented legal hold may
+override the schedule for the affected record only.
 
 ## Service levels
 
@@ -44,8 +47,10 @@ Create one row in the private request register for every request:
 | Response evidence | Location of response and export hash, not the export itself |
 | Appeal | Date, reviewer, result |
 
-Keep the register access-restricted. Do not store identity documents unless
-strictly necessary; delete verification material as soon as the request closes.
+Keep the register access-restricted and retain its minimal case metadata for
+three years after closure. Do not store identity documents unless strictly
+necessary; delete verification material at closure and no later than seven days
+after secure delivery.
 
 ## Procedure
 
@@ -81,7 +86,8 @@ strictly necessary; delete verification material as soon as the request closes.
 8. **Respond securely.** Provide scope, actions, unresolved retention, recipients,
    legal basis for any limitation, complaint/appeal route, and a secure download.
 9. **Close and delete working files.** Record completion, hash the final export if
-   needed for proof, then remove temporary exports and verification attachments.
+   needed for proof, then remove temporary exports and verification attachments
+   at closure and no later than seven days after secure delivery.
 
 ## Self-service export boundary
 

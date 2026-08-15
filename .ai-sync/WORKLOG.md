@@ -7,9 +7,9 @@
 
 ## Current Task
 
-- **Feature:** Prompt 3 Gate 3 agent-side closeout
+- **Feature:** Auto-expand the Keyword Extractor textarea to fit its content
 - **Branch:** `main`
-- **Status:** Gate 3 is complete from the agent/repository side. Current provider limits, Hobby/Pro branches, routed-AI token economics, 100/1,000/10,000-user scenarios and database-capacity thresholds are reconciled. Remaining inputs and operating actions are owner-controlled.
+- **Status:** Implementation and verification complete. Owner approved committing and pushing the entire current worktree on 2026-08-15.
 
 ---
 
@@ -18,14 +18,45 @@
 | Field      | Value                      |
 |------------|----------------------------|
 | Agent      | codex                       |
-| Started    | 2026-08-14                  |
-| Working On | Session 166 — Prompt 3 Gate 3 agent-side closeout |
+| Started    | 2026-08-15                  |
+| Working On | Session 169 — Keyword Extractor textarea autosizing |
 
 ---
 
 ## Session History
 
 <!-- Most recent on top. Keep last 10 sessions. -->
+
+### Session 169 (Codex) — 2026-08-15
+- **Agent:** codex
+- **Did:** Made the Keyword Extractor textarea retain its original empty height and automatically grow to its full content height after typing, pasting, demo insertion, or viewport resizing. Removed manual resize/internal vertical scrolling and added Playwright coverage that asserts demo content has no hidden vertical overflow.
+- **Files Changed:** `frontend/src/app/components/AnalyzerDemo.tsx`, `frontend/tests/e2e/happy-path.spec.ts`, `.ai-sync/WORKLOG.md`.
+- **Verification:** Backend Ruff and frontend ESLint passed; focused Chromium test `Try Demo button fills the textarea` passed; `git diff --check` passed; localhost:3000 returns HTTP 200.
+- **Owner approval:** Owner explicitly approved committing, pushing, and saving the entire current worktree on 2026-08-15, including the existing Gate 1(d) documentation changes and textarea autosizing work.
+- **Next:** Commit and push the complete verified worktree to `main`.
+- **Blockers:** None.
+
+### Session 168 (Codex) — 2026-08-15
+- **Agent:** codex
+- **Did:** Traced the protected tools-page demo flow. Confirmed that `AnalyzerDemo` and `GapAnalysis` both consume `ToolWorkspaceProvider`'s shared `jobDescription` state. Clicking Step 1's Try demo sets that state to `DEMO_JOB_DESCRIPTION`, so Gap Analysis mirrors the same job description by design; it does not populate the resume or run the gap-analysis API.
+- **Files Changed:** `.ai-sync/WORKLOG.md` only (required status handoff).
+- **Next:** No change is required unless product direction is to decouple the two job-description fields or make the synchronization messaging more prominent.
+- **Blockers:** None.
+
+### Session 167 (Codex) — 2026-08-15
+- **Agent:** codex
+- **Did:** Rechecked Prompt 3 Gate 1(d) against the current audit verdict, owner checklist, processor-evidence record, latest reconciliation commit, recent history and clean pre-session worktree. Confirmed that repository remediation and all independently executable agent work are complete, while Gate 1(d) is not complete from the owner/end-to-end side: 10 checklist entries remain unchecked, several with partial evidence already retained.
+- **Files Changed:** `.ai-sync/WORKLOG.md` only (required status handoff).
+- **Next:** Owner closes the remaining retention/register, live rights/eligibility, consent/GPC, incident-tabletop, DPIA/qualified-review and final evidence-review items. The repository reviewer then validates the retained evidence and updates the final FAIL/UNVERIFIED rows and Gate verdict.
+- **Blockers:** No independently executable agent blocker. Remaining closure depends on owner-controlled dashboards, private registers, signed-in/clean-browser drills, operational tabletop/sign-off, provider response and qualified review.
+- **Owner-item 1 attempt:** Started the provider-retention closeout. The connected Gmail account contains no matching Hugging Face thread, but the retained inquiry was sent from the Zoho `support@resumeai.cv` mailbox, so that search is not authoritative. No signed-in browser was available to inspect Zoho or Sentry. Item 1 remains partial pending the Hugging Face/Together reply (or documented no-response follow-up) and a post-trial Sentry Subscription screenshot proving the final Developer plan/retention.
+- **Owner evidence received:** Owner confirmed on 2026-08-15 that the Zoho support mailbox has not received a Hugging Face response. The inquiry was sent at 23:21 local time on 2026-08-14, so no immediate follow-up is warranted; routed-retention/region/terms/deletion clarification remains pending.
+- **Owner evidence received:** Sentry Subscription evidence on 2026-08-15 shows the Business Plan Trial still active with one day left, no billing details or payment method, eight errors and 305 spans in the August 2–15 usage period. Final Developer-plan confirmation remains time-gated until the trial expires.
+- **Backup register preparation:** Reconfirmed exactly three git-ignored logical dumps and their UTC timestamps, sizes and SHA-256 hashes without reading dump contents. Owner confirmations are still required for encryption at rest, any off-workspace copies, authorized users, purpose, expiry and destruction handling before the private inventory can close.
+- **Owner evidence received:** Windows Device encryption is On. Owner states that only the owner can access the three SQL backups through the owner's Windows account and authorizes the agent to adopt/revise the proposed retention policy. Created the Git-ignored private register at `backups/PRIVATE_BACKUP_REGISTER.md` with exact UTC metadata, hashes, purposes, fixed action dates, access controls and a destruction/extension log. Confirmation of whether any off-workspace copies exist and eventual destruction evidence remain open.
+- **Owner evidence received:** Owner confirmed there are no off-workspace backup copies and approved the proposed DSAR, incident and temporary-file retention limits. The runbooks and ROPA now retain minimal DSAR/incident metadata for three years after closure, delete temporary exports/verification material/working attachments at closure and within seven days of secure delivery, and require documented legal-hold exceptions plus annual review for incident-register extensions. This owner-checklist item is complete; the separate backup item remains open only for future destruction proof.
+- **Live eligibility drill started:** Owner will reuse the existing permanent synthetic `bobby` account. Mobile redirected `/tools` to account setup while laptop allowed `/tools`. Source inspection confirms email sign-up itself requires the age/Terms checkbox and writes both eligibility timestamps, so laptop access for that accepted account is expected. The cross-device difference is not yet classified: verify the same account/session on both devices, distinguish a one-request stale-token refresh from missing metadata, and retain a negative email-signup test with the required checkbox omitted.
+- **Owner sequencing decision:** Owner deferred the live email/Google eligibility and full account-rights drill until the end. Proceed next with clean-browser consent/network and GPC evidence; the deferred eligibility observation remains unresolved rather than failed or closed.
 
 ### Session 166 (Codex) — 2026-08-14
 - **Agent:** codex

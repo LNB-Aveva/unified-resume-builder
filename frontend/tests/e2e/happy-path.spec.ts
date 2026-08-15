@@ -54,6 +54,11 @@ test.describe("Keyword Analyzer — happy path", () => {
     if (await demoBtn.isVisible()) {
       await demoBtn.click();
       await expect(textarea).not.toHaveValue("");
+      const dimensions = await textarea.evaluate((element) => ({
+        clientHeight: element.clientHeight,
+        scrollHeight: element.scrollHeight,
+      }));
+      expect(dimensions.clientHeight).toBeGreaterThanOrEqual(dimensions.scrollHeight);
     }
   });
 
