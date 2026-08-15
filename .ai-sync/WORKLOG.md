@@ -9,7 +9,7 @@
 
 - **Feature:** Auto-expand the Keyword Extractor textarea to fit its content
 - **Branch:** `main`
-- **Status:** Implementation and verification complete. Owner approved committing and pushing the entire current worktree on 2026-08-15.
+- **Status:** Complete. The entire verified worktree was committed as `ff47b23` and pushed to `origin/main` on 2026-08-15.
 
 ---
 
@@ -33,7 +33,8 @@
 - **Files Changed:** `frontend/src/app/components/AnalyzerDemo.tsx`, `frontend/tests/e2e/happy-path.spec.ts`, `.ai-sync/WORKLOG.md`.
 - **Verification:** Backend Ruff and frontend ESLint passed; focused Chromium test `Try Demo button fills the textarea` passed; `git diff --check` passed; localhost:3000 returns HTTP 200.
 - **Owner approval:** Owner explicitly approved committing, pushing, and saving the entire current worktree on 2026-08-15, including the existing Gate 1(d) documentation changes and textarea autosizing work.
-- **Next:** Commit and push the complete verified worktree to `main`.
+- **Delivery:** Commit `ff47b23` (`[copilot] save compliance updates and autosize keyword input`) was pushed to `origin/main`; local HEAD and `origin/main` matched after the push.
+- **Next:** None for this task.
 - **Blockers:** None.
 
 ### Session 168 (Codex) — 2026-08-15
