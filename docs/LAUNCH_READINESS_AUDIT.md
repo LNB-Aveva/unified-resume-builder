@@ -3,13 +3,14 @@
 > Audit date: 2026-08-11
 > Audited base: `6fc4f71` on `main`
 > Branch: `docs/gate1a-production-closeout`
+> Reconciled: 2026-08-14 against current provider guidance, owner evidence, and the Gate 2/5 closeouts
 > Rule: every `UNVERIFIED` launch gate is a `NO-GO` until it is proven.
 
 ## Current verdict
 
-**CONDITIONAL GO for ad-free launch.** Gate 1(c) is closed: after the stale-eligibility JWT fix, the owner completed account setup and retained production evidence of the signed-in `/tools` destination on 2026-08-11. The shared step 1–3 flow is covered by the passing browser suite. The four `LEGAL_*` values are deployed and production-proven. The remaining launch condition is the Gate 1(d) owner legal-posture decision.
+**NO-GO under the strict no-unverified rule.** The 2026-08-11 conditional verdict is historical. Gate 1(c) and the four `LEGAL_*` values remain production-proven, but current clearance is dependency-gated on the owner's Vercel plan decision, Gate 1(d) evidence/acceptance, and Gate 5 Render/database-recovery proof. Gate 5 has no remaining agent-side implementation or documentation item after the 2026-08-14 reconciliation; its remaining work is owner-controlled execution evidence.
 
-Cost model verdict: the $7/mo budget safely handles 0–9,600 users. The first hard cliff is Supabase's 500 MB free DB at approximately 9,600 active users (~52 KB/user average footprint). HuggingFace free-tier rate limits become visible at ~1,000 users during peak hours but fail gracefully via circuit breaker.
+Cost model verdict: Gate 3 is current and complete from the repository-review side. The recurring baseline is $7/mo only if Vercel confirms that this deployment qualifies for Hobby; otherwise the commercial baseline is $27/mo with Vercel Pro. Under the documented 10% AI-adoption assumption, 1,000 monthly users fit inside Hugging Face's $0.10 monthly credit, while 10,000 users need about $0.43 of purchased inference credits after that credit. The first modeled capacity cliff remains Supabase's 500 MB database. The row-only upper bound is approximately 9,600 users at ~52 KB/user, but Supabase's documented 40–60 MB base occupancy lowers a new project's modeled additional-user range to roughly 8,500–8,800 before indexes and current production data.
 
 | Gate | Owner | Status |
 |---|---|---|
@@ -18,11 +19,11 @@ Cost model verdict: the $7/mo budget safely handles 0–9,600 users. The first h
 | 1(c). Confused non-technical user | Claude + Copilot | **PASS** — production onboarding proof + 557 backend and 56/56 E2E tests |
 | 1(d). Regulator reviewing resume-data handling | Copilot | **FAIL / NO-GO** — code complete; owner legal decisions required |
 | 1(e). AdSense policy reviewer | Claude | **PASS for ad-free launch** — blocked before ad units only by TCF CMP |
-| 2. Evidence-backed go/no-go checklist | Claude | **COMPLETE** |
-| 3. 100 / 1,000 / 10,000-user cost model | Claude | **COMPLETE — cliff at ~9,600 users (Supabase DB)** |
+| 2. Evidence-backed go/no-go checklist | Claude | **AGENT REVIEW COMPLETE — OWNER PLAN DECISION PENDING** |
+| 3. 100 / 1,000 / 10,000-user cost model | Claude | **AGENT/REPOSITORY COMPLETE** — current Hobby/Pro branches, routed-AI token cost and database-capacity formula modeled |
 | 4. Failure drills | Claude | **PASS** — 1 blocker fixed; non-English gap → post-launch backlog |
-| 5. Independent rollback verification | Claude | **COMPLETE — PASS** |
-| 6. Final verdict and top three accepted risks | Claude | **CONDITIONAL GO — 2 owner actions before deploy** |
+| 5. Independent rollback verification | Claude | **AGENT COMPLETE / OWNER PARTIAL** — Vercel rehearsed; Render and database recovery evidence pending |
+| 6. Final verdict and top three accepted risks | Claude | **AGENT/REPOSITORY COMPLETE — OVERALL NO-GO** pending owner-controlled Gate 1(d), Vercel-plan and recovery evidence |
 
 ## Baseline evidence
 
@@ -239,38 +240,39 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 | **8 — SEO/Monetization** | Sitemap/canonical/legal/content surfaces pass; certified ad consent and live placements must be proven before monetization. | **BLOCKED BEFORE ADS** | Public review surfaces and `ads.txt` pass. The custom banner is not certified TCF proof; AdSense Privacy & messaging status remains owner-only and no live placement/density review exists. |
 | **9 — Auth/Data security** | Owner-only share writes/reads, non-enumerable public RPC, high-entropy links, revocation, and quota-free preview. | **PASS** | New links retain full UUID v4 entropy and owner revocation. Public preview is deterministic. Post-migration run `31532154382` passed 20/20 RLS plus 6/6 abuse controls with zero skips. |
 | **10 — Observability** | Backend/frontend Sentry are PII-safe; uptime and cleanup failures alert; approved fixed spend is monitored. | **PASS** | Content-free Sentry envelopes have adversarial tests. Cleanup run `31534423206` passed. Owner confirmed Render Starter and reviewed Hugging Face usage: 34 Together requests, under $0.01 usage and $0.00 charged, with no unexpected activity. Account-specific privacy evidence remains tracked in Gate 1(d), not this operational gate. |
-| **11 — Release engineering** | Ordered idempotent migrations; rollback rehearsed; backup drill executed; branch protection on `main`. | **PASS** | Nine ordered SQL migrations exist. Verified backup/manifest evidence preceded migrations 008 and 009; both were applied and production-proven. Rollback and branch protection remain proven. |
-| **12 — Go/no-go** | Current Prompt 3 strict review has no unverified blocker for the intended launch scope. | **CONDITIONAL GO — ad-free** | Gates 1(a–c), 2–5 and the legal-variable deployment are closed. Gate 1(d) still requires the owner's legal-posture decision; Gate 1(e)'s CMP is required only before ads. Gate 6 records the same conditional verdict. |
+| **11 — Release engineering** | Ordered idempotent migrations; independent application rollback rehearsed; backup and restore recovery proven; branch protection on `main`. | **PARTIAL — OWNER ACTION** | Nine ordered SQL migrations exist and verified manual backups preceded migrations 008 and 009. The owner rehearsed Vercel rollback, but no retained Render rollback or non-production database-restore rehearsal proves the remaining recovery paths. Branch protection remains proven. |
+| **12 — Go/no-go** | Current Prompt 3 strict review has no unverified blocker for the intended launch scope. | **NO-GO — OWNER DECISIONS/EVIDENCE PENDING** | The former quota, Starter, RLS, provider-usage and Gate 4 blockers are closed. Current Vercel dashboard evidence proves Hobby with Fluid Compute, but Vercel restricts Hobby to personal, non-commercial use; the owner must upgrade to Pro or retain written Vercel confirmation that the deployment qualifies. Gate 1(d) and Gate 5 remain separately dependency-gated. The certified CMP remains required only before ads. |
 
-### Gate 2 open items requiring owner action
+### Gate 2 owner-controlled and scope-triggered items
 
 | Item | Severity | Action |
 |---|---|---|
 | Gate 1(a) abuse controls | **CLOSED — 2026-08-10** | Migration, Render safeguards, real CAPTCHA flows, tokenless-auth rejection, 25/25 production tests, quota ledger creation, HTTP 429 denial, and fixture cleanup are proven. |
 | Render Starter | **CLOSED — 2026-08-11** | Blueprint pinned to `plan: starter`; owner confirmed Starter plan active in dashboard. |
 | RLS re-verification | **CLOSED — 2026-08-11** | Post-migration run `31532154382` passed 20/20 RLS plus 6/6 abuse controls with zero skips and no retained test users. |
+| Vercel production plan eligibility | **OWNER DECISION — BLOCKS STRICT LAUNCH CLEARANCE** | Production is dashboard-proven on Hobby with Fluid Compute. Vercel's current [Hobby plan](https://vercel.com/docs/plans/hobby) and [fair-use guidance](https://vercel.com/docs/limits/fair-use-guidelines) restrict Hobby to personal, non-commercial use. Before strict launch clearance, the owner must either upgrade the production project/team to Pro and retain plan evidence, or retain written Vercel support confirmation that the current deployment qualifies for Hobby. After evidence arrives, update Gate 2 Phase 12 and refresh Gate 3's fixed-cost baseline. |
 | TCF CMP for AdSense (Gate 1 §E) | **DEFERRED — owner decision** | Site is ad-free; Google site review pending. European regulations message not yet created (AdSense dashboard confirmed 2026-08-08). Required before placing any ad unit slots. Not a blocker for current ad-free launch. See memory: project_future_tcf_cmp. |
 | HF provider incident/budget review | **CLOSED — 2026-08-08** | Unexpected usage: NO. HF billing shows 34 requests via Together AI, <$0.01, $0.00 charges for Aug 1–Sep 1 period. No unauthorized use. |
 | Usage-limit copy | **CLOSED IN PRODUCTION — 2026-08-11** | Read-only production checks returned 200 for the landing, ATS checker, new-grad, tech-job and career-changer pages; each contained fair-use wording and none contained the superseded unlimited/no-limits claims. |
 
-**Gate 2 verdict: COMPLETE for the current ad-free launch scope.** Phases 1–7 and 9–11 are PASS. Phase 8 is blocked only before advertising, and Phase 12 correctly inherits the overall CONDITIONAL GO pending the Gate 1(d) owner legal-posture decision. Production RLS/abuse controls, cleanup, provider-usage review, Render Starter, ES256 authentication, migrations/backups, and fair-use copy are all closed. A certified CMP remains mandatory before any ad units.
+**Gate 2 verdict: agent reconciliation is complete; strict launch clearance remains owner-blocked.** Phases 1–7 and 9–10 retain their recorded PASS evidence. Production RLS/abuse controls, cleanup, provider-usage review, Render Starter, ES256 authentication, migrations, manual backup creation and fair-use copy are proven. Phase 11 is partial because the owner-executed Render rollback and non-production database restore remain unproven; no independently executable Gate 2 implementation or evidence item remains on the agent side. Phase 12 cannot pass until the owner resolves Vercel Hobby eligibility and the separately tracked Gate 1(d)/Gate 5 dependencies are closed. Phase 8 remains intentionally deferred for the ad-free scope; if monetization is later authorized, the owner must first publish a certified CMP, obtain Google site approval, create real ad units and provide their slot IDs. Only then can the agent place `<AdUnit>` instances and verify desktop/mobile density without inventing production identifiers or prematurely enabling ads.
 
 ---
 
 ## Gate 3 — Cost model
 
-> Model date: 2026-08-07. Pricing from public plan pages; mark each as VERIFY if not recently confirmed.
+> Reconciled 2026-08-14 from the current [Vercel Hobby plan](https://vercel.com/docs/plans/hobby), [Vercel pricing](https://vercel.com/pricing), [Render pricing](https://render.com/pricing), [Supabase pricing](https://supabase.com/pricing), [Supabase database-size guidance](https://supabase.com/docs/guides/platform/database-size), [Hugging Face routed-inference pricing](https://huggingface.co/docs/inference-providers/pricing), [Together AI pricing](https://www.together.ai/pricing), and [Sentry pricing](https://sentry.io/pricing/). Account-specific plan evidence is separated from public pricing.
 
 ### Service tier summary
 
-| Service | Plan | Monthly cost | Key constraint |
+| Service | Current/decision branch | Monthly cost | Current constraint |
 |---|---|---|---|
-| Vercel | Hobby (free) | $0 | 100 GB bandwidth/mo; 100k serverless function invocations/mo |
-| Render | Starter | $7 | 512 MB RAM; shared CPU; no sleep |
-| Supabase | Free | $0 | 500 MB database; 50k MAUs; 2 GB file storage; 5 GB bandwidth |
-| HuggingFace | Free-tier API key | $0 | Rate-limited (~100–400 requests/hour depending on model demand); no token billing until credits purchased |
-| Sentry | Free | $0 | 5k errors/mo; 10k performance events/mo |
-| **Total** | | **$7/mo** | |
+| Vercel | Hobby now; Pro unless Vercel confirms Hobby eligibility | $0 if confirmed; otherwise $20 | Hobby includes 1,000,000 Function invocations but is restricted to personal, non-commercial use. Pro is $20/mo with $20 of included usage credit. |
+| Render | Starter service in a Hobby workspace | $7 | 512 MB RAM, 0.5 CPU, always-on service. |
+| Supabase | Free | $0 | 500 MB database, 50,000 MAUs, 1 GB file storage, 5 GB egress, and no included automatic backups or PITR. |
+| Hugging Face | Free user, routed to pinned Together model | $0 recurring; purchased credits as used | $0.10 monthly routed-inference credit. Extra usage requires purchased credits and is passed through at provider rates. The pinned Qwen2.5 7B route is currently $0.30 per 1M input tokens and $0.30 per 1M output tokens. |
+| Sentry | Business trial; expected Developer after expiry | $0 on Developer | Developer includes 5,000 errors and 5 million spans. Production tracing/replay sampling is disabled, so errors—not spans—are the relevant quota. Owner must confirm the post-trial plan. |
+| **Recurring total before AI overage** | **Hobby-confirmed / Pro** | **$7 / $27 per month** | Hobby is not a valid commercial assumption without written Vercel confirmation. |
 
 ### Per-user footprint estimates
 
@@ -282,10 +284,12 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 - `shared_scores` (avg 1 per user): ~0.5 KB/user
 - **Total DB per user: ~52 KB**
 
-**Vercel traffic per session:**
+Theoretical row-only capacity is `500,000 KB / 52 KB ≈ 9,600 users`. Supabase documents approximately 40–60 MB of preoccupied space for a new project, which reduces the rough additional-user capacity to approximately 8,500–8,800 before indexes, WAL effects, extensions, and existing production rows. The operational formula is therefore `(500 MB - current database size) / measured per-user growth`; the owner must use the live Database Reports value rather than treating 9,600 as a safe target.
+
+**Vercel traffic model:**
 - First visit: ~350 KB (JS bundle, CDN-cached after first hit per edge node)
 - Subsequent visits (cached): ~5 KB (HTML shell only)
-- Serverless function invocations: ~2–3 per authenticated session (protected pages use SSR for cookie checks)
+- Serverless function invocations: ~3 per authenticated session and 5 sessions/user/month, or ~15 invocations/user/month. This is a planning assumption, not measured billing data.
 
 **HuggingFace tokens per AI operation (estimated):**
 | Operation | Input tokens | Output max | Total |
@@ -296,37 +300,40 @@ Evidence sources: `backend/tests/`, `docs/LAUNCH_PROGRAM.md`, `docs/DEPLOY.md`, 
 | Cover letter | ~1,000 | 650 | ~1,650 |
 | Preview rewrite (public) | ~200 | 150 | ~350 |
 
-Assumed AI-feature adoption: 10% of monthly users make at least one AI call (conservative). Average AI session: 1 single rewrite + 1 summary = **1,750 tokens**.
+Assumed AI-feature adoption: 10% of monthly users complete one modeled AI session. Average session: one single rewrite plus one summary = approximately **1,300 input + 450 output = 1,750 tokens**. At the pinned route's current $0.30/M input and output rate, that is about **$0.000525/session** before the monthly credit. The $0.10 credit therefore covers about **190 modeled sessions**, corresponding to roughly **1,900 monthly users** at 10% adoption. Actual cost varies with prompt/output length, retries and provider price changes.
 
 ### Scenario table
 
-| Scenario | DB used | Vercel invocations | HF requests/mo (10% adoption) | HF tokens/mo | Monthly cost | First service to limit |
+| Scenario | DB used | Vercel invocations | Modeled AI sessions / tokens | Gross AI charge | Estimated recurring total, Hobby-confirmed / Pro | First capacity action |
 |---|---|---|---|---|---|---|
-| **100 users/mo** | ~5 MB (1% of 500 MB) | ~1,500 | ~10 | ~17,500 | **$7** | Nothing — all within free tiers |
-| **1,000 users/mo** | ~52 MB (10% of 500 MB) | ~15,000 | ~100 | ~175,000 | **$7** | HF free-tier rate limit during peak hours (circuit breaker handles with 429) |
-| **10,000 users/mo** | ~520 MB (104% of 500 MB) | ~150,000 (50% over Vercel limit) | ~1,000 | ~1,750,000 | **$41–$60** | **Supabase DB fills at ~9,600 users; Vercel hits 100k function limit** |
+| **100 users/mo** | ~5 MB (1% of 500 MB) | ~1,500 | ~10 / 17,500 | ~$0.005, covered by credit | **$7 / $27** | None in the modeled quotas. |
+| **1,000 users/mo** | ~52 MB (10% of 500 MB) | ~15,000 | ~100 / 175,000 | ~$0.053, covered by credit | **$7 / $27** | None in the modeled quotas. |
+| **10,000 users/mo** | ~520 MB of modeled user rows, before base/overhead | ~150,000 | ~1,000 / 1,750,000 | ~$0.525 gross; ~$0.425 after credit | **~$32.43 / ~$52.43**, including Supabase Pro and purchased HF credits | **Supabase Pro is required before this scenario.** |
 
-### Cliffs in order of likelihood
+Vercel plan eligibility is a launch prerequisite across every row, not a usage cliff. If the owner does not purchase HF credits, AI routes can become unavailable after the $0.10 credit is consumed; non-AI product paths remain separately available.
 
-1. **Supabase 500 MB database** — the most realistic first cliff. At ~52 KB/user, the free DB fills at approximately **9,600 active users**. Resolution: delete inactive accounts/old versions, or upgrade Supabase Pro ($25/mo adds 8 GB).
+### Prerequisites and cliffs in order
 
-2. **HuggingFace free-tier rate limit** — affects real-time AI features if many users arrive simultaneously. The circuit breaker opens after 5 consecutive failures and recovers within 60 seconds. Users see a "service temporarily busy" message rather than a spinner that never resolves. Resolution at scale: add HF credits or HF PRO ($9/mo gives substantially higher limits).
+1. **Vercel commercial eligibility — launch prerequisite, not capacity.** Current production evidence proves Hobby, while Vercel restricts Hobby to personal/non-commercial use. The owner must obtain written eligibility confirmation or upgrade to Pro. The cost model contains both branches, so no further calculation is blocked on that choice.
 
-3. **Vercel 100k serverless invocations/month** — reached at approximately 33,000 sessions/month (assuming 3 function calls/session). Most landing/blog pages are statically served; only authenticated dashboard pages invoke serverless functions. Resolution: upgrade to Vercel Pro ($20/mo) or increase static generation.
+2. **Hugging Face $0.10 monthly credit — feature-availability threshold.** At the stated adoption/length assumptions it covers about 190 AI sessions, or ~1,900 monthly users. Resolution: purchase a deliberately bounded amount of credits and monitor actual routed usage. This replaces the unsupported approximate hourly-rate-limit claim.
 
-4. **Render 512 MB RAM** — unlikely below ~50k monthly users. PDF generation is synchronous but uses fpdf2 (low-memory). A sustained burst of 20+ concurrent PDF exports could pressure memory. Resolution: upgrade to Render Standard ($25/mo) for 1 GB RAM + dedicated CPU.
+3. **Supabase 500 MB database — first modeled storage cliff.** The row-only upper bound is approximately **9,600 users**, while the documented 40–60 MB base occupancy yields roughly **8,500–8,800 additional users** before other overhead. Actual production capacity is lower by the current database size and must be read from Database Reports. Resolution: remove data only under the documented retention policy or upgrade to Supabase Pro ($25/mo, 8 GB database and seven-day automatic backups).
 
-### What the $7/mo budget actually buys
+4. **Vercel Hobby invocation allowance — later modeled capacity threshold.** At 15 invocations/user/month, 1,000,000 invocations corresponds to roughly 66,000 monthly users. A commercial deployment should already be on Pro unless Vercel grants an exception, so real Pro usage metrics—not this Hobby ceiling—must guide later scaling.
 
-| Users/mo | Works fine at $7/mo? | First required upgrade and estimated new cost |
-|---|---|---|
-| 0–1,000 | Yes | None |
-| 1,000–5,000 | Yes, with HF rate-limit headroom | None for infra; possibly HF PRO $9/mo if AI-heavy |
-| 5,000–9,600 | Watch Supabase DB | No code change; monitor at 80% (400 MB) |
-| 9,600+ | Supabase cliff | Supabase Pro $25/mo; total becomes $32/mo |
-| 30,000+ | Vercel + Render | Vercel Pro $20/mo + Render Standard $25/mo; total ~$72/mo |
+5. **Sentry/Render are not safely convertible to a user-count cliff.** Sentry's 5,000-error quota can be consumed by one noisy defect even with few users, while Render's 512 MB capacity depends on request mix and concurrency. Keep tracing/replay disabled, retain spike protection and alerts, and use measured load/usage data for upgrades.
 
-**By 9,600 users**, AdSense revenue at even $0.50 RPM × 9,600 sessions/mo = **$4.80/mo** toward the $32/mo upgraded cost. The business case for upgrades funds itself at this scale.
+### What the baseline budget buys
+
+| Users/mo | Hobby-confirmed branch | Default commercial branch | Required action |
+|---|---|---|---|
+| 0–1,000 | $7/mo | $27/mo | HF usage remains within the modeled $0.10 credit. |
+| 1,000–~1,900 | $7/mo | $27/mo | Monitor actual HF token usage; modeled usage still fits the monthly credit. |
+| ~1,900 to the live DB threshold | $7 + purchased HF credits | $27 + purchased HF credits | Set an intentional HF credit budget; monitor actual Supabase database size and measured per-user growth. |
+| Above the live DB threshold (raw upper bound ~9,600) | ~$32 + HF usage | ~$52 + HF usage | Upgrade Supabase before the 500 MB ceiling; verify managed backups and restore behavior. |
+
+**Gate 3 verdict: AGENT/REPOSITORY COMPLETE.** Current limits, commercial-plan branches, AI token economics and the database cliff are modeled without inventing an owner plan choice. Remaining actions are owner-controlled plan/spend decisions and later comparison against measured production usage.
 
 ---
 
@@ -359,7 +366,7 @@ ESLint clean. Ruff clean. 53 keyword+contract tests pass. 32-route production bu
 
 ## Gate 5 — Rollback verification
 
-Rollback goal: revert frontend and backend **independently** within five minutes of detecting a launch regression, with zero data loss and minimal user impact.
+Application rollback goal: revert frontend and backend **independently** within five minutes of detecting a launch regression, without the rollback itself mutating Supabase data and with minimal user impact. Application rollback does not restore lost or corrupted database data; database recovery is a separate release-engineering proof.
 
 ### Signal — how to know in under five minutes that a rollback is needed
 
@@ -429,13 +436,10 @@ git push origin main
 
 **Render environment variables are NOT rolled back** by either option. If the regression is in an env var (e.g., a bad `HUGGINGFACE_API_KEY`), fix it in Render → Environment, not via code rollback.
 
-**Database rollback — Supabase:**
-Supabase free tier has **daily automatic backups** but no point-in-time recovery. If a migration caused data loss:
-```bash
-# Check backup availability in Supabase dashboard: Database → Backups
-# Restore is a dashboard action (not a CLI command) — contact Supabase support for free-tier restores
-```
-Accepted risk: documented in `docs/DEPLOY.md` — free tier has no PITR. Migrations are written to be reversible (each has a `-- rollback:` comment).
+**Database recovery boundary — Supabase:**
+The production Supabase organization is on Free. Current official plan guidance and owner dashboard evidence confirm that Free includes neither automatic project backups nor point-in-time recovery. The owner created a manual logical `pg_dump` backup on 2026-08-07, and verified backups preceded migrations 008 and 009, but no retained evidence proves a restore into a safe non-production target.
+
+Application rollback cannot recover deleted or corrupted rows. Before production DDL, run `scripts/backup-supabase.ps1`, verify the dump and manifest, and record reverse SQL. If data loss is suspected, preserve evidence and follow `docs/INCIDENT-RESPONSE.md`; do not claim recoverability until the applicable manual backup has passed a non-production restore rehearsal. Provider-managed daily backups require a paid Supabase plan.
 
 ### Rollback independence proof
 
@@ -454,13 +458,15 @@ Frontend and backend are independently rollbackable because:
 | Backend rollback (Render dashboard) | 30 sec | ~3 min total |
 | Git revert + push (either) | 2 min commit | ~5 min total |
 
-**Gate 5 verdict: PASS.** Independent rollback path verified by code inspection. Render dashboard redeploy and Vercel promote-to-production are the fastest paths. Git revert is the preferred audit-trail option for non-emergency situations. Total time-to-recovery is within the five-minute target for dashboard-based rollback.
+These are procedure estimates, not retained measurements for every path. The owner completed a Vercel rollback, smoke verification, re-promotion and second verification on 2026-08-03. No retained evidence proves an owner-executed Render rollback or its recovery time.
+
+**Gate 5 verdict: AGENT/REPOSITORY COMPLETE; OWNER EXECUTION PARTIAL.** The independent Vercel and Render procedures, verification steps, failure signals and database boundary are documented in `docs/ROLLBACK.md`. Vercel is owner-rehearsed. End-to-end Gate 5 remains open until the owner performs and records a controlled Render rollback-and-return rehearsal. Database recovery remains a separate open Phase 11 proof until a manual backup is restored successfully in non-production or a suitable managed-backup tier is adopted and tested.
 
 ---
 
 ## Gate 6 — Final verdict
 
-**Owner:** Claude — Session 149, 2026-08-11.
+**Original owner:** Session 149, 2026-08-11. **Current reconciliation:** 2026-08-14.
 
 ### Evidence summary
 
@@ -469,55 +475,43 @@ Frontend and backend are independently rollbackable because:
 | 1(a) Abusive user | PASS — production-proven 2026-08-10 |
 | 1(b) Scraper automation | PASS — production-proven 2026-08-11 |
 | 1(c) Confused non-technical user | PASS — production onboarding proof retained 2026-08-11 |
-| 1(d) Regulator | FAIL / NO-GO pending owner decisions (code complete) |
+| 1(d) Regulator | FAIL / NO-GO pending owner evidence and final review (repository remediation complete) |
 | 1(e) AdSense policy reviewer | PASS for ad-free launch |
-| 2 Go/no-go checklist | COMPLETE — Render Starter confirmed, all other items closed |
-| 3 Cost model | COMPLETE — cliff at ~9,600 users (Supabase DB) |
+| 2 Go/no-go checklist | AGENT REVIEW COMPLETE — Vercel plan decision and inherited owner dependencies remain |
+| 3 Cost model | AGENT/REPOSITORY COMPLETE — current Vercel branches, HF token pricing and database-capacity formula modeled |
 | 4 Failure drills | PASS — 2 blockers fixed (extractApiDetail + non-English warning in gap/compliance) |
-| 5 Rollback | PASS — independent frontend/backend, within 5-minute window |
+| 5 Rollback | AGENT COMPLETE / OWNER PARTIAL — Vercel rehearsed; Render rollback and database recovery proof pending |
 
-### Verdict: CONDITIONAL GO for ad-free launch
+### Current verdict: NO-GO — agent/repository reconciliation complete; owner dependencies remain
 
-The redirect-loop fix is code-complete, passes automated verification, and is proven by the owner's signed-in production `/tools` evidence. The legal values and subsequent production render are also proven. The remaining launch posture is limited to the owner legal decision below.
+The 2026-08-11 conditional verdict is superseded. Gate 2, Gate 3, Gate 4, and the repository-controlled portion of Gate 5 are now reconciled. There is no remaining independently executable Gate 6 implementation, research, calculation, runbook, or documentation item. Under the audit's strict rule, launch nevertheless remains NO-GO until the following owner-controlled dependencies are proven.
 
-**Launch requires one owner legal-posture decision:**
+### Owner-controlled closure dependencies
 
-**Closed 2026-08-11 — former Action 1:** All four `LEGAL_*` values are present in Vercel Production and Preview. A production deployment completed, and `/privacy` plus `/terms` returned 200 with the configured public values.
+1. **Vercel plan:** obtain written confirmation that this deployment qualifies for Hobby or upgrade to Pro. The refreshed Gate 3 model already covers both cost branches.
+2. **Gate 1(d):** complete every applicable unchecked item in `docs/GATE1D_OWNER_ACTIONS.md`, including remaining retention/provider evidence, live rights/eligibility and consent drills, incident tabletop, DPIA sign-off, and final evidence review. The owner's US-focused/ad-free residual-risk decision and all four production `LEGAL_*` values remain closed evidence; they do not waive the audit's no-unverified rule.
+3. **Gate 5/Phase 11:** execute and retain a controlled Render rollback-and-return rehearsal, then restore a verified manual backup into a safe non-production target or adopt and test a suitable managed-backup tier.
+4. **Evidence closeout:** after the evidence above exists, the repository reviewer changes the inherited owner-dependent rows to their evidence-supported results and records the final GO/NO-GO. This is a dependency-gated status update, not unfinished agent implementation work.
 
-**Action 2 (business/legal decision):** Accept or close the Gate 1(d) legal compliance posture. The code is correct — fail-closed controller identity, consent gating, DSAR runbook, incident procedure, ROPA, DPIA. The owner must decide: launch with documented residual risk (processor contracts not yet obtained; live rights/deletion drill and breach tabletop not performed) or complete those owner actions first. There is no code blocker. If marketing to EEA/UK users, completing `docs/GATE1D_OWNER_ACTIONS.md` before launch is strongly recommended.
+AdSense/CMP work remains outside the ad-free launch scope. A certified CMP, Google approval, real ad-slot identifiers, and placement/density review become mandatory before any ad unit is enabled.
 
-**Scope decision recorded 2026-08-11:** The operator is established in
-Illinois, United States. The owner approved a US-focused initial launch and
-deferred active EEA/UK marketing until the applicable Gate 1(d) package is
-complete. This closes the launch-country checklist item, but it does not by
-itself close the remaining legal-posture decision or Gate 1(d).
+### Top three residual risks after the blockers close
 
-### Top three risks accepted at launch
+**Risk 1 — Supabase capacity and recovery limits**
+- **What:** The free database becomes read-only above 500 MB. At ~52 KB/user, 9,600 is only the row-only upper bound; documented base occupancy and current production data lower the safe threshold.
+- **Consequence:** Writes fail at the capacity ceiling, and the current Free plan has no included automatic project backup or PITR.
+- **Mitigation:** Track database size, upgrade before the ceiling, retain verified logical backups, and prove restoration separately from application rollback.
 
-**Risk 1 — Legal compliance gap (Gate 1(d))**
-- **What:** Processor contracts (Vercel DPA, HuggingFace/Together AI DPA) are not obtained; a live signed-in export/deletion drill and breach response tabletop have not been performed.
-- **Consequence:** Regulatory exposure for EEA/UK data subjects if a privacy incident occurs before the gap is closed. The privacy notice and code controls are correct, but the operational evidence and processor agreements are missing.
-- **Mitigation in place:** Production build fails closed without controller identity; consent gating is enforced; `docs/GATE1D_OWNER_ACTIONS.md` closure checklist, DSAR, ROPA, DPIA, and incident procedure documents are ready.
-- **Owner action to close:** Complete `docs/GATE1D_OWNER_ACTIONS.md`. Target: before first EEA/UK user if the product is marketed there.
-
-**Risk 2 — Supabase 500 MB free-tier cliff**
-- **What:** At ~52 KB/user, the free 500 MB database fills at approximately 9,600 active users. The DB becomes read-only when the limit is hit — there is no graceful degradation, no automatic upgrade trigger, and no advance warning beyond dashboard metrics.
-- **Consequence:** Sudden write failure for all users (new resumes, jobs, profiles) at an unpredictable moment as growth approaches that threshold.
-- **Mitigation in place:** Gate 3 documents the cliff, the $25/mo Supabase Pro upgrade path, and the revenue offset. The circuit breaker and quota system protect against AI spend amplification, which does not trigger this limit.
-- **Owner action to close:** Set a Supabase usage alert at 80% (400 MB) in the Supabase dashboard → Settings → Billing. Upgrade to Pro before the alert fires.
-
-**Risk 3 — Process-local rate limits reset on Render restart**
+**Risk 2 — Process-local rate limits reset on Render restart**
 - **What:** The in-memory sliding-window rate limiter (200 req/60 s global) and the HF circuit breaker reset to zero on any Render process restart — rolling update, crash, or scale event. A brief window during redeploy allows more requests than the steady-state limit.
 - **Consequence:** A burst of API traffic arriving precisely during a redeploy could temporarily exceed the intended rate ceiling. The Supabase-backed AI quota (10 units/user/day, 500/day global) still applies and cannot be bypassed by this window, so the blast radius is limited to rate-limit headroom during the seconds of restart.
-- **Mitigation in place:** Supabase-backed quota is the primary spend guard; the process-local limit is defense-in-depth. Circuit breaker recovers within 60 seconds of HF returning healthy.
-- **Owner action to close:** Accept as a known limitation for single-worker deployment. Revisit with a shared Redis limiter if traffic patterns show exploitation during deploys at scale.
+- **Mitigation:** Supabase-backed quota remains the primary spend guard. Revisit a shared limiter only if the service scales horizontally or traffic shows exploitation around deploys.
 
-### Launch sequence (exact steps for owner)
+**Risk 3 — Routed-AI credit exhaustion and price variability**
+- **What:** The free Hugging Face account supplies only $0.10/month of routed-inference credit, and the pinned Together model is usage-priced. Provider prices can change.
+- **Consequence:** AI routes can become unavailable after credits are exhausted even when the rest of the application is healthy.
+- **Mitigation:** Retain daily Supabase AI quotas, purchase only an owner-approved bounded credit amount, monitor actual token spend, and preserve the existing user-facing failure handling.
 
-1. **Closed:** The 4 `LEGAL_*` values are deployed; `/privacy` and `/terms` return 200 with the configured public values.
-2. **Accept or close the remaining Gate 1(d) legal posture.**
-3. **Announce launch.**
-4. **Monitor for 72 hours** per `docs/POST-LAUNCH-MONITORING.md`.
-5. **On 2026-09-10:** delete the quarantined anonymous user and three jobs from Supabase (Gate 1(b) scheduled cleanup — `docs/GATE1B_SCRAPER_CONTROLS.md`).
+The scheduled 2026-09-10 deletion of the quarantined Gate 1(b) account remains a post-launch operational follow-up, not a hidden agent-side Gate 6 task.
 
-**Gate 6 verdict: CONDITIONAL GO — Gate 1(c) and the legal-variable deployment are closed; launch remains subject to the owner Gate 1(d) legal-posture decision above.**
+**Gate 6 verdict: AGENT/REPOSITORY COMPLETE; OVERALL NO-GO PENDING OWNER-CONTROLLED EVIDENCE.** No commit, deployment, or launch announcement is authorized by this verdict.

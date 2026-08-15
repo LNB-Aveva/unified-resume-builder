@@ -38,12 +38,16 @@ remaining account-specific evidence are recorded in
   Terms of Service accepted at signup. US-only processing on the Hobby plan is
   covered. Before activating EEA/UK traffic, upgrade to a paid plan and resolve
   the sensitive-data prohibition clause in the DPA.
-- [ ] **Together AI prompt storage** — HuggingFace routes inference through
-  Together AI (confirmed in HF billing: 36 requests via Together AI). **ACTION
-  REQUIRED:** In Together AI org settings → Privacy section → set "Store prompts
-  and model responses" to **No**. This prevents users' resume text from being
-  retained by Together AI. Also confirm "Allow training" is set to **No**
-  (appears already set). Screenshot both settings as evidence.
+- [x] **Together AI prompt storage and training defaults for HF-routed calls** —
+  production authenticates to `router.huggingface.co` with a Hugging Face token
+  and does not use a customer-owned Together API key. Hugging Face documents
+  that this routed mode requires no separate provider account. Together's
+  current privacy/security documentation says inputs and outputs are not stored
+  by default and training-data sharing is opt-in and disabled by default. A
+  Together profile setting or screenshot would therefore not govern these
+  routed calls. Retain the public-provider evidence; resolve temporary-cache
+  duration, region and contractual assurance with the other account/processor
+  evidence in §3.
 - [x] **Other providers** (Supabase, Render, Sentry, Google, Cloudflare) — no
   separate DPA acceptance button exists for free-tier accounts. Acceptance is
   implicit through Terms of Service agreed at signup. For the US-only, ad-free
@@ -51,8 +55,10 @@ remaining account-specific evidence are recorded in
 - [x] **Subprocessor notices** — not available on free tiers. Skipped for
   launch scope; revisit on paid plan upgrade.
 
-**Evidence:** Together AI org settings screenshot (prompt storage = No, training
-= No). Vercel/Supabase/Render/Sentry/Google/Cloudflare noted as signup-accepted.
+**Evidence:** pinned `:together` route, Hugging Face routed-request documentation,
+and Together AI default storage/training documentation retained in
+`docs/GATE1D_PUBLIC_PROCESSOR_EVIDENCE.md`. Vercel/Supabase/Render/Sentry/Google/
+Cloudflare noted as signup-accepted.
 
 ## 3. Retention and deletion evidence
 
@@ -67,7 +73,7 @@ the actual account settings or private operational register.
   location, hash, authorized users, purpose, expiry date, and destruction proof.
 - [ ] Set a maximum retention for the private DSAR and incident registers and
   temporary exports.
-- [ ] Inspect and purge historical Sentry events that may contain request,
+- [x] Inspect and purge historical Sentry events that may contain request,
   exception, breadcrumb, context, tag, extra, or span content from before the
   allowlist deployment.
 

@@ -54,7 +54,7 @@ Severity assumes an unknown user expects every advertised feature to work, even 
 | F11 | **Resolved** | Cold start | `render.yaml`; `.github/workflows/keepalive.yml`; `frontend/src/app/lib/fetchWithRetry.ts` | Blueprint pins Starter; dashboard confirmed **Starter** badge on service `srv-d8nfe63eo5us73esoqtg` (2026-08-11). | M |
 | F12 | **Resolved** | Dependency hygiene | `backend/requirements.txt`; `backend/requirements-dev.txt`; `frontend/package-lock.json` | Phase 2/3: runtime/dev separation, pip-audit + npm audit in CI, production gate has 0 High vulnerabilities. | M |
 | F13 | **Resolved** | Observability/privacy | `backend/app/main.py:20-27`; `docs/ENV_VARS.md:20` | Phase 10: frontend + backend Sentry wired, PII-safe beforeSend strips request bodies/auth headers, 11 unit tests prove strip. | M |
-| F14 | **Resolved** | Release engineering | `supabase/migrations/`; `docs/DEPLOY.md` | Phase 11: 9 ordered migrations (001–009) applied to production. Backup drill executed 2026-08-07 (16.1 KB dump). Branch protection active. | L |
+| F14 | **Partial — owner proof** | Release engineering | `supabase/migrations/`; `docs/DEPLOY.md`; `docs/ROLLBACK.md` | Nine ordered migrations (001–009), manual backup creation and branch protection are proven. Owner-executed Render rollback and non-production database restoration are not yet evidenced. | L |
 | F15 | **Resolved** | Build reliability | `frontend/src/app/layout.tsx` | Fonts self-hosted via `geist` npm package and local Playfair Display woff2. Build no longer requires Google Fonts network access. | S |
 | F16 | **Med** | Content/launch | `frontend/src/app/lib/blog-posts.ts`; `frontend/src/app/blog/` | Only three articles exist. AdSense values original substantive content; approval odds are weaker until more genuinely useful content and author/contact trust signals exist. | M |
 | F17 | **Low** | Schema consistency | `backend/app/schemas/resume.py`; `backend/app/schemas/export.py` | Duplicate resume models use different field names, forcing frontend remapping and increasing save/version migration risk. | M |
@@ -455,14 +455,14 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 | 11.2 Add ordered, reviewable Supabase migrations and a repeatable apply/rollback procedure. | new `supabase/migrations/`, CI/docs | DONE — six idempotent ordered migrations plus apply/backup/rollback guidance |
 | 11.3 Provide isolated frontend and backend staging with staging Supabase/Hugging Face credentials; Vercel preview alone is not full staging. | `docs/DEPLOY.md`, `EnvironmentBanner.tsx`, `.env.example` | DONE — Vercel Preview deployments as frontend staging (set `NEXT_PUBLIC_SENTRY_ENV=staging` in Preview scope); yellow "STAGING ENVIRONMENT" banner on non-production; staging backend/Supabase documented as upgrade path at $0 budget (local backend serves as staging until revenue). |
 | 11.4 Require green CI before production deploy and document promotion from staging to production. | `docs/DEPLOY.md`, GitHub branch protection | DONE — Branch protection activated via `gh api` (2026-08-03). All three CI checks (Backend, Frontend, E2E) must pass before merge to `main`. Direct pushes allowed for solo dev workflow. |
-| 11.5 Configure database backups and perform a restore drill. | `scripts/backup-supabase.ps1`, `backups/` | DONE — pg_dump v17 installed, backup script fixed (quoted `--dbname=` flag), drill executed 2026-08-07: `supabase_backup_2026-08-07_134416.sql` (16.1 KB). Requires PostgreSQL 17 on PATH (`$env:Path = "C:\Program Files\PostgreSQL\17\bin;" + $env:Path`). Run before any schema migration. |
-| 11.6 Verify DNS, SSL, environment values, production CORS, and rollback after the final release candidate. | Vercel/Render/DNS/docs | DONE — Public technical pass (DNS, TLS, HSTS, redirects, CORS, health, auth, canonical, bundle wiring) all verified. Vercel rollback rehearsal completed 2026-08-03: rolled back to previous Production deployment, verified site + ads.txt, promoted latest back, verified again. Instant Rollback confirmed working on Hobby plan. |
+| 11.5 Configure database backups and perform a restore drill. | `scripts/backup-supabase.ps1`, `backups/` | PARTIAL — manual `pg_dump` tooling and a 16.1 KB backup drill completed 2026-08-07; verified backups also preceded migrations 008 and 009. Supabase Free has no included automatic project backups or PITR, and no retained non-production restore rehearsal proves recoverability. Owner action remains. |
+| 11.6 Verify DNS, SSL, environment values, production CORS, and rollback after the final release candidate. | Vercel/Render/DNS/docs | PARTIAL — public DNS/TLS/HSTS/CORS/health/auth/bundle checks pass, and the owner completed the Vercel rollback/re-promotion rehearsal on 2026-08-03. The agent-side Render procedure is complete, but no retained owner-executed Render rollback-and-return rehearsal exists. |
 
 **Definition of Done:** A green, immutable release candidate moves through staging to production with versioned DB changes, backups, and rehearsed rollback.
 
-**Exit gate:** Deploy and rollback a release candidate, apply and roll back a safe test migration, and restore a backup in non-production. **MET** — Rollback rehearsed (2026-08-03), migrations idempotent (6 SQL files), backup drill executed (2026-08-07, 16.1 KB dump).
+**Exit gate:** Deploy and roll back a release candidate, apply and roll back a safe test migration, and restore a backup in non-production. **NOT MET.** Vercel rollback and backup creation are proven, but Render rollback and non-production database restoration are not.
 
-**Reverification (2026-08-06, Session 116):** All 6 tasks independently verified from scratch. Two doc fixes applied.
+**Historical reverification (2026-08-06, Session 116):** The six tasks were reviewed under the evidence then available. The 2026-08-14 Gate 5 reconciliation supersedes its release-engineering closure claim because only Vercel was rehearsed and backup creation did not prove restoration.
 
 - **Doc fixes:**
   - `docs/DEPLOY.md` line 30: test count corrected from "385+" to "492+" (current suite per Session 115).
@@ -494,10 +494,11 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
   - Branch protection API response (2026-08-06): `required_status_checks.strict=true`, checks: `["Backend (Python)", "Frontend (Next.js)", "E2E (Playwright)"]`, `allow_force_pushes.enabled=false`, `allow_deletions.enabled=false`, `enforce_admins.enabled=false` (solo dev can push directly — documented in DEPLOY.md). PASS.
 
 - **11.5 Backups:**
-  - BLOCKED — Supabase free tier has daily backups but no point-in-time recovery. Acceptable for $0 budget. No code change needed. Exit gate caveated in DEPLOY.md rollback section. PASS (accepted risk, documented).
+  - AGENT COMPLETE / OWNER RESTORE PENDING — Supabase Free has no included automatic project backups or point-in-time recovery. The manual backup script and creation evidence are complete; a non-production restore rehearsal is not evidenced and cannot be marked PASS.
 
 - **11.6 DNS/SSL/rollback:**
-  - Rollback rehearsal: completed 2026-08-03 (Session 97). Vercel "Promote to Production" flow verified — rolled back to prior deployment, confirmed site + ads.txt, promoted latest back. Instant Rollback confirmed on Hobby plan.
+  - Vercel rehearsal: completed 2026-08-03 (Session 97). The owner rolled back to the prior deployment, confirmed the site and `ads.txt`, promoted the latest deployment, and verified again.
+  - Render procedure: agent-complete in `docs/ROLLBACK.md`; owner execution remains pending because no retained rollback-and-return evidence or elapsed-time measurement exists.
   - Branch protection: `allow_force_pushes=false` confirmed live (see 11.4 evidence).
   - DNS/TLS/HSTS/CORS: verified in Sessions 93/97 (production public technical pass — DNS resolves resumeai.cv → Vercel, TLS valid, HSTS header, CORS rejects non-allowlisted origins).
   - Env var matrix: `ENV_VARS.md` lists all production values; no secrets committed to git. PASS.
@@ -508,7 +509,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 | Task | File(s) | Status |
 |---|---|---|
-| 12.1 Complete a go/no-go review of every phase exit gate; any open Blocker is `NO-GO`. | this file, `LAUNCH_READINESS_AUDIT.md` | **NO-GO (current Prompt 3 rerun)** — Historical GO from 2026-08-04 is superseded until quota migration/configuration, Starter, RLS, Hugging Face usage/budget, certified CMP, and Gates 4/6 are proven. |
+| 12.1 Complete a go/no-go review of every phase exit gate; any open Blocker is `NO-GO`. | this file, `LAUNCH_READINESS_AUDIT.md` | **NO-GO (current strict Prompt 3 rerun)** — Gate 2, the refreshed Gate 3 model, Gate 4, the Gate 5 repository work, and Gate 6 reconciliation are complete. Current blockers are owner-controlled: Vercel Hobby eligibility/Pro, applicable Gate 1(d) evidence/acceptance, and Gate 5 Render/database-recovery proof. The certified CMP is required only before ads and does not block the ad-free scope. |
 | 12.2 Assign launch owner, incident owner, Sentry/uptime watchers, and escalation thresholds for the first 72 hours. | `docs/INCIDENT-RESPONSE.md`, launch runbook | DONE — Solo operator: Laxmi Narayana Bingi is launch owner, incident owner, Sentry/UptimeRobot watcher, and rollback authority. Alerts go to bobby.bingo696@gmail.com + push notifications. Escalation: investigate immediately if any critical error in first 72 hours. |
 | 12.3 Choose feedback intake (recommended: monitored support email linked site-wide plus GitHub Issues for reproducible public bugs). | footer/contact/issue templates | DONE — support@resumeai.cv for private support (Zoho Mail, already in footer/privacy/terms) + GitHub Issues for reproducible public bugs. Issue templates added (`bug_report.md` + `feature_request.md` in `.github/ISSUE_TEMPLATE/`). |
 | 12.4 Prepare and approve Product Hunt/Reddit copy; publish only after go-live approval. | `docs/guides/PRODUCT-HUNT-LISTING.md`, launch runbook | DONE — Copy fixed (removed false "open source" claim, corrected "no signup" to "free account", added maker name). Publish only after 12.1 go/no-go is signed GO. |
@@ -517,7 +518,7 @@ Notes: Mobile LCP above 2.5s is expected with Lighthouse’s 4x CPU throttle on 
 
 **Definition of Done:** Launch has explicit ownership, rollback authority, feedback intake, monitoring cadence, and an AdSense-ready production site.
 
-**Exit gate:** **HISTORICALLY MET, CURRENTLY REOPENED.** The 2026-08-04 GO and 72-hour review remain historical evidence, but the strict Prompt 3 rerun supersedes that verdict until its current blockers and Gates 4/6 close.
+**Exit gate:** **HISTORICALLY MET, CURRENTLY REOPENED.** The 2026-08-04 GO and 72-hour review remain historical evidence, but the strict Prompt 3 rerun supersedes that verdict until the owner closes the Vercel plan, Gate 1(d), and Gate 5 evidence dependencies. Gate 6 is reconciled and records this NO-GO; no independent agent implementation item remains. Gate 4 is closed, and a certified CMP remains a monetization-only prerequisite.
 
 **Reverification (2026-08-06, Session 117):** All 6 tasks independently verified from scratch. One doc correction applied.
 
@@ -579,8 +580,8 @@ Preserved from the original Prompt 1 audit (2026-07-09), updated with resolution
 
 ## Current priority
 
-1. **NO-GO under the current strict Prompt 3 rerun.** Deploy/prove Gate 1 quotas and Starter, then complete production RLS and provider incident/budget evidence.
-2. Complete Gate 4 failure drills and Gate 6 final verdict.
+1. **NO-GO under the current strict Prompt 3 rerun.** Owner resolves Vercel Hobby eligibility or upgrades to Pro, then completes the separately tracked Gate 1(d) and Gate 5 evidence.
+2. Gate 2, Gate 3, Gate 4, Gate 5 repository work, and Gate 6 reconciliation are complete. After owner evidence arrives, the reviewer performs only the dependency-gated status closeout and records the resulting GO/NO-GO.
 3. Enable ad units only after certified CMP proof, Google approval, and placement/density review.
 
 ## Backlog
@@ -608,7 +609,7 @@ Items discovered during post-launch sessions. Ordered by priority.
 | R9 | Manual Supabase backup script | **DONE** (Session 119) | S | `scripts/backup-supabase.ps1`. Needs `pg_dump` + Supabase connection string. |
 | R10 | Codex Prompt 3 adversarial audit triage | **DONE** (Session 119) | S | 5/13 findings already fixed on main. See session notes. |
 | R11 | Production RLS verification runbook/workflow | CODE DONE | S | Owner configures protected environment secrets and dispatches the workflow |
-| R12 | Rollback CLI setup + verification | TODO (Codex) | S | Needs Render API key + Vercel link |
+| R12 | Rollback CLI setup + verification | **CODE/DOCS DONE — OWNER VERIFY** | S | Vercel rehearsal complete; owner-controlled Render rollback-and-return rehearsal remains |
 | R13 | SMTP verification checklist | TODO (Codex) | S | Verify Zoho SMTP config in Supabase dashboard |
 
 ### R4 — RLS isolation tests in CI

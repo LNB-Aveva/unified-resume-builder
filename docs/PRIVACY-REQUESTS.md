@@ -9,6 +9,11 @@ objection, consent withdrawal, recipient information, opt-out, and appeal
 requests. It complements the self-service Account page; it is not replaced by
 the JSON download button.
 
+Ordinary support email that is not part of a privacy-rights request, incident,
+legal hold, or other documented exception is deleted 12 months after case
+closure. Privacy-rights and incident records follow the separate restricted
+register schedule, and working exports are deleted when the case closes.
+
 ## Service levels
 
 - Acknowledge within 3 business days.

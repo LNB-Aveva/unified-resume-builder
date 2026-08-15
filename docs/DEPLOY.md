@@ -58,22 +58,17 @@ Follow `docs/GATE1A_ABUSE_CONTROLS.md` for the exact safe order and verification
 ## Rollback
 
 ### Frontend (Vercel)
-1. Go to Vercel dashboard > Deployments
-2. Find the last good deployment
-3. Click "..." > "Promote to Production"
-4. Takes effect in ~30 seconds
+Use the exact CLI/dashboard procedure and smoke checks in `docs/ROLLBACK.md`. The owner successfully rehearsed Vercel rollback and re-promotion on 2026-08-03.
 
 ### Backend (Render)
-1. Go to Render dashboard > Events
-2. Find the last good deploy
-3. Click "Rollback to this deploy"
-4. Service restarts in ~60 seconds
+Use the exact deploy-ID discovery, rollback API request, health polling, authenticated smoke check and cleanup procedure in `docs/ROLLBACK.md`. The procedure is agent-verified, but an owner-executed Render rollback-and-return rehearsal is still pending and must not be represented as complete.
 
 ### Database (Supabase)
 - No automated migrations — schema changes are applied manually via SQL Editor
-- Point-in-time recovery available on paid plans
-- For free tier: keep `supabase-schema.sql` as the source of truth
-- Supabase schema changes are non-reversible without a backup. Back up affected data and record the reverse SQL before applying production DDL.
+- The production Free plan has no included automatic project backups or point-in-time recovery
+- Keep `supabase-schema.sql` and the ordered migrations as schema sources of truth
+- Supabase schema/data changes are not recoverable through a Vercel or Render rollback. Back up affected data, verify the dump/manifest, and record reverse SQL before applying production DDL.
+- Manual backup creation is proven; a restore into a safe non-production target is not yet evidenced. Do not claim recoverability until that rehearsal passes.
 
 ## Environment variables
 

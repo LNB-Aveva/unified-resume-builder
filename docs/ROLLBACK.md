@@ -2,6 +2,13 @@
 
 This runbook rolls back Vercel and Render independently. It does not roll back Supabase schema or data. Record the current and target deployment IDs before executing any rollback.
 
+## Verification status
+
+- **Repository procedure — complete:** Vercel CLI rollback/promotion and the Render rollback API were rechecked against current official provider documentation on 2026-08-14. The commands and independent smoke checks below are ready for an operator.
+- **Vercel owner rehearsal — complete:** On 2026-08-03, the owner rolled production back to the previous deployment, verified the site and `ads.txt`, promoted the latest deployment again, and reverified both surfaces.
+- **Render owner rehearsal — pending:** No retained evidence proves that the owner has executed a Render rollback, restored the latest deployment, run the authenticated smoke check, or recorded elapsed recovery time.
+- **Database recovery — outside application rollback and pending:** Supabase Free has no included automatic project backups or point-in-time recovery. Manual logical backups exist, but no retained non-production restore rehearsal proves recoverability.
+
 ## Trigger criteria
 
 Rollback a new application release when it is the probable cause of one of these conditions:
@@ -189,11 +196,18 @@ $renderSecureKey = $null
 
 Record the incident start, rollback time, bad deployment ID, restored deployment ID, verification results, and follow-up owner in the incident log.
 
+## Database recovery boundary
+
+Application rollback never restores Supabase rows or reverses schema changes. Before production DDL, run `scripts/backup-supabase.ps1`, verify the non-empty dump and its manifest, and record the reverse SQL. The production Free plan does not include automatic project backups or point-in-time recovery.
+
+A backup file is not restore proof. Restore the selected manual backup only into a safe non-production Supabase/Postgres target, validate schema and representative row counts without exposing production resume content, record the result, and destroy the temporary restored copy under the manual-backup retention procedure. Until that succeeds—or a managed backup tier is adopted and tested—the database recovery portion remains owner-pending.
+
 ## References
 
 - Vercel link: https://vercel.com/docs/cli/link
 - Vercel rollback: https://vercel.com/docs/cli/rollback
 - Render List Deploys API: https://api-docs.render.com/reference/list-deploys
 - Render Rollback API: https://api-docs.render.com/reference/rollback-deploy
+- Supabase database backups: https://supabase.com/docs/guides/platform/backups
 - Project incident response: `docs/INCIDENT-RESPONSE.md`
 
